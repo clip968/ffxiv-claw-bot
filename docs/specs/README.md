@@ -1,13 +1,32 @@
-# FFXIV Claw Bot — Specs
+# Specs
 
-> Notion에서 동기화된 스펙 문서. 원본: [ffxiv bot](https://www.notion.so/35f4bf16ed1f80fd9245d782f99be303)
+spec은 현재 시스템 동작 계약이다. 테스트와 구현은 spec을 기준으로 작성한다.
 
-| 파일 | 내용 | Notion 원본 |
-|---|---|---|
-| `01-architecture.md` | 전체 설계: 아키텍처, 데이터 소스, DB 스키마, LLM Wiki, Graph, 검색 계층, OpenClaw 설정 | ffxiv bot (메인) |
-| `02-tools.md` | Tool Layer 명세: 각 tool의 역할, 실행 예시, 출력 형식 | ffxiv bot §8 |
-| `03-roadmap.md` | 구현 로드맵: Phase 1-10, MVP 범위 (v0.1~v0.4), 바로 다음 작업 | ffxiv bot §11-13 |
-| `04-handoff-search-kb.md` | search_kb.py 세션 핸드오프 | 다음 세션 핸드오프 - search_kb.py 구현 |
-| `05-task-compile-wiki.md` | compile_wiki.py 작업 정의 | 다음 작업 - compile_wiki.py 최소 버전 |
-| `06-log-ingest-url.md` | ingest_url 완료 후 작업 로그 | 작업 로그 - ingest_url 이후 다음 단계 |
-| `07-log-compile-wiki.md` | compile_wiki 완료 후 작업 로그 | 작업 로그 - compile_wiki.py 완료 및 다음 단계 |
+spec은 과거 계획이 아니라 현재 유효한 기준이다. 큰 구현 변경은 먼저 spec을 갱신하거나 새 spec을 작성한 뒤 진행한다.
+
+## 규칙
+
+- spec 없이 구현을 크게 바꾸지 않는다.
+- spec은 구현이 따라야 하는 입력, 출력, 저장 규칙, 성공 기준을 정의한다.
+- 확실하지 않은 내용은 추측하지 않고 `TODO`로 표시한다.
+- 코드 변경과 spec 변경이 함께 필요하면 같은 작업 단위에서 관리한다.
+- Notion에 있는 설명보다 레포의 `docs/specs/*.md`를 우선한다.
+
+## 현재 spec
+
+- `0001-local-kb-pipeline.md`: v0.1 local KB pipeline
+- `0002-graph-layer.md`: v0.2 graph layer
+- `0003-google-drive-sync.md`: v0.3 Google Drive sync
+
+## 기존 참고 문서
+
+아래 문서는 이전 단계에서 작성된 참고 문서다. 현재 구현 계약은 `0001`부터 시작하는 spec을 우선한다.
+
+- `01-architecture.md`
+- `02-tools.md`
+- `03-roadmap.md`
+- `04-handoff-search-kb.md`
+- `05-task-compile-wiki.md`
+- `06-log-ingest-url.md`
+- `07-log-compile-wiki.md`
+- `2026-05-14-graph-layer-design.md`
