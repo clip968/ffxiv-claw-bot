@@ -1,0 +1,44 @@
+{
+  "root_folder": "FFXIV_KB",
+  "files": [
+    {
+      "id": "drive_file_001",
+      "name": "Black Mage 7.5 Guide",
+      "category": "job_guides",
+      "mimeType": "application/vnd.google-apps.document",
+      "modifiedTime": "2026-05-14T00:00:00Z",
+      "webViewLink": "https://drive.google.com/file/d/drive_file_001/view",
+      "exportExt": "md",
+      "contentHash": "hash-new"
+    },
+    {
+      "id": "drive_file_002",
+      "name": "Static Rules",
+      "category": "static_docs",
+      "mimeType": "application/vnd.google-apps.document",
+      "modifiedTime": "2026-05-14T00:05:00Z",
+      "webViewLink": "https://drive.google.com/file/d/drive_file_002/view",
+      "exportExt": "md",
+      "contentHash": "hash-same"
+    },
+    {
+      "id": "drive_file_003",
+      "name": "Savage 3 Macro",
+      "category": "macros",
+      "mimeType": "text/plain",
+      "modifiedTime": "2026-05-14T00:10:00Z",
+      "webViewLink": "https://drive.google.com/file/d/drive_file_003/view",
+      "exportExt": "txt",
+      "contentHash": "hash-updated"
+    },
+    {
+      "id": "drive_file_004",
+      "name": "Unsupported Sheet",
+      "category": "bis_sheets",
+      "mimeType": "application/vnd.google-apps.spreadsheet",
+      "modifiedTime": "2026-05-14T00:15:00Z",
+      "webViewLink": "https://drive.google.com/file/d/drive_file_004/view",
+      "contentHash": "hash-skipped"
+    }
+  ]
+}
