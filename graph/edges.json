@@ -1,0 +1,13 @@
+[
+  {
+    "id": "src:src_20260514_002930_4323e58d--SOURCE_OF--page:wiki_20260514_002930_4323e58d",
+    "source_id": "src:src_20260514_002930_4323e58d",
+    "target_id": "page:wiki_20260514_002930_4323e58d",
+    "type": "SOURCE_OF",
+    "confidence": "EXTRACTED",
+    "score": null,
+    "source_page_id": "wiki/source_summaries/src_20260514_002930_4323e58d.md",
+    "source_ids": null,
+    "properties": null
+  }
+]
