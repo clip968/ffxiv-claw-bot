@@ -40,6 +40,7 @@ def build_contexts(query: str, limit: int = 3, max_chars: int = 1000) -> list[di
             "score": r["score"],
             "snippet": r["snippet"],
             "content_excerpt": content_excerpt,
+            "graph_paths": r.get("graph_paths", []),
         })
 
     return contexts
@@ -72,6 +73,16 @@ def format_answer_text(question: str, contexts: list[dict]) -> str:
         lines.append(f"   path: {ctx['path']}")
         lines.append(f"   score: {ctx['score']:.2e}")
         lines.append(f"   snippet: {ctx['snippet']}")
+    lines.append("")
+
+    lines.append("관계 그래프:")
+    for i, ctx in enumerate(contexts, 1):
+        lines.append(f"  [{i}] {ctx['title']}")
+        if ctx["graph_paths"]:
+            for gp in ctx["graph_paths"]:
+                lines.append(f"      {gp}")
+        else:
+            lines.append(f"      (graph edge 없음)")
     lines.append("")
 
     lines.append("본문 발췌:")
