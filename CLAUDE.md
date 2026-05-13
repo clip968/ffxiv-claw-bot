@@ -34,10 +34,9 @@ Before starting any non-trivial coding task:
 
 ## After completing work
 
-1. `git add . && git commit -m "prefix: message"`
-2. `git push`
-3. Write a session log entry to `logs/YYYY-MM-DD.md` using the format below.
-4. Check the latest file in `logs/` to track progress.
+1. `git add . && git commit -m "prefix: message" && git push` — **push까지 반드시 수행할 것**
+2. Write a session log entry to `logs/YYYY-MM-DD.md` using the format below.
+3. Check the latest file in `logs/` to track progress.
 
 ### Session log entry format
 
