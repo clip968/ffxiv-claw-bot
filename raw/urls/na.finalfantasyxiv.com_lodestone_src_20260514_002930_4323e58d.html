@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en-us" class="en-us" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head><meta charset="utf-8">
+
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	(function() {
+		var cookie_suffix = '';
+		var get_cookie = function(name) {
+			var cookies = document.cookie ? document.cookie.split('; ') : [];
+			for ( var i = 0; i < cookies.length; i++ ) {
+				var cookie = cookies[i].split('=');
+				if ( cookie.shift() === name ) {
+					return decodeURIComponent(cookie.join('='));
+				}
+			}
+			return null;
+		};
+		var theme = get_cookie('ldst_theme' + cookie_suffix) || 'white';
+		if ( theme !== 'black' ) {
+			theme = 'white';
+		}
+		window.ldst_theme = theme;
+		window.ldst_apply_theme_switcher = function(root) {
+			if ( !root ) {
+				return;
+			}
+			var nodes = root.querySelectorAll('.sys_theme');
+			var active_theme = window.ldst_theme || 'white';
+			var has_active_theme = false;
+			for ( var i = 0; i < nodes.length; i++ ) {
+				if ( nodes[i].getAttribute('data-theme') === active_theme ) {
+					has_active_theme = true;
+					break;
+				}
+			}
+			if ( !has_active_theme ) {
+				active_theme = 'white';
+			}
+			for ( var i = 0; i < nodes.length; i++ ) {
+				nodes[i].classList.toggle('active', nodes[i].getAttribute('data-theme') === active_theme);
+			}
+		};
+		window.ldst_write_theme_link = function(options) {
+			var links = options.links || {};
+			var active_theme = window.ldst_theme || 'white';
+			if ( !links[active_theme] ) {
+				active_theme = 'white';
+			}
+			var html = '<link href="' + links[active_theme] + '" rel="stylesheet" class="sys_theme_css"';
+			if ( options.media ) {
+				html += ' media="' + options.media + '"';
+			}
+			for ( var key in links ) {
+				if ( Object.prototype.hasOwnProperty.call(links, key) ) {
+					html += ' data-theme_' + key + '="' + links[key] + '"';
+				}
+			}
+			html += '>';
+			document.write(html);
+		};
+		window.ldst_gtm_variable = {
+			'login': 'notloginuser',
+			'theme':  theme
+		};
+		
+		
+	})();
+</script>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','digitalData','GTM-P37XSWJ');</script>
+<!-- End Google Tag Manager -->
+
+
+
+<title>FINAL FANTASY XIV, The Lodestone</title>
+<meta name="description" content="Official community site for FINAL FANTASY XIV: A Realm Reborn.">
+
+<meta name="keywords" content="FF14,FFXIV,Final Fantasy XIV,Final Fantasy 14,Lodestone,players' site,community site,A Realm Reborn,Heavensward,Stormblood,Shadowbringers,Endwalker,Dawntrail,MMO">
+
+<meta name="author" content="SQUARE ENIX Inc.">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="format-detection" content="telephone=no">
+
+<link rel="alternate" type="application/atom+xml" href="/lodestone/news/news.xml" title="News | FINAL FANTASY XIV, The Lodestone">
+<link rel="alternate" type="application/atom+xml" href="/lodestone/news/topics.xml" title="Topics | FINAL FANTASY XIV, The Lodestone">
+
+<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="https://lds-img.finalfantasyxiv.com/pc/global/images/favicon.ico?1720069015">
+<link rel="apple-touch-icon-precomposed" href="https://lds-img.finalfantasyxiv.com/h/0/U2uGfVX4GdZgU1jASO0m9h_xLg.png">
+<meta name="msapplication-TileImage" content="https://lds-img.finalfantasyxiv.com/h/0/U2uGfVX4GdZgU1jASO0m9h_xLg.png">
+
+<meta name="msapplication-TileColor" content="#000000">
+<link rel="alternate" hreflang="en-gb" href="https://eu.finalfantasyxiv.com/lodestone/">
+<link rel="alternate" hreflang="fr" href="https://fr.finalfantasyxiv.com/lodestone/">
+<link rel="alternate" hreflang="de" href="https://de.finalfantasyxiv.com/lodestone/">
+<link rel="alternate" hreflang="ja" href="https://jp.finalfantasyxiv.com/lodestone/">
+
+
+
+
+
+<!--[if lt IE 9]>
+	<script src="https://lds-img.finalfantasyxiv.com/h/I/SMlNRnAvuilc1lYKBpzKWpmADs.js"></script>
+
+<![endif]-->
+<!-- ** CSS ** -->
+
+<link href="https://lds-img.finalfantasyxiv.com/h/2/jWLtMeKBGjO6PwHB_TX5mrZdJc.css" rel="stylesheet">
+<link href="https://lds-img.finalfantasyxiv.com/h/-/tUrZCLFtMgzaHil2OXxbmdw2a0.css" rel="stylesheet">
+<link href="https://lds-img.finalfantasyxiv.com/h/N/3LUMH7_OeG7SzdazK8hUB6NNdY.css" rel="stylesheet">
+<link href="https://lds-img.finalfantasyxiv.com/h/j/JgAulXN0McN_xRNcKLLbnNh4fs.css" rel="stylesheet">
+<link href="https://lds-img.finalfantasyxiv.com/h/S/Tyyl1Z_SVLS4Ld5UoNPMVC3cGQ.css" rel="stylesheet">
+<link href="https://lds-img.finalfantasyxiv.com/h/_/teW6eaIqhVaNEZ3L8zf49YpF-g.css" rel="stylesheet">
+<link href="https://lds-img.finalfantasyxiv.com/h/7/dfGFuJxg4ecJu8IZ3q-kg7TeVk.css" rel="stylesheet">
+<link href="https://lds-img.finalfantasyxiv.com/h/L/wO6tEYoqzr48YFT-0KS4ub-r1Y.css" rel="stylesheet">
+
+<link href="https://lds-img.finalfantasyxiv.com/h/e/Bscq1lIEfao6cP1TMAGrA40TVM.css" rel="stylesheet">
+	
+	<script>
+		window.ldst_write_theme_link({
+			links: {
+			
+				'white': 'https://lds\u002dimg.finalfantasyxiv.com/h/1/KjH4FrUHseJb2hmPnggSCRwQtQ.css',
+			
+				'black': 'https://lds\u002dimg.finalfantasyxiv.com/h/p/ad40HRcxaW8ihIKOWmAflkgsks.css'
+			
+			}
+		});
+	</script>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ogp -->
+<meta property="fb:app_id" content="">
+<meta property="og:type" content="website">
+<meta property="og:description" content="Official community site for FINAL FANTASY XIV: A Realm Reborn.">
+<meta property="og:title" content="FINAL FANTASY XIV, The Lodestone">
+<meta property="og:url" content="https://na.finalfantasyxiv.com/lodestone/">
+<meta property="og:site_name" content="FINAL FANTASY XIV, The Lodestone">
+<meta property="og:locale" content="en_US">
+
+	<meta property="og:image" content="https://lds-img.finalfantasyxiv.com/h/F/nxpYJrU9cbhAORBcM9FbZgG2rs.png">
+
+
+
+	<meta property="fb:pages" content="116214575870">
+
+
+<meta name="twitter:card" content="summary_large_image">
+
+	<meta name="twitter:site" content="@ff_xiv_en">
+
+
+
+
+<script>
+	var base_domain = 'finalfantasyxiv.com';
+	var ldst_subdomain = 'na';
+	var ldst_subdomain_suffix = '';
+	var strftime_fmt = {
+		'dateHHMM_now': 'Today %H:%M',
+		'dateYMDHMS': '%m/%d/%Y %\u002dI:%M:%S %p',
+		'dateYMDHM': '%m/%d/%Y %\u002dI:%M %p',
+		'dateYMDHM_jp': '%Y/%m/%d %H:%M',
+		'dateHM': '%\u002dI:%M %p',
+		'dateYMDH': '%m/%d/%Y %\u002dI',
+		'dateYMD': '%m/%d/%Y',
+		'dateEternal': '%m.%d.%Y',
+		'dateYMDW': '%m/%d/%Y (%a)',
+		'dateHM': '%\u002dI:%M %p',
+		'week.0': 'Sun.',
+		'week.1': 'Mon.',
+		'week.2': 'Tue.',
+		'week.3': 'Wed.',
+		'week.4': 'Thu.',
+		'week.5': 'Fri.',
+		'week.6': 'Sat.'
+	};
+	var base_uri   = '/lodestone/';
+	var api_uri    = '/lodestone/api/';
+	var static_uri = 'https://lds\u002dimg.finalfantasyxiv.com/';
+	var subdomain  = 'na';
+	var csrf_token = '3511cd196de0d96ccce84e493facb8890a862f7d';
+	var cis_origin = 'https://secure.square\u002denix.com';
+	var ldst_max_image_size = 31457280;
+	var eorzeadb = {
+		cdn_prefix: 'https://lds\u002dimg.finalfantasyxiv.com/',
+		version: '1778135989',
+		version_js_uri:  'https://lds-img.finalfantasyxiv.com/pc/global/js/eorzeadb/version.js',
+		dynamic_tooltip: false
+	};
+	var cookie_suffix = '';
+	var ldst_is_loggedin = false;
+	var show_achievement = false;
+
+	(function() {
+		if ( location.pathname.indexOf('/error/') === 0 || location.pathname.indexOf('/lodestone/error/') === 0 ) return;
+		const browser_support_cache_key = 'ldst_is_support_browser';
+		const get_browser_support_cache = function() {
+			try {
+				return localStorage.getItem(browser_support_cache_key);
+			} catch(e) {
+				return null;
+			}
+		};
+		const set_browser_support_cache = function(value) {
+			try {
+				localStorage.setItem(browser_support_cache_key, value);
+			} catch(e) {}
+		};
+		const cached = get_browser_support_cache()
+			|| document.cookie.indexOf('ldst_is_support_browser' + cookie_suffix + '=1') !== -1 && '1';
+		if ( cached ) {
+			set_browser_support_cache(cached);
+			if ( cached === '1' ) return;
+			location.replace('/lodestone/error/unsupported_browser/?back_uri=' + encodeURIComponent(location.pathname));
+			return;
+		}
+		const xhr = new XMLHttpRequest();
+		xhr.open('POST', base_uri + 'api/browser_check', true);
+		xhr.onload = function() {
+			if ( xhr.status !== 200 ) return;
+			try {
+				const res = JSON.parse(xhr.responseText);
+				if ( !res.data ) return;
+				set_browser_support_cache(res.data.is_support_browser ? '1' : '0');
+				if ( !res.data.is_support_browser ) {
+					location.replace('/lodestone/error/unsupported_browser/?back_uri=' + encodeURIComponent(location.pathname));
+				}
+			} catch(e) {}
+		};
+		xhr.send();
+	})();
+</script>
+<script src="https://lds-img.finalfantasyxiv.com/h/A/PknAmzDJUZCNhTGtSGGMIGi5k4.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/W/URVw18e1W4DiNBiSnPPoN-XHHA.js"></script>
+
+
+
+
+	
+
+
+</head>
+<body id="" class="ldst__body  lang_na">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P37XSWJ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+
+
+<div class="brand"><div class="brand__section">
+	<div class="brand__logo">
+		<a href="
+				https://na.square-enix.com/us/home
+			" target="_blank"><img src="https://lds-img.finalfantasyxiv.com/h/a/1LbK-2Cqoku3zorQFR0VQ6jP0Y.png" width="130" height="14" alt="SQUARE ENIX">
+		</a>
+	</div>
+
+	
+		<div class="brand__search">
+			<form action="/lodestone/community/search/" class="brand__search__form">
+				<div class="brand__search__focus_bg"></div>
+				<div class="brand__search__base_bg"></div>
+				<input type="text" id="txt_search" class="brand__search--text" name="q" placeholder="Search">
+				<input type="submit" id="bt_search" class="brand__search--btn" value="">
+			</form>
+		</div>
+	
+
+	
+		<div class="brand__theme sys_theme_switcher">
+			<a href="javascript:void(0);"><i class="brand__theme--white sys_theme js__tooltip" data-tooltip="Theme (Black)" data-theme="white"></i></a>
+			<a href="javascript:void(0);"><i class="brand__theme--black sys_theme js__tooltip" data-tooltip="Theme (White)" data-theme="black"></i></a>
+		</div>
+		<script>
+			(function() {
+				if ( window.ldst_apply_theme_switcher ) {
+					window.ldst_apply_theme_switcher(document.currentScript.previousElementSibling);
+				}
+			})();
+		</script>
+	
+
+	<div class="brand__lang dropdown_trigger_box">
+		<a href="javascript:void(0);" class="brand__lang__btn dropdown_trigger">English (US)</a>
+		<ul class="brand__lang__select dropdown">
+		
+			<li><a href="https://na.finalfantasyxiv.com/lodestone/">English (US)</a></li>
+		
+			<li><a href="https://eu.finalfantasyxiv.com/lodestone/">English (UK)</a></li>
+		
+			<li><a href="https://fr.finalfantasyxiv.com/lodestone/">Français</a></li>
+		
+			<li><a href="https://de.finalfantasyxiv.com/lodestone/">Deutsch</a></li>
+		
+			<li><a href="https://jp.finalfantasyxiv.com/lodestone/">日本語</a></li>
+		
+		</ul>
+	</div>
+
+
+	
+		<div class="l__cross_menu na">
+			<a href="javascript:void(null)" class="ffxiv_pr_cross_menu_button_na"></a>
+			<script>
+				var ffxiv_pr_cross_menu = {
+					uri_js: '/cross_menu/uri.js'
+				};
+			</script>
+			<script src="https://lds-img.finalfantasyxiv.com/promo/pc/global/menu/loader.js"></script>
+		</div>
+	
+</div></div>
+
+
+	
+		
+<header class="l__header">
+	<div class="l__header__inner l__header__bg_image" style="background-image: url(https://lds-img.finalfantasyxiv.com/banner/1563/headerImage_7_5_na.jpg);">
+		<a href="/lodestone/" class="l__header__link_top"></a>
+
+		
+		<a href="/lodestone/topics/detail/07320affa7e0fcd9685afcbe54fbf55405b6d822/?utm_source=lodestone&amp;utm_medium=pc_header&amp;utm_campaign=na_7_5patch" class="l__header__link_management"></a>
+
+		<div class="l__header__login clearfix"><a href="/lodestone/account/login/" class="l__header__login__btn">
+			<img src="https://lds-img.finalfantasyxiv.com/h/z/6PLTZ82M99GJ7tKOee1RSwvNrQ.png" width="40" height="40" alt="" class="l__header__login__chara_silhouette">
+			<div class="l__header__login__txt">
+				<p>View Your Character Profile</p>
+				<div>Log In</div>
+			</div>
+		</a></div>
+
+	</div>
+</header>
+
+	
+
+	
+		
+
+
+
+	
+
+<div class="global-nav">
+	<nav class="main-nav na">
+		<ul class="main-nav__area main-nav__area__ clearfix ">
+			<li class="main-nav__news main-nav__item">
+				<a href="/lodestone/news/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_main-menu', 'na_news-top');"><span>News</span></a>
+				<nav class="sub-nav">
+					<div class="sub-nav__area ">
+
+						
+						<div class="sub-nav__list sub-nav__news">
+							<div class="sub-nav__list__inner">
+								<ul class="sub-nav__news__icon">
+									<li>
+										<a href="/lodestone/news/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_news_top');"><div>
+											<img src="https://lds-img.finalfantasyxiv.com/h/8/2GwuzUcvqLa-hgQeLUyd8xarI8.png" width="32" height="32" alt="News">
+											News
+										</div></a>
+									</li>
+									<li>
+										<a href="/lodestone/topics/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_news_topics');"><div>
+											<img src="https://lds-img.finalfantasyxiv.com/h/5/67ZyAIzQUaYoWBmyvFwNvGmCnQ.png" width="32" height="32" alt="Topics">
+											Topics
+										</div></a>
+									</li>
+									<li>
+										<a href="/lodestone/news/category/1" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_news_notices');"><div>
+											<img src="https://lds-img.finalfantasyxiv.com/h/-/Y5JdwnEWYfyO7OlH27eKIm91Ok.png" width="32" height="32" alt="Notices">
+											Notices
+										</div></a>
+									</li>
+									<li>
+										<a href="/lodestone/news/category/2" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_news_maintenance');"><div>
+											<img src="https://lds-img.finalfantasyxiv.com/h/s/-JfULvMAf26L7AaU1OGaGYwanI.png" width="32" height="32" alt="Maintenance">
+											Maintenance
+										</div></a>
+									</li>
+									<li>
+										<a href="/lodestone/news/category/3" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_news_updates');"><div>
+											<img src="https://lds-img.finalfantasyxiv.com/h/p/HPudyOQcwdv97RBwj3FQC552ps.png" width="32" height="32" alt="Updates">
+											Updates
+										</div></a>
+									</li>
+									<li>
+										<a href="/lodestone/news/category/4" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_news_Status');"><div>
+											<img src="https://lds-img.finalfantasyxiv.com/h/S/-IC2xIQhTl2ymYW7deE1fOII04.png" width="32" height="32" alt="Status">
+											Status
+										</div></a>
+									</li>
+								</ul>
+								<ul class="sub-nav__news__text">
+									<li><a href="/lodestone/special/patchnote_log/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_news_patch-notes_special-sites');"><div>
+										Patch Notes and Special Sites
+										<span class="update">
+											Updated <span id="datetime-1aabdd5a2ce">-</span><script>document.getElementById('datetime-1aabdd5a2ce').innerHTML = ldst_strftime(1777363200, 'YMD');</script>
+										</span>
+									</div></a></li>
+									<li><a href="/lodestone/special/update_log/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_news_lodestone-update-notes');"><div>
+										<span class="sub_text">Official Community Site</span>
+										The Lodestone Update Notes
+										<span class="update">
+											Updated <span id="datetime-0a578842a63">-</span><script>document.getElementById('datetime-0a578842a63').innerHTML = ldst_strftime(1777363200, 'YMD');</script>
+										</span>
+									</div></a></li>
+									<li><a href="/lodestone/worldstatus/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_news_server-status');"><div>
+										Server Status
+									</div></a></li>
+								</ul>
+							</div>
+						</div>
+
+
+					</div>
+				</nav>
+
+			</li>
+			<li class="main-nav__promotion main-nav__item">
+				<a href="/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_main-menu', 'na_begin-ff14-top');"><span>Getting Started</span></a>
+				<nav class="sub-nav ">
+					<div class="sub-nav__area ">
+
+						
+						<div class="sub-nav__list sub-nav__promotion">
+							<div class="sub-nav__list__inner">
+								<div class="sub-nav__promotion__inner">
+									<div class="sub-nav__promotion__link">
+										<div class="sub-nav__promotion__top">
+											<a href="/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_begin-ff14_pr');"><img src="https://lds-img.finalfantasyxiv.com/h/0/LIzzCdAQLNQ17P90_FIvlR_Dvg.jpg" width="632" height="140" alt="FINAL FANTASY XIV: A Realm Reborn"></a>
+										</div>
+										<ul class="sub-nav__promotion__page">
+											<li><a href="/benchmark/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_begin-ff14_benchmark');">
+												<img src="https://lds-img.finalfantasyxiv.com/h/x/yLkmDjeDW9cU_l1mWtbQUnVIhs.png" width="64" height="40" alt="Benchmark">
+												<span>Benchmark</span>
+											</a></li>
+											<li><a href="
+												
+													http://freetrial.finalfantasyxiv.com/
+												" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_begin-ff14_freetrial');">
+												<img src="https://lds-img.finalfantasyxiv.com/h/c/tWvZpXDc_g6yQd5YKK2k5jhuns.png" width="64" height="40" alt="Free Trial">
+												<span>Free Trial</span>
+											</a></li>
+											<li><a href="/product/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_begin-ff14_product');">
+												<img src="https://lds-img.finalfantasyxiv.com/h/m/NCNLGrn3U9M85ky-NscraujvN8.png" width="64" height="40" alt="Product">
+												<span>Product</span>
+											</a></li>
+											<li><a href="/winning/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_begin-ff14_awards');">
+												<img src="https://lds-img.finalfantasyxiv.com/h/j/udWU20sWmhYoEsQ_FtrAzVwJ3Q.png" width="64" height="40" alt="Awards and Nominations">
+												<span>Awards and Nominations</span>
+											</a></li>
+										</ul>
+									</div>
+									<div class="sub-nav__promotion__patch_site">
+										<a href="/dawntrail/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_begin-ff14_latest-expansion');"><span>
+											<img src="https://lds-img.finalfantasyxiv.com/h/-/JlOGowlC5VCrSwg2z3aH8WGhGg.png" width="296" height="232" alt="FINAL FANTASY XIV: Dawntrail Special Site">
+										</span></a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</nav>
+			</li>
+			<li class="main-nav__playguide main-nav__item">
+				<a href="/lodestone/playguide/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_main-menu', 'na_playguide-top');"><span>Play Guide</span></a>
+				<nav class="sub-nav ">
+					<div class="sub-nav__area ">
+
+						
+						<div class="sub-nav__list sub-nav__playguide">
+							<div class="sub-nav__list__inner">
+								<ul class="sub-nav__playguide__list">
+									<li><a href="/lodestone/playguide/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_playguide_playguide-top');">
+										<img src="https://lds-img.finalfantasyxiv.com/h/P/Lfl3LVb9KMPa5Ye8yxftZkelbc.png" width="40" height="40" alt="Play Guide<br />Top">
+										<span>Play Guide<br />Top</span>
+									</a></li>
+									<li><a href="/lodestone/playguide/#game_playguide" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_playguide_game-playguide');">
+										<img src="https://lds-img.finalfantasyxiv.com/h/q/qy4dUGMNkjoyVqPweYMIpOApik.png" width="40" height="40" alt="Gameplay Guide and<br />Beginners' Guide">
+										<span>Gameplay Guide and<br />Beginners' Guide</span>
+										<span class="update">
+											Updated <span id="datetime-6283c241500">-</span><script>document.getElementById('datetime-6283c241500').innerHTML = ldst_strftime(1777363200, 'YMD');</script>
+										</span>
+									</a></li>
+									<li><a href="/lodestone/playguide/db/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_playguide_databese');">
+										<img src="https://lds-img.finalfantasyxiv.com/h/N/OYPWhQVCkovUbVcMMck0O4HABU.png" width="40" height="40" alt="Eorzea Database">
+										<span>Eorzea Database</span>
+										<span class="update">
+											Updated <span id="datetime-b9895f77790">-</span><script>document.getElementById('datetime-b9895f77790').innerHTML = ldst_strftime(1777363200, 'YMD');</script>
+										</span>
+									</a></li>
+									<li><a href="/lodestone/playguide/#content_guide" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_playguide_contents-guide');">
+										<img src="https://lds-img.finalfantasyxiv.com/h/W/wlHP1NMpdQHcPKUG-swlv71fhE.png" width="40" height="40" alt="Game Features">
+										<span>Game Features</span>
+										<span class="update">
+											Updated <span id="datetime-e61957c1618">-</span><script>document.getElementById('datetime-e61957c1618').innerHTML = ldst_strftime(1777363200, 'YMD');</script>
+										</span>
+									</a></li>
+									<li><a href="/lodestone/playguide/#side_storyes" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_playguide_side-story');">
+										<img src="https://lds-img.finalfantasyxiv.com/h/Z/1QWgBsVU7ZboWyMZlRjCQcDRJg.png" width="40" height="40" alt="Side Stories<br />and More">
+										<span>Side Stories<br />and More</span>
+										<span class="update">
+											Updated <span id="datetime-29dc8ed06a9">-</span><script>document.getElementById('datetime-29dc8ed06a9').innerHTML = ldst_strftime(1758268800, 'YMD');</script>
+										</span>
+									</a></li>
+									<li><a href="/lodestone/playguide/#option_service" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_playguide_option-service');">
+										<img src="https://lds-img.finalfantasyxiv.com/h/K/4fXwcEoJzDEmFRt-tD7PeeKvjE.png" width="40" height="40" alt="Additional Services">
+										<span>Additional Services</span>
+									</a></li>
+								</ul>
+							</div>
+						</div>
+
+					</div>
+				</nav>
+
+			</li>
+			<li class="main-nav__community main-nav__item">
+				<a href="/lodestone/community/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_main-menu', 'na_community-top');"><span>Community</span></a>
+				<nav class="sub-nav">
+					<div class="sub-nav__area">
+
+						
+						<div class="sub-nav__list sub-nav__community">
+							<div class="sub-nav__list__inner sub-nav__community__flex">
+								<div class="sub-nav__community__link">
+									<div class="sub-nav__community__top">
+										<div class="sub-nav__community__top__wrapper">
+											<h2 class="sub-nav__community__title"><img src="https://lds-img.finalfantasyxiv.com/h/q/GiEpnP3oCXluFjrlPlM-mgIbS8.png" width="16" height="16" alt="Community">Community</h2>
+											<ul class="sub-nav__community__list">
+												<li><a href="/lodestone/community/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_community-top');">
+													<img src="https://lds-img.finalfantasyxiv.com/h/i/Sa5YF2-VFf4IJ1cjjFAbPf4GWg.png" width="40" height="40" alt="Community Wall">
+													<span>Community Wall</span>
+												</a></li>
+												<li><a href="/lodestone/blog/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_blog');">
+													<img src="https://lds-img.finalfantasyxiv.com/h/h/6gPbLbzUQ_omC_mdXFUA3zPy7I.png" width="40" height="40" alt="Blog">
+													<span>Blog</span>
+												</a></li>
+											</ul>
+										</div>
+										<div class="sub-nav__community__top__wrapper">
+											<h2 class="sub-nav__community__title"><img src="https://lds-img.finalfantasyxiv.com/h/d/in_Sbc6SzxLU--Npa7URI-_kdg.png" width="16" height="16" alt="Member Recruitment">Member Recruitment</h2>
+											<ul class="sub-nav__community__list">
+												<li><a href="/lodestone/community_finder/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_community-finder');">
+													<img src="https://lds-img.finalfantasyxiv.com/h/V/kHxwEjpY-Fme83ta8VIfi1kyLU.png" width="40" height="40" alt="Community Finder">
+													<span>Community Finder</span>
+												</a></li>
+												<li><a href="/lodestone/event/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_event-party');">
+													<img src="https://lds-img.finalfantasyxiv.com/h/0/k5jD6-BJZHwKA2CtbNcDYZR6oY.png" width="40" height="40" alt="Event & Party Recruitment">
+													<span>Event & Party Recruitment</span>
+												</a></li>
+											</ul>
+										</div>
+									</div>
+									<div class="sub-nav__community__search">
+										<h2 class="sub-nav__community__title"><img src="https://lds-img.finalfantasyxiv.com/h/X/uQVT3DEl1xlFWHu3UZU4-RBtVk.png" width="16" height="16" alt="Search">Search</h2>
+										<ul class="sub-nav__community__list sub-nav__community__search__list">
+											<li><a href="/lodestone/character/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_chara-search');">
+												<img src="https://lds-img.finalfantasyxiv.com/h/5/YcEF3K-5SgqU0BxZtT0D1Zsa2A.png" width="40" height="40" alt="Character Search">
+												<span>Character Search</span>
+											</a></li>
+											<li><a href="/lodestone/linkshell/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_ls-search');">
+												<img src="https://lds-img.finalfantasyxiv.com/h/b/SPCgcBAk4HvMngGzk6H4MfSINg.png" width="40" height="40" alt="Linkshell Search">
+												<span>Linkshell Search</span>
+											</a></li>
+											<li><a href="/lodestone/crossworld_linkshell/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_cwls-search');">
+												<img src="https://lds-img.finalfantasyxiv.com/h/L/NUGcPcy-C8jvx6oKgEXgwJ1ePE.png" width="40" height="40" alt="CWLS Search ">
+												<span>CWLS Search </span>
+											</a></li>
+											<li><a href="/lodestone/freecompany/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_fc-search');">
+												<img src="https://lds-img.finalfantasyxiv.com/h/q/GJ-lsgAtsCCDwCm9te3a5sCjpU.png" width="40" height="40" alt="Free Company Search">
+												<span>Free Company Search</span>
+											</a></li>
+											<li><a href="/lodestone/pvpteam/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_pvp-team-search');">
+												<img src="https://lds-img.finalfantasyxiv.com/h/K/vZf_pjL1HRJCDF9mxKFKb8iISc.png" width="40" height="40" alt="PvP Team Search">
+												<span>PvP Team Search</span>
+											</a></li>
+										</ul>
+									</div>
+								</div>
+								<div class="sub-nav__community__side">
+									<div class="sub-nav__community__forum">
+										<ul class="sub-nav__community__forum__list">
+											<li><a href="https://forum.square-enix.com/ffxiv/forum.php" target="_blank" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_forum');">
+												<div class="forum">
+													<i><img src="https://lds-img.finalfantasyxiv.com/h/r/maZ-sHaqn4PMFANUlbH4GzztFM.png" width="40" height="40" alt="Forums">
+													</i><span>Forums</span>
+												</div>
+											</a></li>
+											<li><a href="https://forum.square-enix.com/ffxiv/search.php?do=getdaily_ll&contenttype=vBForum_Post" target="_blank" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_forum-new-posts');">
+												<div>
+													<i><img src="https://lds-img.finalfantasyxiv.com/h/p/hIKumMfCocoSfxWeUUUIL78Jhg.png" width="16" height="16" alt="">
+													</i><span>New Posts</span>
+												</div>
+											</a></li>
+											<li><a href="
+													
+														https://forum.square-enix.com/ffxiv/search.php?do=process&search_type=1&contenttypeid=1&devtrack=1&starteronly=0&showposts=1&childforums=1&forumchoice[]=619
+													" target="_blank" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_forum-dev-tracker');">
+												<div>
+													<i><img src="https://lds-img.finalfantasyxiv.com/h/p/hIKumMfCocoSfxWeUUUIL78Jhg.png" width="16" height="16" alt="">
+													</i><span>Dev Tracker</span>
+												</div>
+											</a></li>
+										</ul>
+									</div>
+									<ul class="sub-nav__community__fankit">
+										<li><a href="/lodestone/special/fankit/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_community_fankit');">
+											<div>
+												<span>Fan Kit</span>
+												<span class="update">
+													Updated <span id="datetime-7c3d9b72545">-</span><script>document.getElementById('datetime-7c3d9b72545').innerHTML = ldst_strftime(1777363200, 'YMD');</script>
+												</span>
+											</div>
+										</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</nav>
+
+			</li>
+			<li class="main-nav__ranking main-nav__item">
+				<a href="/lodestone/ranking/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_main-menu', 'na_ranking-top');"><span>Standings</span></a>
+					<nav class="sub-nav ">
+						<div class="sub-nav__area ">
+
+							
+							<div class="sub-nav__list sub-nav__ranking">
+								<div class="sub-nav__list__inner">
+									<ul class="sub-nav__ranking__list">
+										<li><a href="/lodestone/ranking/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_ranking_ranking-top');">
+											<img src="https://lds-img.finalfantasyxiv.com/h/E/NtymEFiUJfAh25ffTrADsVFkLQ.png" width="40" height="40" alt="Standings Top">
+											<span>Standings Top</span>
+										</a></li>
+										<li><a href="/lodestone/ranking/crystallineconflict/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_ranking_feast');">
+											<img src="https://lds-img.finalfantasyxiv.com/h/K/vZf_pjL1HRJCDF9mxKFKb8iISc.png" width="40" height="40" alt="Crystalline Conflict Standings">
+											<span>Crystalline Conflict Standings</span>
+										</a></li>
+										<li><a href="/lodestone/ranking/frontline/weekly/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_ranking_frontline');">
+											<img src="https://lds-img.finalfantasyxiv.com/h/K/vZf_pjL1HRJCDF9mxKFKb8iISc.png" width="40" height="40" alt="Frontline Standings">
+											<span>Frontline Standings</span>
+										</a></li>
+										<li><a href="/lodestone/ranking/gc/weekly/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_ranking_gc');">
+											<img src="https://lds-img.finalfantasyxiv.com/h/o/uRmujlTx4X_5c6wETNxssK1d_4.png" width="40" height="40" alt="Grand Company Standings">
+											<span>Grand Company Standings</span>
+										</a></li>
+										<li><a href="/lodestone/ranking/fc/weekly/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_ranking_fc');">
+											<img src="https://lds-img.finalfantasyxiv.com/h/q/GJ-lsgAtsCCDwCm9te3a5sCjpU.png" width="40" height="40" alt="Free Company Standings">
+											<span>Free Company Standings</span>
+										</a></li>
+									</ul>
+									<ul class="sub-nav__ranking__list">
+										<li><a href="/lodestone/ranking/deepdungeon4/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_ranking_deepdungeon4');">
+											<img src="https://lds-img.finalfantasyxiv.com/h/_/qP22LgUoAFKDTRayb_TEYu6d7g.png" width="40" height="40" alt="Pilgrim's Traverse Rankings">
+											<span>Pilgrim's Traverse Rankings</span>
+										</a></li>
+										<li><a href="/lodestone/ranking/deepdungeon3/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_ranking_deepdungeon3');">
+											<img src="https://lds-img.finalfantasyxiv.com/h/_/qP22LgUoAFKDTRayb_TEYu6d7g.png" width="40" height="40" alt="Eureka Orthos Rankings">
+											<span>Eureka Orthos Rankings</span>
+										</a></li>
+										<li><a href="/lodestone/ranking/deepdungeon2/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_ranking_deepdungeon2');">
+											<img src="https://lds-img.finalfantasyxiv.com/h/_/qP22LgUoAFKDTRayb_TEYu6d7g.png" width="40" height="40" alt="Heaven-on-High Rankings">
+											<span>Heaven-on-High Rankings</span>
+										</a></li>
+										<li><a href="/lodestone/ranking/deepdungeon/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_ranking_deepdungeon');">
+											<img src="https://lds-img.finalfantasyxiv.com/h/p/op9iPrlMmYgTK3Q6NQKifyQOGA.png" width="40" height="40" alt="Palace of the Dead Rankings">
+											<span>Palace of the Dead Rankings</span>
+										</a></li>
+									</ul>
+								</div>
+							</div>
+
+						</div>
+					</nav>
+
+			</li>
+			<li class="main-nav__help main-nav__item">
+				<a href="/lodestone/help/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_main-menu', 'na_help-support-top');"><span>Help & Support</span></a>
+				<nav class="sub-nav ">
+					<div class="sub-nav__area ">
+
+						
+						<div class="sub-nav__list sub-nav__help">
+							<div class="sub-nav__list__inner">
+								<ul class="sub-nav__help__list">
+									<li><a href="/lodestone/help/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_help-support_help-support-top');">
+										<span>Help & Support</span>
+									</a></li>
+									<li><a href="/lodestone/help/about_the_lodestone/" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_help-support_about-lodestone');">
+										<span>About the Lodestone</span>
+									</a></li>
+									<li><a href="
+										
+											https://support.na.square-enix.com/faq.php?id=5382&la=1
+										" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_help-support_faq');">
+										<span>FAQ</span>
+									</a></li>
+									<li><a href="
+										
+											https://www.square-enix.com/na/account/
+										" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_help-support_sqex-account');">
+										<span>Square Enix Account Information</span>
+									</a></li>
+								</ul>
+								<ul class="sub-nav__help__other">
+									<li><a href="
+										
+											https://support.na.square-enix.com/rule.php?id=5382&la=1
+										" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_help-support_rule-policies');">
+										<div>
+											<i><img src="https://lds-img.finalfantasyxiv.com/h/p/hIKumMfCocoSfxWeUUUIL78Jhg.png" width="16" height="16" alt="">
+											</i><span>Rules & Policies</span>
+										</div>
+									</a></li>
+									<li><a href="
+										
+											https://support.na.square-enix.com/main.php?id=5382&la=1
+										" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_help-support_customer-service');">
+										<div>
+											<i><img src="https://lds-img.finalfantasyxiv.com/h/p/hIKumMfCocoSfxWeUUUIL78Jhg.png" width="16" height="16" alt="">
+											</i><span>Customer Service</span>
+										</div>
+									</a></li>
+									<li><a href="https://secure.square-enix.com/account/app/svc/mogstation/" target="_blank" onClick="ldst_ga('send', 'event', 'lodestone_lo', 'pc_sub-menu', 'na_help-support_mogstation');">
+										<div>
+											<i class="ic_mogst"><img src="https://lds-img.finalfantasyxiv.com/h/S/6IKp0hN6xQqTYPgnPIsd2fjzSI.png" width="32" height="32" alt="">
+											</i><span>Mog Station</span>
+										</div>
+									</a></li>
+								</ul>
+							</div>
+						</div>
+
+					</div>
+				</nav>
+
+			</li>
+		</ul>
+	</nav>
+</div>
+
+	
+
+
+<div class="ldst__bg">
+	
+
+	
+		<div class="ldst__contents clearfix">
+	
+		
+
+<div class="ldst__bg ldst__top clearfix">
+	<div class="ldst__main">
+
+		
+		<div id="slider"
+			data-set_priority="1"
+		>
+			<ul id="slider_bnr_area" class="js--slider_priority_list">
+				
+					<li
+						data-order_priority="0"
+						data-fix_order="1"
+						style="display: none;"
+					><a href="https://sqex.to/xmjgS"><img src="https://img.finalfantasyxiv.com/n/63dd98724434cb504f84e81e06d35c59b3460def.jpg?1778232081" width="620" height="242"></a></li>
+				
+					<li
+						data-order_priority="2"
+						data-fix_order=""
+						style="display: none;"
+					><a href="https://sqex.to/ieDcf"><img src="https://img.finalfantasyxiv.com/n/4fb95d5dc432c8f87e88d209c90b70de21403667.jpg?1778232081" width="620" height="242"></a></li>
+				
+					<li
+						data-order_priority="1"
+						data-fix_order=""
+						style="display: none;"
+					><a href="https://sqex.to/TISFA"><img src="https://img.finalfantasyxiv.com/n/afc15fe96b67d7eb199bb3b3d84d053bb3283181.jpg?1778232081" width="620" height="242"></a></li>
+				
+					<li
+						data-order_priority="0"
+						data-fix_order=""
+						style="display: none;"
+					><a href="https://sqex.to/ffxivstore-na"><img src="https://img.finalfantasyxiv.com/n/86a9bd782813f0f7f0b500bec92a733c115098cc.jpg?1778232081" width="620" height="242"></a></li>
+				
+			</ul>
+			<ul id="slider_pn_area"></ul>
+		</div>
+
+
+		<div id="toptabchanger">
+			<ul class="news__tab toptabchanger_buttons"><li class="news__tab--newrelease"><a href="javascript:void(0);"><span>Latest</span><i class="ic__headline ic__headline--en-us"></i></a></li><li class="news__tab--topics"><a href="javascript:void(0);"><span>Topics</span><i class="ic__topics"></i></a></li><li class="news__tab--news"><a href="javascript:void(0);"><span>Notices</span><i class="ic__info"></i></a></li><li class="news__tab--maintenance"><a href="javascript:void(0);"><span>Maintenance</span><i class="ic__maintenance"></i></a></li><li class="news__tab--update"><a href="javascript:void(0);"><span>Updates</span><i class="ic__update"></i></a></li><li class="news__tab--obstacle"><a href="javascript:void(0);"><span>Status</span><i class="ic__obstacle"></i></a></li></ul>
+
+			<div class="news__content">
+				
+				<div id="toptabchanger_newsarea"><div class="toptabchanger_newsbox"><h2 class="heading--md parts__space--reset">Special Notices</h2><ul><li class="news__list"><a href="/lodestone/news/detail/d969ac04b0e575d8099775da448c8d4b1d07e380" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Ceremony of Eternal Bonding Reservation Restrictions</p><time class="news__list--time"><span id="datetime-44155039ddd">-</span><script>document.getElementById('datetime-44155039ddd').innerHTML = ldst_strftime(1778558400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/ecce613f701f1c2e3a71919f9714aa900edbdb63" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Important]</span>Important Notice about Software Tokens and Software Authenticators (Sep. 16) </p><time class="news__list--time"><span id="datetime-7754878b6f3">-</span><script>document.getElementById('datetime-7754878b6f3').innerHTML = ldst_strftime(1758078000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/3086e92af4c4b8322d4725dbf51dc1b33478ad24" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Important]</span>Be Wary of Phishing Attempts via In-game Messages</p><time class="news__list--time"><span id="datetime-1d1c3e086f1">-</span><script>document.getElementById('datetime-1d1c3e086f1').innerHTML = ldst_strftime(1717656900, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/2ff694b6ba8ef60084d28ca1e0819f9200fcb0a7" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Important]</span>Precautions for Guarding Against Unauthorized Account Access</p><time class="news__list--time"><span id="datetime-91838cbd6bd">-</span><script>document.getElementById('datetime-91838cbd6bd').innerHTML = ldst_strftime(1665082800, 'YMD');</script></time></div></a></li></ul><h2 class="heading--md heading--md__rss parts__space--reset">News<a href="/lodestone/news/news.xml" class="js__tooltip" data-tooltip="RSS"><i></i></a></h2><ul><li class="news__list"><a href="/lodestone/news/detail/f894108df8bb8940ec7f18be3f17279d95e73408" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Important]</span>[NA] An Issue with Prepaid Card Transactions (May 1): Follow-up</p><time class="news__list--time"><span id="datetime-9a7fcf50782">-</span><script>document.getElementById('datetime-9a7fcf50782').innerHTML = ldst_strftime(1778625403, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/b4e2aaf9ddec53779bb648406fe3f460e400f88e" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Issue with Furnishings Not Displaying Properly in Housing (May 12)</p><time class="news__list--time"><span id="datetime-255d426f209">-</span><script>document.getElementById('datetime-255d426f209').innerHTML = ldst_strftime(1778575500, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/0991334f718ceea74de18c003e244c811c9a316b" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>Recovery from COMPANION App Partial Technical Difficulties (May 10)</p><time class="news__list--time"><span id="datetime-1178d6efca4">-</span><script>document.getElementById('datetime-1178d6efca4').innerHTML = ldst_strftime(1778467500, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/48933bbb1279a6a0bd2d42f4c1bdae0ee48163a3" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Crystal] Recovery from Mateus World Technical Difficulties (May 10)</p><time class="news__list--time"><span id="datetime-56b591f6788">-</span><script>document.getElementById('datetime-56b591f6788').innerHTML = ldst_strftime(1778461500, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/7abd97ab1457274a03f09962a2a8a005480d60e4" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Gaia] Recovery from Ultima World Technical Difficulties (May 9)</p><time class="news__list--time"><span id="datetime-50e41bac570">-</span><script>document.getElementById('datetime-50e41bac570').innerHTML = ldst_strftime(1778337600, 'YMD');</script></time></div></a></li></ul></div><div class="toptabchanger_newsbox"><h2 class="heading--md parts__space--reset">Special Notices</h2><ul><li class="news__list"><a href="/lodestone/news/detail/d969ac04b0e575d8099775da448c8d4b1d07e380" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Ceremony of Eternal Bonding Reservation Restrictions</p><time class="news__list--time"><span id="datetime-acaeb648b68">-</span><script>document.getElementById('datetime-acaeb648b68').innerHTML = ldst_strftime(1778558400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/ecce613f701f1c2e3a71919f9714aa900edbdb63" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Important]</span>Important Notice about Software Tokens and Software Authenticators (Sep. 16) </p><time class="news__list--time"><span id="datetime-0c70808da3c">-</span><script>document.getElementById('datetime-0c70808da3c').innerHTML = ldst_strftime(1758078000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/3086e92af4c4b8322d4725dbf51dc1b33478ad24" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Important]</span>Be Wary of Phishing Attempts via In-game Messages</p><time class="news__list--time"><span id="datetime-0bc7a822e02">-</span><script>document.getElementById('datetime-0bc7a822e02').innerHTML = ldst_strftime(1717656900, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/2ff694b6ba8ef60084d28ca1e0819f9200fcb0a7" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Important]</span>Precautions for Guarding Against Unauthorized Account Access</p><time class="news__list--time"><span id="datetime-f1c406e5f90">-</span><script>document.getElementById('datetime-f1c406e5f90').innerHTML = ldst_strftime(1665082800, 'YMD');</script></time></div></a></li></ul><ul><li class="news__list"><a href="/lodestone/news/detail/f894108df8bb8940ec7f18be3f17279d95e73408" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Important]</span>[NA] An Issue with Prepaid Card Transactions (May 1): Follow-up</p><time class="news__list--time"><span id="datetime-bd31bdeb602">-</span><script>document.getElementById('datetime-bd31bdeb602').innerHTML = ldst_strftime(1778625403, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/b4e2aaf9ddec53779bb648406fe3f460e400f88e" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Issue with Furnishings Not Displaying Properly in Housing (May 12)</p><time class="news__list--time"><span id="datetime-b6be95a4e42">-</span><script>document.getElementById('datetime-b6be95a4e42').innerHTML = ldst_strftime(1778575500, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/76cf32db6c4b0767e29b52adfb5c4d98f30bdde4" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Materials Usage License Revised</p><time class="news__list--time"><span id="datetime-aee06c8b398">-</span><script>document.getElementById('datetime-aee06c8b398').innerHTML = ldst_strftime(1778146200, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/9c5c878dc89920c6b647f68433125f90735fa24f" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (May 7)</p><time class="news__list--time"><span id="datetime-9dc66d0e34e">-</span><script>document.getElementById('datetime-9dc66d0e34e').innerHTML = ldst_strftime(1778137200, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/bb9a8a86923979dae5edcc69a35fa8280c45f94c" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Important]</span>[NA] An Issue with Prepaid Card Transactions (May 1)</p><time class="news__list--time"><span id="datetime-c3eb1f7fa78">-</span><script>document.getElementById('datetime-c3eb1f7fa78').innerHTML = ldst_strftime(1777658400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/db3442d15dcb88c33d460e1962ddfe7b596c8e06" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Known Issues Following the Release of Patch 7.5 (May 1)</p><time class="news__list--time"><span id="datetime-2059b904183">-</span><script>document.getElementById('datetime-2059b904183').innerHTML = ldst_strftime(1777614000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/e50b7a2006a88d91d24005c0660f14d17be20e98" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Known Issues Following the Release of Patch 7.5 (Apr. 30)</p><time class="news__list--time"><span id="datetime-b7d9f088159">-</span><script>document.getElementById('datetime-b7d9f088159').innerHTML = ldst_strftime(1777539600, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/fd6f674e320d82949580d0e59a9c1ba735aba89f" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (May 1)</p><time class="news__list--time"><span id="datetime-88a182cfe35">-</span><script>document.getElementById('datetime-88a182cfe35').innerHTML = ldst_strftime(1777532400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/4897bee4072027b2d2cde23df117e2c332d67c82" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Known Issues Following the Release of Patch 7.5 (Apr. 29)</p><time class="news__list--time"><span id="datetime-6ae4b381d31">-</span><script>document.getElementById('datetime-6ae4b381d31').innerHTML = ldst_strftime(1777464000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/fa106a6387432091e1a910b7c9290a0ac5fdfd2f" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Known Issues Following the Release of Patch 7.5 (Apr. 28)</p><time class="news__list--time"><span id="datetime-62487a01f3a">-</span><script>document.getElementById('datetime-62487a01f3a').innerHTML = ldst_strftime(1777384081, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/ac3e006d9ea182c0a66119efa69814f05c15b5b0" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Known Issue Regarding Inconceivably Further Hildibrand Adventures - Meteorites and Meteor-wrongs (Apr. 28)</p><time class="news__list--time"><span id="datetime-75a2ac39e62">-</span><script>document.getElementById('datetime-75a2ac39e62').innerHTML = ldst_strftime(1777371900, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/fddd812dd11176ca6eee3b6518968fb03d7f9bf7" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Regarding Changes in Congested/Preferred Worlds (Apr. 27)</p><time class="news__list--time"><span id="datetime-3480588295b">-</span><script>document.getElementById('datetime-3480588295b').innerHTML = ldst_strftime(1777353600, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/18dc1b3dbcf7330dd866a78f313296305937af6b" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (Apr. 23)</p><time class="news__list--time"><span id="datetime-a95ae29921a">-</span><script>document.getElementById('datetime-a95ae29921a').innerHTML = ldst_strftime(1776927600, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/e89264fcb5c4401e3330ee88d829af4cdd3cb930" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (Apr. 16)</p><time class="news__list--time"><span id="datetime-2f6b138a179">-</span><script>document.getElementById('datetime-2f6b138a179').innerHTML = ldst_strftime(1776322800, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/605517d672fd9f01f66d55532529a97c80a70a76" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (Apr. 9)</p><time class="news__list--time"><span id="datetime-e3937d8c52b">-</span><script>document.getElementById('datetime-e3937d8c52b').innerHTML = ldst_strftime(1775718000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/efa1f56854358b514947cd217964824f37b5f872" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Regarding the Delivery of Fan Festival 2026 Commemorative Items</p><time class="news__list--time"><span id="datetime-26c492b30a5">-</span><script>document.getElementById('datetime-26c492b30a5').innerHTML = ldst_strftime(1775636400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/04fdd0a672d5b8d6e0772d47fa537ba7d9294d1b" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (Apr. 2)</p><time class="news__list--time"><span id="datetime-d38013454ab">-</span><script>document.getElementById('datetime-d38013454ab').innerHTML = ldst_strftime(1775113200, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/d4f068266859d1f2520818d87055263c1ecd3097" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (Mar. 26)</p><time class="news__list--time"><span id="datetime-ecc98f54dde">-</span><script>document.getElementById('datetime-ecc98f54dde').innerHTML = ldst_strftime(1774508400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/3ac6aff357e141ad7f5315ba1268bd9d3e918426" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (Mar. 19)</p><time class="news__list--time"><span id="datetime-6eaf0872dcb">-</span><script>document.getElementById('datetime-6eaf0872dcb').innerHTML = ldst_strftime(1773903600, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/4dd1bf0e478c0bb632bc08ae1c47ecce85b32263" class="news__list--link ic__info--list"><div class="clearfix"><p class="news__list--title">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (Mar. 12)</p><time class="news__list--time"><span id="datetime-3afb5a1e083">-</span><script>document.getElementById('datetime-3afb5a1e083').innerHTML = ldst_strftime(1773298800, 'YMD');</script></time></div></a></li></ul></div><div class="toptabchanger_newsbox"><ul class="parts__space--pt24"><li class="news__list"><a href="/lodestone/news/detail/7bf8f3912f78571b2473b10234c94b52779103b4" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Follow-up]</span>All Worlds Maintenance (May 6): Follow-up</p><time class="news__list--time"><span id="datetime-174a3d40b98">-</span><script>document.getElementById('datetime-174a3d40b98').innerHTML = ldst_strftime(1778142600, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/d954e5a78efa28d03e8219090e4ddf8c20caa4fd" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>All Worlds Maintenance (May 6) </p><time class="news__list--time"><span id="datetime-5342f3719ba">-</span><script>document.getElementById('datetime-5342f3719ba').innerHTML = ldst_strftime(1778032800, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/e8384c32695b31ae7816336549e03c31871912a4" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>Mog Station Maintenance (May 6)</p><time class="news__list--time"><span id="datetime-f41b41fc564">-</span><script>document.getElementById('datetime-f41b41fc564').innerHTML = ldst_strftime(1777960800, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/a30d44372e26d9b3b2cfdae824784c0148ee8e82" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Follow-up]</span>The Lodestone Maintenance (Apr. 27): Follow-up</p><time class="news__list--time"><span id="datetime-20e4a1c2b55">-</span><script>document.getElementById('datetime-20e4a1c2b55').innerHTML = ldst_strftime(1777368000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/510e89fb5edc2a823ef73e6888773949f153d466" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Follow-up]</span>COMPANION App Maintenance (Apr. 27): Follow-up</p><time class="news__list--time"><span id="datetime-9013f9f690c">-</span><script>document.getElementById('datetime-9013f9f690c').innerHTML = ldst_strftime(1777367880, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/2af5a993d519f8d9951fd0aeff786b01245e6a34" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Follow-up]</span>Online Store Maintenance (Apr. 27): Follow-up</p><time class="news__list--time"><span id="datetime-a87b680d422">-</span><script>document.getElementById('datetime-a87b680d422').innerHTML = ldst_strftime(1777367580, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/1bb23d78516c06650e720770beababd7e605c5a4" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Follow-up]</span>All Worlds Maintenance (Apr. 27): Follow-up</p><time class="news__list--time"><span id="datetime-e3fed7b902d">-</span><script>document.getElementById('datetime-e3fed7b902d').innerHTML = ldst_strftime(1777367280, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/88a29d1b4f0ff738bc55b92bbea43b9aac1989c8" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Follow-up]</span>Mog Station Maintenance (Apr. 27): Follow-up</p><time class="news__list--time"><span id="datetime-e0d3563439b">-</span><script>document.getElementById('datetime-e0d3563439b').innerHTML = ldst_strftime(1777357800, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/a2e6deadd921e84d1eaef1ba6f5df40955ec64c0" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Follow-up]</span>Home World Transfer / Data Center Travel Emergency Maintenance (Apr. 26): Follow-up</p><time class="news__list--time"><span id="datetime-8b89cde8675">-</span><script>document.getElementById('datetime-8b89cde8675').innerHTML = ldst_strftime(1777273320, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/d949a61d5a4dd859a02fca7796d7adefecca9df7" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>Home World Transfer / Data Center Travel Emergency Maintenance (Apr. 26)</p><time class="news__list--time"><span id="datetime-de5f5b4d36a">-</span><script>document.getElementById('datetime-de5f5b4d36a').innerHTML = ldst_strftime(1777269900, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/7bb53a06193488de46008e27abd9b4906eed00a8" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>[(Chaos)] Several Areas Emergency Maintenance on the Spriggan World (Apr. 24) </p><time class="news__list--time"><span id="datetime-5768a03d5c2">-</span><script>document.getElementById('datetime-5768a03d5c2').innerHTML = ldst_strftime(1777041300, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/caa30f6723199b5d0e289b71e8505ad43d282c66" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>Mog Station Maintenance (Apr. 27)</p><time class="news__list--time"><span id="datetime-d924250bcdb">-</span><script>document.getElementById('datetime-d924250bcdb').innerHTML = ldst_strftime(1777034700, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/ef4902a5b0f938fe84076ea15e166dcc7957d2af" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>The Lodestone Maintenance (Apr. 27)</p><time class="news__list--time"><span id="datetime-ad2189b3114">-</span><script>document.getElementById('datetime-ad2189b3114').innerHTML = ldst_strftime(1777028400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/57250189e12c7aaf7e881da7af5fa71af8c11dfd" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>Online Store Maintenance (Apr. 27)</p><time class="news__list--time"><span id="datetime-3a06f4b79d0">-</span><script>document.getElementById('datetime-3a06f4b79d0').innerHTML = ldst_strftime(1777028400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/a61d9efab70d940fc74e8e2ea85dcb9e9d3b9eb0" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>All Worlds Maintenance (Apr. 27)</p><time class="news__list--time"><span id="datetime-02a684cc16f">-</span><script>document.getElementById('datetime-02a684cc16f').innerHTML = ldst_strftime(1777028400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/2216c30f1cc99aa06e6d63a9a21289ff37a31d3e" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>COMPANION App Maintenance (Apr. 27)</p><time class="news__list--time"><span id="datetime-be5616317f2">-</span><script>document.getElementById('datetime-be5616317f2').innerHTML = ldst_strftime(1777028400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/e55758bbe17ed97e656a160372766d5ef083f593" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>Mog Station Maintenance (Apr. 23)</p><time class="news__list--time"><span id="datetime-d4889011b17">-</span><script>document.getElementById('datetime-d4889011b17').innerHTML = ldst_strftime(1776834000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/33e36ddae9e301bdce846c434fd363b89fa203ee" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Maintenance]</span>Online Store / Mog Station Emergency Maintenance (Apr. 3)</p><time class="news__list--time"><span id="datetime-5a4eef72dc7">-</span><script>document.getElementById('datetime-5a4eef72dc7').innerHTML = ldst_strftime(1775192400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/06893ddc6ff1f71729f600296b70c5dfd2b84547" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Follow-up]</span>Online Store / Mog Station Maintenance (Apr. 2): Follow-up 2</p><time class="news__list--time"><span id="datetime-6e3bfe590d6">-</span><script>document.getElementById('datetime-6e3bfe590d6').innerHTML = ldst_strftime(1775129100, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/2e2092ff7e43675f0b546e67884e8f1b899d5ad0" class="news__list--link ic__maintenance--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Follow-up]</span>Online Store / Mog Station Maintenance (Apr. 2): Follow-up</p><time class="news__list--time"><span id="datetime-601fa950be9">-</span><script>document.getElementById('datetime-601fa950be9').innerHTML = ldst_strftime(1775121900, 'YMD');</script></time></div></a></li></ul></div><div class="toptabchanger_newsbox"><ul class="parts__space--pt24"><li class="news__list"><a href="/lodestone/news/detail/49f28592f7ffd7f27d5b5371ed4c96207cd5efe6" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (May 7)</p><time class="news__list--time"><span id="datetime-2b2293ce23e">-</span><script>document.getElementById('datetime-2b2293ce23e').innerHTML = ldst_strftime(1778139000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/438bb266fbf41838eea8ef70357aba1d0f156e61" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">The Lodestone Updated (Apr. 28)</p><time class="news__list--time"><span id="datetime-a3c6bbc5697">-</span><script>document.getElementById('datetime-a3c6bbc5697').innerHTML = ldst_strftime(1777371300, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/6d46ddf955c06cc9fdec5745573a112073a74dd9" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">Companion App Updated (Apr. 27)</p><time class="news__list--time"><span id="datetime-cd888aabeaa">-</span><script>document.getElementById('datetime-cd888aabeaa').innerHTML = ldst_strftime(1777359600, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/b394cd9447957e9dced22c03909dbaa743257e9b" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Apr. 27)</p><time class="news__list--time"><span id="datetime-9208bc45a39">-</span><script>document.getElementById('datetime-9208bc45a39').innerHTML = ldst_strftime(1777358700, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/27b50312c2f6ee5316cdc43798a2801fcf28dd67" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Mar. 24)</p><time class="news__list--time"><span id="datetime-11a5b99113c">-</span><script>document.getElementById('datetime-11a5b99113c').innerHTML = ldst_strftime(1774337400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/9437155bdb8f3e6c06499598b4cf6462f883f86f" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">Companion App Updated (Mar. 11)</p><time class="news__list--time"><span id="datetime-cae6f1a5086">-</span><script>document.getElementById('datetime-cae6f1a5086').innerHTML = ldst_strftime(1773216000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/cfaa4f6460be60be0e9c390f3213170cc97fef6a" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Mar. 11)</p><time class="news__list--time"><span id="datetime-38eacd68bcd">-</span><script>document.getElementById('datetime-38eacd68bcd').innerHTML = ldst_strftime(1773213300, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/e9278b7c9e24970d152bae365abc946cacd4f02c" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Mar. 6)</p><time class="news__list--time"><span id="datetime-9165077f349">-</span><script>document.getElementById('datetime-9165077f349').innerHTML = ldst_strftime(1772857500, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/c96649dcf33c1ba24740b88b20416ae33c4d8c90" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">The Lodestone Updated (Mar. 3)</p><time class="news__list--time"><span id="datetime-00973f42ccf">-</span><script>document.getElementById('datetime-00973f42ccf').innerHTML = ldst_strftime(1772532000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/70b03197e46dbb875d9a68745c9a7bdee60aa15b" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">Companion App Updated (Mar. 2)</p><time class="news__list--time"><span id="datetime-8362efd9236">-</span><script>document.getElementById('datetime-8362efd9236').innerHTML = ldst_strftime(1772520000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/5dde1bc306146eec8b6fa190097d142bc56ad048" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Mar. 2)</p><time class="news__list--time"><span id="datetime-605c21df432">-</span><script>document.getElementById('datetime-605c21df432').innerHTML = ldst_strftime(1772516100, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/e1cabf2fe5698223626bd53e6b6057a7612cf8fe" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Feb. 4)</p><time class="news__list--time"><span id="datetime-9240bdcdd16">-</span><script>document.getElementById('datetime-9240bdcdd16').innerHTML = ldst_strftime(1770274200, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/831ae91376310c9d1e689ddf8a6a8b3ae02b83d3" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">The Lodestone Updated (Jan. 27)</p><time class="news__list--time"><span id="datetime-c6c55ad3f20">-</span><script>document.getElementById('datetime-c6c55ad3f20').innerHTML = ldst_strftime(1769506500, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/e14d11070a63a522b81d040ad4b5790e0da8debf" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Jan. 26)</p><time class="news__list--time"><span id="datetime-370fdd2a3a7">-</span><script>document.getElementById('datetime-370fdd2a3a7').innerHTML = ldst_strftime(1769496300, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/ed16e3671927a73785bb8fdbf2cb450e6028e0b5" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">Companion App Updated (Jan. 26)</p><time class="news__list--time"><span id="datetime-cafbc314e90">-</span><script>document.getElementById('datetime-cafbc314e90').innerHTML = ldst_strftime(1769490000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/fdd0e40586a0d5bcec4c2cb9ef4a87e89a710395" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Jan. 7)</p><time class="news__list--time"><span id="datetime-6c2698138c6">-</span><script>document.getElementById('datetime-6c2698138c6').innerHTML = ldst_strftime(1767837900, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/be28165e0c1a738d51aa03e59c6d673905a2dce4" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Dec. 24)</p><time class="news__list--time"><span id="datetime-36d2eccc892">-</span><script>document.getElementById('datetime-36d2eccc892').innerHTML = ldst_strftime(1766646600, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/7bcae9b7bdd35196fa5d0d4b9e7129738c4f6732" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">Companion App Updated (Dec. 24)</p><time class="news__list--time"><span id="datetime-bf8ec05562c">-</span><script>document.getElementById('datetime-bf8ec05562c').innerHTML = ldst_strftime(1766642400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/4d944abc292e3ca192d306772b229dafba195244" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">FINAL FANTASY XIV Updated (Dec. 18)</p><time class="news__list--time"><span id="datetime-b336eb9a1f3">-</span><script>document.getElementById('datetime-b336eb9a1f3').innerHTML = ldst_strftime(1766129400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/2411b4eb5de86ace6ec3c1c2c6e3b4bcc8c4c0cc" class="news__list--link ic__update--list"><div class="clearfix"><p class="news__list--title">The Lodestone Updated (Dec. 16)</p><time class="news__list--time"><span id="datetime-36e37034883">-</span><script>document.getElementById('datetime-36e37034883').innerHTML = ldst_strftime(1765885200, 'YMD');</script></time></div></a></li></ul></div><div class="toptabchanger_newsbox"><ul class="parts__space--pt24"><li class="news__list"><a href="/lodestone/news/detail/0991334f718ceea74de18c003e244c811c9a316b" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>Recovery from COMPANION App Partial Technical Difficulties (May 10)</p><time class="news__list--time"><span id="datetime-b5537a13ad6">-</span><script>document.getElementById('datetime-b5537a13ad6').innerHTML = ldst_strftime(1778467500, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/48933bbb1279a6a0bd2d42f4c1bdae0ee48163a3" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Crystal] Recovery from Mateus World Technical Difficulties (May 10)</p><time class="news__list--time"><span id="datetime-1028726c7c2">-</span><script>document.getElementById('datetime-1028726c7c2').innerHTML = ldst_strftime(1778461500, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/7abd97ab1457274a03f09962a2a8a005480d60e4" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Gaia] Recovery from Ultima World Technical Difficulties (May 9)</p><time class="news__list--time"><span id="datetime-47492f9c24c">-</span><script>document.getElementById('datetime-47492f9c24c').innerHTML = ldst_strftime(1778337600, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/69c10f1afaebd1ea4291652e5e72e7551f7b4f1b" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Crystal] Recovery from Instanced Areas Technical Difficulties (May 8)</p><time class="news__list--time"><span id="datetime-2a9926541a7">-</span><script>document.getElementById('datetime-2a9926541a7').innerHTML = ldst_strftime(1778276700, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/9e669c54024551edaefd6445f0e9c5302e73fe67" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Chaos] Recovery from Instanced Areas Technical Difficulties (May 2)</p><time class="news__list--time"><span id="datetime-91b6f14b3ac">-</span><script>document.getElementById('datetime-91b6f14b3ac').innerHTML = ldst_strftime(1777754100, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/3d39bc3e8d39cc10c333c988201f77faee30c77b" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title">[Chaos] Instanced Areas Technical Difficulties (May 2) </p><time class="news__list--time"><span id="datetime-b05caf5af63">-</span><script>document.getElementById('datetime-b05caf5af63').innerHTML = ldst_strftime(1777752000, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/d7bcb636f01d0dd8cb3b61a0f75c54ff7cd78184" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>Recovery from Home World Transfer / Data Center Travel Technical Difficulties (Apr. 27)</p><time class="news__list--time"><span id="datetime-fff4f448a80">-</span><script>document.getElementById('datetime-fff4f448a80').innerHTML = ldst_strftime(1777275300, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/1ff5dafdfca22ebf3fd9f1551bd0873d053fd852" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title">[Aether] Home World Transfer / Data Center Travel Technical Difficulties (Apr. 26)</p><time class="news__list--time"><span id="datetime-ae2b7a07573">-</span><script>document.getElementById('datetime-ae2b7a07573').innerHTML = ldst_strftime(1777264800, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/7d1dc542f57deea909ba0ed024032306976b29ec" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Web Services/COMPANION App] Recovery from Bahamut World Characters Display Issue (Apr. 18)</p><time class="news__list--time"><span id="datetime-f915d3a1fd2">-</span><script>document.getElementById('datetime-f915d3a1fd2').innerHTML = ldst_strftime(1776691800, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/8348af63040f65ccb54ab7e84ce2c6736583b387" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>Recovery from Accessibility on Certain Features (Apr. 19)</p><time class="news__list--time"><span id="datetime-44f5fd2baa1">-</span><script>document.getElementById('datetime-44f5fd2baa1').innerHTML = ldst_strftime(1776608400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/ed919097395a320109a12645dd47f1017b79154b" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Gaia] Recovery from Bahamut World Data Center Travel Technical Difficulties (Apr. 18)</p><time class="news__list--time"><span id="datetime-c326821c33d">-</span><script>document.getElementById('datetime-c326821c33d').innerHTML = ldst_strftime(1776567383, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/410e14d7b06a6b7e4826519d0e63104af580bdc7" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Aether] [Light] Recovery from Several Worlds Login Difficulties (Apr. 18)</p><time class="news__list--time"><span id="datetime-18154079d00">-</span><script>document.getElementById('datetime-18154079d00').innerHTML = ldst_strftime(1776553560, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/029701fbfb0c919074ecc03a870e54e7e08730bc" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>Recovery from COMPANION App Partial Technical Difficulties (Apr. 18)</p><time class="news__list--time"><span id="datetime-038c6d0907f">-</span><script>document.getElementById('datetime-038c6d0907f').innerHTML = ldst_strftime(1776527400, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/60971a99138acbb833f87fb7d8e016dd8050bfc8" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>Recovery from Companion App Technical Difficulties (Apr. 16)</p><time class="news__list--time"><span id="datetime-cfa70987e6c">-</span><script>document.getElementById('datetime-cfa70987e6c').innerHTML = ldst_strftime(1776330900, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/8400e29dbc72d86067b20293596fc7864979f754" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Dynamis] Recovery from Seraph World Technical Difficulties (Mar. 31)</p><time class="news__list--time"><span id="datetime-50f1cdfcded">-</span><script>document.getElementById('datetime-50f1cdfcded').innerHTML = ldst_strftime(1774969440, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/fef71e30053ddc514a824b1a442b78b4b22fd3f5" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Aether] Recovery from Jenova World Technical Difficulties (Mar. 25)</p><time class="news__list--time"><span id="datetime-063af8e53ae">-</span><script>document.getElementById('datetime-063af8e53ae').innerHTML = ldst_strftime(1774432320, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/dd283dbc4eac87b791941bb8ca3f9571a1ed08d9" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>Recovery from Account Management System Issues (Mar. 23)</p><time class="news__list--time"><span id="datetime-b8997b51bd9">-</span><script>document.getElementById('datetime-b8997b51bd9').innerHTML = ldst_strftime(1774335600, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/6713d2775bb092c9e2afcbbc606e313f2d1ef385" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Aether] Recovery from Instanced Areas Technical Difficulties (Mar. 22)</p><time class="news__list--time"><span id="datetime-12da88ffc2d">-</span><script>document.getElementById('datetime-12da88ffc2d').innerHTML = ldst_strftime(1774240800, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/73bc66a9b48252bc63c31019c9fc96da3333c8ee" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Materia] Recovery from Bismarck World Technical Difficulties (Mar. 22)</p><time class="news__list--time"><span id="datetime-71573bc59f5">-</span><script>document.getElementById('datetime-71573bc59f5').innerHTML = ldst_strftime(1774182720, 'YMD');</script></time></div></a></li><li class="news__list"><a href="/lodestone/news/detail/02adc0741b625442ebf857dafc4307341bd107b0" class="news__list--link ic__obstacle--list"><div class="clearfix"><p class="news__list--title"><span class="news__list--tag">[Recovery]</span>[Materia] Recovery from Instanced Areas Technical Difficulties (Mar. 14)</p><time class="news__list--time"><span id="datetime-ba488c18b5b">-</span><script>document.getElementById('datetime-ba488c18b5b').innerHTML = ldst_strftime(1773528300, 'YMD');</script></time></div></a></li></ul></div></div><div id="toptabchanger_topicsarea"><h2 class="heading--md heading--md__rss parts__space--reset">Topics<a href="/lodestone/news/topics.xml" class="js__tooltip" data-tooltip="RSS"><i></i></a></h2><ul class="news__list--topics_top"><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/6f7a2c72448adb1ac623d9fd8648ff859384788a">Patch 7.5─Trail to the Heavens Special Site Updated!</a></p><time class="news__list--time"><span id="datetime-a1823271324">-</span><script>document.getElementById('datetime-a1823271324').innerHTML = ldst_strftime(1778227200, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/6f7a2c72448adb1ac623d9fd8648ff859384788a" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/6f7a2c72448adb1ac623d9fd8648ff859384788a.jpg?1778227338" width="570" alt=""></a><p><p class="mdl-text__xs-m16">The Patch 7.5 special site has been updated with new CG artwork of bosses featured in Echoes of Vana&apos;diel - Windurst: The Third Walk. <br><br>View the <a href="https://sqex.to/Iyrbt" target="_blank">special site</a>.</p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/e4ace1cdcec160bf61d20555a1b3215011170a7b">FINAL FANTASY XIV: DAWNTRAIL – EP8 Available Now!</a></p><time class="news__list--time"><span id="datetime-9ed3e406abc">-</span><script>document.getElementById('datetime-9ed3e406abc').innerHTML = ldst_strftime(1778137200, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/e4ace1cdcec160bf61d20555a1b3215011170a7b" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/e4ace1cdcec160bf61d20555a1b3215011170a7b.jpg?1778247668" width="570" alt=""></a><p><p class="mdl-text__xs-m16 mdl-space--md">A brand-new downloadable mini album is now available, featuring colorful songs from the Unmaking, Windurst: The Third Walk, The Merchant&apos;s Tale, Cosmic Exploration, and other content added between Patch 7.41 and 7.5!</p><h4 class="mdl-title__heading--sm mdl-color__green"><span class="mdl-size--sm">Tracks</span></h4><p class="mdl-text__xs-m16 mdl-space--md">1. Untested Voyager<br>2. FINAL FANTASY V: The Final Battle (Dawntrail)<br>3. Worthy Pursuits<br>4. The Uncharted Road<br>5. Sweet Dreamer&apos;s Melody<br>6. The Wyrm Who Would Be King<br></p><h4 class="mdl-title__heading--sm mdl-color__green"><span class="mdl-size--sm">Retailers</span> </h4><p class="mdl-text__xs-m16">Available for purchase at <a href="https://sqex.lnk.to/erWEjX" target="_blank">participating retailers</a>.<br><span class="mdl-color__notes">* Price and availability may vary according to region and retailer.</span><br><span class="mdl-color__notes">* This EP is only available as a digital download.</span><br></p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/2e44e0fa9b12c057ed8ab12b5af966c452eeddd9">The Maiden&#39;s Rhapsody Returns May 8!</a></p><time class="news__list--time"><span id="datetime-6e732d826e0">-</span><script>document.getElementById('datetime-6e732d826e0').innerHTML = ldst_strftime(1777622460, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/2e44e0fa9b12c057ed8ab12b5af966c452eeddd9" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/2e44e0fa9b12c057ed8ab12b5af966c452eeddd9.jpg?1777622943" width="570" alt=""></a><p><p class="mdl-text__xs-m16"><span class="mdl-size--sm">Experience the intriguing tale bridging Hydaelyn and Vana&apos;diel as The Maiden&apos;s Rhapsody─a past collaboration with FFXI─returns to the realm once more! Embark on a journey with one of Vana&apos;diel&apos;s heroes and discover what twists of fate brought her to our realm.</span></p><h4 class="mdl-title__heading--sm mdl-color__green"><span class="mdl-size--sm">Event Period</span></h4><p class="mdl-text__xs-m16"><span class="mdl-color__orange"><strong><span class="mdl-size--sm">From Friday, May 8, 2026 at 1:00 a.m. to Monday, May 25, 2026 at 7:59 a.m. (PDT)</span></strong></span></p><p class="mdl-text__xs-m16"><a href="https://sqex.to/VYgPI" target="_blank"><span class="mdl-size--sm">Read on</span></a><span class="mdl-size--sm"> for details.</span></p><p class="mdl-text__xs-m16"><span class="mdl-color__notes mdl-size--sm">* This event is identical to the ones previously held.</span><br><span class="mdl-color__notes mdl-size--sm">* If you have already completed the event, you can replay the quests via the seasonal event replay feature. For details, please check the special site.</span></p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/1188bba6fd740a4567dc1fbab9e2178091f71d1b">Letter from the Producer LIVE PART XCII Digest Released</a></p><time class="news__list--time"><span id="datetime-40196659df7">-</span><script>document.getElementById('datetime-40196659df7').innerHTML = ldst_strftime(1777618800, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/1188bba6fd740a4567dc1fbab9e2178091f71d1b" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/1188bba6fd740a4567dc1fbab9e2178091f71d1b.png?1777618716" width="570" alt=""></a><p><p class="mdl-text__xs-m16">We’re pleased to announce that the Letter from the Producer LIVE Part XCII event digest has been released!<br><br>Part 2 of our Patch 7.5 preview includes Echoes of Vana&apos;diel - Windurst: The Third Walk, beastmaster details, and more.<br><br>If you’ve yet to see the live stream, or are simply back for a second helping, be sure to check it out!<br><br>Proceed to the <a href="https://sqex.to/tx2QY" target="_blank">thread</a>.<br></p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/475fe3bf5e2acff0ddd6da998ec69e0b8315f011">Fan Festival 2026 Merchandise Round 2 Pre-orders Now Available!</a></p><time class="news__list--time"><span id="datetime-eb757a8b09a">-</span><script>document.getElementById('datetime-eb757a8b09a').innerHTML = ldst_strftime(1777568400, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/475fe3bf5e2acff0ddd6da998ec69e0b8315f011" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/475fe3bf5e2acff0ddd6da998ec69e0b8315f011.jpg?1777570655" width="570" alt=""></a><p><p class="mdl-text__xs-m16">Pre-orders are now available for our second round of Fan Festival 2026 merchandise! Whether you&apos;re joining us in July for Fan Festival 2026 in Berlin or tuning in online, don&apos;t miss out on these Fan Festival commemorative items!<br><br>This playful lineup will surely charm any Warrior of Light, with selections such as energy drink-themed drinking glasses, adorable minion-themed figurines, desktop companions, and other all-new FFXIV-themed merchandise! Below is only some of the new merchandise, so check out the store to see what else is available!<br></p><div class="mdl-youtube"><div class="mdl-youtube__wrapper"><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/_FLPeurwdXI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe></div></div><p class="mdl-text__xs-m16"><span class="mdl-color__notes">* Item lineup varies by region and not all items showcased in the video will be available outside of Europe.</span></p><p class="mdl-text__xs-m16">Gear up as we prepare for another series of exciting announcements in July, at the upcoming Fan Festival in Berlin!</p><h4 class="mdl-title__heading--sm mdl-color__green"><span class="mdl-size--sm">Pre-orders Begin</span></h4><p class="mdl-text__xs-m16 mdl-space--md"><span class="mdl-color__orange"><strong>Thursday, April 30, 2026 at 10:00 a.m. (PDT)</strong></span></p><h4 class="mdl-title__heading--sm mdl-color__green"><span class="mdl-size--sm">Estimated Release Date</span></h4><p class="mdl-text__xs-m16"><span class="mdl-color__orange"><strong>Friday, July 24, 2026</strong></span></p><table class="mdl-table__layout mdl-space--0"><tbody><tr><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/475fe3bf5e2acff0ddd6da998ec69e0b8315f011_0.jpg?1777570655" class="mdl-img__radius" width="262px"></div></td><td class="mdl-table__layout--bdr_none" width="1%"></td><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/475fe3bf5e2acff0ddd6da998ec69e0b8315f011_1.jpg?1777570655" class="mdl-img__radius" width="262px"></div></td></tr></tbody></table><table class="mdl-table__layout mdl-space--0"><tbody><tr><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/475fe3bf5e2acff0ddd6da998ec69e0b8315f011_2.jpg?1777570655" class="mdl-img__radius" width="262px"></div></td><td class="mdl-table__layout--bdr_none" width="1%"></td><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/475fe3bf5e2acff0ddd6da998ec69e0b8315f011_3.png?1777570655" class="mdl-img__radius" width="262px"></div></td></tr></tbody></table><table class="mdl-table__layout mdl-space--md"><tbody><tr><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/475fe3bf5e2acff0ddd6da998ec69e0b8315f011_4.jpg?1777570655" class="mdl-img__radius" width="262px"></div></td><td class="mdl-table__layout--bdr_none" width="1%"></td><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/475fe3bf5e2acff0ddd6da998ec69e0b8315f011_5.jpg?1777570655" class="mdl-img__radius" width="262px"></div></td></tr></tbody></table><p class="mdl-text__xs-m16">We also have this Solution Nine street art-themed T-shirt to up your real-life glam game! An in-game version will be released on the FINAL FANTASY XIV Online Store at a later date, so stay tuned for future announcements!</p><div class="mdl-img__normal-m16"><img src="https://img.finalfantasyxiv.com/t/475fe3bf5e2acff0ddd6da998ec69e0b8315f011_6.png?1777570655" class="mdl-img__radius"></div><div class="mdl-img__normal-m16"><img src="https://img.finalfantasyxiv.com/t/475fe3bf5e2acff0ddd6da998ec69e0b8315f011_7.png?1777570655" class="mdl-space--md"></div><p class="mdl-text__xs-m16">Pre-order your merchandise on the <a href="https://sqex.to/JU5EH" target="_blank">Square Enix Store</a>!</p><hr><p class="mdl-text__xs-m16">Visit the <a href="https://fanfest-eu.finalfantasyxiv.com/2026/en" target="_blank">FINAL FANTASY XIV Fan Festival 2026 in Berlin special site</a><a href="https://fanfest-eu.finalfantasyxiv.com/2026/en" target="_blank"></a>.</p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/3eff5caeb29649bc49281e45cb4f301be2ccfc23">PvP Series 10 Draws to a Close as Series 11 Begins!</a></p><time class="news__list--time"><span id="datetime-58a1a741c03">-</span><script>document.getElementById('datetime-58a1a741c03').innerHTML = ldst_strftime(1777368720, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/3eff5caeb29649bc49281e45cb4f301be2ccfc23" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/3eff5caeb29649bc49281e45cb4f301be2ccfc23.jpg?1777369263" width="570" alt=""></a><p><p class="mdl-text__xs-m16">After myriad battles fought and won, PvP Series 10 has ended. <strong><span class="mdl-color__notes">Rewards for Series 10 may be claimed until the end of Series 11</span></strong>.<br><br>For those eager to dive back into the fray, we are pleased to announce that PvP Series 11 has officially begun! The more you play, the more bountiful the rewards, so we encourage all players to try their hand at PvP!<br><br><a href="/lodestone/topics/detail/3eff5caeb29649bc49281e45cb4f301be2ccfc23">Read on</a> for details.<br></p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/7d35a35159960b6df70234d514940075de5bd474">Crystalline Conflict Season Nineteen Results Revealed as Season Twenty Commences!</a></p><time class="news__list--time"><span id="datetime-0631013aa9a">-</span><script>document.getElementById('datetime-0631013aa9a').innerHTML = ldst_strftime(1777368660, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/7d35a35159960b6df70234d514940075de5bd474" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/7d35a35159960b6df70234d514940075de5bd474.jpg?1777369263" width="570" alt=""></a><p><p class="mdl-text__xs-m16">Crystalline Conflict Season Nineteen has drawn to a close!</p><ul class="mdl-list__basic mdl-space--md"><li class="mdl-space--xs"><span class="mdl-size--sm"><strong>To Our Top-ranked Competitors</strong></span><br><span class="mdl-size--sm">Congratulations on a season well fought! Please be sure to collect your hard-earned ranking rewards from your local postmoogle.</span><br><span class="mdl-color__notes mdl-size--sm">* Ranking rewards letters may take some time to arrive. We appreciate your patience.</span><br><span class="mdl-color__notes mdl-size--sm">* The top 300 ranked players in the Japanese, North American, and European data centers will receive rewards. In the Oceanian data center, the top 100 ranked players will receive rewards.</span><br></li><li class="mdl-space--xs"><span class="mdl-size--sm"><strong>To All Players Ranked Bronze or Higher</strong></span><br><span class="mdl-size--sm">Well fought and good show! Your tier rewards may be claimed by speaking with the seasonal quartermaster at the Wolves&apos; Den Pier (X:4.9 Y:5.7).</span><br><span class="mdl-size--sm mdl-color__notes">* Please note that Season Nineteen Tier rewards may be collected until the end of Season Twenty. Don’t forget to claim your spoils!</span> </li></ul><p class="mdl-text__xs-m16 mdl-space--md">View the results for <a href="https://sqex.to/u2Cvy" target="_blank">Season Nineteen</a>.</p><hr> <p class="mdl-text__xs-m16">Without further ado, we are delighted to send you back into the arena for Season Twenty! Aspire to even greater heights and secure your Crystalline legacy!</p><ul class="mdl-list__basic mdl-space--md"><li class="mdl-space--xs"> <span class="mdl-size--sm"><strong>Season Twenty Preliminary Rankings</strong></span><br><span class="mdl-size--sm">Players will begin Season Twenty five risers lower than the rank at which they finished Season Nineteen. Rising Stars will be set to one.</span></li><li class="mdl-space--xs"><span class="mdl-size--sm"><strong>Ranked Matches</strong></span><br><span class="mdl-size--sm">Season Twenty ranked matches will be hosted in the following data centers. Please register for ranked matches from the applicable logical data center. </span></li></ul><div class="mdl-table-m16"><table class="mdl-table__layout"><tbody><tr><th width="49.5%" class=""><strong>Physical Data Center</strong><br></th><th width="1%" class="mdl-table__layout--spacer"></th><th width="49.5%" class=""><strong>Logical Data Center</strong><br></th></tr><tr><td class="mdl-layout__left">Japanese<br></td><td> </td><td class="mdl-layout__left">Meteor<br></td></tr><tr><td class="mdl-layout__left">North American  <br></td><td> </td><td class="mdl-layout__left">Crystal<br></td></tr><tr><td class="mdl-layout__left">European<br></td><td> </td><td class="mdl-layout__left">Chaos<br></td></tr><tr><td class="mdl-layout__left">Oceanian<br></td><td> </td><td class="mdl-layout__left">Materia<br></td></tr></tbody></table></div> </p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/c4e17b1fd48ab3419e12fdd92a16ca387b272fc1">Free trial now to include FINAL FANTASY XIV: Shadowbringers!</a></p><time class="news__list--time"><span id="datetime-bdf15ad1046">-</span><script>document.getElementById('datetime-bdf15ad1046').innerHTML = ldst_strftime(1777368600, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/c4e17b1fd48ab3419e12fdd92a16ca387b272fc1" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/c4e17b1fd48ab3419e12fdd92a16ca387b272fc1.png?1777369263" width="570" alt=""></a><p><p class="mdl-text__xs-m16">Beginning <span class="mdl-color__orange"><strong>Tuesday,</strong></span> <span class="mdl-color__orange"><strong>April 28</strong></span>, with the release of Patch 7.5, the <a href="https://sqex.to/0KYSE" target="_blank">free trial</a> will also include the award-winning FINAL FANTASY XIV: Shadowbringers. Spread the word and tell your friends, because there’s never been a better time to begin their adventure!<br><br>For those who have already registered FINAL FANTASY XIV: A Realm Reborn to their accounts, worry not─this change also applies to all existing owners as well.<br><span class="mdl-color__notes">* Service accounts will be updated to reflect this change starting on Tuesday, April 28. Please note that the registration status update may not be displayed immediately on the Mog Station.</span></p><table class="mdl-table__layout"><tbody><tr><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/c4e17b1fd48ab3419e12fdd92a16ca387b272fc1_0.png?1777369263" class="mdl-img__radius" width="262px"></div></td><td class="mdl-table__layout--bdr_none" width="1%"></td><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/c4e17b1fd48ab3419e12fdd92a16ca387b272fc1_1.png?1777369263" class="mdl-img__radius" width="262px"></div></td></tr></tbody></table><table class="mdl-table__layout"><tbody><tr><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/c4e17b1fd48ab3419e12fdd92a16ca387b272fc1_2.png?1777369263" class="mdl-img__radius" width="262px"></div></td><td class="mdl-table__layout--bdr_none" width="1%"></td><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/c4e17b1fd48ab3419e12fdd92a16ca387b272fc1_3.png?1777369263" class="mdl-img__radius" width="262px"></div></td></tr></tbody></table></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/4f78b693ca7afb0a4b8decb430fd4454e2183c75">New Optional Item Available!</a></p><time class="news__list--time"><span id="datetime-58150fb0584">-</span><script>document.getElementById('datetime-58150fb0584').innerHTML = ldst_strftime(1777363200, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/4f78b693ca7afb0a4b8decb430fd4454e2183c75" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/4f78b693ca7afb0a4b8decb430fd4454e2183c75.png?1777362537" width="570" alt=""></a><p><p class="mdl-text__xs-m16">A new optional item will be added to the FINAL FANTASY XIV Online Store starting <span class="mdl-color__orange"><strong>Tuesday, April 28 around 3:00 (PDT)</strong></span>. <br><br>Visit the <a href="https://sqex.to/ffxivstore-na" target="_blank">FINAL FANTASY XIV Online Store</a>. <br><br><span class="mdl-color__notes">* The item featured above will be available for purchase after the scheduled maintenance ends on Tuesday, April 28 around 3:00 (PDT). Please visit the News section for detailed maintenance information.</span><br><span class="mdl-color__notes">* During periods immediately following the sale of new optional items, congestion in the delivery system may cause item deliveries to take longer than usual. </span></p> </p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/07320affa7e0fcd9685afcbe54fbf55405b6d822">Patch 7.5 Notes</a></p><time class="news__list--time"><span id="datetime-19093e547db">-</span><script>document.getElementById('datetime-19093e547db').innerHTML = ldst_strftime(1777347000, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/07320affa7e0fcd9685afcbe54fbf55405b6d822" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/07320affa7e0fcd9685afcbe54fbf55405b6d822.jpg?1778659265" width="570" alt=""></a><p><p class="mdl-text__xs-m16">We are proud to present the patch notes for Trail to the Heavens, which sees the Warrior of Light and their companions begin to unravel the mysteries of the key.<br><br>This patch also features the new trial, the Unmaking, Echoes of Vana&apos;diel - Windurst: The Third Walk, a brand-new crystal conflict arena, Archeia Harmonias, and a host of other additions and adjustments, including an increase to furnishing placement limits, the consolidation of dyes, updates to the armoire and outfit glamours, as well as updates to group pose.<br><br><span class="mdl-color__notes">* Additional features will be implemented in future updates:</span><br><span class="mdl-color__notes">Auxesia─the new cosmic exploration destination, Tool Enhancement Quests - Cosmic Tools, the new custom deliveries client Tiisol Ja, and Dancing Mad (Ultimate) are scheduled to release in Patch 7.51.</span><br><span class="mdl-color__notes">The Occult Crescent: North Horn, Weapon Enhancement Quests - Phantom Weapons, Inconceivably Further Hildibrand Adventures sidequests, and Allied Society capstone sidequests are scheduled to release in Patch 7.55.</span><br><span class="mdl-color__notes">Further main scenario quests and the beastmaster limited job are scheduled to release in Patch 7.56.</span><br><br>Read the <a href="/lodestone/topics/detail/07320affa7e0fcd9685afcbe54fbf55405b6d822">patch notes</a>.<br><br><span class="mdl-color__notes">* Updated on Wednesday, May 13, 2026 at 1:00 a.m. (PDT)</span><br></p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/a6ea855ea930740e9f2f42380256b1f522b619b9">Announcing FINAL FANTASY XIV for Nintendo Switch 2!</a></p><time class="news__list--time"><span id="datetime-ef7e2525782">-</span><script>document.getElementById('datetime-ef7e2525782').innerHTML = ldst_strftime(1777060980, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/a6ea855ea930740e9f2f42380256b1f522b619b9" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/a6ea855ea930740e9f2f42380256b1f522b619b9.png?1777351517" width="570" alt=""></a><p><p class="mdl-text__xs-m16 mdl-space--md">FINAL FANTASY XIV will make its debut on the Nintendo Switch™ 2 in <span class="mdl-color__orange"><strong>August 2026</strong></span>!<br></p><ul class="mdl-list__basic mdl-space--md"><li class="mdl-space--xs"><strong><span class="mdl-size--sm">Those playing FINAL FANTASY XIV for the first time on Nintendo Switch 2</span></strong><br><span class="mdl-size--sm">Purchase FINAL FANTASY XIV for Nintendo Switch 2 and a subscription to play the game.</span></li></ul><ul class="mdl-list__basic mdl-space--md"><li class="mdl-space--xs"><strong><span class="mdl-size--sm">Current FINAL FANTASY XIV players who wish to play on Nintendo Switch 2</span></strong><br><span class="mdl-size--sm">If you already play FINAL FANTASY XIV on another platform, you will still need to purchase FINAL FANTASY XIV for Nintendo Switch 2 and a separate subscription for the Nintendo Switch 2 version of the game. However, if you have remaining game time on other platforms, the Nintendo Switch 2 subscription will be available at half price.</span></li></ul><p class="mdl-text__xs-m16">There will be an initial one-month period of early access to ensure server stability, after which official service will start. A subscription to Nintendo Switch Online will not be required to play FINAL FANTASY XIV on Nintendo Switch 2 in either the early access period or during official service.<br><br>Stay tuned for future updates!<br><br><span class="mdl-color__notes">* Nintendo Switch is a trademark of Nintendo.</span></p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/06a26b64eddb79b18a7e04972f6e55b1702951ff">FINAL FANTASY XIV x EVANGELION Crossover Announced! </a></p><time class="news__list--time"><span id="datetime-95091a64076">-</span><script>document.getElementById('datetime-95091a64076').innerHTML = ldst_strftime(1777060920, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/06a26b64eddb79b18a7e04972f6e55b1702951ff" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/06a26b64eddb79b18a7e04972f6e55b1702951ff.png?1777351517" width="570" alt=""></a><p><p class="mdl-text__xs-m16">EVANGELION is coming to FINAL FANTASY XIV!<br><br>The crossover series, titled “Ghosts of Desire,” will serve as the alliance raid of the upcoming expansion, Evercold. Further details will be announced at a later date.<br></p><div class="mdl-youtube"><div class="mdl-youtube__wrapper"><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/680o2J54FKY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe></div></div><h4 class="mdl-title__heading--sm mdl-color__green"><span class="mdl-size--sm">About EVANGELION</span></h4><p class="mdl-text__xs-m16">The television series <em>NEON GENESIS EVANGELION</em> became an immediate and widespread sensation upon its first broadcast in 1995.<br><br>In 2007, the series was relaunched as the Rebuild of EVANGELION film series. Conceived, written and directed by Hideaki Anno, <em>EVANGELION: 1.0</em>, <em>2.0</em> and <em>3.0</em> were all hugely successful, captivating new fans and garnering much praise from a wide range of audiences.<br><br>The fourth and final film in the series, <em>EVANGELION: 3.0 + 1.0</em>, was released on March 8, 2021, after having been postponed twice due to the COVID-19 pandemic. It recorded 6.73 million admissions, earning 10.2 billion yen at the box office.<br><br>On&nbsp;March 8, 2023,&nbsp;the long-awaited Blu-ray and DVD, <em>EVANGELION: 3.0 + 1.11 THRICE UPON A TIME</em> was released.<br><br>October 2025 marked 30 years since the television series debuted, and a celebratory event titled EVANGELION: 30+; 30th ANNIVERSARY OF EVANGELION was held in Yokohama Arena between February 21 and 23, 2026. Though such an anniversary event was a first for the series, it proved to be a resounding success, attracting a great many visitors from Japan and around the world.<br></p><hr><p class="mdl-text__xs-m16">Visit the FINAL FANTASY XIV: Evercold <a href="https://sqex.to/lTRLy" target="_blank">teaser website</a>.<br><br>Visit the <a href="https://sqex.to/iljiL" target="_blank">official EVANGELION website</a>.<br><span class="mdl-color__notes">* Please note that the website is in Japanese only.</span><br></p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/793dceeaba37bb5c38afbf25d41c2b1634fe424c">Patch 7.5─Trail to the Heavens Special Site Updated!</a></p><time class="news__list--time"><span id="datetime-b7050ae392b">-</span><script>document.getElementById('datetime-b7050ae392b').innerHTML = ldst_strftime(1777060860, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/793dceeaba37bb5c38afbf25d41c2b1634fe424c" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/793dceeaba37bb5c38afbf25d41c2b1634fe424c.jpg?1777351517" width="570" alt=""></a><p><p class="mdl-text__xs-m16">The Patch 7.5 special site has been updated with information on Dancing Mad (Ultimate)─the seventh in its series─and the regional matching system. Also, be sure to check out the latest updates on limited job beastmaster, including new CG art.<br><br>View the <a href="https://sqex.to/Iyrbt" target="_blank">special site</a>.</p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/4eed7e7fcdbab61ce57b3822e4b19f6cc8af3d30">FINAL FANTASY XIV: Evercold Coming January 2027!</a></p><time class="news__list--time"><span id="datetime-d0a7c2ad047">-</span><script>document.getElementById('datetime-d0a7c2ad047').innerHTML = ldst_strftime(1777060800, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/4eed7e7fcdbab61ce57b3822e4b19f6cc8af3d30" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/4eed7e7fcdbab61ce57b3822e4b19f6cc8af3d30.jpg?1777351517" width="570" alt=""></a><p><p class="mdl-text__xs-m16">It gives us great pleasure to announce the sixth expansion to FINAL FANTASY XIV, Evercold! <br><br>The trailer unveiled during the Fan Festival keynote can now be viewed on the FINAL FANTASY XIV: Evercold teaser site, along with the latest information, screenshots and artwork from the upcoming expansion. <br><br>Visit the <a href="https://sqex.to/lTRLy" target="_blank">teaser site</a>. </p> </p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/c8677e1bffb593d629a551c3a035eedc0cc94644">Fan Festival 2026 in Anaheim Live Performance Stream Tickets Now on Sale!</a></p><time class="news__list--time"><span id="datetime-5138469abdf">-</span><script>document.getElementById('datetime-5138469abdf').innerHTML = ldst_strftime(1777023000, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/c8677e1bffb593d629a551c3a035eedc0cc94644" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/c8677e1bffb593d629a551c3a035eedc0cc94644.jpg?1778242714" width="570" alt=""></a><p><p class="mdl-text__xs-m16"><span class="mdl-size--sm">Fan Festival 2026 in Anaheim is nearly here!</span></p><p class="mdl-text__xs-m16"><span class="mdl-size--sm">For those looking to take their viewing experience to the next level, we will be hosting a piano performance and PRIMALS concert, both available as paid streams via StreamPass and FanStream. You won’t want to miss this chance to rock out with Warriors of Light the world over in the comfort of your own home!</span></p><p class="mdl-text__xs-m16"><span class="mdl-size--sm">But if you happen to be too busy to watch live, a ticket purchase also grants access to the archive where the streams can be viewed as many times as you like for a set period. Whether you’re at home or on the go, you can enjoy these two amazing concerts at your leisure.<br></span></p><p class="mdl-text__xs-m16"><span class="mdl-color__notes mdl-size--sm">* Due to a technical issue with the ticket sales page, tickets were temporarily unavailable for purchase on the English site. The issue has now been resolved, but as a result of this disruption, we are extending the ticket purchase period and the archive streaming period as follows.</span></p><span class="mdl-color__notes"></span><p class="mdl-text__xs-m16"><span class="mdl-color__notes mdl-size--sm">Sales Period</span><br><span class="mdl-color__notes mdl-size--sm">Before: Until Saturday, May 9, 2026 at 7:59 a.m. (PDT)</span><br><span class="mdl-color__notes mdl-size--sm">After: Until Saturday, May 16, 2026 at 7:59 a.m. (PDT)</span></p><span class="mdl-color__notes"></span><p class="mdl-text__xs-m16"><span class="mdl-color__notes mdl-size--sm">Archive Streaming Period</span><br><span class="mdl-color__notes mdl-size--sm">Before: Until Sunday, May 10, 2026 at 7:59 a.m. (PDT)</span><br><span class="mdl-color__notes mdl-size--sm">After: Until Sunday, May 17, 2026 at 7:59 a.m. (PDT)</span></p><ul class="mdl-list__basic mdl-space--0"><li class="mdl-space--xs"><span class="mdl-size--sm"><strong>Day 1: Piano Concert</strong><br></span><span class="mdl-color__orange"><strong><span class="mdl-size--sm">Friday, April 24 from 7:00 p.m. (PDT) to the end of the performance</span></strong></span><br><span class="mdl-size--sm">Keiko takes the stage to transform FFXIV memories into music.</span></li></ul><ul class="mdl-list__basic mdl-space--0"><li class="mdl-space--xs"><strong><span class="mdl-size--sm">Day 2：THE PRIMALS</span></strong><br><span class="mdl-color__orange"><strong><span class="mdl-size--sm">Saturday, April 25 from 7 p.m. (PDT) to the end of the performance</span></strong></span><br><span class="mdl-size--sm">THE PRIMALS, led by Sound Director Masayoshi Soken, unleash a set designed to get your heart pumping and head banging!</span></li></ul><p class="mdl-text__xs-m16"><span class="mdl-color__notes mdl-size--sm">* Stage event times are subject to change.</span></p><ul class="mdl-list__basic mdl-space--0"><li class="mdl-space--xs"><strong><span class="mdl-size--sm">Archive Availability</span></strong><br></li></ul><ul class="mdl-list__cat-12"><li><strong><span class="mdl-size--sm">Day 1: Piano Performance</span></strong><br><span class="mdl-color__orange"><strong><span class="mdl-size--sm">From Sunday, April 26 at 2:00 a.m. to Sunday, May 17, at 7:59 a.m. (PDT)</span></strong></span></li><li><strong><span class="mdl-size--sm">Day 2：THE PRIMALS</span></strong><br><span class="mdl-color__orange"><strong><span class="mdl-size--sm">From Monday, April 27 at 2:00 a.m. to Sunday, May 17, at 7:59 a.m. (PDT)</span></strong></span></li></ul><p class="mdl-text__xs-m16"><span class="mdl-color__notes mdl-size--sm">* A portion of the comments posted during the performance will be available to view via the chat replay feature from Saturday, May 2 at 2:00 a.m. (PDT). Please note that comments cannot be posted on the archived video.</span></p><p class="mdl-text__xs-m16"><span class="mdl-size--sm"><a href="https://sqex.to/1m0K3" target="_blank">Purchase a ticket</a> for the stream.</span></p><hr><p class="mdl-text__xs-m16"><span class="mdl-size--sm">All stage events excluding the live performances can be viewed free of charge.<br>View the <a href="https://sqex.to/AQJVh" target="_blank">stage event schedule</a>.<br></span></p><p class="mdl-text__xs-m16"><span class="mdl-size--sm">View the <a href="https://fanfest-na.finalfantasyxiv.com/2026/en-us" target="_blank">Fan Festival 2026 in Anaheim special site</a>.</span><br></p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/01fc53dfcfcc7b2232a62225d639a819caf9074c">THE PRIMALS Dark Decades Tour BUDOKAN Blu-ray Now Available!</a></p><time class="news__list--time"><span id="datetime-7ed018a3c75">-</span><script>document.getElementById('datetime-7ed018a3c75').innerHTML = ldst_strftime(1777021200, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/01fc53dfcfcc7b2232a62225d639a819caf9074c" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/01fc53dfcfcc7b2232a62225d639a819caf9074c.jpg?1777351517" width="570" alt=""></a><p><p class="mdl-text__xs-m16 mdl-space--lg">We are delighted to announce that THE PRIMALS Dark Decades Tour BUDOKAN is now available on Blu-ray!<br><br>Last year, this monumental show delivered everything from classic tracks to fan-favorites from Dawntrail, the latest major expansion, all in THE PRIMALS&apos; hard-rock style. Relive the performance from Monday, September 29, complete with a special guest appearance and <strong>19 unforgettable songs</strong>!<br><br>But wait─there&apos;s more. Bonus content includes behind-the-scenes footage of the Zepp tour culminating in the Nippon Budokan finale, and the music video for "Not Afraid."<br><br>It&apos;s time to rock, Warriors of Light. Pick up your copy today!</p><h3 class="mdl-title__heading--lg">THE PRIMALS Dark Decades Tour BUDOKAN [Blu-ray] </h3><div class="mdl-img__normal-m16"><img src="https://img.finalfantasyxiv.com/t/01fc53dfcfcc7b2232a62225d639a819caf9074c_0.png?1777351517" class="mdl-img__radius"></div><h4 class="mdl-title__heading--sm mdl-color__green"><span class="mdl-size--sm">On Sale</span></h4><p class="mdl-text__xs-m16 mdl-space--md"><span class="mdl-color__orange"><strong>Friday, April 24, 2026</strong></span><br></p><h4 class="mdl-title__heading--sm mdl-color__green"><span class="mdl-size--sm">Bonus In-game Item Codes</span></h4><ul class="mdl-list__basic mdl-space--md"><li class="mdl-space--xs"><span class="mdl-size--sm">Shadowbringers (Dark Decades) Orchestrion Roll</span></li><li class="mdl-space--xs"><span class="mdl-size--sm">Ride the Rhythm (Dark Decades) Orchestrion Roll</span></li></ul><p class="mdl-text__xs-m16">Visit the <a href="https://sqex.to/g37xS" target="_blank">special site</a>.</p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/33c47e6b7aa6fe0750ebb167841e35bea26ceb7e">Patch 7.5 Notes (Preliminary)</a></p><time class="news__list--time"><span id="datetime-df109d0016d">-</span><script>document.getElementById('datetime-df109d0016d').innerHTML = ldst_strftime(1777017600, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/33c47e6b7aa6fe0750ebb167841e35bea26ceb7e" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/33c47e6b7aa6fe0750ebb167841e35bea26ceb7e.jpg?1777351517" width="570" alt=""></a><p><p class="mdl-text__xs-m16">It is with great pleasure that we present the preliminary patch notes for Patch 7.5─Trail to the Heavens.<br><br><span class="mdl-color__notes">* Additions have been made to the patch 7.5 notes, which can now be viewed in their entirety.</span><br><br>Read the <a href="https://sqex.to/RRPZh">patch notes</a>.</p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/698dd9f36afef45234003c65f59a5fd6cc48cbd3">Presenting the FFXIV Fan Festival 2026 Stream Kit!</a></p><time class="news__list--time"><span id="datetime-224def9e049">-</span><script>document.getElementById('datetime-224def9e049').innerHTML = ldst_strftime(1776992400, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/698dd9f36afef45234003c65f59a5fd6cc48cbd3" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/698dd9f36afef45234003c65f59a5fd6cc48cbd3.png?1777024240" width="570" alt=""></a><p><p class="mdl-text__xs-m16">We’re pleased to announce that Fan Festival-themed stream overlays are now available for Warriors of Light looking to stream the excitement along with us! The kit includes overlays and assets that are perfect for a variety of your streaming needs.</p><p class="mdl-text__xs-m16">Whether you’re looking to have something festive to celebrate the upcoming event or simply want to add some FFXIV flavor to your streams, you’ll want to check out the kit!</p><table class="mdl-table__layout mdl-space--md"><tbody><tr><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/698dd9f36afef45234003c65f59a5fd6cc48cbd3_0.png?1777024240" class="mdl-img__radius" width="262px"></div></td><td class="mdl-table__layout--bdr_none" width="1%"></td><td class="mdl-table__layout--bdr_none" width="49.5%"><div class="mdl-img__normal mdl-space--0"><img src="https://img.finalfantasyxiv.com/t/698dd9f36afef45234003c65f59a5fd6cc48cbd3_1.png?1777024240" class="mdl-img__radius" width="262px"></div></td></tr></tbody></table><p class="mdl-text__xs-m16"><a href="/lodestone/topics/detail/698dd9f36afef45234003c65f59a5fd6cc48cbd3">Read on</a> for details.</p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/7e7ed240434ca77dd09b11afb25a11d763b0a242">Enter the FFXIV x HYTE PC Case Sweepstakes!</a></p><time class="news__list--time"><span id="datetime-6d34aa30aee">-</span><script>document.getElementById('datetime-6d34aa30aee').innerHTML = ldst_strftime(1776967200, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/7e7ed240434ca77dd09b11afb25a11d763b0a242" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/7e7ed240434ca77dd09b11afb25a11d763b0a242.png?1776967221" width="570" alt=""></a><p><p class="mdl-text__xs-m16">To celebrate Fan Festival 2026 in Anaheim we&apos;re teaming up with HYTE to host a sweepstakes! Enter for a chance to win a themed FFXIV Y70 PC case featuring beautiful FFXIV character illustrations created just for Fan Festival!</p><p class="mdl-text__xs-m16"><a href="/lodestone/topics/detail/7e7ed240434ca77dd09b11afb25a11d763b0a242">Read on</a> for details.</p></p></div></li><li class="news__list--topics ic__topics--list"><header class="news__list--header clearfix"><p class="news__list--title"><a href="/lodestone/topics/detail/ba8c4846e21ccb873a8770c42a15280ed688e8cb">Fan Festival 2026 in Anaheim Begins April 24!</a></p><time class="news__list--time"><span id="datetime-2097b647bfc">-</span><script>document.getElementById('datetime-2097b647bfc').innerHTML = ldst_strftime(1776934800, 'YMD');</script></time></header><div class="news__list--banner"><a href="/lodestone/topics/detail/ba8c4846e21ccb873a8770c42a15280ed688e8cb" class="news__list--img"><img src="https://img.finalfantasyxiv.com/t/ba8c4846e21ccb873a8770c42a15280ed688e8cb.png?1776934128" width="570" alt=""></a><p><p class="mdl-text__xs-m16">The long-awaited North American Fan Festival 2026 commences this Friday in Anaheim!</p><p class="mdl-text__xs-m16">All stage events─including the keynote, packed with new information─will be available to view worldwide via live stream.<br><span class="mdl-color__notes">* Please note that co-streaming is permitted for all content except for the paid concert performances. However, we strongly advise users to refrain from co-streaming the keynote presentation via YouTube. Due to the nature of YouTube&apos;s Content ID system, doing so may result in your stream being interrupted or your account being penalized. No such issues are expected when co-streaming via other livestreaming services. We thank you in advance for your cooperation and understanding.</span><br></p><ul class="mdl-list__basic mdl-space--md"><li class="mdl-space--xs"><span class="mdl-size--sm">View the </span><a href="https://sqex.to/AQJVh" target="_blank"><span class="mdl-size--sm">detailed schedule</span></a><span class="mdl-size--sm">, including times for each event.</span></li></ul><span class="mdl-size--sm"><p class="mdl-text__xs-m16">Furthermore, live stream concert tickets for Keiko and THE PRIMALS are currently available for purchase. An archived version of the streams will be available for viewing at any time during the ticket period.</p></span><ul class="mdl-list__basic mdl-space--md"><li class="mdl-space--xs"><span class="mdl-size--sm">View </span><a href="https://sqex.to/1m0K3 " target="_blank"><span class="mdl-size--sm">details of the musical performances and purchase tickets</span></a><span class="mdl-size--sm">. </span></li></ul><hr><p class="mdl-text__xs-m16"><span class="mdl-size--sm">Visit the </span><a href="https://fanfest-na.finalfantasyxiv.com/2026/en-us " target="_blank"><span class="mdl-size--sm">North American Fan Fest special website</span></a><span class="mdl-size--sm">.</span><br></p></p></div></li></ul></div>
+			</div>
+
+			<div id="toptabchanger_linkbutton">
+				<div class="btn__footer">
+					<a href="/lodestone/topics/?page=2" class="toptabchanger_linkbutton">Topics</a>
+				</div>
+				
+					<div class="btn__footer">
+						<a href="/lodestone/news/category/1/" class="toptabchanger_linkbutton">Archive</a>
+					</div>
+				
+					<div class="btn__footer">
+						<a href="/lodestone/news/category/2/" class="toptabchanger_linkbutton">Archive</a>
+					</div>
+				
+					<div class="btn__footer">
+						<a href="/lodestone/news/category/3/" class="toptabchanger_linkbutton">Archive</a>
+					</div>
+				
+					<div class="btn__footer">
+						<a href="/lodestone/news/category/4/" class="toptabchanger_linkbutton">Archive</a>
+					</div>
+				
+			</div>
+
+		</div>
+	</div>
+
+	<div class="ldst__side">
+		
+	
+		
+			<ul class="l__rside__bnr clearfix">
+	<li>
+		<a href="https://secure.square-enix.com/account/app/svc/mogstation/?utm_source=lodestone&utm_medium=pc_banner&utm_campaign=na_mogstation" target="_blank" class="l__rside__bnr--mog_station">
+			<img src="https://lds-img.finalfantasyxiv.com/h/1/71x9270TssyZ-BY15BGKLpQ3_U.png" width="150" height="48" alt="Mog Station">
+		</a>
+	</li>
+	<li>
+		<a href="https://store.finalfantasyxiv.com/ffxivstore/" target="_blank" class="l__rside__bnr--store">
+			<img src="https://lds-img.finalfantasyxiv.com/h/c/WT9jpRaUeWfj_sHl9O2DibFQFw.png" width="150" height="48" alt="">
+		</a>
+	</li>
+	<li>
+		<a href="https://forum.square-enix.com/ffxiv/forum.php?utm_source=lodestone&utm_medium=pc_banner&utm_campaign=na_forum" target="_blank" class="l__rside__bnr--forums">
+			<img src="https://lds-img.finalfantasyxiv.com/h/1/ENqmaGOvDLAmv2rsXL-19Y22qs.png" width="150" height="48" alt="Forums">
+		</a>
+	</li>
+	<li>
+		<a href="/pr/blog/?utm_source=lodestone&utm_medium=pc_banner&utm_campaign=na_officalblog" target="_blank" class="l__rside__bnr--blog">
+			<img src="https://lds-img.finalfantasyxiv.com/h/n/dzlIJG3KqRiEbORwH2d7LzyZaI.png" width="150" height="48" alt="Official Blog">
+		</a>
+	</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+	
+		
+			
+
+
+
+		
+	
+		
+			<div class="mb10"><a href="/crafting_gathering_guide/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_cgguide"><img src="https://lds-img.finalfantasyxiv.com/banner/1128/CGguide_v60_na.jpg"></a></div>
+		
+	
+		
+			<div class="mb10"><a href="/jobguide/battle/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_jobguide"><img src="https://lds-img.finalfantasyxiv.com/banner/1088/jobguide_v70_na.jpg"></a></div>
+		
+	
+		
+			<div class="mb10"><a href="/uiguide/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_uiguide"><img src="https://lds-img.finalfantasyxiv.com/banner/670/uiguide_na.jpg"></a></div>
+		
+	
+		
+			<div class="conducting_area">
+	
+		<img src="https://lds-img.finalfantasyxiv.com/h/T/UzTP8sFzvnaGOiIqs1jJLT0dKk.png" width="300" height="240" alt="">
+	
+	<div class="inr">
+		<a href="
+				http://freetrial.finalfantasyxiv.com/" class="bt_conducting">
+			<img src="https://lds-img.finalfantasyxiv.com/h/s/3KRua4vzZJvRXn0IMk8Da103bw.png" width="284" height="80" alt="Start Your Free Trial">
+		</a>
+		<a href="http://sqex.to/buyffxiv?utm_source=lodestone&utm_medium=pc_buyarea&utm_campaign=na_buynow" class="bt_conducting" target="_blank">
+				<img src="https://lds-img.finalfantasyxiv.com/h/p/to8CzK_gktAHpLuSGzCkNdLfWo.png" width="284" height="80" alt="BUY NOW!">
+		</a>			<a href="http://support.na.square-enix.com/faqarticle.php?id=5382&la=1&kid=70905" onmousedown="ga('send', 'event', 'lodestone_na', 'howtoupgrade_link', 'NA-lodestone-UG_20170620', true);" class="bt_ft_migration">			<img src="https://lds-img.finalfantasyxiv.com/h/0/5rrJdYAcP3if6zX6d62dHV3t34.png" width="260" height="80" alt="Upgrade Your Free Trial<br />to the Full Version">
+		</a>
+	</div>
+</div>
+
+
+
+
+
+
+		
+	
+		
+			<div class="mb10"><a href="https://starter-guide.finalfantasyxiv.com/na/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_starter-guide" target="_blank"><img src="https://lds-img.finalfantasyxiv.com/banner/1174/FFXIV_StarterGuide_WebsitePlacement_300x120_NA.jpg"></a></div>
+		
+	
+		
+			<div class="mb10"><a href="/tales_of_adventure/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_tales_of_adventure"><img src="https://lds-img.finalfantasyxiv.com/banner/1078/LDS_Tales_of_Adventure_v70_na.jpg"></a></div>
+		
+	
+		
+			<div class="mb10"><a href="/lodestone/special/friend_recruit/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_friendrecruit"><img src="https://lds-img.finalfantasyxiv.com/banner/202/RFC_na.jpg"></a></div>
+		
+	
+		
+			
+	
+		
+<div class="ldst__side__box">
+
+
+
+<div class="heading--side">
+	<h3>Community Wall</h3>
+	<a href="/lodestone/community/" class="heading--side__icon icon-list__side js__tooltip" data-tooltip="See More"></a>
+</div>
+<div class="heading__icon parts__space--reset js__toggle_wrapper">
+	<h4>Recent Activity</h4>
+	<i class="icon-btn__filter js__toggle_trigger js__tooltip" data-tooltip="Filter"></i>
+	<div class="parts__switch parts__switch--filter js__toggle_item">
+		<p class="parts__text">
+			Filter which items are to be displayed below.<br>
+			<span class="parts__text__notes">
+				* Notifications for standings updates are shared across all Worlds.<br>
+				* Notifications for PvP team formations are shared for all languages.<br>
+				* Notifications for free company formations are shared for all languages.
+			</span>
+		</p>
+		
+			
+<div class="form__horizontal js__communitywall_filter">
+	<input type="hidden" name="order" value=""><h5 class="heading--side--lead">Sort by</h5><ul class="form__row parts__spce--8"><li><input type="checkbox" name="community_type" value="blog" class="form__checkbox" id="community_type01"><label class="form__checkbox__label" for="community_type01">Blog</label></li><li><input type="checkbox" name="community_type" value="event" class="form__checkbox" id="community_type02"><label class="form__checkbox__label" for="community_type02">Event & Party Recruitment</label></li><li><input type="checkbox" name="community_type" value="fc" class="form__checkbox" id="community_type03"><label class="form__checkbox__label" for="community_type03">Free Company</label></li><li><input type="checkbox" name="community_type" value="db" class="form__checkbox" id="community_type04"><label class="form__checkbox__label" for="community_type04">Eorzea Database</label></li><li><input type="checkbox" name="community_type" value="ranking" class="form__checkbox" id="community_type05"><label class="form__checkbox__label" for="community_type05">Standings</label></li><li><input type="checkbox" name="community_type" value="pvpteam" class="form__checkbox" id="community_type06"><label class="form__checkbox__label" for="community_type06">PvP Team</label></li><li><input type="checkbox" name="community_type" value="community_finder" class="form__checkbox" id="community_type07"><label class="form__checkbox__label" for="community_type07">Community Finder</label></li></ul><h5 class="heading--side--lead">Data Center / Home World</h5><div class="select-pulldown"><label class="control-label" for="world"></label><select name="community_worldname" class="select-pulldown__open"><option value="">Select All</option><optgroup label="Data Center"><option value="_dc_Aether">Aether</option><option value="_dc_Crystal">Crystal</option><option value="_dc_Dynamis">Dynamis</option><option value="_dc_Primal">Primal</option><option value="_dc_Chaos">Chaos</option><option value="_dc_Light">Light</option><option value="_dc_Materia">Materia</option><option value="_dc_Elemental">Elemental</option><option value="_dc_Gaia">Gaia</option><option value="_dc_Mana">Mana</option><option value="_dc_Meteor">Meteor</option></optgroup><optgroup label="Home World"><option value="Adamantoise">Adamantoise</option><option value="Aegis">Aegis</option><option value="Alexander">Alexander</option><option value="Alpha">Alpha</option><option value="Anima">Anima</option><option value="Asura">Asura</option><option value="Atomos">Atomos</option><option value="Bahamut">Bahamut</option><option value="Balmung">Balmung</option><option value="Behemoth">Behemoth</option><option value="Belias">Belias</option><option value="Bismarck">Bismarck</option><option value="Brynhildr">Brynhildr</option><option value="Cactuar">Cactuar</option><option value="Carbuncle">Carbuncle</option><option value="Cerberus">Cerberus</option><option value="Chocobo">Chocobo</option><option value="Coeurl">Coeurl</option><option value="Cuchulainn">Cuchulainn</option><option value="Diabolos">Diabolos</option><option value="Durandal">Durandal</option><option value="Excalibur">Excalibur</option><option value="Exodus">Exodus</option><option value="Faerie">Faerie</option><option value="Famfrit">Famfrit</option><option value="Fenrir">Fenrir</option><option value="Garuda">Garuda</option><option value="Gilgamesh">Gilgamesh</option><option value="Goblin">Goblin</option><option value="Golem">Golem</option><option value="Gungnir">Gungnir</option><option value="Hades">Hades</option><option value="Halicarnassus">Halicarnassus</option><option value="Hyperion">Hyperion</option><option value="Ifrit">Ifrit</option><option value="Ixion">Ixion</option><option value="Jenova">Jenova</option><option value="Kraken">Kraken</option><option value="Kujata">Kujata</option><option value="Lamia">Lamia</option><option value="Leviathan">Leviathan</option><option value="Lich">Lich</option><option value="Louisoix">Louisoix</option><option value="Maduin">Maduin</option><option value="Malboro">Malboro</option><option value="Mandragora">Mandragora</option><option value="Marilith">Marilith</option><option value="Masamune">Masamune</option><option value="Mateus">Mateus</option><option value="Midgardsormr">Midgardsormr</option><option value="Moogle">Moogle</option><option value="Odin">Odin</option><option value="Omega">Omega</option><option value="Pandaemonium">Pandaemonium</option><option value="Phantom">Phantom</option><option value="Phoenix">Phoenix</option><option value="Rafflesia">Rafflesia</option><option value="Ragnarok">Ragnarok</option><option value="Raiden">Raiden</option><option value="Ramuh">Ramuh</option><option value="Ravana">Ravana</option><option value="Ridill">Ridill</option><option value="Sagittarius">Sagittarius</option><option value="Sargatanas">Sargatanas</option><option value="Sephirot">Sephirot</option><option value="Seraph">Seraph</option><option value="Shinryu">Shinryu</option><option value="Shiva">Shiva</option><option value="Siren">Siren</option><option value="Sophia">Sophia</option><option value="Spriggan">Spriggan</option><option value="Tiamat">Tiamat</option><option value="Titan">Titan</option><option value="Tonberry">Tonberry</option><option value="Twintania">Twintania</option><option value="Typhon">Typhon</option><option value="Ultima">Ultima</option><option value="Ultros">Ultros</option><option value="Unicorn">Unicorn</option><option value="Valefor">Valefor</option><option value="Yojimbo">Yojimbo</option><option value="Zalera">Zalera</option><option value="Zeromus">Zeromus</option><option value="Zodiark">Zodiark</option><option value="Zurvan">Zurvan</option></optgroup></select></div><h5 class="heading--side--lead">Primary language</h5><div class="select-pulldown"><label class="control-label" for="lang"></label><select name="community_lang" class="select-pulldown__open"><option value="">Select All</option><option value="ja">Japanese</option><option value="en">English</option><option value="de">German</option><option value="fr">French</option></select></div><h5 class="heading--side--lead">Displaying</h5><div class="select-pulldown"><label class="control-label" for="limit"></label><select name="community_limit" class="select-pulldown__open"><option value="10">10</option><option value="20">20</option><option value="30">30</option></select></div><div class="form__submit form__submit--full"><input type="submit" value="Filter" class="js__bt_communitywall_filter"></div>
+</div>
+
+		
+	</div>
+</div>
+
+
+<ul class="side__list__box">
+	
+
+	<div class="entry more_"><a href="/lodestone/character/49584370/blog/5685839/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header clearfix"><time class="entry__activity__time"><span id="datetime-953a6a3b9d5" class="datetime_dynamic_ymdhm" data-epoch="1778685773">-</span><script>document.getElementById('datetime-953a6a3b9d5').innerHTML = ldst_strftime_dynamic_ymdhm(1778685773);</script></time><div class="entry__activity__data"><p class="entry__activity__data--name">Dodondodon Okome</p><p class="entry__activity__data--world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Tiamat [Gaia]</p></div></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__blog js__tooltip"data-tooltip="Blog"></span></div><div class="entry__activity__txt--message"><p>Dodondodon Okome (<i class="xiv-lds xiv-lds-home-world"></i>Tiamat) posted a new blog entry, "タンクマウント、ゲットだぜ！."</p></div></div></div></a><a href="/lodestone/character/49584370/" class="entry__activity__link"><div class="entry__chara__face"><img src="https://img2.finalfantasyxiv.com/f/9f43f4e3ef724ee186249625b70cea93_9f10d335198e90990f3437c5733468e7fc0.jpg?1778683470" width="40" height="40" alt=""></div></a></div>
+
+
+	<div class="entry more_"><a href="/lodestone/character/23282295/blog/5685837/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header clearfix"><time class="entry__activity__time"><span id="datetime-aa5eef5d030" class="datetime_dynamic_ymdhm" data-epoch="1778685722">-</span><script>document.getElementById('datetime-aa5eef5d030').innerHTML = ldst_strftime_dynamic_ymdhm(1778685722);</script></time><div class="entry__activity__data"><p class="entry__activity__data--name">Ma Doux</p><p class="entry__activity__data--world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Goblin [Crystal]</p></div></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__blog js__tooltip"data-tooltip="Blog"></span></div><div class="entry__activity__txt--message"><p>Ma Doux (<i class="xiv-lds xiv-lds-home-world"></i>Goblin) posted a new blog entry, "現実のガーデニングの今1."</p></div></div></div></a><a href="/lodestone/character/23282295/" class="entry__activity__link"><div class="entry__chara__face"><img src="https://img2.finalfantasyxiv.com/f/1ded4f84b427b96d0c20b4e1c98ca33a_8e81e2940511f7152ba4462fe53e35b8fc0.jpg?1778684724" width="40" height="40" alt=""></div></a></div>
+
+
+	<div class="entry more_"><a href="/lodestone/freecompany/9230549648761069058/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header--common clearfix"><time class="entry__activity__time"><span id="datetime-9ef9777039e" class="datetime_dynamic_ymdhm" data-epoch="1778685207">-</span><script>document.getElementById('datetime-9ef9777039e').innerHTML = ldst_strftime_dynamic_ymdhm(1778685207);</script></time></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__fc js__tooltip"data-tooltip="Free Company"></span></div><div class="entry__activity__txt--message"><p>Cars (Ultima) has been formed.</p></div></div></div></a><div class="entry__activity__link"><img src="https://lds-img.finalfantasyxiv.com/h/9/_Huf58epDlt9vXiO8IIfPXxtXI.png" width="50" height="50" alt=""></div></div>
+
+
+	<div class="entry more_"><a href="/lodestone/freecompany/9281215144568837229/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header--common clearfix"><time class="entry__activity__time"><span id="datetime-f7efc147fa7" class="datetime_dynamic_ymdhm" data-epoch="1778685153">-</span><script>document.getElementById('datetime-f7efc147fa7').innerHTML = ldst_strftime_dynamic_ymdhm(1778685153);</script></time></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__fc js__tooltip"data-tooltip="Free Company"></span></div><div class="entry__activity__txt--message"><p>nanakumi (Golem) has been formed.</p></div></div></div></a><div class="entry__activity__link"><img src="https://lds-img.finalfantasyxiv.com/h/9/_Huf58epDlt9vXiO8IIfPXxtXI.png" width="50" height="50" alt=""></div></div>
+
+
+	<div class="entry more_"><a href="/lodestone/freecompany/9281215144568837230/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header--common clearfix"><time class="entry__activity__time"><span id="datetime-d3caf397da4" class="datetime_dynamic_ymdhm" data-epoch="1778685152">-</span><script>document.getElementById('datetime-d3caf397da4').innerHTML = ldst_strftime_dynamic_ymdhm(1778685152);</script></time></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__fc js__tooltip"data-tooltip="Free Company"></span></div><div class="entry__activity__txt--message"><p>carbuncle carnival (Golem) has been formed.</p></div></div></div></a><div class="entry__activity__link"><img src="https://lds-img.finalfantasyxiv.com/h/9/_Huf58epDlt9vXiO8IIfPXxtXI.png" width="50" height="50" alt=""></div></div>
+
+
+	<div class="entry more_"><a href="/lodestone/freecompany/9229423748854223448/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header--common clearfix"><time class="entry__activity__time"><span id="datetime-63ee41338c4" class="datetime_dynamic_ymdhm" data-epoch="1778685121">-</span><script>document.getElementById('datetime-63ee41338c4').innerHTML = ldst_strftime_dynamic_ymdhm(1778685121);</script></time></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__fc js__tooltip"data-tooltip="Free Company"></span></div><div class="entry__activity__txt--message"><p>Usagi Tarte (Alexander) has been formed.</p></div></div></div></a><div class="entry__activity__link"><img src="https://lds-img.finalfantasyxiv.com/h/9/_Huf58epDlt9vXiO8IIfPXxtXI.png" width="50" height="50" alt=""></div></div>
+
+
+	<div class="entry more_"><a href="/lodestone/freecompany/9236179148295290666/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header--common clearfix"><time class="entry__activity__time"><span id="datetime-b7e435814e9" class="datetime_dynamic_ymdhm" data-epoch="1778685114">-</span><script>document.getElementById('datetime-b7e435814e9').innerHTML = ldst_strftime_dynamic_ymdhm(1778685114);</script></time></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__fc js__tooltip"data-tooltip="Free Company"></span></div><div class="entry__activity__txt--message"><p>just a guy (Balmung) has been formed.</p></div></div></div></a><div class="entry__activity__link"><img src="https://lds-img.finalfantasyxiv.com/h/9/_Huf58epDlt9vXiO8IIfPXxtXI.png" width="50" height="50" alt=""></div></div>
+
+
+	<div class="entry more_"><a href="/lodestone/character/60780270/blog/5685836/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header clearfix"><time class="entry__activity__time"><span id="datetime-429a4ba0997" class="datetime_dynamic_ymdhm" data-epoch="1778685111">-</span><script>document.getElementById('datetime-429a4ba0997').innerHTML = ldst_strftime_dynamic_ymdhm(1778685111);</script></time><div class="entry__activity__data"><p class="entry__activity__data--name">Mikeneko Katzel</p><p class="entry__activity__data--world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Pandaemonium [Mana]</p></div></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__blog js__tooltip"data-tooltip="Blog"></span></div><div class="entry__activity__txt--message"><p>Mikeneko Katzel (<i class="xiv-lds xiv-lds-home-world"></i>Pandaemonium) posted a new blog entry, "空も飛べるはず."</p></div></div></div></a><a href="/lodestone/character/60780270/" class="entry__activity__link"><div class="entry__chara__face"><img src="https://img2.finalfantasyxiv.com/f/8758924280b5ad3496ecc50d79e43896_470db1bf2e865f9130531fea40b61ee4fc0.jpg?1778684310" width="40" height="40" alt=""></div></a></div>
+
+
+	<div class="entry more_"><a href="/lodestone/freecompany/9236882835737057836/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header--common clearfix"><time class="entry__activity__time"><span id="datetime-e51b7883e78" class="datetime_dynamic_ymdhm" data-epoch="1778685111">-</span><script>document.getElementById('datetime-e51b7883e78').innerHTML = ldst_strftime_dynamic_ymdhm(1778685111);</script></time></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__fc js__tooltip"data-tooltip="Free Company"></span></div><div class="entry__activity__txt--message"><p>Fairy Mercy (Masamune) has been formed.</p></div></div></div></a><div class="entry__activity__link"><img src="https://lds-img.finalfantasyxiv.com/h/9/_Huf58epDlt9vXiO8IIfPXxtXI.png" width="50" height="50" alt=""></div></div>
+
+
+	<div data-min_id="8348309316" class="entry more_"data-has_next=""><a href="/lodestone/freecompany/9234631035923377604/" class="entry__activity"><div class="entry__activity__box"><div class="entry__activity__box__header--common clearfix"><time class="entry__activity__time"><span id="datetime-8ef67a506f8" class="datetime_dynamic_ymdhm" data-epoch="1778685050">-</span><script>document.getElementById('datetime-8ef67a506f8').innerHTML = ldst_strftime_dynamic_ymdhm(1778685050);</script></time></div><div class="entry__activity__txt"><div class="entry__activity__txt--icon"><span class="icon-activity__fc js__tooltip"data-tooltip="Free Company"></span></div><div class="entry__activity__txt--message"><p>bbbnnnunyy (Cerberus) has been formed.</p></div></div></div></a><div class="entry__activity__link"><img src="https://lds-img.finalfantasyxiv.com/h/9/_Huf58epDlt9vXiO8IIfPXxtXI.png" width="50" height="50" alt=""></div></div>
+
+
+
+
+</ul>
+
+
+</div>
+
+
+
+<div class="ldst__side__box">
+
+
+
+
+<div class="heading--side">
+	<h3>Standings</h3>
+	<a href="/lodestone/ranking/" class="heading--side__icon icon-list__side js__tooltip" data-tooltip="See More"></a>
+</div>
+
+
+<h4 class="heading--side--sm">Crystalline Conflict Standings</h4>
+
+	<ul>
+					<li class="entry__ranking">
+				<a href="/lodestone/ranking/crystallineconflict/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						1
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Crow Meow</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Jenova [Aether]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/54328117/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/7eded062751a7f80f7f3d9fbe0ab8e34_ce736afe35e2ded4e46c4fd0659aef7efc0.jpg?1778683799" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+					<li class="entry__ranking">
+				<a href="/lodestone/ranking/crystallineconflict/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						2
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Miyu Moon</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Mateus [Crystal]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/14522179/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/3562f4cf44aad7d526acbf8fae3937b0_f0c52cc66e124fc2e641d7c21ab2ce79fc0.jpg?1778685167" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+					<li class="entry__ranking">
+				<a href="/lodestone/ranking/crystallineconflict/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						3
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Ahri Meow</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Leviathan [Primal]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/42604315/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/99498e3de5cc49aacddccc855d4ee19d_a91aae52cff9ef65932db06b150ffd47fc0.jpg?1778685580" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+		
+	</ul>
+
+
+
+
+<h4 class="heading--side--sm">Grand Company Standings</h4>
+
+	<ul>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/gc/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						1
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Miya Albert</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Chocobo [Mana]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/25151296/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/71a624472b1c0ab62d598d92fd48b323_781d6b3603312f6be41670afa37282e0fc0.jpg?1778685699" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/gc/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						2
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Cocora Curry</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Valefor [Meteor]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/3230226/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/a831b23892540804a15387a98e94209e_485f4777c38002871591fb54f27edc65fc0.jpg?1778685099" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/gc/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						3
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Machina Mensis</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Titan [Mana]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/31263178/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/c1a4cf952e217900306fca2c7f676aa4_e2bb3f9679fec6d4836fcf8abcc3eeacfc0.jpg?1778685492" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+		
+	</ul>
+
+
+
+<h4 class="heading--side--sm">Free Company Standings</h4>
+
+	<ul>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/fc/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						1
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Matatabi</p>
+
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Chocobo [Mana]</p>
+					</div>
+				</a>
+				<a href="/lodestone/freecompany/9233223661039720296/" class="entry__ranking__crest">
+					
+
+		
+		<img src="https://img2.finalfantasyxiv.com/c/F00_f4d64b4d75ce7d3be3ba37e24ccc7830_00_40x40.png" width="40" height="40">
+		<img src="https://img2.finalfantasyxiv.com/c/S26_efef0e4b3e75f1669fc47c7b0e82dd50_02_40x40.png" width="40" height="40">
+
+
+				</a>
+			</li>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/fc/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						2
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">I love curry</p>
+
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Valefor [Meteor]</p>
+					</div>
+				</a>
+				<a href="/lodestone/freecompany/9230690386249266392/" class="entry__ranking__crest">
+					
+
+		
+			<img src="https://img2.finalfantasyxiv.com/c/B29_66e1ec99b6b0f1fda63da8a761fa3ec4_99_40x40.png" width="40" height="40">
+		
+		<img src="https://img2.finalfantasyxiv.com/c/F09_9adb6d5d52b0c3c95f1fd402f7783382_00_40x40.png" width="40" height="40">
+		<img src="https://img2.finalfantasyxiv.com/c/S36_0a61de430f632982469dbd0f05e9aadb_03_40x40.png" width="40" height="40">
+
+
+				</a>
+			</li>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/fc/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						3
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Metal Woman</p>
+
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Titan [Mana]</p>
+					</div>
+				</a>
+				<a href="/lodestone/freecompany/9231957023644577854/" class="entry__ranking__crest">
+					
+
+		
+			<img src="https://img2.finalfantasyxiv.com/c/B06_0c57f4fd51443d29a9ee006603fb90e2_3b_40x40.png" width="40" height="40">
+		
+		<img src="https://img2.finalfantasyxiv.com/c/F0b_ba7058bc3a9691edea6542b7a94a5872_00_40x40.png" width="40" height="40">
+		<img src="https://img2.finalfantasyxiv.com/c/S21_69a9f78afb8406b5dd0a07f8b00b82bf_02_40x40.png" width="40" height="40">
+
+
+				</a>
+			</li>
+		
+	</ul>
+
+
+
+<h4 class="heading--side--sm">Frontline Standings</h4>
+
+	<ul>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/frontline/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						1
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Sara Kiki</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Twintania [Light]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/41337960/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/68812b87a9696aa37e66983a6569a3dd_c33f640c0cdd35f7def85b8aa31a0007fc0.jpg?1778685785" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/frontline/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						2
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Alba Heartily</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Unicorn [Meteor]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/59799186/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/c8a7c248869e4984085352be22c453f8_393eb74047bb90c8d80dea54218430eefc0.jpg?1778685249" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/frontline/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						3
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Luka Nadyasch</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Valefor [Meteor]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/35729418/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/22a08fbe8dafac7eeecc1ce52ff351b6_485f4777c38002871591fb54f27edc65fc0.jpg?1778684331" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+		
+			<li class="entry__ranking">
+				<a href="/lodestone/ranking/frontline/weekly/" class="entry__ranking__link">
+					<p class="entry__ranking__rank">
+						3
+					</p>
+					<div class="entry__ranking__data">
+						<p class="entry__name">Raiin Lii</p>
+						<p class="entry__world"><i class="xiv-lds xiv-lds-home-world js__tooltip" data-tooltip="Home World"></i>Adamantoise [Aether]</p>
+					</div>
+				</a>
+				
+					<a href="/lodestone/character/15588039/" class="entry__ranking__face">
+						<img src="https://img2.finalfantasyxiv.com/f/f57131ddb0e7a350bf4301889187f88c_1f5fd239b885860b7c2bfc72ad1d97effc0.jpg?1778684696" width="50" height="50" alt="">
+					</a>
+				
+			</li>
+		
+	</ul>
+
+
+</div>
+
+
+	
+
+
+		
+	
+
+
+	</div>
+</div>
+
+
+	</div>
+
+	
+		<ul class="ldst__banner clearfix">
+	
+		<li><a href="/lodestone/special/fankit/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_fankit">
+			<img src="https://lds-img.finalfantasyxiv.com/banner/377/fankit_na_300x80.jpg" width="300" height="80" alt="">
+		</a></li>
+	
+		<li><a href="/lodestone/playguide/option_service/additional_retainer/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_optionservice">
+			<img src="https://lds-img.finalfantasyxiv.com/banner/250/bn_optionalservices_en-gb.png" width="300" height="80" alt="">
+		</a></li>
+	
+		<li><a href="https://www.finalfantasyxiv.com/eternalbond/na/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_eternalbond">
+			<img src="https://lds-img.finalfantasyxiv.com/banner/265/bn_eternalbonding_en-gb.png" width="300" height="80" alt="">
+		</a></li>
+	
+		<li><a href="/companion/?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_app-companion">
+			<img src="https://lds-img.finalfantasyxiv.com/banner/610/ffxivcompanion2_300x80.jpg" width="300" height="80" alt="">
+		</a></li>
+	
+		<li><a href="http://embody.co/ffxiv?utm_source=lodestone&amp;utm_medium=pc_banner&amp;utm_campaign=na_immerse" target="_blank">
+			<img src="https://lds-img.finalfantasyxiv.com/banner/1098/immerse_na.png" width="300" height="80" alt="">
+		</a></li>
+	
+</ul>
+	
+</div>
+
+	<div id="link_spsite" class="link_sp-site"><a href="javascript:void(0)">Mobile Version</a></div><footer class="l__footer"><div class="page-top"><span class="page-top__btn"></span></div><div class="l__footer__inner"><div class="l__footer__logo"><a href="/lodestone/"><img src="https://lds-img.finalfantasyxiv.com/h/L/EbtcXqPUGzsVYdi23FpUR25oH4.png" width="320" height="32" alt=""></a></div><div class="l__footer__shop"><a href="/lodestone/playguide/#returner" class="l__footer__shop__btn">Game Download</a></div><p class="l__footer__officiel">Official Information</p><ul class="l__footer__sns"><li><a href="https://www.facebook.com/finalfantasyxiv" target="_blank" class="l__footer__sns--link"><i class="xiv-lds xiv-lds-facebook xiv-lds-3x"></i><span>Facebook</span></a></li><li class="l__footer__sns--twitter"><a href="https://x.com/ff_xiv_en" target="_blank"><i class="xiv-lds xiv-lds-x xiv-lds-3x"></i>X</a> / <a href="https://x.com/FFXIV_NEWS_EN" target="_blank">News</a></li><li><a href="http://www.youtube.com/finalfantasyxiv" target="_blank" class="l__footer__sns--link"><i class="xiv-lds xiv-lds-youtube xiv-lds-3x"></i><span>YouTube</span></a></li><li><a href="https://www.instagram.com/ffxiv/" target="_blank" class="l__footer__sns--link"><i class="xiv-lds xiv-lds-instagram xiv-lds-3x"></i><span>Instagram</span></a></li><li><a href="https://www.twitch.tv/finalfantasyxiv" target="_blank" class="l__footer__sns--link"><i class="xiv-lds xiv-lds-twitch xiv-lds-3x"></i><span>Twitch</span></a></li><li><a href="https://bsky.app/profile/en.finalfantasyxiv.com" target="_blank" class="l__footer__sns--link"><i class="xiv-lds xiv-lds-bluesky xiv-lds-3x"></i><span>Bluesky</span></a></li></ul><ul class="l__footer__link-list"><li class="link_license" id="link_license"><a href="/license/" target="_blank">License</a></li><li><a href="https://support.na.square-enix.com/rule.php?id=5382&la=1" target="_blank">Rules & Policies</a></li><li><a href="https://square-enix-games.com/en_US/documents/privacy" target="_blank">Privacy Notice</a></li><li><a href="https://square-enix-games.com/en_US/documents/cookies" target="_blank">Cookies Notice</a></li><li><a href="https://support.square-enix-games.com/s/ccpaoptout" target="_blank">Do Not Sell or Share My Personal Information</a></li></ul></div><div class="l__footer__legal-area"><div class="l__footer__legal-area__inner clearfix"><div class="l__footer__legal-area__box"><ul class="l__footer__legal-area__bnr-list"><li><a href="https://www.playstation.com/en-us/" target="_blank"><img src="https://lds-img.finalfantasyxiv.com/h/_/45sv0DETIHyh_gl2FyLgD6kUJE.png" width="245" height="39" alt="PlayStation PS5 PS4"></a></li><li><img src="https://lds-img.finalfantasyxiv.com/h/M/5T9l7AE_cSDlsD4EM4rjEQRgCE.png" width="227" height="39" alt="XBOX SERIES XIS"></li><li><img src="https://lds-img.finalfantasyxiv.com/h/v/oxRQz2cT8riqV5VLCu2-nADVkE.png" width="42" height="39" alt="PC"></li><li><img src="https://lds-img.finalfantasyxiv.com/h/v/hyXqlwktN4v0EssRTzkbMf_7OQ.png" width="30" height="39" alt="Mac"></li><li><img src="https://lds-img.finalfantasyxiv.com/h/U/15QxPO___EcPlhMI9ydNRRxEY8.png" width="90" height="39" alt="STEAM"></li></ul><ul class="l__footer__legal-area__bnr-list na"><li><a href="http://www.esrb.org/" target="_blank"><img src="https://lds-img.finalfantasyxiv.com/h/E/8R4FrEQFMaGtRtuRNMU0nhfZ9c.png" width="200" height="95" alt="ESRB Ratings"></a></li><li><a href="http://www.esrb.org/confirm/squareenix-confirmation.aspx" target="_blank"><img src="https://lds-img.finalfantasyxiv.com/h/i/OfvDbUY2NolZsL2r-nN_N8G6Sc.png" width="64" height="87" alt="ESRB"></a><a href="https://square-enix-games.com/en_US/documents/privacy" target="_blank" class="l__footer__legal-area__bnr-list--text_link esrb">Privacy Notice</a></li></ul><p class="l__footer__legal-area__text">&copy;2026 Sony Interactive Entertainment LLC."PlayStation Family Mark", "PlayStation", "PS5 logo", "PS5", "PS4 logo" and "PS4" are registered trademarks or trademarks of Sony Interactive Entertainment Inc.<br />Microsoft, the Xbox Sphere mark, the Series X|S logo and Xbox Series X|S are trademarks of the Microsoft group of companies.<br />Windows is either a registered trademark or trademark of Microsoft Corporation in the United States and/or other countries.<br />MAC is a trademark of Apple Inc., registered in the U.S. and other countries.<br />&copy;2026 Valve Corporation. Steam and the Steam logo are trademarks and/or registered trademarks of Valve Corporation in the U.S. and/or other countries.<br />ESRB and the ESRB rating icon are registered trademarks of the Entertainment Software Association. <br />All other trademarks are property of their respective owners.</p></div><div class="l__footer__legal-area__box"><p class="l__footer__legal-area__copyright">© SQUARE ENIX<br />Square Enix, Inc.,  999 N. Pacific Coast Highway, El Segundo, California 90245  <br>LOGO ILLUSTRATION:© YOSHITAKA AMANO</p></div></div></div></footer>
+
+
+
+
+<script src="https://lds-img.finalfantasyxiv.com/pc/en-us/js/i18n.js?1777584521"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/7/khZLR__lS_PBs4LZm7UeFSTr9w.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/g/uQNBgvCaabd4gw5kMpaT-psp1Q.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/b/RKD_bGx738E81TyiPQN4kGf-_Y.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/Z/wqo4GxX1wALdnxx6xOv38NxFVY.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/e/TSPHxkEhdcyaPMm0rpoBtk1dZA.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/6/z0eVVJmQzwrm9wpLxwxsLqUL4Q.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/J/_A05duMMuJo4pWbmnwSWNNuRRA.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/8/b_tPmOnEw1tyr2dp2InkGxUlMA.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/Y/6WaukM6m3WFE2JXrCEb6tsknik.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/l/dmowllk61MDsDA64pZqroR5OIw.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/b/FkBB5p3o0eSCLER2GCrmv2qvLk.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/V/6HyqXCkjgk21c-wPWUwv57Cubk.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/-/-A1gnsYCMckjdruzZT-WfgevBg.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/S/7-Q0K-ExtOpkcmgNFSIzKfeEiM.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/m/frS9tr4pNIFJN6EqyjEYY-wtbM.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/e/NjxR-JLJJRJA7Id6zOqfLHAHu4.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/4/RXDdD0ATfoUyYIA4Ygh1l5PH4U.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/u/kT-Uc5bStNbLIYU4HvTpzY-UX4.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/0/f52zA7ACWvjEMB1oWe8kfyGWH0.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/l/-_ePiHXNE_1t8LnRcmRAbhRME8.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/P/MYGDtxveSuUwuhprm8oj1Hhuq8.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/F/537IFhrnUY-z_UKOewrVygH8hQ.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/n/HMQm8_JEoqrSmuv5RmmKgTldGc.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/Q/LtjR4cJNfcqpn77CwrcIbf7-YE.js"></script>
+<script src="https://lds-img.finalfantasyxiv.com/h/X/J7UcY_5xEsN6Q3Y7YuyzgUgP-U.js"></script>
+
+
+<div id="dialog_bg" style="opacity:0; visibility: hidden;"></div>
+<!-- dialog -->
+<div name="ldstDialog" class="overlay__area js__overlay" style="opacity:0; visibility: hidden; top: 0px">
+	<p class="overlay__text--icon"></p>
+
+	<div class="outbound_consent hide">
+		<input type="checkbox" name="outbound_consent" value="1" id="outbound_consent" class="form__checkbox">
+		<label for="outbound_consent" class="form__checkbox__label form__outbound">
+			Do not show this message again.
+		</label>
+	</div>
+
+	<!-- SIMPLE DIALOG -->
+	<a href="javascript:void(0);" class="js__dialog_btn btn__color--radius js__overlay_ok">Confirm</a>
+	<!-- //SIMPLE DIALOG -->
+	<!-- CONFIRM DIALOG -->
+	<ul class="js__dialog_btn overlay__btn js__overlay_btn">
+		<li><a href="javascript:void(0);" class="js__overlay_yes">Yes</a></li>
+		<li><a href="javascript:void(0);" class="js__overlay_no">No</a></li>
+	</ul>
+	<!-- //CONFIRM DIALOG -->
+</div>
+<!-- //dialog -->
+
+
+</body>
+</html>
