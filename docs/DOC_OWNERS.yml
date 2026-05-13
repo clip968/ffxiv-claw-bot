@@ -1,0 +1,27 @@
+tools/sync_drive.py:
+  required_docs:
+    - docs/specs/0003-google-drive-sync.md
+    - docs/runbooks/sync-drive.md
+    - docs/handoff/CURRENT_HANDOFF.md
+
+tests/test_sync_drive.py:
+  required_docs:
+    - docs/specs/0003-google-drive-sync.md
+    - docs/runbooks/sync-drive.md
+
+scripts/check_docs_freshness.py:
+  required_docs:
+    - docs/WORKFLOW.md
+    - docs/runbooks/finish-task.md
+    - docs/handoff/CURRENT_HANDOFF.md
+
+scripts/finish_task.py:
+  required_docs:
+    - docs/WORKFLOW.md
+    - docs/runbooks/finish-task.md
+    - docs/handoff/CURRENT_HANDOFF.md
+
+scripts/sync_notion_handoff.py:
+  required_docs:
+    - docs/runbooks/notion-sync.md
+    - docs/handoff/CURRENT_HANDOFF.md

@@ -1,4 +1,4 @@
-# Post-v0.3 Next Steps
+# Post-v0.3 Dry-run Next Steps
 
 ## Status
 
@@ -12,9 +12,30 @@ Proposed
 - v0.2 graph layer
 - v0.3 manifest 기반 Google Drive sync dry-run
 
-이번 문서는 v0.3 이후 후보를 작은 구현 단위로 나눈다. 아래 기능들은 이번 문서 작업에서 구현하지 않는다.
+이번 문서는 v0.3 Google Drive sync dry-run 완료 이후 후보를 작은 구현 단위로 나눈다. 아래 기능들은 이번 문서 작업에서 구현하지 않는다.
 
-## 후보 1: 실제 Google Drive API 인증/조회 설계
+## 후보 1: manifest 기반 --apply 구현
+
+작은 단위:
+
+1. manifest fixture의 content를 `raw/drive/<category>/...`에 저장한다.
+2. Drive 문서를 `sources.source_type = drive_document`로 DB upsert한다.
+3. `source_url = gdrive://<drive_file_id>`와 `content_hash` 기준으로 기존 row를 안정적으로 갱신한다.
+4. 같은 manifest를 여러 번 실행해도 중복 raw 저장과 중복 DB row가 생기지 않도록 idempotent 동작을 보장한다.
+5. 기존 `--dry-run --manifest ...` 동작과 JSON 출력 계약을 유지한다.
+6. manifest 기반 `--apply` unittest를 추가한다.
+
+검증 후보:
+
+- `python -m unittest tests.test_sync_drive`
+- `python -m unittest discover -s tests -p "test_*.py"`
+
+주의:
+
+- 이 단계는 여전히 실제 Google Drive API/OAuth/export-download를 구현하지 않는다.
+- fixture 기반 local apply만 다룬다.
+
+## 후보 2: 실제 Google Drive API 인증/조회 설계
 
 작은 단위:
 
@@ -27,7 +48,7 @@ Proposed
 
 - TODO: Google Drive API dependency와 인증 방식 확정 후 작성
 
-## 후보 2: Google Docs export/download 구현
+## 후보 3: Google Docs export/download 구현
 
 작은 단위:
 
@@ -38,10 +59,9 @@ Proposed
 
 검증 후보:
 
-- manifest fixture 기반 local content write test
 - 실제 Drive API test는 기본 unittest에서 제외
 
-## 후보 3: Drive 변경 감지 후 wiki/FTS/graph 재빌드 연결
+## 후보 4: Drive 변경 감지 후 wiki/FTS/graph 재빌드 연결
 
 작은 단위:
 
@@ -54,7 +74,7 @@ Proposed
 
 - 현재 `compile_wiki.py`는 HTML text extraction 중심이다. Drive markdown/text 처리 지원 여부는 TODO다.
 
-## 후보 4: Discord/OpenClaw 연결
+## 후보 5: Discord/OpenClaw 연결
 
 작은 단위:
 
@@ -67,7 +87,7 @@ Proposed
 
 - Discord/OpenClaw 연결은 v0.3 범위가 아니다.
 
-## 후보 5: 패치노트 자동 수집
+## 후보 6: 패치노트 자동 수집
 
 작은 단위:
 
@@ -79,7 +99,7 @@ Proposed
 
 - 자동 패치노트 크롤링은 명시 요청 전까지 구현하지 않는다.
 
-## 후보 6: 검색 품질 평가
+## 후보 7: 검색 품질 평가
 
 작은 단위:
 
@@ -88,7 +108,7 @@ Proposed
 3. FTS + graph path 결과를 평가한다.
 4. 실패 query를 spec/alias 개선 후보로 기록한다.
 
-## 후보 7: embedding/vector DB 검토
+## 후보 8: embedding/vector DB 검토
 
 상태:
 

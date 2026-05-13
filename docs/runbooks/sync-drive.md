@@ -22,12 +22,6 @@ tests/fixtures/drive_manifest.json
 python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json
 ```
 
-다른 DB 파일과 비교하려면:
-
-```bash
-python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json --db-path db/ffxiv.sqlite
-```
-
 ## 출력 JSON 해석
 
 최상위:
@@ -56,6 +50,8 @@ raw/drive/<category>/<safe_title>__<drive_file_id>.<ext>
 `--apply`는 현재 구현되어 있지 않다.
 
 현재 `tools/sync_drive.py`는 `--dry-run` 없이 실행하면 parser error를 반환한다.
+
+TODO: manifest 기반 `--apply`가 구현되면 실제 실행 명령을 추가한다.
 
 ## 현재 한계
 

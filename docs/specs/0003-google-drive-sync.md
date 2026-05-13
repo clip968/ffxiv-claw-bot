@@ -6,7 +6,7 @@ Accepted
 
 ## Scope
 
-이 spec은 v0.3 Google Drive sync의 현재 구현 계약을 정의한다.
+이 spec은 v0.3 Google Drive sync dry-run 완료 기준의 현재 구현 계약을 정의한다.
 
 현재 구현 파일:
 
@@ -31,11 +31,13 @@ Drive 문서는 로컬에서 직접 편집하는 것이 아니라 Drive 원본�
 
 Drive 문서는 `sources.source_type = drive_document`로 기록한다.
 
-현재 v0.3 구현은 DB write를 하지 않는다. 기존 DB record를 읽어 `source_url = gdrive://<drive_file_id>` 형식의 row와 비교한다.
+현재 v0.3 dry-run 구현은 DB write를 하지 않는다. 기존 DB record를 읽어 `source_url = gdrive://<drive_file_id>` 형식의 row와 비교한다.
+
+manifest 기반 `--apply` 구현 전까지 `sources.source_type = drive_document` upsert는 완료된 기능이 아니다.
 
 ## Manifest 기반 dry-run
 
-현재 구현된 CLI는 manifest 기반 dry-run만 지원한다.
+현재 구현된 CLI는 manifest 기반 dry-run만 지원한다. 이 범위가 v0.3에서 완료된 부분이다.
 
 ```bash
 python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json
@@ -137,7 +139,14 @@ item 주요 필드:
 
 manifest 기반 `--apply`는 현재 구현되어 있지 않다.
 
-현재 v0.3은 dry-run으로 동기화 계획을 검증하는 단계다. 파일 write, `sources` upsert, wiki/FTS/graph rebuild 연결은 이후 작업이다.
+현재 v0.3 dry-run 완료 상태는 동기화 계획 검증까지만 포함한다.
+
+아직 완료되지 않은 apply 범위:
+
+- fixture content를 `raw/drive`에 실제 저장
+- `sources.source_type = drive_document` DB upsert
+- 같은 manifest 반복 실행 시 안정적인 idempotent 동작
+- wiki/FTS/graph rebuild 연결
 
 ## Idempotent 재실행 원칙
 
@@ -145,8 +154,11 @@ manifest 기반 `--apply`는 현재 구현되어 있지 않다.
 
 향후 apply 구현은 같은 Drive file id와 같은 content hash에 대해 중복 raw 저장과 중복 DB row 생성을 하지 않아야 한다.
 
-## v0.3 범위 밖
+## v0.3 dry-run 완료 범위 밖
 
+- manifest 기반 `--apply`
+- 실제 `raw/drive` 저장
+- `sources` DB upsert
 - 실제 OAuth
 - 실제 Google Drive API 호출
 - Google Docs export/download
@@ -154,7 +166,7 @@ manifest 기반 `--apply`는 현재 구현되어 있지 않다.
 - embedding/vector DB
 - Drive 변경 감지 후 wiki/FTS/graph 자동 재빌드
 
-## 성공 기준
+## v0.3 dry-run 성공 기준
 
 - `sync_drive.py --dry-run --manifest ...`가 JSON을 출력한다.
 - Drive item이 `new`, `changed`, `unchanged`, `skipped`로 분류된다.
