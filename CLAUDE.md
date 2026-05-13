@@ -69,6 +69,8 @@ Before starting any non-trivial coding task:
 - Wiki compile: `python tools/compile_wiki.py --source-id <id>`
 - Search: `python tools/search_kb.py <query>`
 - Answer (context pack): `python tools/answer.py <question>`
+- Build graph: `python tools/build_graph.py`
+- Graph query: `python tools/graph_path.py --source <node_id>`
 - Git commit: `git add . && git commit -m "feat: 설명" && git push`
 - Session log: `logs/YYYY-MM-DD.md`
 
