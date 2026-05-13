@@ -33,7 +33,8 @@
 3. **작업 완료 후**
    - `git add . && git commit -m "설명"`
    - `git push`
-   - `memory.md`에 위 양식으로 요약을 작성한다.
+   - `logs/YYYY-MM-DD.md`에 위 양식으로 요약을 작성한다.
+   - `logs/` 디렉터리의 최신 파일을 확인하여 진행 상황을 추적한다.
 4. **요약 작성 기준**
    - **변경한 파일**: 추가/수정/삭제된 모든 파일을 나열
    - **변경 이유**: 왜 이 변경이 필요했는지
@@ -46,33 +47,8 @@
 
 ---
 
-## 세션 기록
+## 세션 로그
 
-### 2026-05-14
+모든 세션 기록은 `logs/` 디렉터리에 날짜별 파일로 저장됩니다.
 
-#### 변경한 파일
-- `agent.md` — 추가 (FFXIV Knowledge Agent 역할 정의)
-- `memory.md` — 추가 (개발 세션 기록 및 작업 규칙)
-- `tools/init_db.py` — 추가 (DB 스키마 초기화: sources, wiki_pages, wiki_fts, graph_nodes, graph_edges, ingest_log)
-- `tools/ingest_url.py` — 추가 (URL 입력 → HTML 다운로드 → raw 저장 → hash 계산 → sources 테이블 기록)
-- `config/aliases.yaml` — 추가
-- `config/sources.yaml` — 추가
-- `config/tool_config.yaml` — 추가
-- `wiki/index.md` — 추가
-- `db/ffxiv.sqlite` — 추가 (SQLite DB with 6 tables + FTS5)
-- `raw/urls/*.html` — 추가 (Lodestone 테스트 수집 결과)
-
-#### 변경 이유
-- 프로젝트의 기반이 되는 DB 초기화 및 URL 수집 기능을 먼저 구현
-- DB가 있어야 ingest_url, compile_wiki, search_kb 등 후속 기능을 붙일 수 있음
-
-#### 변경 내용
-- DB 스키마: sources(URL 메타데이터), wiki_pages(컴파일된 위키), wiki_fts(FTS5 전문검색), graph_nodes/edges(지식 그래프), ingest_log(수집 로그)
-- ingest_url: requests로 HTML 다운로드 → SHA256 중복 검사 → BeautifulSoup title 추출 → raw/urls/에 저장 → sources 테이블 INSERT
-- 중복 방지: content_hash 기준으로 동일 내용 URL 재수집 방지
-
-#### 결과물
-- `python tools/ingest_url.py <URL>` 실행 시 JSON 결과 출력
-- DB `sources` 테이블에 메타데이터 저장
-- `raw/urls/`에 원본 HTML 파일 저장
-- 동일 URL 중복 실행 시 `deduplicated: true` 반환
+- `logs/2026-05-14.md` — 프로젝트 초기 세팅
