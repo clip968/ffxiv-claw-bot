@@ -10,6 +10,21 @@ ROOT = Path(__file__).resolve().parents[1]
 DB_PATH = ROOT / "db" / "ffxiv.sqlite"
 
 
+def lookup_graph_paths(conn: sqlite3.Connection, page_id: str) -> list[str]:
+    """Find graph edges involving this page and return readable path strings."""
+    graph_node_id = f"page:{page_id}"
+    rows = conn.execute(
+        """
+        SELECT source_id, target_id, type
+        FROM graph_edges
+        WHERE source_id = ? OR target_id = ?
+        ORDER BY type
+        """,
+        (graph_node_id, graph_node_id),
+    ).fetchall()
+    return [f"{r[0]} --{r[2]}--> {r[1]}" for r in rows]
+
+
 def search_fts(query: str) -> list[dict]:
     results: list[dict] = []
 
@@ -31,13 +46,16 @@ def search_fts(query: str) -> list[dict]:
         ).fetchall()
 
         for row in rows:
+            page_id = row[0]
+            graph_paths = lookup_graph_paths(conn, page_id)
             results.append({
-                "page_id": row[0],
+                "page_id": page_id,
                 "title": row[1],
                 "type": row[2],
                 "path": row[3],
                 "score": row[4],
                 "snippet": row[5],
+                "graph_paths": graph_paths,
             })
 
     return results
