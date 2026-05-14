@@ -144,6 +144,135 @@ class SyncDriveTests(unittest.TestCase):
         self.assertEqual(result["summary"]["new"], 1)
         self.assertEqual(result["summary"]["changed"], 1)
 
+    def test_apply_writes_new_and_changed_raw_files_and_upserts_sources(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_path = Path(tmp_dir)
+            db_path = root_path / "ffxiv.sqlite"
+            create_sources_db(db_path)
+
+            result = sync_drive.apply_sync(
+                Path("tests/fixtures/drive_manifest.json"),
+                db_path,
+                root_path,
+            )
+
+            self.assertEqual(result["status"], "ok")
+            self.assertIs(result["dry_run"], False)
+            self.assertEqual(
+                result["summary"],
+                {
+                    "new": 1,
+                    "changed": 1,
+                    "unchanged": 1,
+                    "skipped": 1,
+                },
+            )
+
+            new_raw = (
+                root_path
+                / "raw/drive/job_guides/black_mage_7.5_guide__drive_file_001.md"
+            )
+            changed_raw = (
+                root_path
+                / "raw/drive/macros/savage_3_macro__drive_file_003.txt"
+            )
+
+            self.assertEqual(
+                new_raw.read_text(encoding="utf-8"),
+                "# Black Mage 7.5 Guide\n\nUse Ley Lines with the updated opener.\n",
+            )
+            self.assertEqual(
+                changed_raw.read_text(encoding="utf-8"),
+                "Savage 3 macro updated for clock spots.\n",
+            )
+
+            with sqlite3.connect(db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                rows = conn.execute(
+                    """
+                    SELECT id, title, source_url, raw_path, content_hash
+                      FROM sources
+                     WHERE source_type = 'drive_document'
+                     ORDER BY source_url
+                    """
+                ).fetchall()
+
+            self.assertEqual(len(rows), 3)
+            by_url = {row["source_url"]: dict(row) for row in rows}
+            self.assertEqual(
+                by_url["gdrive://drive_file_001"]["raw_path"],
+                "raw/drive/job_guides/black_mage_7.5_guide__drive_file_001.md",
+            )
+            self.assertEqual(
+                by_url["gdrive://drive_file_001"]["content_hash"],
+                "hash-new",
+            )
+            self.assertEqual(
+                by_url["gdrive://drive_file_003"]["content_hash"],
+                "hash-updated",
+            )
+
+    def test_apply_is_idempotent_for_repeated_manifest_runs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_path = Path(tmp_dir)
+            db_path = root_path / "ffxiv.sqlite"
+            create_sources_db(db_path)
+
+            first = sync_drive.apply_sync(
+                Path("tests/fixtures/drive_manifest.json"),
+                db_path,
+                root_path,
+            )
+            second = sync_drive.apply_sync(
+                Path("tests/fixtures/drive_manifest.json"),
+                db_path,
+                root_path,
+            )
+
+            self.assertEqual(first["summary"]["new"], 1)
+            self.assertEqual(first["summary"]["changed"], 1)
+            self.assertEqual(second["summary"]["new"], 0)
+            self.assertEqual(second["summary"]["changed"], 0)
+            self.assertEqual(second["summary"]["unchanged"], 3)
+
+            with sqlite3.connect(db_path) as conn:
+                count = conn.execute(
+                    """
+                    SELECT COUNT(*)
+                      FROM sources
+                     WHERE source_type = 'drive_document'
+                    """
+                ).fetchone()[0]
+
+            self.assertEqual(count, 3)
+
+    def test_cli_apply_outputs_json_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_path = Path(tmp_dir)
+            db_path = root_path / "ffxiv.sqlite"
+            create_sources_db(db_path)
+
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                sync_drive.main(
+                    [
+                        "--apply",
+                        "--manifest",
+                        "tests/fixtures/drive_manifest.json",
+                        "--db-path",
+                        str(db_path),
+                        "--root-path",
+                        str(root_path),
+                    ]
+                )
+
+        result = json.loads(stdout.getvalue())
+
+        self.assertEqual(result["status"], "ok")
+        self.assertIs(result["dry_run"], False)
+        self.assertEqual(result["summary"]["new"], 1)
+        self.assertEqual(result["summary"]["changed"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

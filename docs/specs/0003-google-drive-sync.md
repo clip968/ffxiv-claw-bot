@@ -6,7 +6,7 @@ Accepted
 
 ## Scope
 
-이 spec은 v0.3 Google Drive sync dry-run 완료 기준의 현재 구현 계약을 정의한다.
+이 spec은 v0.3 Google Drive sync의 manifest 기반 dry-run과 fixture 기반 local apply 계약을 정의한다.
 
 > Notion `SPEC - v0.3 Google Drive Sync - ffxiv-claw-bot`에서 2026-05-14 repo docs로 이관 완료.
 
@@ -33,13 +33,13 @@ Drive 문서는 로컬에서 직접 편집하는 것이 아니라 Drive 원본�
 
 Drive 문서는 `sources.source_type = drive_document`로 기록한다.
 
-현재 v0.3 dry-run 구현은 DB write를 하지 않는다. 기존 DB record를 읽어 `source_url = gdrive://<drive_file_id>` 형식의 row와 비교한다.
+dry-run은 DB write를 하지 않는다. 기존 DB record를 읽어 `source_url = gdrive://<drive_file_id>` 형식의 row와 비교한다.
 
-manifest 기반 `--apply` 구현 전까지 `sources.source_type = drive_document` upsert는 완료된 기능이 아니다.
+manifest 기반 `--apply`는 fixture content를 `raw/drive`에 저장하고 `sources.source_type = drive_document` row를 upsert한다.
 
 ## Manifest 기반 dry-run
 
-현재 구현된 CLI는 manifest 기반 dry-run만 지원한다. 이 범위가 v0.3에서 완료된 부분이다.
+CLI는 manifest 기반 dry-run을 지원한다.
 
 ```bash
 python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json
@@ -51,7 +51,7 @@ python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.js
 - `--manifest <path>`: Drive API 응답을 단순화한 local JSON manifest 경로다. 필수다.
 - `--db-path <path>`: 비교에 사용할 SQLite DB 경로다. 기본값은 `db/ffxiv.sqlite`다.
 
-`--dry-run` 없이 실행하면 parser error가 발생한다.
+`--dry-run`과 `--apply` 중 정확히 하나를 지정하지 않으면 parser error가 발생한다.
 
 ## Manifest 형식
 
@@ -68,6 +68,7 @@ file item에서 dry-run 분류에 필요한 필드:
 - `category`: Drive category folder
 - `exportExt`: planned local extension
 - `contentHash`: export/download 결과의 hash 역할
+- `contentFixture`: `--apply`에서 raw file로 저장할 repo-root relative fixture file path
 
 출력에 포함되는 추가 metadata:
 
@@ -156,28 +157,41 @@ item 주요 필드:
 
 ## Manifest 기반 apply
 
-manifest 기반 `--apply`는 현재 구현되어 있지 않다.
+manifest 기반 `--apply`는 실제 Google Drive API 호출 없이 manifest의 `contentFixture` 파일을 로컬 raw cache로 저장한다.
 
-현재 v0.3 dry-run 완료 상태는 동기화 계획 검증까지만 포함한다.
+```bash
+python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json
+```
 
-아직 완료되지 않은 apply 범위:
+옵션:
 
-- fixture content를 `raw/drive`에 실제 저장
-- `sources.source_type = drive_document` DB upsert
-- 같은 manifest 반복 실행 시 안정적인 idempotent 동작
+- `--apply`: fixture content를 저장하고 DB를 갱신한다.
+- `--manifest <path>`: Drive API 응답을 단순화한 local JSON manifest 경로다. 필수다.
+- `--db-path <path>`: 갱신할 SQLite DB 경로다. 기본값은 `db/ffxiv.sqlite`다.
+- `--root-path <path>`: `raw/drive`를 쓸 repo root 경로다. 기본값은 repo root다.
+
+apply 동작:
+
+- `new`와 `changed` item은 `contentFixture` 파일 내용을 `raw/drive/<category>/...`에 쓴다.
+- `new` item은 deterministic source id `drive_<safe_drive_file_id>`로 insert한다.
+- `changed` item은 기존 `gdrive://<drive_file_id>` row를 update한다.
+- `unchanged` item은 raw file이나 DB row를 새로 쓰지 않는다.
+- `skipped` item은 raw file이나 DB row를 쓰지 않는다.
+- `new` 또는 `changed` item에 `contentFixture`가 없으면 apply에서 `skipped`로 처리한다.
+- apply도 dry-run과 같은 JSON shape를 출력하되 `dry_run`은 `false`다.
+
+아직 완료되지 않은 범위:
+
 - wiki/FTS/graph rebuild 연결
 
 ## Idempotent 재실행 원칙
 
 반복 실행은 같은 manifest와 같은 DB 상태에서 같은 action summary를 반환해야 한다.
 
-향후 apply 구현은 같은 Drive file id와 같은 content hash에 대해 중복 raw 저장과 중복 DB row 생성을 하지 않아야 한다.
+apply는 같은 Drive file id와 같은 content hash에 대해 중복 raw 저장과 중복 DB row 생성을 하지 않는다.
 
-## v0.3 dry-run 완료 범위 밖
+## v0.3 manifest sync 범위 밖
 
-- manifest 기반 `--apply`
-- 실제 `raw/drive` 저장
-- `sources` DB upsert
 - 실제 OAuth
 - 실제 Google Drive API 호출
 - Google Docs export/download
@@ -185,12 +199,14 @@ manifest 기반 `--apply`는 현재 구현되어 있지 않다.
 - embedding/vector DB
 - Drive 변경 감지 후 wiki/FTS/graph 자동 재빌드
 
-## v0.3 dry-run 성공 기준
+## v0.3 manifest sync 성공 기준
 
 - `sync_drive.py --dry-run --manifest ...`가 JSON을 출력한다.
+- `sync_drive.py --apply --manifest ...`가 fixture content를 저장하고 JSON을 출력한다.
 - Drive item이 `new`, `changed`, `unchanged`, `skipped`로 분류된다.
 - planned raw path가 `raw/drive/<category>/...` 규칙을 따른다.
 - 기존 DB record는 `source_url = gdrive://<drive_file_id>`로 식별된다.
+- apply는 `sources.source_type = drive_document` row를 idempotent하게 upsert한다.
 - 실제 Google Drive나 네트워크에 의존하지 않는다.
 
 ## 테스트와 확인 명령
@@ -199,4 +215,5 @@ manifest 기반 `--apply`는 현재 구현되어 있지 않다.
 python -m unittest tests.test_sync_drive
 python -m unittest discover -s tests -p "test_*.py"
 python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json
+python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json
 ```

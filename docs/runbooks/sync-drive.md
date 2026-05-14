@@ -6,7 +6,7 @@ Google Drive `FFXIV_KB`는 사람이 관리하는 canonical source다.
 
 `raw/drive`, `wiki`, `db/ffxiv.sqlite`, FTS, graph는 로컬 파생 캐시다.
 
-현재 구현은 실제 Google API를 호출하지 않는다. manifest fixture를 읽어 dry-run 계획을 출력한다.
+현재 구현은 실제 Google API를 호출하지 않는다. manifest fixture를 읽어 dry-run 계획을 출력하거나 fixture content를 local raw cache에 적용한다.
 
 ## Manifest fixture
 
@@ -15,6 +15,8 @@ Google Drive `FFXIV_KB`는 사람이 관리하는 canonical source다.
 ```text
 tests/fixtures/drive_manifest.json
 ```
+
+`--apply`는 manifest의 `contentFixture`가 가리키는 repo-root relative file을 raw cache에 저장한다.
 
 ## Dry-run 실행
 
@@ -47,17 +49,34 @@ raw/drive/<category>/<safe_title>__<drive_file_id>.<ext>
 
 ## Apply
 
-`--apply`는 현재 구현되어 있지 않다.
+fixture 기반 local apply:
 
-현재 `tools/sync_drive.py`는 `--dry-run` 없이 실행하면 parser error를 반환한다.
+```bash
+python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json
+```
 
-TODO: manifest 기반 `--apply`가 구현되면 실제 실행 명령을 추가한다.
+동작:
+
+- `new`, `changed`: `contentFixture` 내용을 `raw/drive/<category>/...`에 쓰고 `sources`를 upsert한다.
+- `unchanged`: raw file과 DB를 새로 쓰지 않는다.
+- `skipped`: raw file과 DB를 쓰지 않는다.
+- `new` 또는 `changed`에 `contentFixture`가 없으면 `skipped`로 처리한다.
+- 같은 manifest를 재실행해도 같은 Drive file id에 대해 중복 DB row를 만들지 않는다.
+
+테스트나 실험에서 실제 repo `raw/`와 `db/ffxiv.sqlite`를 건드리고 싶지 않으면 임시 경로를 지정한다.
+
+```bash
+python tools/sync_drive.py --apply \
+  --manifest tests/fixtures/drive_manifest.json \
+  --db-path /tmp/ffxiv.sqlite \
+  --root-path /tmp/ffxiv-claw-bot-apply
+```
+
+`tools/sync_drive.py`는 `--dry-run`과 `--apply` 중 정확히 하나를 지정하지 않으면 parser error를 반환한다.
 
 ## 현재 한계
 
 - 실제 OAuth 없음
 - 실제 Google Drive API 호출 없음
 - Google Docs export/download 없음
-- raw file write 없음
-- `sources` upsert 없음
 - wiki/FTS/graph rebuild 연결 없음

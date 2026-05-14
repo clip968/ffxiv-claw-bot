@@ -9,7 +9,8 @@
       "modifiedTime": "2026-05-14T00:00:00Z",
       "webViewLink": "https://drive.google.com/file/d/drive_file_001/view",
       "exportExt": "md",
-      "contentHash": "hash-new"
+      "contentHash": "hash-new",
+      "contentFixture": "tests/fixtures/drive_content/black_mage_7_5_guide.md"
     },
     {
       "id": "drive_file_002",
@@ -19,7 +20,8 @@
       "modifiedTime": "2026-05-14T00:05:00Z",
       "webViewLink": "https://drive.google.com/file/d/drive_file_002/view",
       "exportExt": "md",
-      "contentHash": "hash-same"
+      "contentHash": "hash-same",
+      "contentFixture": "tests/fixtures/drive_content/static_rules.md"
     },
     {
       "id": "drive_file_003",
@@ -29,7 +31,8 @@
       "modifiedTime": "2026-05-14T00:10:00Z",
       "webViewLink": "https://drive.google.com/file/d/drive_file_003/view",
       "exportExt": "txt",
-      "contentHash": "hash-updated"
+      "contentHash": "hash-updated",
+      "contentFixture": "tests/fixtures/drive_content/savage_3_macro.txt"
     },
     {
       "id": "drive_file_004",
