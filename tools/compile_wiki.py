@@ -149,7 +149,7 @@ def compile_for_source(
     raw_content = read_raw_content(source["raw_path"], resolved_root)
     source_type = source.get("source_type", "")
 
-    if source_type == "drive_document":
+    if source_type in ("drive_document", "local_file", "local_document"):
         body_text = raw_content
     else:
         body_text = extract_text(raw_content)

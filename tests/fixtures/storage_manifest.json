@@ -8,7 +8,8 @@
       "source_type": "markdown_file",
       "content_type": "text/markdown",
       "canonical_path": "sources/job_guides/black_mage_7_5.md",
-      "content_hash": "hash-new"
+      "content_hash": "hash-new",
+      "body": "# Black Mage 7.5 Guide\n\nUpdated rotation for patch 7.5."
     },
     {
       "source_id": "local_002",
@@ -26,7 +27,8 @@
       "source_type": "plain_text_file",
       "content_type": "text/plain",
       "canonical_path": "sources/macros/savage_3_macro.txt",
-      "content_hash": "hash-newer"
+      "content_hash": "hash-newer",
+      "body": "/macro Savage 3\n/ac Reprisal\n/p Tank buster soon"
     },
     {
       "source_id": "local_004",

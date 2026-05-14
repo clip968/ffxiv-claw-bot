@@ -30,7 +30,7 @@ python tools/compile_wiki.py --source-id <source_id>
 현재 `compile_wiki.py`는 raw HTML을 읽어 `wiki/source_summaries/<source_id>.md`를 만들고 `wiki_fts`를 갱신한다.
 HTML 텍스트 추출은 BeautifulSoup이 설치되어 있으면 BeautifulSoup을 사용하고, 없으면 표준 라이브러리 fallback을 사용한다.
 
-Local Storage에서 snapshot된 Markdown/text source도 같은 방향으로 처리한다. 현재 구현은 legacy `drive_document` source의 raw Markdown/text를 HTML 파싱 없이 그대로 사용한다. `local_file` 또는 `local_document` source_type 연결은 Local Storage apply 단계에서 추가한다.
+Local Storage에서 snapshot된 Markdown/text source도 같은 방향으로 처리한다. 현재 구현은 `drive_document`, `local_file`, `local_document` source의 raw Markdown/text를 HTML 파싱 없이 그대로 사용한다.
 
 ## FTS index rebuild
 

@@ -40,6 +40,49 @@ Google Drive 기반 `sync_drive.py`와 `publish_drive.py`는 Legacy / Deferred o
 - `manifests/`: 동기화 테스트용 manifest JSON
 - `archive/`: 더 이상 활성 사용하지 않지만 보존할 자료
 
+## Manifest Sync Apply
+
+`--dry-run`과 같은 manifest 구조를 사용하며, 실제로 파일을 쓰고 DB를 갱신한다.
+
+```bash
+python tools/sync_storage.py --apply --manifest tests/fixtures/storage_manifest.json
+```
+
+### Apply 과정 (item별)
+
+1. **`write_local_source`**: `/mnt/d/ffixiv-bot-storage/sources/<category>/...`에 원본 쓰기 (manifest의 `body` 필드 사용)
+   - body가 없고 대상 파일이 이미 있으면 skipped
+   - body가 없고 대상 파일도 없으면 failed
+2. **`snapshot_raw`**: `raw/local_storage/<category>/...`에 처리용 snapshot 생성
+3. **`upsert_source`**: `db/ffxiv.sqlite` sources 테이블에 `local://<canonical_path>` upsert
+
+### 결과 JSON
+
+```json
+{
+  "status": "ok | partial",
+  "dry_run": false,
+  "storage_root": "/mnt/d/ffixiv-bot-storage",
+  "summary": {
+    "write_local_source": 1,
+    "snapshot_raw": 1,
+    "upsert_source": 1,
+    "unchanged": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  "actions": [
+    {
+      "action": "write_local_source",
+      "source_id": "local_001",
+      "target": "/mnt/d/ffixiv-bot-storage/sources/job_guides/black_mage_7_5.md",
+      "status": "written",
+      "message": "Written 45 bytes to ..."
+    }
+  ]
+}
+```
+
 ## Manifest Dry-run
 
 현재 구현된 첫 범위는 manifest 기반 dry-run이다.
@@ -89,15 +132,12 @@ raw/local_storage/<category>/<safe_title>__<source_id>.<ext>
 -> search_kb.py 와 answer.py 에서 FTS + graph traversal 기반 답변
 ```
 
-## Apply 보류 범위
+## 보류 범위 (향후 작업)
 
-다음 동작은 dry-run skeleton 이후 별도 작업에서 구현한다.
+다음 동작은 아직 구현되지 않았다.
 
-- `/mnt/d/ffixiv-bot-storage/sources/<category>/...`에 원본 쓰기
-- `raw/local_storage/<category>/...`에 snapshot 쓰기
-- `db/ffxiv.sqlite` sources upsert
 - `compile_wiki.py`와 `build_graph.py` 자동 호출
-- Notion 상태판 update
+- Notion 상태판 update (v0.4-02 범위 아님. OpenClaw adapter 단계에서 sync_storage.py JSON 결과를 읽어 처리)
 
 ## Legacy / Deferred
 

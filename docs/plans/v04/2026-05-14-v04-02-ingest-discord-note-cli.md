@@ -138,8 +138,9 @@ raw/local_storage/<category>/<safe_title>__<source_id>.<ext>
 - [x] manifest 기반 `new`, `changed`, `unchanged`, `skipped` 분류
 - [x] planned `raw/local_storage` path 생성
 - [x] JSON result 출력
-- [ ] 실제 `write_local_source`와 `snapshot_raw` apply는 다음 작업으로 보류 가능
+- [x] `--apply` 모드: `write_local_source`, `snapshot_raw`, `upsert_source` 구현
 - [ ] Notion update는 local CLI result를 받은 OpenClaw adapter 단계에서 처리
+  - (v0.4-02 범위 아님. OpenClaw adapter 단계에서 sync_storage.py JSON 결과를 읽어 Notion 상태판 기록)
 
 ## Verification
 
@@ -147,6 +148,7 @@ raw/local_storage/<category>/<safe_title>__<source_id>.<ext>
 python -m unittest tests.test_sync_storage
 python -m unittest discover -s tests -p "test_*.py"
 python tools/sync_storage.py --dry-run --manifest tests/fixtures/storage_manifest.json
+python tools/sync_storage.py --apply --manifest tests/fixtures/storage_manifest.json --storage-root /tmp/test-storage --db-path /tmp/test-ffxiv.sqlite
 ```
 
 ## Key Decisions

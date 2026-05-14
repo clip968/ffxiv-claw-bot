@@ -15,6 +15,7 @@ DEFAULT_STORAGE_ROOT = Path("/mnt/d/ffixiv-bot-storage")
 
 LOCAL_SOURCE_PREFIX = "local://"
 DRY_RUN_ACTIONS = ("new", "changed", "unchanged", "skipped")
+APPLY_ACTIONS = ("write_local_source", "snapshot_raw", "upsert_source")
 VALID_CATEGORIES = {
     "patch_notes",
     "job_guides",
@@ -220,17 +221,242 @@ def plan_sync(
     }
 
 
+def now_iso() -> str:
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).isoformat()
+
+
+def write_local_source(
+    item: dict[str, Any],
+    storage_root: Path,
+) -> dict[str, Any]:
+    """Write the original source file under storage_root/sources/<category>/..."""
+    canonical_path = canonical_path_for_item(item)
+    source_id = source_id_for_item(item)
+    target_path = storage_root / canonical_path
+    action = {
+        "action": "write_local_source",
+        "source_id": source_id,
+        "target": str(target_path),
+    }
+
+    body = item.get("body")
+    if not body:
+        # If item already exists at storage_root, nothing to do
+        if target_path.exists():
+            action["status"] = "skipped"
+            action["message"] = "No body in manifest; file already exists at storage_root"
+            return action
+        action["status"] = "failed"
+        action["message"] = "No body provided and source file does not exist at storage_root"
+        return action
+
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    target_path.write_text(body, encoding="utf-8")
+    action["status"] = "written"
+    action["message"] = f"Written {len(body)} bytes to {target_path}"
+    return action
+
+
+def snapshot_raw(
+    item: dict[str, Any],
+    *,
+    root_path: Path,
+    storage_root: Path,
+) -> dict[str, Any]:
+    """Create a processing snapshot under root_path/raw/local_storage/<category>/..."""
+    canonical_path = canonical_path_for_item(item)
+    source_id = source_id_for_item(item)
+    raw_relative = planned_raw_path(item)
+    target_path = root_path / raw_relative
+    action = {
+        "action": "snapshot_raw",
+        "source_id": source_id,
+        "target": str(target_path),
+    }
+
+    source_path = storage_root / canonical_path
+    if not source_path.exists():
+        action["status"] = "failed"
+        action["message"] = f"Source file does not exist at {source_path}"
+        return action
+
+    body = source_path.read_text(encoding="utf-8")
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    target_path.write_text(body, encoding="utf-8")
+    action["status"] = "written"
+    action["message"] = f"Snapshot {len(body)} bytes from {source_path} to {target_path}"
+    return action
+
+
+def upsert_source(
+    item: dict[str, Any],
+    db_path: Path,
+    *,
+    root_path: Path,
+) -> dict[str, Any]:
+    """Insert or update sources DB entry."""
+    source_id = source_id_for_item(item) or ""
+    canonical_path = canonical_path_for_item(item)
+    raw_relative = planned_raw_path(item)
+    title = str(item.get("title", ""))
+    source_type = str(item.get("source_type") or item.get("sourceType") or "local_document")
+    content_hash = str(item.get("content_hash") or item.get("contentHash") or "")
+    source_url = local_source_url(canonical_path) if canonical_path else None
+    timestamp = now_iso()
+    action = {
+        "action": "upsert_source",
+        "source_id": source_id,
+        "target": source_id,
+    }
+
+    if not db_path.exists():
+        action["status"] = "failed"
+        action["message"] = f"Database not found: {db_path}"
+        return action
+
+    conn = sqlite3.connect(db_path)
+    try:
+        existing = conn.execute(
+            "SELECT id FROM sources WHERE id = ?", (source_id,)
+        ).fetchone()
+
+        if existing:
+            conn.execute(
+                """
+                UPDATE sources
+                   SET title = ?, source_url = ?, raw_path = ?,
+                       content_hash = ?, updated_at = ?
+                 WHERE id = ?
+                """,
+                (title, source_url, raw_relative, content_hash, timestamp, source_id),
+            )
+            action["status"] = "updated"
+            action["message"] = f"Updated source {source_id}"
+        else:
+            conn.execute(
+                """
+                INSERT INTO sources (id, source_type, title, source_url,
+                                     raw_path, content_hash,
+                                     created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (source_id, source_type, title, source_url,
+                 raw_relative, content_hash,
+                 timestamp, timestamp),
+            )
+            action["status"] = "inserted"
+            action["message"] = f"Inserted source {source_id}"
+        conn.commit()
+    finally:
+        conn.close()
+
+    return action
+
+
+def apply_sync(
+    manifest_path: Path,
+    db_path: Path = DB_PATH,
+    *,
+    root_path: Path = ROOT,
+    storage_root: Path = DEFAULT_STORAGE_ROOT,
+) -> dict[str, Any]:
+    """Execute the sync plan: write local sources, create raw snapshots, upsert DB."""
+    manifest = load_manifest(manifest_path)
+    # Explicit storage_root parameter takes priority over manifest value
+    resolved_storage_root = storage_root
+    existing_sources = load_existing_local_sources(db_path)
+
+    actions: list[dict[str, Any]] = []
+    summary: dict[str, int] = {
+        "write_local_source": 0,
+        "snapshot_raw": 0,
+        "upsert_source": 0,
+        "unchanged": 0,
+        "failed": 0,
+        "skipped": 0,
+    }
+    had_failure = False
+
+    for item in manifest.get("files", []):
+        classifier = classify_item(item, existing_sources)
+
+        if classifier in ("skipped", "unchanged"):
+            summary["skipped" if classifier == "skipped" else "unchanged"] += 1
+            if classifier == "unchanged":
+                actions.append({
+                    "action": "write_local_source",
+                    "source_id": source_id_for_item(item),
+                    "target": str(resolved_storage_root / canonical_path_for_item(item)),
+                    "status": "skipped",
+                    "message": f"Unchanged item {source_id_for_item(item)}: no sync needed",
+                })
+            continue
+
+        # 1. Write local source
+        write_result = write_local_source(item, resolved_storage_root)
+        actions.append(write_result)
+        if write_result.get("status") == "failed":
+            summary["failed"] += 1
+            had_failure = True
+            continue
+        summary["write_local_source"] += 1
+
+        # 2. Snapshot raw
+        snap_result = snapshot_raw(
+            item,
+            root_path=root_path,
+            storage_root=resolved_storage_root,
+        )
+        actions.append(snap_result)
+        if snap_result.get("status") == "failed":
+            summary["failed"] += 1
+            had_failure = True
+            continue
+        summary["snapshot_raw"] += 1
+
+        # 3. Upsert DB
+        upsert_result = upsert_source(item, db_path, root_path=root_path)
+        actions.append(upsert_result)
+        if upsert_result.get("status") == "failed":
+            summary["failed"] += 1
+            had_failure = True
+            continue
+        summary["upsert_source"] += 1
+
+    return {
+        "status": "partial" if had_failure else "ok",
+        "dry_run": False,
+        "storage_root": str(resolved_storage_root),
+        "summary": summary,
+        "actions": actions,
+    }
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
-        description="Dry-run Local Storage manifest sync planning."
+        description="Local Storage manifest sync planning and execution. "
+                    "Use --dry-run for planning or --apply to execute."
     )
     parser.add_argument("--dry-run", action="store_true", help="Print plan without writes")
+    parser.add_argument("--apply", action="store_true", help="Execute sync: write sources, create snapshots, upsert DB")
     parser.add_argument("--manifest", required=True, help="Local Storage manifest JSON path")
     parser.add_argument("--db-path", default=str(DB_PATH), help="SQLite DB path")
+    parser.add_argument("--storage-root", default=None, help="Override storage root path")
     args = parser.parse_args(argv)
 
+    if args.apply:
+        storage_root = Path(args.storage_root) if args.storage_root else DEFAULT_STORAGE_ROOT
+        result = apply_sync(
+            Path(args.manifest),
+            Path(args.db_path),
+            storage_root=storage_root,
+        )
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+
     if not args.dry_run:
-        parser.error("--dry-run is required; apply writes are not implemented yet")
+        parser.error("Use --dry-run for planning or --apply to execute the sync")
 
     result = plan_sync(Path(args.manifest), Path(args.db_path))
     print(json.dumps(result, ensure_ascii=False, indent=2))
