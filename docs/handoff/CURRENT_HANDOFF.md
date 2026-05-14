@@ -74,6 +74,30 @@ Notion 문서 매핑:
 7. 기존 `test_sync_drive.py`에서 rebuild end-to-end 테스트 추가
 8. `--from-drive` 경로와 manifest 경로 양쪽에서 `--rebuild` 지원
 
+## 이번 세션 완료: v0.3 코드 리뷰 지적 수정
+
+수정한 것:
+1. `tools/html_utils.py` 추가: BeautifulSoup이 없어도 stdlib HTML parser fallback으로 기본 테스트/import가 통과하도록 변경
+2. `sync_drive.py --from-drive`: root folder 아래 category folder를 재귀 조회하도록 변경
+3. `sync_drive.py --rebuild`: CLI의 `--db-path`, `--root-path`를 compile/graph 단계까지 전달
+4. `--rebuild` 대상 제한: Markdown/text/HTML 계열만 compile하고 PDF/이미지 같은 binary raw는 제외
+5. `compile_wiki.py`, `build_graph.py`: SQLite connection을 명시적으로 close해서 Windows 임시 DB lock 방지
+6. v0.3 master plan과 spec/runbook 상태 불일치 정리
+
+추가/갱신한 테스트:
+- Drive category folder 재귀 조회
+- CLI rebuild 경로 전달
+- binary Drive file rebuild 제외
+- bs4 미설치 환경에서 HTML text fallback
+
+검증:
+
+```bash
+python -m unittest tests.test_sync_drive tests.test_compile_wiki
+python -m unittest discover -s tests -p "test_*.py"
+python scripts/finish_task.py
+```
+
 ## 이번 세션 계획 수립: v0.4 OpenClaw Drive ingest
 
 `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`와 `docs/plans/v04/` 참조.

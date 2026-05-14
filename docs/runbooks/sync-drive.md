@@ -108,6 +108,7 @@ python tools/sync_drive.py --auth \
 ## Drive 파일 목록 조회
 
 FFXIV_KB folder id를 명시해서 조회한다.
+조회는 root folder에서 시작해 하위 category folder까지 재귀적으로 진행한다.
 
 ```bash
 python tools/sync_drive.py --from-drive \
@@ -195,7 +196,8 @@ python tools/sync_drive.py --from-drive --download --apply --drive-folder-id <FF
 동작:
 
 - `new`/`changed` Drive source만 compile 대상으로 수집한다.
-- compile_wiki가 source_type `drive_document`의 Markdown/text raw를 처리한다.
+- compile_wiki가 source_type `drive_document`의 Markdown/text/HTML 계열 raw를 처리한다.
+- PDF/이미지 같은 binary raw는 raw cache와 DB에는 저장할 수 있지만 rebuild 대상에서는 제외한다.
 - compile_wiki가 `wiki_fts`를 source 단위로 갱신한다.
 - `build_graph --source-id`로 graph_nodes/edges를 source 단위로 갱신한다.
 - compile 실패 시에도 나머지 source 처리 계속 진행한다.

@@ -11,7 +11,8 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
-from bs4 import BeautifulSoup
+
+from tools.html_utils import extract_title_from_html
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,15 +59,7 @@ def fetch_url(url: str) -> tuple[str, str]:
 
 
 def extract_title(html: str, fallback_url: str) -> str:
-    soup = BeautifulSoup(html, "html.parser")
-
-    if soup.title and soup.title.string:
-        title = soup.title.string.strip()
-        if title:
-            return title
-
-    parsed = urlparse(fallback_url)
-    return parsed.netloc or fallback_url
+    return extract_title_from_html(html, fallback_url)
 
 
 def insert_source(

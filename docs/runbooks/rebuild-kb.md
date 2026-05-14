@@ -28,6 +28,7 @@ python tools/compile_wiki.py --source-id <source_id>
 ```
 
 현재 `compile_wiki.py`는 raw HTML을 읽어 `wiki/source_summaries/<source_id>.md`를 만들고 `wiki_fts`를 갱신한다.
+HTML 텍스트 추출은 BeautifulSoup이 설치되어 있으면 BeautifulSoup을 사용하고, 없으면 표준 라이브러리 fallback을 사용한다.
 
 Drive `drive_document` source의 raw Markdown/text도 처리 가능하다.
 `source_type`이 `drive_document`이면 HTML 파싱 없이 raw content를 그대로 사용한다.

@@ -129,16 +129,24 @@ class FakeDriveFiles:
         self,
         *,
         listed_files: list[dict[str, object]] | None = None,
+        listed_files_by_folder: dict[str, list[dict[str, object]]] | None = None,
         export_contents: dict[str, bytes] | None = None,
         download_contents: dict[str, bytes] | None = None,
     ) -> None:
         self.listed_files = listed_files or []
+        self.listed_files_by_folder = listed_files_by_folder or {}
         self.export_contents = export_contents or {}
         self.download_contents = download_contents or {}
         self.exports: list[tuple[str, str]] = []
         self.downloads: list[str] = []
+        self.list_queries: list[str] = []
 
     def list(self, **kwargs: object) -> FakeDriveRequest:
+        query = str(kwargs.get("q", ""))
+        self.list_queries.append(query)
+        for folder_id, files in self.listed_files_by_folder.items():
+            if f"'{folder_id}' in parents" in query:
+                return FakeDriveRequest({"files": files})
         return FakeDriveRequest({"files": self.listed_files})
 
     def export_media(self, *, fileId: str, mimeType: str) -> FakeDriveRequest:
@@ -420,6 +428,45 @@ class SyncDriveTests(unittest.TestCase):
         self.assertEqual(manifest["files"][1]["exportExt"], "txt")
         self.assertEqual(manifest["files"][1]["contentHash"], "md5-txt-001")
 
+    def test_list_drive_files_recurses_into_category_folders(self) -> None:
+        files_resource = FakeDriveFiles(
+            listed_files_by_folder={
+                "folder_root": [
+                    {
+                        "id": "folder_job",
+                        "name": "job_guides",
+                        "mimeType": sync_drive.GOOGLE_DRIVE_FOLDER_MIME,
+                    }
+                ],
+                "folder_job": [
+                    {
+                        "id": "drive_doc_001",
+                        "name": "Black Mage Guide",
+                        "mimeType": "application/vnd.google-apps.document",
+                        "modifiedTime": "2026-05-14T01:00:00Z",
+                        "webViewLink": "https://drive.google.com/file/d/drive_doc_001/view",
+                        "parents": ["folder_job"],
+                        "headRevisionId": "rev-doc-001",
+                    }
+                ],
+            }
+        )
+        service = FakeDriveService(files_resource)
+
+        files = sync_drive.list_drive_files(service, "folder_root")
+        manifest = sync_drive.drive_files_to_manifest(
+            files,
+            root_folder="FFXIV_KB",
+            category_by_folder_id={"folder_job": "job_guides"},
+        )
+
+        self.assertEqual(
+            [query.split(" in parents")[0] for query in files_resource.list_queries],
+            ["'folder_root'", "'folder_job'"],
+        )
+        self.assertEqual([item["id"] for item in manifest["files"]], ["drive_doc_001"])
+        self.assertEqual(manifest["files"][0]["category"], "job_guides")
+
     def test_download_drive_contents_exports_google_docs_to_markdown_and_hashes_sha256(self) -> None:
         content = b"# Black Mage Guide\n\nUse Ley Lines.\n"
         files_resource = FakeDriveFiles(export_contents={"drive_doc_001": content})
@@ -669,27 +716,13 @@ class SyncDriveTests(unittest.TestCase):
             self.assertIn("drive_drive_file_001", source_ids)
             self.assertIn("src_existing_changed", source_ids)
 
-            # Override module-level constants for compile_wiki and build_graph
-            original_compile_root = compile_wiki_module.ROOT
-            original_compile_db = compile_wiki_module.DB_PATH
-            original_compile_summary = compile_wiki_module.SUMMARY_DIR
-            original_build_db = build_graph_module.DB_PATH
-            original_build_graph_dir = build_graph_module.GRAPH_DIR
-
-            compile_wiki_module.ROOT = root_path
-            compile_wiki_module.DB_PATH = db_path
-            compile_wiki_module.SUMMARY_DIR = root_path / "wiki" / "source_summaries"
-            build_graph_module.DB_PATH = db_path
-            build_graph_module.GRAPH_DIR = root_path / "graph"
-
-            try:
-                rebuild_result = sync_drive.rebuild_for_items(source_ids)
-            finally:
-                compile_wiki_module.ROOT = original_compile_root
-                compile_wiki_module.DB_PATH = original_compile_db
-                compile_wiki_module.SUMMARY_DIR = original_compile_summary
-                build_graph_module.DB_PATH = original_build_db
-                build_graph_module.GRAPH_DIR = original_build_graph_dir
+            rebuild_result = sync_drive.rebuild_for_items(
+                source_ids,
+                db_path=db_path,
+                root_path=root_path,
+                summary_dir=root_path / "wiki" / "source_summaries",
+                graph_dir=root_path / "graph",
+            )
 
             # Verify rebuild results
             self.assertTrue(rebuild_result["rebuild"])
@@ -723,6 +756,72 @@ class SyncDriveTests(unittest.TestCase):
                 self.assertGreater(edge_count, 0)
             finally:
                 conn.close()
+
+    def test_cli_rebuild_passes_db_and_root_paths_to_rebuild(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_path = Path(tmp_dir)
+            db_path = root_path / "ffxiv.sqlite"
+            create_sources_db(db_path)
+            captured: dict[str, object] = {}
+            original_rebuild = sync_drive.rebuild_for_items
+
+            def fake_rebuild(source_ids: list[str], **kwargs: object) -> dict[str, object]:
+                captured["source_ids"] = source_ids
+                captured.update(kwargs)
+                return {"rebuild": True, "compile_count": 0}
+
+            try:
+                sync_drive.rebuild_for_items = fake_rebuild
+                stdout = io.StringIO()
+                with contextlib.redirect_stdout(stdout):
+                    sync_drive.main(
+                        [
+                            "--apply",
+                            "--manifest",
+                            "tests/fixtures/drive_manifest.json",
+                            "--db-path",
+                            str(db_path),
+                            "--root-path",
+                            str(root_path),
+                            "--rebuild",
+                        ]
+                    )
+            finally:
+                sync_drive.rebuild_for_items = original_rebuild
+
+        self.assertEqual(captured["db_path"], db_path)
+        self.assertEqual(captured["root_path"], root_path)
+        self.assertEqual(
+            captured["summary_dir"],
+            root_path / "wiki" / "source_summaries",
+        )
+        self.assertEqual(captured["graph_dir"], root_path / "graph")
+
+    def test_rebuild_source_ids_excludes_binary_drive_files(self) -> None:
+        result = {
+            "items": [
+                {
+                    "action": "new",
+                    "source_id": "drive_doc",
+                    "planned_raw_path": "raw/drive/job_guides/guide.md",
+                },
+                {
+                    "action": "changed",
+                    "source_id": "drive_pdf",
+                    "planned_raw_path": "raw/drive/raid_guides/timeline.pdf",
+                },
+                {
+                    "action": "unchanged",
+                    "source_id": "drive_txt",
+                    "planned_raw_path": "raw/drive/macros/macro.txt",
+                },
+            ]
+        }
+
+        self.assertEqual(
+            sync_drive.rebuild_source_ids_from_result(result),
+            ["drive_doc"],
+        )
 
     def test_cli_rebuild_requires_apply(self) -> None:
         """--rebuild without --apply should be rejected."""

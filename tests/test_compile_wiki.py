@@ -66,6 +66,25 @@ def ensure_wiki_tables(db_path: Path) -> None:
 
 
 class CompileWikiDriveTests(unittest.TestCase):
+    def test_extract_text_works_without_optional_bs4_dependency(self) -> None:
+        html = """
+        <html>
+          <head><style>.hidden { display: none; }</style></head>
+          <body>
+            <nav>Navigation</nav>
+            <main><h1>Guide Title</h1><p>Useful body text.</p></main>
+            <script>alert("skip")</script>
+          </body>
+        </html>
+        """
+
+        text = compile_wiki.extract_text(html)
+
+        self.assertIn("Guide Title", text)
+        self.assertIn("Useful body text.", text)
+        self.assertNotIn("Navigation", text)
+        self.assertNotIn("alert", text)
+
     def test_compile_for_drive_document_uses_raw_markdown_without_html_extraction(self) -> None:
         """drive_document source should preserve raw markdown content (skip HTML parsing)."""
         with tempfile.TemporaryDirectory() as tmp_dir:

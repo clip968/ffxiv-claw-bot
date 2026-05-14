@@ -36,6 +36,7 @@ rules:
       - "tools/init_db.py"
       - "tools/ingest_url.py"
       - "tools/compile_wiki.py"
+      - "tools/html_utils.py"
       - "tools/search_kb.py"
       - "tools/answer.py"
       - "tests/test_compile_wiki.py"

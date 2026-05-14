@@ -53,11 +53,19 @@ def upsert_edge(
     )
 
 
-def build_graph(source_id: str | None = None) -> dict:
+def build_graph(
+    source_id: str | None = None,
+    *,
+    db_path: Path | None = None,
+    graph_dir: Path | None = None,
+) -> dict:
     """Build deterministic graph from wiki_pages data."""
-    with sqlite3.connect(DB_PATH) as conn:
+    resolved_db_path = db_path or DB_PATH
+    resolved_graph_dir = graph_dir or GRAPH_DIR
+
+    conn = sqlite3.connect(resolved_db_path)
+    try:
         conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
 
         if source_id:
             rows = conn.execute(
@@ -125,12 +133,14 @@ def build_graph(source_id: str | None = None) -> dict:
                 "SELECT id, source_id, target_id, type, confidence, score, source_page_id, source_ids, properties FROM graph_edges ORDER BY id"
             )
         ]
+    finally:
+        conn.close()
 
-    GRAPH_DIR.mkdir(parents=True, exist_ok=True)
-    (GRAPH_DIR / "nodes.json").write_text(
+    resolved_graph_dir.mkdir(parents=True, exist_ok=True)
+    (resolved_graph_dir / "nodes.json").write_text(
         json.dumps(db_nodes, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    (GRAPH_DIR / "edges.json").write_text(
+    (resolved_graph_dir / "edges.json").write_text(
         json.dumps(db_edges, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 

@@ -69,7 +69,7 @@ src_<YYYYMMDD_HHMMSS>_<uuid8>
 
 `tools/compile_wiki.py`는 `sources.raw_path`의 raw content를 읽어 wiki markdown을 생성한다.
 
-- `source_type`이 `url` 등 HTML source면 BeautifulSoup으로 텍스트를 추출한다.
+- `source_type`이 `url` 등 HTML source면 `tools/html_utils.py`로 텍스트를 추출한다. BeautifulSoup이 설치되어 있으면 사용하고, 없으면 표준 라이브러리 HTML parser fallback을 사용한다.
 - `source_type`이 `drive_document`면 raw content를 HTML 파싱 없이 그대로 사용한다. (Markdown/text)
 - source_type 판별은 DB `sources.source_type` 컬럼을 기준으로 한다.
 

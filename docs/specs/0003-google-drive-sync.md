@@ -180,9 +180,7 @@ apply 동작:
 - `new` 또는 `changed` item에 `contentFixture`가 없으면 apply에서 `skipped`로 처리한다.
 - apply도 dry-run과 같은 JSON shape를 출력하되 `dry_run`은 `false`다.
 
-아직 완료되지 않은 범위:
-
-- wiki/FTS/graph rebuild 연결
+rebuild 연결은 v0.3-05에서 완료되었다. `--apply --rebuild`는 `new`/`changed` 중 text/Markdown/HTML 계열 raw만 compile 대상으로 넘긴다. PDF/이미지 같은 binary raw는 raw cache와 DB에는 저장할 수 있지만 wiki/FTS/graph rebuild 대상에서는 제외한다.
 
 ## Drive API 인증과 파일 목록 조회
 
@@ -197,7 +195,7 @@ python tools/sync_drive.py --from-drive --output-manifest /tmp/drive-manifest.js
 옵션:
 
 - `--auth`: OAuth browser flow를 실행하고 token file을 저장한다.
-- `--from-drive`: Google Drive API에서 file metadata를 조회한다.
+- `--from-drive`: Google Drive API에서 root folder와 하위 category folder의 file metadata를 재귀적으로 조회한다.
 - `--download`: `--from-drive`와 함께 Drive content를 export/download하고 SHA256 `contentHash`를 계산한다.
 - `--drive-folder-id <id>`: 조회할 Drive folder id다. v0.3-03에서는 folder search를 하지 않고 명시 입력을 요구한다.
 - `--credentials-path <path>`: OAuth client secret JSON path다. 기본값은 `config/google_drive_client_secret.json`이다.

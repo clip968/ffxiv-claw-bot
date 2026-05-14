@@ -38,6 +38,7 @@ DOWNLOAD_MIME_EXTENSIONS = {
     "text/plain": "txt",
     "text/markdown": "md",
 }
+TEXT_REBUILD_EXTENSIONS = {"htm", "html", "md", "markdown", "txt"}
 
 SOURCES_SCHEMA = """
 CREATE TABLE IF NOT EXISTS sources (
@@ -377,28 +378,53 @@ def build_drive_service(credentials: Any) -> Any:
 
 
 def list_drive_files(service: Any, folder_id: str) -> list[dict[str, Any]]:
-    query = f"'{folder_id}' in parents and trashed = false"
     fields = (
         "nextPageToken, files("
         "id,name,mimeType,modifiedTime,webViewLink,parents,md5Checksum,headRevisionId"
         ")"
     )
     files: list[dict[str, Any]] = []
-    page_token = None
+    seen_file_ids: set[str] = set()
+    visited_folder_ids: set[str] = set()
 
-    while True:
-        request = service.files().list(
-            q=query,
-            fields=fields,
-            pageToken=page_token,
-            supportsAllDrives=True,
-            includeItemsFromAllDrives=True,
-        )
-        response = request.execute()
-        files.extend(response.get("files", []))
-        page_token = response.get("nextPageToken")
-        if not page_token:
-            break
+    def visit_folder(current_folder_id: str) -> None:
+        if current_folder_id in visited_folder_ids:
+            return
+        visited_folder_ids.add(current_folder_id)
+
+        child_folder_ids: list[str] = []
+        page_token = None
+        query = f"'{current_folder_id}' in parents and trashed = false"
+
+        while True:
+            request = service.files().list(
+                q=query,
+                fields=fields,
+                pageToken=page_token,
+                supportsAllDrives=True,
+                includeItemsFromAllDrives=True,
+            )
+            response = request.execute()
+            for file_item in response.get("files", []):
+                drive_file_id = str(file_item.get("id") or "")
+                if drive_file_id and drive_file_id not in seen_file_ids:
+                    seen_file_ids.add(drive_file_id)
+                    files.append(file_item)
+
+                if (
+                    drive_file_id
+                    and file_item.get("mimeType") == GOOGLE_DRIVE_FOLDER_MIME
+                ):
+                    child_folder_ids.append(drive_file_id)
+
+            page_token = response.get("nextPageToken")
+            if not page_token:
+                break
+
+        for child_folder_id in child_folder_ids:
+            visit_folder(child_folder_id)
+
+    visit_folder(folder_id)
 
     return files
 
@@ -635,14 +661,45 @@ def apply_sync(
     )
 
 
-def rebuild_for_items(source_ids: list[str]) -> dict[str, Any]:
+def rebuild_extension_from_item(item: dict[str, Any]) -> str:
+    planned_path = item.get("planned_raw_path")
+    if planned_path:
+        return Path(str(planned_path)).suffix.lower().lstrip(".")
+    return ""
+
+
+def rebuild_source_ids_from_result(result: dict[str, Any]) -> list[str]:
+    return [
+        item["source_id"]
+        for item in result.get("items", [])
+        if item.get("action") in ("new", "changed")
+        and item.get("source_id")
+        and rebuild_extension_from_item(item) in TEXT_REBUILD_EXTENSIONS
+    ]
+
+
+def rebuild_for_items(
+    source_ids: list[str],
+    *,
+    db_path: Path = DB_PATH,
+    root_path: Path = ROOT,
+    summary_dir: Path | None = None,
+    graph_dir: Path | None = None,
+) -> dict[str, Any]:
     """Run compile_wiki and build_graph for a list of source IDs."""
+    resolved_summary_dir = summary_dir or (root_path / "wiki" / "source_summaries")
+    resolved_graph_dir = graph_dir or (root_path / "graph")
     compile_results: list[dict[str, Any]] = []
     compile_errors: list[str] = []
     graph_source_ids: list[str] = []
 
     for source_id in source_ids:
-        compile_result = tools.compile_wiki.compile_for_source(source_id)
+        compile_result = tools.compile_wiki.compile_for_source(
+            source_id,
+            db_path=db_path,
+            root_path=root_path,
+            summary_dir=resolved_summary_dir,
+        )
         if compile_result.get("status") == "ok":
             compile_results.append(compile_result)
             graph_source_ids.append(source_id)
@@ -655,7 +712,11 @@ def rebuild_for_items(source_ids: list[str]) -> dict[str, Any]:
     graph_errors: list[str] = []
     for source_id in graph_source_ids:
         try:
-            result = build_graph_module.build_graph(source_id)
+            result = build_graph_module.build_graph(
+                source_id,
+                db_path=db_path,
+                graph_dir=resolved_graph_dir,
+            )
             graph_result = result
         except Exception as exc:
             graph_errors.append(f"{source_id}: {exc}")
@@ -797,12 +858,14 @@ def main(argv: list[str] | None = None) -> None:
                     content_by_file_id=content_by_file_id,
                 )
                 if args.rebuild:
-                    rebuild_source_ids = [
-                        item["source_id"]
-                        for item in result.get("items", [])
-                        if item.get("action") in ("new", "changed") and item.get("source_id")
-                    ]
-                    result["rebuild"] = rebuild_for_items(rebuild_source_ids)
+                    rebuild_source_ids = rebuild_source_ids_from_result(result)
+                    result["rebuild"] = rebuild_for_items(
+                        rebuild_source_ids,
+                        db_path=args.db_path,
+                        root_path=args.root_path,
+                        summary_dir=args.root_path / "wiki" / "source_summaries",
+                        graph_dir=args.root_path / "graph",
+                    )
             elif args.dry_run:
                 existing_sources = load_existing_drive_sources(args.db_path)
                 items = [
@@ -844,12 +907,14 @@ def main(argv: list[str] | None = None) -> None:
             result = apply_sync(args.manifest, args.db_path, args.root_path)
 
         if args.rebuild and args.apply:
-            rebuild_source_ids = [
-                item["source_id"]
-                for item in result.get("items", [])
-                if item.get("action") in ("new", "changed") and item.get("source_id")
-            ]
-            result["rebuild"] = rebuild_for_items(rebuild_source_ids)
+            rebuild_source_ids = rebuild_source_ids_from_result(result)
+            result["rebuild"] = rebuild_for_items(
+                rebuild_source_ids,
+                db_path=args.db_path,
+                root_path=args.root_path,
+                summary_dir=args.root_path / "wiki" / "source_summaries",
+                graph_dir=args.root_path / "graph",
+            )
     except (DriveAuthError, DriveApiError) as exc:
         parser.error(str(exc))
 
