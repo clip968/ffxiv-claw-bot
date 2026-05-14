@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Accepted as Legacy / Deferred Optional Integration.
+
+Default source of truth for current operation is now `/mnt/d/ffixiv-bot-storage`; see `docs/adrs/0006-local-storage-and-notion-control.md`.
 
 ## Scope
 
@@ -16,9 +18,15 @@ Accepted
 - `tests/test_sync_drive.py`
 - `tests/fixtures/drive_manifest.json`
 
-## Source of truth
+## Legacy / Deferred Scope
 
-Google Drive `FFXIV_KB`는 사람이 관리하는 canonical source다.
+Google Drive 기반 sync/write 구조는 v0.4-01까지 구현되어 있으나, 현재 기본 운영 경로에서는 사용하지 않는다. 향후 외부 클라우드 동기화가 필요할 때 optional integration으로 재검토한다.
+
+이 spec의 CLI, raw path, DB 식별 규칙, OAuth 규칙, 테스트는 기존 Drive integration을 보존하기 위한 계약이다. 새 기본 ingest/sync 계약은 Local Storage를 기준으로 하며 `raw/local_storage`, `local_file` 또는 `local_document`, `source_id`, `canonical_path` 용어를 사용한다.
+
+## Legacy Source of truth
+
+Google Drive `FFXIV_KB`는 이 legacy integration 안에서만 사람이 관리하는 canonical source로 해석한다.
 
 로컬 산출물은 파생 캐시다.
 
@@ -27,7 +35,7 @@ Google Drive `FFXIV_KB`는 사람이 관리하는 canonical source다.
 - `db/ffxiv.sqlite`: source metadata, FTS, graph 저장소
 - `graph`: graph export cache
 
-Drive 문서는 로컬에서 직접 편집하는 것이 아니라 Drive 원본에서 동기화된다.
+Drive 문서는 legacy path에서 로컬에 직접 편집하는 것이 아니라 Drive 원본에서 동기화된다. 현재 기본 path에서는 `/mnt/d/ffixiv-bot-storage/sources/<category>/...`가 원본 파일 위치다.
 
 ## source_type
 

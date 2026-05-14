@@ -14,5 +14,5 @@ plan은 spec이나 ADR을 대체하지 않는다. spec은 현재 시스템 동�
 
 ## Phase Plan Folders
 
-- `docs/plans/v03/`: Google Drive sync feature plans
-- `docs/plans/v04/`: OpenClaw Drive ingest feature plans
+- `docs/plans/v03/`: Google Drive sync feature plans (Legacy / Deferred optional integration)
+- `docs/plans/v04/`: OpenClaw Local Storage ingest feature plans

@@ -1,6 +1,8 @@
 # v0.4 Feature Plans
 
-v0.4 OpenClaw Drive Ingest의 feature별 plan을 보관한다.
+v0.4 OpenClaw Local Storage Ingest의 feature별 plan을 보관한다.
+
+Drive 중심 v0.4-00/v0.4-01 계획은 완료된 legacy reference로 보존한다. 현재 기본 운영 경로는 `/mnt/d/ffixiv-bot-storage`와 OpenClaw Notion direct control이다.
 
 ## Master Plan
 
@@ -12,4 +14,3 @@ v0.4 OpenClaw Drive Ingest의 feature별 plan을 보관한다.
 - Tasks는 체크리스트(`[ ]`/`[x]`)로 작성한다.
 - 완료 시 `## Status`를 **Completed YYYY-MM-DD**로 변경하고 master plan의 체크리스트도 함께 갱신한다.
 - v0.4 구현은 v0.3-05 rebuild chain 완료 후 시작한다.
-

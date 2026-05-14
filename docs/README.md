@@ -2,7 +2,7 @@
 
 `docs/`는 `ffxiv-claw-bot`의 구현 계약과 작업 흐름을 Git으로 관리하는 source of truth다.
 
-Notion은 source of truth가 아니다. Notion에는 handoff 요약, 링크, decision index만 mirror한다.
+Notion은 source of truth가 아니다. Notion에는 handoff 요약, 링크, decision index와 OpenClaw가 직접 갱신하는 작업 상태만 기록한다.
 
 ## Directory Roles
 
@@ -23,6 +23,7 @@ Notion은 source of truth가 아니다. Notion에는 handoff 요약, 링크, dec
 - `docs/DOC_OWNERS.yml`은 코드 경로가 어떤 spec/runbook/ADR 계약 아래 있는지 추적하는 정책 파일이다.
 - `docs/plans/`와 `docs/archive/`는 DOC_OWNERS owner로 인정하지 않는다.
 - Notion 문서나 외부 링크는 DOC_OWNERS owner가 아니다.
+- 원본 파일 저장소는 repo 외부 `/mnt/d/ffixiv-bot-storage`이며, Notion에는 파일 자체를 올리지 않는다.
 
 ## Start Here
 

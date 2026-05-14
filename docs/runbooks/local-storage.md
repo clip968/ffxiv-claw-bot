@@ -1,0 +1,111 @@
+# Local Storage Runbook
+
+## 원칙
+
+기본 원본 파일 저장소는 `/mnt/d/ffixiv-bot-storage`다.
+
+repo 내부 `raw/local_storage`, `wiki`, `graph`, `db/ffxiv.sqlite`는 봇 실행용 캐시 또는 파생 산출물이다. 원본 파일을 repo 내부에 대량 저장하지 않는다.
+
+Google Drive 기반 `sync_drive.py`와 `publish_drive.py`는 Legacy / Deferred optional integration으로 유지한다.
+
+## Directory Layout
+
+```text
+/mnt/d/ffixiv-bot-storage/
+  incoming/
+  sources/
+    urls/
+    documents/
+    sheets/
+    patch_notes/
+    raid_guides/
+    job_guides/
+    static_docs/
+    macros/
+    bis_sheets/
+    personal_notes/
+  exports/
+    markdown/
+    text/
+    html/
+  manifests/
+  archive/
+```
+
+역할:
+
+- `incoming/`: 아직 분류하지 않은 임시 파일
+- `sources/`: 사용자가 관리하는 원본 파일
+- `exports/`: xlsx, pdf, docx 같은 파일에서 추출한 md/txt/html 변환본
+- `manifests/`: 동기화 테스트용 manifest JSON
+- `archive/`: 더 이상 활성 사용하지 않지만 보존할 자료
+
+## Manifest Dry-run
+
+현재 구현된 첫 범위는 manifest 기반 dry-run이다.
+
+```bash
+python tools/sync_storage.py --dry-run --manifest tests/fixtures/storage_manifest.json
+```
+
+예상 manifest item:
+
+```json
+{
+  "source_id": "local_001",
+  "title": "Black Mage 7.5 Guide",
+  "category": "job_guides",
+  "source_type": "markdown_file",
+  "content_type": "text/markdown",
+  "canonical_path": "sources/job_guides/black_mage_7_5.md",
+  "content_hash": "sha256..."
+}
+```
+
+분류:
+
+- `new`: DB에 같은 `local://<canonical_path>` source가 없다.
+- `changed`: DB에 같은 source가 있고 `content_hash`가 다르다.
+- `unchanged`: DB에 같은 source가 있고 `content_hash`가 같다.
+- `skipped`: 필수 metadata가 부족하거나 category가 허용 목록에 없다.
+
+Planned snapshot path:
+
+```text
+raw/local_storage/<category>/<safe_title>__<source_id>.<ext>
+```
+
+## Full Pipeline Target
+
+최종 목표 pipeline:
+
+```text
+원본 파일 감지
+-> raw/local_storage snapshot 생성
+-> sources DB upsert
+-> compile_wiki.py 로 LLM Wiki 문서 생성
+-> wiki_fts 색인
+-> build_graph.py 로 graph nodes/edges 생성
+-> search_kb.py 와 answer.py 에서 FTS + graph traversal 기반 답변
+```
+
+## Apply 보류 범위
+
+다음 동작은 dry-run skeleton 이후 별도 작업에서 구현한다.
+
+- `/mnt/d/ffixiv-bot-storage/sources/<category>/...`에 원본 쓰기
+- `raw/local_storage/<category>/...`에 snapshot 쓰기
+- `db/ffxiv.sqlite` sources upsert
+- `compile_wiki.py`와 `build_graph.py` 자동 호출
+- Notion 상태판 update
+
+## Legacy / Deferred
+
+Drive 기반 명령은 삭제하지 않는다.
+
+```bash
+python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json
+python tools/publish_drive.py --dry-run --category personal_notes --title "Test" --body "hello"
+```
+
+이 명령은 cloud sync가 필요할 때 optional integration으로 재검토한다.

@@ -2,6 +2,8 @@
 
 v0.3 Google Drive Sync의 feature별 plan을 보관한다.
 
+이 디렉터리는 Legacy / Deferred optional integration 기록이다. 현재 기본 운영 경로는 Local Storage sync다.
+
 ## Master Plan
 
 `docs/plans/2026-05-14-post-v03-next-steps.md`에서 전체 진행 상태를 추적한다.

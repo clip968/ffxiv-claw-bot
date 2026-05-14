@@ -179,14 +179,14 @@ python tools/answer.py "7.5에서 흑마 뭐 바뀜?"
 
 ---
 
-## Phase 9. Google Drive 동기화
+## Phase 9. Local Storage 동기화
 
 작업:
 
 ```
-1. FFXIV_KB 폴더 생성
-2. rclone 또는 Drive API 설정
-3. sync_drive.py 구현
+1. `/mnt/d/ffixiv-bot-storage` 디렉터리 구조 생성
+2. manifest 기반 Local Storage dry-run 계약 정의
+3. sync_storage.py 구현
 4. modifiedTime/hash 기반 변경 감지
 5. 변경된 문서만 재컴파일
 ```
@@ -194,10 +194,12 @@ python tools/answer.py "7.5에서 흑마 뭐 바뀜?"
 성공 기준:
 
 ```
-Google Docs 수정 → sync_drive 실행 → raw/drive 갱신 → wiki 갱신 → graph 갱신
+/mnt/d/ffixiv-bot-storage 원본 수정 → sync_storage 실행 → raw/local_storage 갱신 → wiki 갱신 → graph 갱신
 ```
 
 📋 예정
+
+Legacy / Deferred: Google Drive 기반 `sync_drive.py`와 `publish_drive.py`는 v0.4-01까지 구현되었으나 현재 기본 운영 경로에서는 사용하지 않는다. 향후 외부 클라우드 동기화가 필요할 때 optional integration으로 재검토한다.
 
 ---
 
@@ -252,7 +254,7 @@ Google Docs 수정 → sync_drive 실행 → raw/drive 갱신 → wiki 갱신 �
 
 ```
 기능:
-- Google Drive FFXIV_KB 동기화
+- Google Drive FFXIV_KB 동기화 (완료, 현재는 legacy optional integration)
 - Docs/Sheets/Excel 파싱
 - 변경된 문서만 재컴파일
 ```
@@ -261,12 +263,13 @@ Google Docs 수정 → sync_drive 실행 → raw/drive 갱신 → wiki 갱신 �
 
 ```
 - OpenClaw/Discord 저장 요청 수집
-- Google Drive FFXIV_KB 업로드/생성
-- Drive publish 후 local KB 재빌드
+- /mnt/d/ffixiv-bot-storage 원본 저장
+- Local Storage snapshot 후 local KB 재빌드
+- Notion 상태판 direct control
 - Discord 저장 결과/부분 실패 알림
 - 패치노트 자동 수집
 - Discord 자동 요약 게시
 - 필요 시 BGE-M3 또는 다른 embedding 모델 추가
 ```
 
-v0.4 OpenClaw Drive ingest 작업 분해는 `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`와 `docs/plans/v04/`에서 추적한다.
+v0.4 OpenClaw Local Storage ingest 작업 분해는 `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`와 `docs/plans/v04/`에서 추적한다.

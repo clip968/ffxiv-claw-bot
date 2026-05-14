@@ -1,5 +1,11 @@
 # Publish Drive Runbook
 
+## Status
+
+Legacy / Deferred optional integration.
+
+현재 기본 운영 경로는 `/mnt/d/ffixiv-bot-storage`에 원본 파일을 두고 `raw/local_storage`, `wiki`, `graph`, `db/ffxiv.sqlite`를 갱신하는 Local Storage path다. 이 runbook은 기존 Drive write 기능을 보존하기 위한 절차다.
+
 ## 원칙
 
 `tools/publish_drive.py`는 로컬에서 받은 Discord note, text, attachment 등을

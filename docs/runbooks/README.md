@@ -12,7 +12,10 @@ runbook은 반복 가능한 명령과 절차를 기록하는 문서다.
 ## 현재 runbook
 
 - `test.md`: 테스트 실행
+- `local-storage.md`: Local Storage ingest/sync 절차
+- `openclaw-notion.md`: OpenClaw Notion direct control 절차
 - `sync-drive.md`: manifest 기반 Drive sync dry-run
+- `publish-drive.md`: Drive write/publish 절차 (Legacy / Deferred optional integration)
 - `rebuild-kb.md`: 로컬 KB 재빌드 절차
 - `finish-task.md`: 작업 종료 검증 자동화
 - `notion-sync.md`: Notion handoff mirror dry-run/apply 절차

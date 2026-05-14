@@ -1,6 +1,6 @@
 # Docs-First Agent Workflow
 
-이 프로젝트의 source of truth는 레포 내부 `docs/`다. Notion은 source of truth가 아니며 handoff 요약, 링크, 인덱스를 남기는 mirror 역할만 한다.
+이 프로젝트의 문서 source of truth는 레포 내부 `docs/`다. Notion은 source of truth가 아니며 handoff 요약, 링크, 인덱스, OpenClaw 작업 상태를 남기는 control/status layer 역할만 한다.
 
 ## 기본 순서
 
@@ -182,7 +182,9 @@ commit/push 요청이 있더라도 먼저 작업 트리 범위, 테스트 결과
 - **다음 세션 인계**: `docs/handoff/CURRENT_HANDOFF.md`에 기록한다.
 - **반복 실행 절차**: `docs/runbooks/`에 runbook으로 기록한다.
 
-Notion은 mirror/index 역할만 한다. Notion에 문서를 작성해야 한다면 repo docs에 먼저 작성하고 Notion에 요약/링크를 추가한다.
+Notion은 mirror/index와 OpenClaw 작업 상태판 역할만 한다. Notion에 문서를 작성해야 한다면 repo docs에 먼저 작성하고 Notion에 요약/링크를 추가한다.
+
+OpenClaw가 Notion을 직접 갱신할 때도 원본 파일은 Notion에 업로드하지 않는다. Notion에는 `/mnt/d/ffixiv-bot-storage` local path, category, source_id, processing status, wiki path, graph status, last error만 기록한다.
 
 Notion에만 있는 정보는 stale하다고 간주한다.
 AI agent는 Notion 문서보다 repo `docs/`의 내용을 우선하여 따라야 한다.

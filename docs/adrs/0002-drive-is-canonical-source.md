@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by `docs/adrs/0006-local-storage-and-notion-control.md`
 
 ## Context
 
@@ -15,6 +15,8 @@ FFXIV 공대 문서, 가이드, 매크로, 개인 노트는 사람이 계속 수
 Google Drive `FFXIV_KB`를 사람이 관리하는 원본 지식 저장소로 둔다.
 
 로컬 `raw/drive`, `wiki`, `db/ffxiv.sqlite`, FTS, graph는 재생성 가능한 파생 캐시로 본다.
+
+2026-05-14 이후 기본 운영 경로에서는 이 결정을 사용하지 않는다. Drive 기반 sync/write 구조는 구현된 상태로 유지하지만, 외부 클라우드 동기화가 필요할 때 재검토하는 optional legacy integration으로 둔다.
 
 ## Consequences
 

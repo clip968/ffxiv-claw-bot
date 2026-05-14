@@ -1,8 +1,14 @@
 # Sync Drive Runbook
 
+## Status
+
+Legacy / Deferred optional integration.
+
+현재 기본 운영 경로는 `/mnt/d/ffixiv-bot-storage`와 `raw/local_storage`를 사용하는 Local Storage sync다. 이 runbook은 기존 Google Drive integration을 보존하기 위한 절차다.
+
 ## 원칙
 
-Google Drive `FFXIV_KB`는 사람이 관리하는 canonical source다.
+Google Drive `FFXIV_KB`는 legacy integration 안에서만 사람이 관리하는 canonical source로 해석한다.
 
 `raw/drive`, `wiki`, `db/ffxiv.sqlite`, FTS, graph는 로컬 파생 캐시다.
 

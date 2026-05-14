@@ -1,0 +1,40 @@
+{
+  "storage_root": "/mnt/d/ffixiv-bot-storage",
+  "files": [
+    {
+      "source_id": "local_001",
+      "title": "Black Mage 7.5 Guide",
+      "category": "job_guides",
+      "source_type": "markdown_file",
+      "content_type": "text/markdown",
+      "canonical_path": "sources/job_guides/black_mage_7_5.md",
+      "content_hash": "hash-new"
+    },
+    {
+      "source_id": "local_002",
+      "title": "Static Rules",
+      "category": "static_docs",
+      "source_type": "markdown_file",
+      "content_type": "text/markdown",
+      "canonical_path": "sources/static_docs/static_rules.md",
+      "content_hash": "hash-same"
+    },
+    {
+      "source_id": "local_003",
+      "title": "Savage 3 Macro",
+      "category": "macros",
+      "source_type": "plain_text_file",
+      "content_type": "text/plain",
+      "canonical_path": "sources/macros/savage_3_macro.txt",
+      "content_hash": "hash-newer"
+    },
+    {
+      "source_id": "local_004",
+      "title": "Missing Metadata",
+      "category": "job_guides",
+      "source_type": "markdown_file",
+      "content_type": "text/markdown",
+      "content_hash": "hash-skipped"
+    }
+  ]
+}

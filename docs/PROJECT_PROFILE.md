@@ -14,8 +14,8 @@
 ## Core Pipeline
 
 ```text
-URL / Drive / Discord note
-  -> raw 저장
+Local storage / URL / Discord/OpenClaw request / Notion local path
+  -> raw/local_storage snapshot 또는 raw/urls 저장
   -> sources DB 기록
   -> wiki markdown 생성
   -> SQLite FTS 색인
@@ -27,8 +27,10 @@ URL / Drive / Discord note
 
 ## Current Phase
 
-v0.3 Google Drive sync dry-run, fixture apply, Drive API 인증/조회, Google Docs export/download 완료.
-Drive 변경 감지 후 wiki/FTS/graph 재빌드 연결은 아직 미구현.
+v0.3 Google Drive sync와 v0.4-01 Drive write foundation은 구현 완료 상태로 보존한다.
+2026-05-14 이후 기본 운영 경로는 Google Drive가 아니라 `/mnt/d/ffixiv-bot-storage` 기반 Local Storage + OpenClaw Notion direct control로 전환한다.
+
+Drive 기반 sync/write 구조는 Legacy / Deferred / Optional Integration이다.
 
 ## Key Tools
 
@@ -39,7 +41,9 @@ Drive 변경 감지 후 wiki/FTS/graph 재빌드 연결은 아직 미구현.
 - `tools/answer.py`: 검색 결과 기반 context pack 및 근거 답변 출력
 - `tools/build_graph.py`: wiki/source 기반 deterministic graph 생성
 - `tools/graph_path.py`: graph 관계 조회
-- `tools/sync_drive.py`: Google Drive 동기화 (manifest dry-run/apply, Drive API metadata 조회, export/download)
+- `tools/sync_storage.py`: Local Storage manifest dry-run sync skeleton (new/changed/unchanged/skipped 분류, JSON 출력)
+- `tools/sync_drive.py`: Google Drive 동기화 (Legacy / Deferred optional integration)
+- `tools/publish_drive.py`: Google Drive write/publish (Legacy / Deferred optional integration)
 
 ## Development Principles
 
@@ -49,8 +53,10 @@ Drive 변경 감지 후 wiki/FTS/graph 재빌드 연결은 아직 미구현.
 4. v0.1~v0.3에서는 embedding을 추가하지 않는다.
 5. FFXIV 정보는 로컬 KB에 근거가 있을 때만 확정적으로 답한다.
 6. 출처 없는 패치 내용, 직업 변경점, BIS 정보는 생성하지 않는다.
-7. Google Drive `FFXIV_KB`가 사람이 관리하는 canonical source다.
-8. 로컬 `raw/drive`, `wiki`, `db`, FTS, graph는 재생성 가능한 파생 캐시다.
+7. `/mnt/d/ffixiv-bot-storage`가 사람이 관리하는 원본 파일 저장소다.
+8. 로컬 `raw/local_storage`, `wiki`, `db`, FTS, graph는 재생성 가능한 파생 캐시다.
+9. Notion은 원본 파일 저장소가 아니라 OpenClaw가 직접 읽고 쓰는 작업 관리, 상태판, 문서 인덱스 계층이다.
+10. Google Drive 구현은 삭제하지 않고 Legacy / Deferred / Optional Integration으로 유지한다.
 
 ## Docs Structure (Source of Truth)
 
@@ -63,4 +69,6 @@ GitHub repo `docs/`가 유일한 source of truth다.
 - `docs/handoff/`: 다음 session 인계
 - `docs/archive/`: 오래된 문서 보관
 
-Notion은 더 이상 source of truth가 아니다. Notion 내용은 2026-05-14에 모두 repo docs로 이관 완료되었다.
+Notion은 더 이상 문서 source of truth가 아니다. Notion 내용은 2026-05-14에 모두 repo docs로 이관 완료되었다.
+
+OpenClaw는 Notion을 직접 다루되, Notion에는 원본 파일 자체를 올리지 않는다. Notion에는 local source path, category, source_id, processing status, wiki path, graph status, last error 같은 상태 metadata만 기록한다.

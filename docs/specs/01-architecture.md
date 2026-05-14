@@ -46,7 +46,7 @@ agent:ffxiv
 | LLM Wiki | 원문을 FFXIV 개념 단위의 markdown wiki로 재컴파일 |
 | Graphify | 패치, 직업, 스킬, 레이드, 매크로, BIS 관계를 graph로 추출 |
 | 임베딩 의존 최소화 | 초기는 SQLite FTS5 + metadata + graph traversal로 구현 |
-| 개인 지식 저장소 | Google Drive `FFXIV_KB`와 Discord 저장 요청을 지속 반영 |
+| 개인 지식 저장소 | `/mnt/d/ffixiv-bot-storage`와 Discord/OpenClaw 저장 요청을 지속 반영 |
 
 중요한 차이는 브런치 프로젝트를 그대로 복제하지 않는다는 점이다. FFXIV는 패치 번호, 직업명, 스킬명, 레이드명처럼 고유명사가 뚜렷하므로 초기 버전에서는 벡터 DB 없이도 실용적인 검색을 만들 수 있다.
 
@@ -73,7 +73,8 @@ agent:ffxiv
   │   └─ tool_config.yaml
   │
   ├─ raw/
-  │   ├─ drive/
+  │   ├─ local_storage/
+  │   ├─ drive/ (legacy optional integration)
   │   ├─ urls/
   │   ├─ patchnotes/
   │   └─ discord/
@@ -111,7 +112,8 @@ agent:ffxiv
   │   ├─ graph_path.py
   │   ├─ index_fts.py (보류)
   │   ├─ ingest_discord_note.py (예정)
-  │   ├─ sync_drive.py (예정)
+  │   ├─ sync_storage.py (예정)
+  │   ├─ sync_drive.py (legacy optional integration)
   │   └─ crawl_patchnotes.py (예정)
   │
   ├─ prompts/
@@ -124,6 +126,7 @@ agent:ffxiv
   └─ tests/
       ├─ fixtures/
       ├─ test_ingest_url.py (예정)
+      ├─ test_sync_storage.py (예정)
       ├─ test_compile_wiki.py (예정)
       ├─ test_search_kb.py (예정)
       └─ test_graph_path.py (예정)
@@ -138,30 +141,43 @@ agent:ffxiv
 ```
 1. 공식 패치노트
 2. 사용자가 Discord에서 저장한 URL
-3. Google Drive FFXIV_KB 폴더
-4. 직접 작성한 공대 문서, 매크로, BIS 시트
+3. /mnt/d/ffixiv-bot-storage 원본 파일
+4. Notion 상태판에 기록된 local path
 ```
 
-Google Drive 구조는 다음처럼 둔다.
+Local Storage 구조는 다음처럼 둔다.
 
 ```
-Google Drive/FFXIV_KB/
-  ├─ patch_notes/
-  ├─ job_guides/
-  ├─ raid_guides/
-  ├─ static_docs/
-  ├─ macros/
-  ├─ bis_sheets/
-  └─ personal_notes/
+/mnt/d/ffixiv-bot-storage/
+  ├─ incoming/
+  ├─ sources/
+  │   ├─ urls/
+  │   ├─ documents/
+  │   ├─ sheets/
+  │   ├─ patch_notes/
+  │   ├─ raid_guides/
+  │   ├─ job_guides/
+  │   ├─ static_docs/
+  │   ├─ macros/
+  │   ├─ bis_sheets/
+  │   └─ personal_notes/
+  ├─ exports/
+  │   ├─ markdown/
+  │   ├─ text/
+  │   └─ html/
+  ├─ manifests/
+  └─ archive/
 ```
+
+Google Drive `FFXIV_KB` 구조는 v0.4-01까지 구현되어 있으나, 현재 기본 운영 경로에서는 사용하지 않는다. 향후 외부 클라우드 동기화가 필요할 때 optional integration으로 재검토한다.
 
 원문 저장 정책은 다음과 같다.
 
 ```
 raw/patchnotes/7_5_official.html
 raw/urls/lodestone_2026_05_13_xxx.html
-raw/drive/black_mage_guide.md
-raw/drive/static_rules.xlsx
+raw/local_storage/job_guides/black_mage_guide.md
+raw/local_storage/static_docs/static_rules.xlsx
 raw/discord/2026_05_13_note_001.md
 ```
 
@@ -520,7 +536,7 @@ Discord 사용 예시는 다음과 같다.
 @claw_bot ffxiv 최신 패치노트 요약해줘
 @claw_bot ffxiv 7.5 흑마 변경점 알려줘
 @claw_bot ffxiv 이 URL 저장해줘: https://...
-@claw_bot ffxiv drive 동기화해줘
+@claw_bot ffxiv local 저장소 동기화해줘
 @claw_bot ffxiv 우리 공대 3층 매크로 보여줘
 @claw_bot ffxiv 흑마랑 이번 BIS 문서가 어떻게 연결돼?
 ```

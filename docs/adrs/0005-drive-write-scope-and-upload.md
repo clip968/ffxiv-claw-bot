@@ -2,11 +2,13 @@
 
 ## Status
 
-Accepted
+Accepted for optional legacy integration. Superseded for the default operating path by `docs/adrs/0006-local-storage-and-notion-control.md`.
 
 ## Context
 
 v0.3까지의 Google Drive 연동은 read-only sync/export/download 중심이었다. v0.4에서는 OpenClaw/Discord 저장 요청을 Drive canonical source에 직접 반영해야 한다.
+
+2026-05-14 이후 기본 운영 경로는 `/mnt/d/ffixiv-bot-storage`와 OpenClaw의 Notion direct control로 전환한다. 이 ADR은 Drive write 기능을 삭제하지 않고 optional legacy integration으로 유지하기 위한 결정 기록이다.
 
 이를 위해 다음 결정이 필요했다:
 1. OAuth scope: 어떤 쓰기 권한으로 Drive API를 호출할지

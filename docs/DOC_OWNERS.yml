@@ -71,6 +71,15 @@ rules:
       - "docs/runbooks/sync-drive.md"
       - "docs/runbooks/test.md"
 
+  - id: local-storage-sync
+    paths:
+      - "tools/sync_storage.py"
+      - "tests/test_sync_storage.py"
+    contract_docs:
+      - "docs/runbooks/local-storage.md"
+    procedure_docs:
+      - "docs/runbooks/test.md"
+
   - id: docs-workflow-tooling
     paths:
       - "scripts/check_docs_freshness.py"
