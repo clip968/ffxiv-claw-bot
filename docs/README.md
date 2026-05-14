@@ -18,11 +18,13 @@ Notion은 source of truth가 아니다. Notion에는 handoff 요약, 링크, dec
 
 - 기능 구현은 spec 계약을 기준으로 한다.
 - 큰 변경은 `spec -> ADR(if needed) -> plan -> failing tests -> implementation -> docs update -> handoff update -> finish_task` 순서로 진행한다.
+- 큰 작업은 상위 모델/maintainer가 `docs/plans/`에서 작은 task로 분해하고, executor agent는 단일 task만 수행한다.
 - 행동이 바뀌는 코드 변경은 먼저 실패하는 테스트를 작성한다.
 - `docs/handoff/CURRENT_HANDOFF.md`는 모든 코드 변경의 전역 상태 문서다.
 - `docs/DOC_OWNERS.yml`은 코드 경로가 어떤 spec/runbook/ADR 계약 아래 있는지 추적하는 정책 파일이다.
 - `docs/plans/`와 `docs/archive/`는 DOC_OWNERS owner로 인정하지 않는다.
 - Notion 문서나 외부 링크는 DOC_OWNERS owner가 아니다.
+- 코드 변경 task는 plan/handoff만 갱신하지 말고 관련 spec/runbook/ADR 중 필요한 문서도 갱신한다.
 - 원본 파일 저장소는 repo 외부 `/mnt/d/ffixiv-bot-storage`이며, Notion에는 파일 자체를 올리지 않는다.
 
 ## Start Here

@@ -16,6 +16,8 @@ Google Drive 기반 sync/write 구조는 Legacy / Deferred / Optional Integratio
 
 ## 이번 세션 완료
 
+### v0.4-02 Local Storage 전환
+
 1. Google Drive 의존 지점을 조사했다.
    - 구현: `tools/sync_drive.py`, `tools/publish_drive.py`
    - 테스트: `tests/test_sync_drive.py`, `tests/test_publish_drive.py`, `tests/test_compile_wiki.py`
@@ -28,6 +30,15 @@ Google Drive 기반 sync/write 구조는 Legacy / Deferred / Optional Integratio
 6. `docs/runbooks/local-storage.md`와 `docs/runbooks/openclaw-notion.md`를 추가했다.
 7. `tools/sync_storage.py` dry-run skeleton을 추가했다.
 8. `tests/fixtures/storage_manifest.json`과 `tests/test_sync_storage.py`를 추가했다.
+
+### Docs-first workflow 템플릿화 개선
+
+1. `docs/WORKFLOW.md`에 Planner / Executor 분리 원칙을 추가했다.
+2. `docs/templates/PLAN_TEMPLATE.md`에 Allowed Files, Docs Required, Red Test, Verification 섹션을 추가했다.
+3. `docs/plans/README.md`에 상위 모델 task 분해 -> executor 단일 task 수행 -> reviewer/CI 판정 흐름을 명시했다.
+4. `docs/runbooks/finish-task.md`에 executor agent 실패 처리와 plan/handoff-only 문서 갱신 금지 원칙을 추가했다.
+5. `docs/templates/HANDOFF_TEMPLATE.md`와 `.github/pull_request_template.md`에 plan/executor scope와 docs freshness evidence 항목을 추가했다.
+6. `docs-first-workflow/` 템플릿에도 같은 개선을 반영했다.
 
 ## 기본 Source of Truth
 
@@ -129,6 +140,8 @@ python -m unittest tests.test_sync_storage
 python tools/sync_storage.py --dry-run --manifest tests/fixtures/storage_manifest.json
 python -m unittest discover -s tests -p "test_*.py"
 python scripts/check_docs_freshness.py --all
+cd docs-first-workflow && python -m unittest discover -s tests -p "test_*.py"
+cd docs-first-workflow && python scripts/check_docs_freshness.py --all
 ```
 
 결과:
@@ -137,6 +150,7 @@ python scripts/check_docs_freshness.py --all
 - `sync_storage.py --dry-run`: JSON 출력 확인
 - full unittest discover: 58 tests OK
 - docs freshness: ok
+- `docs-first-workflow` focused unittest/docs freshness/finish_task: OK
 
 작업 종료 전 마지막 게이트:
 

@@ -82,6 +82,27 @@ ADR은 spec을 대체하지 않는다. ADR은 왜 결정했는지를 기록하�
 
 plan에는 관련 contract, 변경 파일, red test, implementation step, done when을 적는다. `docs/plans/`는 임시 작업 계획이며 장기 owner나 source of truth로 쓰지 않는다.
 
+## Planner / Executor 분리
+
+큰 작업은 상위 모델 또는 maintainer가 먼저 작게 쪼갠다. 실행자는 `docs/plans/`의 단일 task 또는 단일 feature plan만 수행한다.
+
+권장 역할 분리:
+
+- **Planner**: 목표 해석, 관련 spec/ADR/runbook 확인, 작업 단위 분해, acceptance criteria와 검증 명령 작성
+- **Executor**: 지정된 plan의 범위만 구현, red test 작성, 최소 구현, 관련 docs 갱신, handoff 갱신, finish gate 실행
+- **Reviewer/CI**: diff, 테스트 로그, docs freshness, handoff를 기준으로 완료 여부 판단
+
+오픈소스 모델이나 낮은 신뢰도의 agent에게 맡길 task는 다음 조건을 만족해야 한다.
+
+- 수정 가능한 파일과 수정 금지 파일이 명시되어 있다.
+- 관련 spec/ADR/runbook이 명시되어 있다.
+- 먼저 작성할 실패 테스트 또는 테스트를 생략하는 이유가 명시되어 있다.
+- 갱신해야 할 문서가 `Docs Required` 섹션에 명시되어 있다.
+- focused test, full unittest, docs freshness, finish gate 명령이 명시되어 있다.
+- 완료 판정은 agent의 말이 아니라 command output과 diff review로 한다.
+
+실행자가 plan 밖 변경이 필요하다고 판단하면 먼저 plan을 갱신하고, contract 변경이 있으면 spec/runbook/ADR도 함께 갱신한다.
+
 ## TDD 규칙
 
 행동이 바뀌는 코드 변경은 먼저 실패하는 테스트를 작성한다.
@@ -108,6 +129,8 @@ pytest는 현재 표준이 아니다. 새로 도입하려면 별도 spec/plan에
 - 반복 가능한 실행 절차 변경: `docs/runbooks/`
 - 기술 결정 변경: `docs/adrs/`
 - 다음 agent/session 상태 변경: `docs/handoff/CURRENT_HANDOFF.md`
+
+plan 작성자는 각 task마다 `Docs Required`를 명시해야 한다. 코드 변경이 있는데 관련 spec/runbook/ADR 중 아무 문서도 바뀌지 않는 task는 기본적으로 잘못된 task다.
 
 `docs/archive/`는 현재 기준 실행 대상이 아니므로 owner 문서로 인정하지 않는다. Notion 문서나 외부 링크도 owner 문서가 아니다.
 

@@ -24,6 +24,21 @@ In progress:
 - Runbook:
 - Plan:
 
+## Plan Execution Record
+
+- Planner:
+- Executor:
+- Task performed:
+- Allowed files followed: Yes / No
+- Scope changes made:
+
+## Docs Updated
+
+- Contract docs:
+- Procedure docs:
+- Handoff:
+- Notes:
+
 ## Reviewed docs
 
 기본 `finish_task.py` 검증은 이 섹션만으로 DOC_OWNERS contract freshness를 충족시키지 않는다.
@@ -52,6 +67,13 @@ python -m unittest discover -s tests -p "test_*.py"
 python scripts/check_docs_freshness.py --all
 python scripts/finish_task.py
 ```
+
+Validation evidence:
+
+- Focused test:
+- Full test:
+- Docs freshness:
+- Finish gate:
 
 ## Notion
 

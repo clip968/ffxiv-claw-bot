@@ -25,6 +25,8 @@ python scripts/finish_task.py
 - Notion dry-run 실패: `docs/handoff/CURRENT_HANDOFF.md`가 존재하는지 확인한다.
 - git 상태 확인: 의도하지 않은 파일이 섞였는지 확인한다.
 
+오픈소스 모델이나 executor agent가 실패를 만난 경우에는 임의로 완료를 주장하지 않는다. 실패한 명령, exit code, 핵심 로그, 수정한 파일 목록만 handoff에 남기고 멈춘다.
+
 ## Docs freshness check
 
 `finish_task.py`는 `check_docs_freshness.py --all`을 실행한다.
@@ -44,6 +46,8 @@ python scripts/finish_task.py
 - `docs/handoff/CURRENT_HANDOFF.md`가 같은 작업 트리에서 변경됐다.
 
 `docs/handoff/CURRENT_HANDOFF.md`는 전역 종료 조건이지만 경로별 contract docs를 대체하지 않는다. handoff만 변경한 경우 contract freshness를 만족하지 않는다.
+
+`docs/plans/**`도 경로별 contract docs를 대체하지 않는다. plan은 작업 지시서이며 완료 후에도 spec/runbook/ADR 중 필요한 문서가 최신이어야 한다.
 
 `docs/archive/**`, Notion 문서, 외부 링크는 owner 문서로 인정하지 않는다.
 
