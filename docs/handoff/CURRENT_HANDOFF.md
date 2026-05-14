@@ -9,6 +9,7 @@
 ## Current Phase
 
 v0.3-05 Drive rebuild chain (wiki/FTS/graph) 완료. v0.3 전체 완료.
+v0.4-00 OpenClaw Ingest Contract 완료. v0.4 feature 01~05는 미구현.
 
 완료된 것:
 - v0.1 local KB pipeline
@@ -20,6 +21,7 @@ v0.3-05 Drive rebuild chain (wiki/FTS/graph) 완료. v0.3 전체 완료.
 - **v0.3-05 Drive rebuild chain** (`--rebuild`, compile_wiki Markdown 처리, build_graph 연결)
 - docs-first workflow tooling (DOC_OWNERS, finish_task, check_docs_freshness 등)
 - **Notion 문서 repo docs 이관 완료** (이전 세션, 2026-05-14)
+- **v0.4-00 OpenClaw Ingest Contract** (ingest request/result JSON 계약 정의)
 
 미구현:
 - Discord/OpenClaw 연결
@@ -53,15 +55,37 @@ Notion 문서 매핑:
 4. `docs/FILE_INVENTORY.md`
 5. `docs/specs/0003-google-drive-sync.md`
 6. `docs/plans/2026-05-14-post-v03-next-steps.md` (v0.3 master plan)
-7. `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md` (다음 구현 1순위)
-8. `docs/plans/v03/2026-05-14-v03-05-rebuild-chain.md` (완료, 참고용)
-9. `docs/plans/v03/2026-05-14-v03-04-drive-export-download.md` (참고용)
-10. `docs/plans/v03/2026-05-14-v03-03-drive-api-auth.md` (참고용)
-11. `docs/plans/v03/2026-05-14-v03-02-fixture-apply.md` (참고용)
-12. `docs/plans/v03/2026-05-14-v03-01-manifest-dry-run.md` (참고용)
+7. `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md` (v0.4 master plan, feature00 완료)
+8. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md` (완료, contract 정의)
+9. `docs/plans/v04/2026-05-14-v04-01-drive-write-foundation.md` (다음 구현 1순위)
+10. `docs/plans/v03/2026-05-14-v03-05-rebuild-chain.md` (참고용)
+11. `docs/plans/v03/2026-05-14-v03-04-drive-export-download.md` (참고용)
+12. `docs/plans/v03/2026-05-14-v03-03-drive-api-auth.md` (참고용)
+13. `docs/plans/v03/2026-05-14-v03-02-fixture-apply.md` (참고용)
+14. `docs/plans/v03/2026-05-14-v03-01-manifest-dry-run.md` (참고용)
 
-## 이번 세션 완료: Drive rebuild chain (v0.3-05)
+## 이번 세션 완료: v0.4-00 OpenClaw Ingest Contract
 
+`docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md` 참조.
+
+완료된 contract 정의:
+
+1. **입력 타입 결정**: `url`, `text_note`, `markdown_file`, `plain_text_file`, `binary_attachment` 5가지
+2. **Ingest Request JSON**: `source_type`, `content_type`, `title`, `body`, `url`, `attachments[]`, `category`, `author`, `channel`, `created_at`
+3. **Category 매핑**: Drive `FFXIV_KB` 폴더 구조와 일치하는 7개 category (patch_notes, job_guides, raid_guides, static_docs, macros, bis_sheets, personal_notes)
+4. **Result JSON**: `status`, `actions[]`, `summary`, `dry_run` — spec0003 JSON 출력 패턴 재사용
+5. **Dry-run/apply 차이**: dry_run=true는 계획만 출력 (Drive/raw/DB 변경 없음), false는 실제 실행
+6. **오류 계약**: `invalid_input`, `unsupported_attachment`, `drive_auth_missing`(전체 실패), `drive_write_failed`, `rebuild_failed`(부분 실패)
+7. **응답 문구 기준**: result JSON을 OpenClaw 자연어 응답으로 변환하는 기준
+8. **Spec 불필요**: v04-00 plan 자체가 contract 역할, 별도 spec 파일 생성하지 않음
+
+참조한 문서:
+- `docs/specs/01-architecture.md`: source metadata 형식, Drive 폴더 구조
+- `docs/specs/0003-google-drive-sync.md`: dry-run/apply JSON 출력 패턴, raw path 규칙
+- `docs/specs/03-roadmap.md`: v0.4 범위
+- `docs/adrs/0002-drive-is-canonical-source.md`: Drive canonical source 원칙
+
+코드 변경 없음. 문서 계약 plan.
 `docs/plans/v03/2026-05-14-v03-05-rebuild-chain.md` 참조 (상세 구현 요약 있음).
 
 완료된 하위 작업:
@@ -111,6 +135,17 @@ python scripts/finish_task.py
 6. `v04-05-discord-summary-notification`: Discord 저장 결과/부분 실패 알림
 
 embedding/vector DB는 필요성이 확인될 때까지 보류.
+
+## v0.4 진행 상황
+
+| Feature | Status |
+|---|---|
+| `v04-00-openclaw-ingest-contract` | **Completed 2026-05-14** (ingest request/result JSON 계약 정의) |
+| `v04-01-drive-write-foundation` | [ ] 미구현 — 다음 구현 1순위 |
+| `v04-02-ingest-discord-note-cli` | [ ] 미구현 |
+| `v04-03-openclaw-tool-adapter` | [ ] 미구현 |
+| `v04-04-publish-then-rebuild` | [ ] 미구현 |
+| `v04-05-discord-summary-notification` | [ ] 미구현 |
 
 ## 건드리지 말아야 할 것
 
