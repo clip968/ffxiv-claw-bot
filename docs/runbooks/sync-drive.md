@@ -6,7 +6,9 @@ Google Drive `FFXIV_KB`는 사람이 관리하는 canonical source다.
 
 `raw/drive`, `wiki`, `db/ffxiv.sqlite`, FTS, graph는 로컬 파생 캐시다.
 
-현재 구현은 실제 Google API를 호출하지 않는다. manifest fixture를 읽어 dry-run 계획을 출력하거나 fixture content를 local raw cache에 적용한다.
+기본 unittest와 manifest fixture 흐름은 실제 Google API를 호출하지 않는다. manifest fixture를 읽어 dry-run 계획을 출력하거나 fixture content를 local raw cache에 적용한다.
+
+`--from-drive`는 Google Drive API에서 metadata를 조회하므로 local OAuth token과 Google client dependency가 필요하다.
 
 ## Manifest fixture
 
@@ -74,9 +76,60 @@ python tools/sync_drive.py --apply \
 
 `tools/sync_drive.py`는 `--dry-run`과 `--apply` 중 정확히 하나를 지정하지 않으면 parser error를 반환한다.
 
+## Drive API 인증
+
+OAuth client secret은 Google Cloud Console에서 Desktop application으로 만든다.
+
+기본 local secret path:
+
+```text
+config/google_drive_client_secret.json
+config/google_drive_token.json
+```
+
+인증:
+
+```bash
+python tools/sync_drive.py --auth
+```
+
+다른 경로를 쓰려면:
+
+```bash
+python tools/sync_drive.py --auth \
+  --credentials-path /path/to/client_secret.json \
+  --token-path /path/to/token.json
+```
+
+`--from-drive`에서 token이 없으면 먼저 `--auth`를 실행해야 한다.
+
+## Drive 파일 목록 조회
+
+FFXIV_KB folder id를 명시해서 조회한다.
+
+```bash
+python tools/sync_drive.py --from-drive \
+  --dry-run \
+  --drive-folder-id <FFXIV_KB_FOLDER_ID>
+```
+
+조회 결과를 manifest로 저장:
+
+```bash
+python tools/sync_drive.py --from-drive \
+  --drive-folder-id <FFXIV_KB_FOLDER_ID> \
+  --output-manifest /tmp/drive-manifest.json
+```
+
+저장된 manifest는 기존 dry-run/apply 흐름에서 재사용한다.
+
+```bash
+python tools/sync_drive.py --dry-run --manifest /tmp/drive-manifest.json
+```
+
+`--from-drive --apply`는 아직 지원하지 않는다. Drive metadata만으로는 raw content를 저장할 수 없으므로 v0.3-04 export/download 이후 연결한다.
+
 ## 현재 한계
 
-- 실제 OAuth 없음
-- 실제 Google Drive API 호출 없음
 - Google Docs export/download 없음
 - wiki/FTS/graph rebuild 연결 없음

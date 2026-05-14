@@ -11,9 +11,18 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DB_PATH = ROOT / "db" / "ffxiv.sqlite"
+DEFAULT_CREDENTIALS_PATH = ROOT / "config" / "google_drive_client_secret.json"
+DEFAULT_TOKEN_PATH = ROOT / "config" / "google_drive_token.json"
 
 DRIVE_SOURCE_PREFIX = "gdrive://"
 DRY_RUN_ACTIONS = ("new", "changed", "unchanged", "skipped")
+GOOGLE_DRIVE_FOLDER_MIME = "application/vnd.google-apps.folder"
+GOOGLE_DRIVE_SCOPES = ("https://www.googleapis.com/auth/drive.readonly",)
+GOOGLE_MIME_EXPORT_EXTENSIONS = {
+    "application/vnd.google-apps.document": "md",
+    "text/plain": "txt",
+    "text/markdown": "md",
+}
 
 SOURCES_SCHEMA = """
 CREATE TABLE IF NOT EXISTS sources (
@@ -31,6 +40,14 @@ CREATE TABLE IF NOT EXISTS sources (
   updated_at TEXT NOT NULL
 )
 """
+
+
+class DriveAuthError(RuntimeError):
+    pass
+
+
+class DriveApiError(RuntimeError):
+    pass
 
 
 def safe_path_part(value: str) -> str:
@@ -53,6 +70,14 @@ def planned_raw_path(item: dict[str, Any]) -> str:
 
 def load_manifest(manifest_path: Path) -> dict[str, Any]:
     return json.loads(manifest_path.read_text(encoding="utf-8"))
+
+
+def write_manifest(manifest: dict[str, Any], manifest_path: Path) -> None:
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
 
 def drive_source_url(drive_file_id: str) -> str:
@@ -160,6 +185,188 @@ def plan_sync(manifest_path: Path, db_path: Path = DB_PATH) -> dict[str, Any]:
         "summary": summary,
         "items": items,
     }
+
+
+def export_extension_for_mime(mime_type: str | None) -> str | None:
+    if not mime_type:
+        return None
+    return GOOGLE_MIME_EXPORT_EXTENSIONS.get(mime_type)
+
+
+def content_hash_for_drive_file(file_item: dict[str, Any]) -> str | None:
+    for field in ("md5Checksum", "headRevisionId", "modifiedTime"):
+        value = file_item.get(field)
+        if value:
+            return str(value)
+    return None
+
+
+def category_for_drive_file(
+    file_item: dict[str, Any],
+    category_by_folder_id: dict[str, str],
+) -> str:
+    for parent_id in file_item.get("parents", []):
+        category = category_by_folder_id.get(str(parent_id))
+        if category:
+            return category
+    return "uncategorized"
+
+
+def drive_files_to_manifest(
+    files: list[dict[str, Any]],
+    root_folder: str,
+    category_by_folder_id: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    categories = category_by_folder_id or {}
+    manifest_files: list[dict[str, Any]] = []
+
+    for file_item in files:
+        mime_type = file_item.get("mimeType")
+        if mime_type == GOOGLE_DRIVE_FOLDER_MIME:
+            continue
+
+        manifest_item = {
+            "id": file_item.get("id"),
+            "name": file_item.get("name"),
+            "category": category_for_drive_file(file_item, categories),
+            "mimeType": mime_type,
+            "modifiedTime": file_item.get("modifiedTime"),
+            "webViewLink": file_item.get("webViewLink"),
+        }
+
+        export_ext = export_extension_for_mime(str(mime_type) if mime_type else None)
+        if export_ext:
+            manifest_item["exportExt"] = export_ext
+
+        content_hash = content_hash_for_drive_file(file_item)
+        if content_hash:
+            manifest_item["contentHash"] = content_hash
+
+        manifest_files.append(manifest_item)
+
+    return {
+        "root_folder": root_folder,
+        "files": manifest_files,
+    }
+
+
+def load_drive_credentials(token_path: Path) -> Any:
+    if not token_path.exists():
+        raise DriveAuthError(
+            f"OAuth token not found: {token_path}. "
+            "Run --auth with --credentials-path first."
+        )
+
+    try:
+        from google.oauth2.credentials import Credentials
+    except ModuleNotFoundError as exc:
+        raise DriveAuthError(
+            "Google API client dependencies are not installed. "
+            "Install google-auth, google-auth-oauthlib, and google-api-python-client."
+        ) from exc
+
+    credentials = Credentials.from_authorized_user_file(
+        str(token_path),
+        scopes=list(GOOGLE_DRIVE_SCOPES),
+    )
+
+    if credentials.expired and credentials.refresh_token:
+        try:
+            from google.auth.transport.requests import Request
+        except ModuleNotFoundError as exc:
+            raise DriveAuthError(
+                "google-auth transport dependency is not installed."
+            ) from exc
+        credentials.refresh(Request())
+        token_path.write_text(credentials.to_json(), encoding="utf-8")
+
+    if not credentials.valid:
+        raise DriveAuthError(
+            f"OAuth token is invalid or expired without refresh token: {token_path}. "
+            "Run --auth again."
+        )
+
+    return credentials
+
+
+def run_drive_auth(credentials_path: Path, token_path: Path) -> dict[str, Any]:
+    if not credentials_path.exists():
+        raise DriveAuthError(f"OAuth client secret not found: {credentials_path}")
+
+    try:
+        from google_auth_oauthlib.flow import InstalledAppFlow
+    except ModuleNotFoundError as exc:
+        raise DriveAuthError(
+            "Google OAuth dependency is not installed. "
+            "Install google-auth-oauthlib."
+        ) from exc
+
+    flow = InstalledAppFlow.from_client_secrets_file(
+        str(credentials_path),
+        scopes=list(GOOGLE_DRIVE_SCOPES),
+    )
+    credentials = flow.run_local_server(port=0)
+    token_path.parent.mkdir(parents=True, exist_ok=True)
+    token_path.write_text(credentials.to_json(), encoding="utf-8")
+    return {
+        "status": "ok",
+        "auth": True,
+        "token_path": str(token_path),
+    }
+
+
+def build_drive_service(credentials: Any) -> Any:
+    try:
+        from googleapiclient.discovery import build
+    except ModuleNotFoundError as exc:
+        raise DriveApiError(
+            "Google API client dependency is not installed. "
+            "Install google-api-python-client."
+        ) from exc
+    return build("drive", "v3", credentials=credentials)
+
+
+def list_drive_files(service: Any, folder_id: str) -> list[dict[str, Any]]:
+    query = f"'{folder_id}' in parents and trashed = false"
+    fields = (
+        "nextPageToken, files("
+        "id,name,mimeType,modifiedTime,webViewLink,parents,md5Checksum,headRevisionId"
+        ")"
+    )
+    files: list[dict[str, Any]] = []
+    page_token = None
+
+    while True:
+        request = service.files().list(
+            q=query,
+            fields=fields,
+            pageToken=page_token,
+            supportsAllDrives=True,
+            includeItemsFromAllDrives=True,
+        )
+        response = request.execute()
+        files.extend(response.get("files", []))
+        page_token = response.get("nextPageToken")
+        if not page_token:
+            break
+
+    return files
+
+
+def manifest_from_drive(
+    folder_id: str,
+    token_path: Path = DEFAULT_TOKEN_PATH,
+    root_folder: str = "FFXIV_KB",
+) -> dict[str, Any]:
+    credentials = load_drive_credentials(token_path)
+    service = build_drive_service(credentials)
+    files = list_drive_files(service, folder_id)
+    category_by_folder_id = {
+        str(file_item["id"]): str(file_item["name"])
+        for file_item in files
+        if file_item.get("mimeType") == GOOGLE_DRIVE_FOLDER_MIME
+    }
+    return drive_files_to_manifest(files, root_folder, category_by_folder_id)
 
 
 def resolve_content_fixture(manifest_path: Path, item: dict[str, Any]) -> Path | None:
@@ -293,6 +500,16 @@ def main(argv: list[str] | None = None) -> None:
         description="Plan Google Drive sync for FFXIV knowledge base."
     )
     parser.add_argument(
+        "--auth",
+        action="store_true",
+        help="Run OAuth browser flow and write the token file.",
+    )
+    parser.add_argument(
+        "--from-drive",
+        action="store_true",
+        help="Fetch Drive file metadata and convert it to a manifest.",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Plan changes without writing files or updating the database.",
@@ -304,9 +521,29 @@ def main(argv: list[str] | None = None) -> None:
     )
     parser.add_argument(
         "--manifest",
-        required=True,
         type=Path,
         help="Path to a local Drive manifest JSON file.",
+    )
+    parser.add_argument(
+        "--output-manifest",
+        type=Path,
+        help="Write the Drive file list as a manifest JSON file.",
+    )
+    parser.add_argument(
+        "--drive-folder-id",
+        help="Google Drive folder id to list when using --from-drive.",
+    )
+    parser.add_argument(
+        "--credentials-path",
+        type=Path,
+        default=DEFAULT_CREDENTIALS_PATH,
+        help="OAuth client secret JSON path for --auth.",
+    )
+    parser.add_argument(
+        "--token-path",
+        type=Path,
+        default=DEFAULT_TOKEN_PATH,
+        help="OAuth token JSON path for --auth or --from-drive.",
     )
     parser.add_argument(
         "--db-path",
@@ -322,13 +559,62 @@ def main(argv: list[str] | None = None) -> None:
     )
 
     args = parser.parse_args(argv)
-    if args.dry_run == args.apply:
-        parser.error("choose exactly one of --dry-run or --apply")
 
-    if args.dry_run:
-        result = plan_sync(args.manifest, args.db_path)
-    else:
-        result = apply_sync(args.manifest, args.db_path, args.root_path)
+    try:
+        if args.auth:
+            if args.from_drive or args.dry_run or args.apply or args.output_manifest:
+                parser.error("--auth cannot be combined with sync actions")
+            result = run_drive_auth(args.credentials_path, args.token_path)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return
+
+        if args.from_drive:
+            if not args.drive_folder_id:
+                parser.error("--from-drive requires --drive-folder-id")
+            if args.apply:
+                parser.error("--from-drive --apply requires export/download support")
+            manifest = manifest_from_drive(args.drive_folder_id, args.token_path)
+            if args.output_manifest:
+                write_manifest(manifest, args.output_manifest)
+
+            if args.dry_run:
+                existing_sources = load_existing_drive_sources(args.db_path)
+                items = [
+                    build_plan_item(item, existing_sources)
+                    for item in manifest.get("files", [])
+                ]
+                summary = {action: 0 for action in DRY_RUN_ACTIONS}
+                for item in items:
+                    summary[item["action"]] += 1
+                result = {
+                    "status": "ok",
+                    "dry_run": True,
+                    "root_folder": manifest.get("root_folder"),
+                    "summary": summary,
+                    "items": items,
+                }
+            else:
+                result = {
+                    "status": "ok",
+                    "dry_run": None,
+                    "root_folder": manifest.get("root_folder"),
+                    "files": manifest.get("files", []),
+                }
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return
+
+        if args.dry_run == args.apply:
+            parser.error("choose exactly one of --dry-run or --apply")
+        if not args.manifest:
+            parser.error("--manifest is required unless --from-drive or --auth is used")
+
+        if args.dry_run:
+            result = plan_sync(args.manifest, args.db_path)
+        else:
+            result = apply_sync(args.manifest, args.db_path, args.root_path)
+    except (DriveAuthError, DriveApiError) as exc:
+        parser.error(str(exc))
+
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

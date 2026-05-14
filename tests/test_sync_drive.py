@@ -273,6 +273,107 @@ class SyncDriveTests(unittest.TestCase):
         self.assertEqual(result["summary"]["new"], 1)
         self.assertEqual(result["summary"]["changed"], 1)
 
+    def test_drive_files_to_manifest_maps_api_response_to_manifest_items(self) -> None:
+        files = [
+            {
+                "id": "folder_job",
+                "name": "job_guides",
+                "mimeType": sync_drive.GOOGLE_DRIVE_FOLDER_MIME,
+            },
+            {
+                "id": "drive_doc_001",
+                "name": "Black Mage Guide",
+                "mimeType": "application/vnd.google-apps.document",
+                "modifiedTime": "2026-05-14T01:00:00Z",
+                "webViewLink": "https://drive.google.com/file/d/drive_doc_001/view",
+                "parents": ["folder_job"],
+                "headRevisionId": "rev-doc-001",
+            },
+            {
+                "id": "drive_txt_001",
+                "name": "Macro Notes",
+                "mimeType": "text/plain",
+                "modifiedTime": "2026-05-14T01:05:00Z",
+                "webViewLink": "https://drive.google.com/file/d/drive_txt_001/view",
+                "parents": ["folder_job"],
+                "md5Checksum": "md5-txt-001",
+            },
+        ]
+
+        manifest = sync_drive.drive_files_to_manifest(
+            files,
+            root_folder="FFXIV_KB",
+            category_by_folder_id={"folder_job": "job_guides"},
+        )
+
+        self.assertEqual(manifest["root_folder"], "FFXIV_KB")
+        self.assertEqual(len(manifest["files"]), 2)
+        self.assertEqual(
+            manifest["files"][0],
+            {
+                "id": "drive_doc_001",
+                "name": "Black Mage Guide",
+                "category": "job_guides",
+                "mimeType": "application/vnd.google-apps.document",
+                "modifiedTime": "2026-05-14T01:00:00Z",
+                "webViewLink": "https://drive.google.com/file/d/drive_doc_001/view",
+                "exportExt": "md",
+                "contentHash": "rev-doc-001",
+            },
+        )
+        self.assertEqual(manifest["files"][1]["exportExt"], "txt")
+        self.assertEqual(manifest["files"][1]["contentHash"], "md5-txt-001")
+
+    def test_missing_oauth_token_raises_actionable_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            token_path = Path(tmp_dir) / "missing-token.json"
+
+            with self.assertRaisesRegex(
+                sync_drive.DriveAuthError,
+                "OAuth token not found",
+            ):
+                sync_drive.load_drive_credentials(token_path)
+
+    def test_cli_from_drive_without_token_outputs_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            token_path = Path(tmp_dir) / "missing-token.json"
+
+            stderr = io.StringIO()
+            with contextlib.redirect_stderr(stderr):
+                with self.assertRaises(SystemExit) as raised:
+                    sync_drive.main(
+                        [
+                            "--from-drive",
+                            "--dry-run",
+                            "--drive-folder-id",
+                            "folder_root",
+                            "--token-path",
+                            str(token_path),
+                        ]
+                    )
+
+        self.assertEqual(raised.exception.code, 2)
+        self.assertIn("OAuth token not found", stderr.getvalue())
+
+    def test_cli_rejects_from_drive_apply_until_export_download_exists(self) -> None:
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            with self.assertRaises(SystemExit) as raised:
+                sync_drive.main(
+                    [
+                        "--from-drive",
+                        "--apply",
+                        "--drive-folder-id",
+                        "folder_root",
+                    ]
+        )
+
+        self.assertEqual(raised.exception.code, 2)
+        self.assertIn(
+            "--from-drive --apply requires export/download support",
+            stderr.getvalue(),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

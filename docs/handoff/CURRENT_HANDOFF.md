@@ -8,18 +8,19 @@
 
 ## Current Phase
 
-v0.3 Google Drive sync fixture apply 완료.
+v0.3 Google Drive API 인증/파일 목록 조회 완료.
 
 완료된 것:
 - v0.1 local KB pipeline
 - v0.2 graph layer
 - v0.3 Google Drive sync dry-run (manifest 기반, 실제 Drive API 없음)
 - v0.3 Google Drive sync fixture apply (`--apply`, raw/drive 저장 + DB upsert, 실제 Drive API 없음)
+- v0.3 Google Drive API 인증/파일 목록 조회 (`--auth`, `--from-drive`, metadata -> manifest 변환)
 - docs-first workflow tooling (DOC_OWNERS, finish_task, check_docs_freshness 등)
 - **Notion 문서 repo docs 이관 완료** (이번 세션, 2026-05-14)
 
 미구현:
-- 실제 Google Drive API / OAuth / Google Docs export-download
+- Google Docs export-download
 - Drive 변경 감지 후 wiki/FTS/graph 재빌드 연결
 - Discord/OpenClaw 연결
 - 패치노트 자동 수집
@@ -51,9 +52,10 @@ Notion 문서 매핑:
 4. `docs/FILE_INVENTORY.md`
 5. `docs/specs/0003-google-drive-sync.md`
 6. `docs/plans/2026-05-14-post-v03-next-steps.md` (v0.3 master plan)
-7. `docs/plans/v03/2026-05-14-v03-03-drive-api-auth.md` (다음 구현 1순위)
+7. `docs/plans/v03/2026-05-14-v03-03-drive-api-auth.md`
 8. `docs/plans/v03/2026-05-14-v03-01-manifest-dry-run.md`
 9. `docs/plans/v03/2026-05-14-v03-02-fixture-apply.md`
+10. `docs/plans/v03/2026-05-14-v03-04-drive-export-download.md` (다음 구현 1순위)
 
 ## 이번 세션 완료: manifest 기반 --apply
 
@@ -72,15 +74,24 @@ Notion 문서 매핑:
 이 단계는 여전히 실제 Google Drive API/OAuth/export-download를 구현하지 않는다.
 fixture 기반 local apply만 다룬다.
 
-## 다음 구현 후보 1순위: Drive API 인증/조회 설계
+## 이번 세션 완료: Drive API 인증/조회 설계
 
 `docs/plans/v03/2026-05-14-v03-03-drive-api-auth.md` 참조.
 
-작은 단위:
+완료된 하위 작업:
 1. OAuth credential 위치와 token 저장 위치 결정
 2. 필요한 Google API scope 문서화
-3. `FFXIV_KB` folder id 조회 방식 결정
-4. 실제 다운로드 없이 파일 목록 조회 CLI 설계
+3. `FFXIV_KB` folder id는 `--drive-folder-id`로 명시 입력
+4. `--auth`, `--from-drive`, `--output-manifest` CLI 추가
+5. Drive file metadata를 기존 manifest JSON 포맷으로 변환
+6. token 없음, Drive response parsing, manifest conversion unittest 추가
+
+이 단계는 아직 Google Docs export/download를 구현하지 않는다.
+content hash는 API metadata의 `md5Checksum`, `headRevisionId`, `modifiedTime` 순서로 사용한다.
+
+## 다음 구현 후보 1순위: Google Docs export/download
+
+`docs/plans/v03/2026-05-14-v03-04-drive-export-download.md` 참조.
 
 embedding/vector DB는 필요성이 확인될 때까지 보류.
 
@@ -97,7 +108,6 @@ embedding/vector DB는 필요성이 확인될 때까지 보류.
 - `db/`
 - `db/ffxiv.sqlite`
 - Discord/OpenClaw 연결
-- 실제 Google Drive API/OAuth
 - embedding/vector DB
 - 기존 사용자 변경
 
@@ -122,4 +132,13 @@ python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.js
 python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json --db-path /tmp/ffxiv-claw-bot-apply-smoke.sqlite --root-path /tmp/ffxiv-claw-bot-apply-smoke
 python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json --db-path /tmp/ffxiv-claw-bot-apply-smoke.sqlite --root-path /tmp/ffxiv-claw-bot-apply-smoke
 python scripts/finish_task.py
+```
+
+이번 v0.3-03 세션에서 확인한 명령:
+
+```bash
+python -m unittest tests.test_sync_drive
+python -m unittest discover -s tests -p "test_*.py"
+python scripts/check_docs_freshness.py --all
+python tools/sync_drive.py --from-drive --dry-run --drive-folder-id folder_root --token-path /tmp/ffxiv-missing-token.json  # expected parser error: OAuth token not found
 ```
