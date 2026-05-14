@@ -9,6 +9,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import tools.build_graph as build_graph_module
+import tools.compile_wiki as compile_wiki_module
+
 from tools import sync_drive
 
 
@@ -64,6 +67,50 @@ def create_sources_db(db_path: Path) -> None:
                 ),
             ],
         )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def ensure_wiki_tables(db_path: Path) -> None:
+    conn = sqlite3.connect(db_path)
+    try:
+        conn.executescript("""
+            CREATE TABLE IF NOT EXISTS wiki_pages (
+              id TEXT PRIMARY KEY,
+              type TEXT NOT NULL,
+              title TEXT NOT NULL,
+              path TEXT NOT NULL,
+              patch TEXT,
+              job TEXT,
+              raid TEXT,
+              source_ids TEXT NOT NULL,
+              confidence TEXT NOT NULL,
+              created_at TEXT NOT NULL,
+              updated_at TEXT NOT NULL
+            );
+            CREATE VIRTUAL TABLE IF NOT EXISTS wiki_fts USING fts5(
+              page_id, title, body, tokenize = 'unicode61'
+            );
+            CREATE TABLE IF NOT EXISTS graph_nodes (
+              id TEXT PRIMARY KEY,
+              type TEXT NOT NULL,
+              name TEXT NOT NULL,
+              aliases TEXT,
+              properties TEXT
+            );
+            CREATE TABLE IF NOT EXISTS graph_edges (
+              id TEXT PRIMARY KEY,
+              source_id TEXT NOT NULL,
+              target_id TEXT NOT NULL,
+              type TEXT NOT NULL,
+              confidence TEXT NOT NULL,
+              score REAL,
+              source_page_id TEXT,
+              source_ids TEXT,
+              properties TEXT
+            );
+        """)
         conn.commit()
     finally:
         conn.close()
@@ -593,6 +640,107 @@ class SyncDriveTests(unittest.TestCase):
         self.assertEqual(raised.exception.code, 2)
         self.assertIn(
             "--from-drive --apply requires --download",
+            stderr.getvalue(),
+        )
+
+    def test_rebuild_for_items_after_apply_compiles_and_builds_graph(self) -> None:
+        """rebuild_for_items should run compile_wiki and build_graph for new/changed sources."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_path = Path(tmp_dir)
+            db_path = root_path / "ffxiv.sqlite"
+            ensure_wiki_tables(db_path)
+            create_sources_db(db_path)
+
+            # Run apply_sync to write raw files and upsert sources
+            apply_result = sync_drive.apply_sync(
+                Path("tests/fixtures/drive_manifest.json"),
+                db_path,
+                root_path,
+            )
+
+            # Collect source IDs of new/changed items
+            source_ids = [
+                item["source_id"]
+                for item in apply_result["items"]
+                if item.get("action") in ("new", "changed") and item.get("source_id")
+            ]
+            self.assertEqual(len(source_ids), 2)
+            # New item uses generated drive_source_id; changed item uses existing DB id
+            self.assertIn("drive_drive_file_001", source_ids)
+            self.assertIn("src_existing_changed", source_ids)
+
+            # Override module-level constants for compile_wiki and build_graph
+            original_compile_root = compile_wiki_module.ROOT
+            original_compile_db = compile_wiki_module.DB_PATH
+            original_compile_summary = compile_wiki_module.SUMMARY_DIR
+            original_build_db = build_graph_module.DB_PATH
+            original_build_graph_dir = build_graph_module.GRAPH_DIR
+
+            compile_wiki_module.ROOT = root_path
+            compile_wiki_module.DB_PATH = db_path
+            compile_wiki_module.SUMMARY_DIR = root_path / "wiki" / "source_summaries"
+            build_graph_module.DB_PATH = db_path
+            build_graph_module.GRAPH_DIR = root_path / "graph"
+
+            try:
+                rebuild_result = sync_drive.rebuild_for_items(source_ids)
+            finally:
+                compile_wiki_module.ROOT = original_compile_root
+                compile_wiki_module.DB_PATH = original_compile_db
+                compile_wiki_module.SUMMARY_DIR = original_compile_summary
+                build_graph_module.DB_PATH = original_build_db
+                build_graph_module.GRAPH_DIR = original_build_graph_dir
+
+            # Verify rebuild results
+            self.assertTrue(rebuild_result["rebuild"])
+            self.assertEqual(rebuild_result["compile_count"], 2)
+            self.assertEqual(len(rebuild_result["compile_errors"]), 0)
+            self.assertEqual(len(rebuild_result["compile_ok_ids"]), 2)
+            self.assertEqual(rebuild_result["graph_errors"], [])
+
+            # Verify wiki summaries were created
+            summary_dir = root_path / "wiki" / "source_summaries"
+            self.assertTrue((summary_dir / "drive_drive_file_001.md").exists())
+            self.assertTrue((summary_dir / "src_existing_changed.md").exists())
+
+            # Verify FTS entries exist for both sources
+            conn = sqlite3.connect(db_path)
+            try:
+                fts_count = conn.execute(
+                    "SELECT COUNT(*) FROM wiki_fts WHERE page_id IN (?, ?)",
+                    ("wiki_drive_drive_file_001", "wiki_existing_changed"),
+                ).fetchone()[0]
+                self.assertEqual(fts_count, 2)
+
+                # Verify graph entries exist
+                node_count = conn.execute(
+                    "SELECT COUNT(*) FROM graph_nodes"
+                ).fetchone()[0]
+                edge_count = conn.execute(
+                    "SELECT COUNT(*) FROM graph_edges"
+                ).fetchone()[0]
+                self.assertGreater(node_count, 0)
+                self.assertGreater(edge_count, 0)
+            finally:
+                conn.close()
+
+    def test_cli_rebuild_requires_apply(self) -> None:
+        """--rebuild without --apply should be rejected."""
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            with self.assertRaises(SystemExit) as raised:
+                sync_drive.main(
+                    [
+                        "--rebuild",
+                        "--dry-run",
+                        "--manifest",
+                        "tests/fixtures/drive_manifest.json",
+                    ]
+                )
+
+        self.assertEqual(raised.exception.code, 2)
+        self.assertIn(
+            "--rebuild requires --apply",
             stderr.getvalue(),
         )
 

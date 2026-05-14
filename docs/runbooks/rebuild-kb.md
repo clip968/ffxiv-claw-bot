@@ -29,7 +29,8 @@ python tools/compile_wiki.py --source-id <source_id>
 
 현재 `compile_wiki.py`는 raw HTML을 읽어 `wiki/source_summaries/<source_id>.md`를 만들고 `wiki_fts`를 갱신한다.
 
-Drive markdown/text raw 처리 지원은 TODO다.
+Drive `drive_document` source의 raw Markdown/text도 처리 가능하다.
+`source_type`이 `drive_document`이면 HTML 파싱 없이 raw content를 그대로 사용한다.
 
 ## FTS index rebuild
 

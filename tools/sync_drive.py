@@ -10,6 +10,10 @@ from pathlib import Path
 from typing import Any
 
 
+import tools.build_graph as build_graph_module
+import tools.compile_wiki
+
+
 ROOT = Path(__file__).resolve().parents[1]
 DB_PATH = ROOT / "db" / "ffxiv.sqlite"
 DEFAULT_CREDENTIALS_PATH = ROOT / "config" / "google_drive_client_secret.json"
@@ -160,6 +164,15 @@ def build_plan_item(
     action = classify_item(item, existing_sources)
     planned_path = planned_raw_path(item) if action != "skipped" else None
 
+    # Determine the actual source ID that will be used in the DB
+    existing = existing_sources.get(str(item.get("id", "")))
+    if existing:
+        source_id = existing["id"]
+    elif action != "skipped":
+        source_id = drive_source_id(str(item.get("id", "")))
+    else:
+        source_id = None
+
     result = {
         "drive_file_id": item.get("id"),
         "title": item.get("name"),
@@ -169,6 +182,7 @@ def build_plan_item(
         "source_url": item.get("webViewLink") or drive_source_url(str(item.get("id"))),
         "action": action,
         "planned_raw_path": planned_path,
+        "source_id": source_id,
     }
 
     if action == "skipped":
@@ -621,6 +635,41 @@ def apply_sync(
     )
 
 
+def rebuild_for_items(source_ids: list[str]) -> dict[str, Any]:
+    """Run compile_wiki and build_graph for a list of source IDs."""
+    compile_results: list[dict[str, Any]] = []
+    compile_errors: list[str] = []
+    graph_source_ids: list[str] = []
+
+    for source_id in source_ids:
+        compile_result = tools.compile_wiki.compile_for_source(source_id)
+        if compile_result.get("status") == "ok":
+            compile_results.append(compile_result)
+            graph_source_ids.append(source_id)
+        else:
+            compile_errors.append(
+                f"{source_id}: {compile_result.get('message', 'unknown error')}"
+            )
+
+    graph_result: dict[str, Any] | None = None
+    graph_errors: list[str] = []
+    for source_id in graph_source_ids:
+        try:
+            result = build_graph_module.build_graph(source_id)
+            graph_result = result
+        except Exception as exc:
+            graph_errors.append(f"{source_id}: {exc}")
+
+    return {
+        "rebuild": True,
+        "compile_count": len(compile_results),
+        "compile_ok_ids": [r["source_id"] for r in compile_results],
+        "compile_errors": compile_errors,
+        "graph_result": graph_result,
+        "graph_errors": graph_errors,
+    }
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         description="Plan Google Drive sync for FFXIV knowledge base."
@@ -649,6 +698,11 @@ def main(argv: list[str] | None = None) -> None:
         "--download",
         action="store_true",
         help="Download Drive content when using --from-drive.",
+    )
+    parser.add_argument(
+        "--rebuild",
+        action="store_true",
+        help="After --apply, run compile_wiki and build_graph for changed/new sources.",
     )
     parser.add_argument(
         "--manifest",
@@ -712,6 +766,8 @@ def main(argv: list[str] | None = None) -> None:
                 parser.error("choose at most one of --dry-run or --apply with --from-drive")
             if args.apply and not args.download:
                 parser.error("--from-drive --apply requires --download")
+            if args.rebuild and not args.apply:
+                parser.error("--rebuild requires --apply")
 
             credentials = load_drive_credentials(args.token_path)
             service = build_drive_service(credentials)
@@ -740,6 +796,13 @@ def main(argv: list[str] | None = None) -> None:
                     args.root_path,
                     content_by_file_id=content_by_file_id,
                 )
+                if args.rebuild:
+                    rebuild_source_ids = [
+                        item["source_id"]
+                        for item in result.get("items", [])
+                        if item.get("action") in ("new", "changed") and item.get("source_id")
+                    ]
+                    result["rebuild"] = rebuild_for_items(rebuild_source_ids)
             elif args.dry_run:
                 existing_sources = load_existing_drive_sources(args.db_path)
                 items = [
@@ -770,6 +833,8 @@ def main(argv: list[str] | None = None) -> None:
             parser.error("--download requires --from-drive")
         if args.dry_run == args.apply:
             parser.error("choose exactly one of --dry-run or --apply")
+        if args.rebuild and not args.apply:
+            parser.error("--rebuild requires --apply")
         if not args.manifest:
             parser.error("--manifest is required unless --from-drive or --auth is used")
 
@@ -777,6 +842,14 @@ def main(argv: list[str] | None = None) -> None:
             result = plan_sync(args.manifest, args.db_path)
         else:
             result = apply_sync(args.manifest, args.db_path, args.root_path)
+
+        if args.rebuild and args.apply:
+            rebuild_source_ids = [
+                item["source_id"]
+                for item in result.get("items", [])
+                if item.get("action") in ("new", "changed") and item.get("source_id")
+            ]
+            result["rebuild"] = rebuild_for_items(rebuild_source_ids)
     except (DriveAuthError, DriveApiError) as exc:
         parser.error(str(exc))
 

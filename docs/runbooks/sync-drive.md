@@ -176,7 +176,31 @@ python tools/sync_drive.py --from-drive \
 - `content_hash`는 downloaded bytes의 SHA256 hex digest다.
 - `--from-drive --apply`만 단독으로 실행하면 parser error가 난다. 실제 raw content 저장에는 `--download`가 필요하다.
 
+## Rebuild (wiki/FTS/graph)
+
+`--apply`와 `--rebuild`를 함께 사용하면 apply 직후 compile_wiki와 build_graph를 실행한다.
+
+manifest 기반:
+
+```bash
+python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json --rebuild
+```
+
+Drive API 기반:
+
+```bash
+python tools/sync_drive.py --from-drive --download --apply --drive-folder-id <FFXIV_KB_FOLDER_ID> --rebuild
+```
+
+동작:
+
+- `new`/`changed` Drive source만 compile 대상으로 수집한다.
+- compile_wiki가 source_type `drive_document`의 Markdown/text raw를 처리한다.
+- compile_wiki가 `wiki_fts`를 source 단위로 갱신한다.
+- `build_graph --source-id`로 graph_nodes/edges를 source 단위로 갱신한다.
+- compile 실패 시에도 나머지 source 처리 계속 진행한다.
+- `--rebuild`는 `--apply` 없이 단독 실행할 수 없다.
+
 ## 현재 한계
 
 - Google Sheets CSV 변환 없음
-- wiki/FTS/graph rebuild 연결 없음

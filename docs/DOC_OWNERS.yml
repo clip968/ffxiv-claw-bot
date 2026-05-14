@@ -38,6 +38,7 @@ rules:
       - "tools/compile_wiki.py"
       - "tools/search_kb.py"
       - "tools/answer.py"
+      - "tests/test_compile_wiki.py"
     contract_docs:
       - "docs/specs/0001-local-kb-pipeline.md"
     procedure_docs:

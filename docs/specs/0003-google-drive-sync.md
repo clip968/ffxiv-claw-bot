@@ -253,7 +253,23 @@ apply는 같은 Drive file id와 같은 content hash에 대해 중복 raw 저장
 
 - Discord/OpenClaw 연결
 - embedding/vector DB
-- Drive 변경 감지 후 wiki/FTS/graph 자동 재빌드
+
+## v0.3-05: --rebuild (완료)
+
+`sync_drive.py --apply --rebuild`는 apply 직후 compile_wiki와 build_graph를 실행한다.
+
+- `--rebuild`는 `--apply`와 함께 사용해야 한다.
+- manifest 기반과 `--from-drive` 양쪽 경로에서 지원한다.
+- `new`/`changed` Drive source만 compile 대상으로 수집한다.
+- compile_wiki가 `source_type = drive_document`의 Markdown/text raw를 처리한다. (v0.3-05)
+- compile_wiki가 `wiki_fts`를 source 단위로 갱신한다.
+- `build_graph --source-id`로 graph_nodes/edges를 source 단위로 갱신한다.
+- compile 실패 시에도 나머지 source를 계속 처리한다.
+
+```bash
+python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json --rebuild
+python tools/sync_drive.py --from-drive --download --apply --drive-folder-id <FFXIV_KB_FOLDER_ID> --rebuild
+```
 
 ## v0.3 manifest sync 성공 기준
 

@@ -22,7 +22,7 @@ def get_source(source_id: str) -> dict | None:
     with sqlite3.connect(DB_PATH) as conn:
         conn.row_factory = sqlite3.Row
         row = conn.execute(
-            "SELECT id, title, source_url, raw_path FROM sources WHERE id = ?",
+            "SELECT id, title, source_url, raw_path, source_type FROM sources WHERE id = ?",
             (source_id,),
         ).fetchone()
     return dict(row) if row else None
@@ -39,7 +39,7 @@ def extract_text(html: str) -> str:
     return "\n".join(lines)
 
 
-def read_raw_html(raw_path: str) -> str:
+def read_raw_content(raw_path: str) -> str:
     return (ROOT / raw_path).read_text(encoding="utf-8")
 
 
@@ -106,8 +106,14 @@ def compile_for_source(source_id: str) -> dict:
     if not source:
         return {"status": "error", "message": f"Source not found: {source_id}"}
 
-    html = read_raw_html(source["raw_path"])
-    body_text = extract_text(html)
+    raw_content = read_raw_content(source["raw_path"])
+    source_type = source.get("source_type", "")
+
+    if source_type == "drive_document":
+        body_text = raw_content
+    else:
+        body_text = extract_text(raw_content)
+
     md_path = write_summary(source["id"], source["title"], body_text)
     page_id = upsert_wiki_page(source["id"], source["title"], md_path)
     upsert_wiki_fts(page_id, source["title"], body_text)
@@ -117,6 +123,7 @@ def compile_for_source(source_id: str) -> dict:
         "source_id": source["id"],
         "page_id": page_id,
         "title": source["title"],
+        "source_type": source_type,
         "summary_path": md_path,
         "char_count": len(body_text),
     }
