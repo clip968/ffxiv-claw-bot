@@ -18,7 +18,7 @@ v0.4는 OpenClaw/Discord에서 들어온 저장 요청을 Google Drive canonical
 | # | Plan | Status |
 |---|---|---|
 | 00 | `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md` | [x] Completed 2026-05-14 |
-| 01 | `docs/plans/v04/2026-05-14-v04-01-drive-write-foundation.md` | [ ] 미구현 |
+| 01 | `docs/plans/v04/2026-05-14-v04-01-drive-write-foundation.md` | [x] Completed 2026-05-14 |
 | 02 | `docs/plans/v04/2026-05-14-v04-02-ingest-discord-note-cli.md` | [ ] 미구현 |
 | 03 | `docs/plans/v04/2026-05-14-v04-03-openclaw-tool-adapter.md` | [ ] 미구현 |
 | 04 | `docs/plans/v04/2026-05-14-v04-04-publish-then-rebuild.md` | [ ] 미구현 |

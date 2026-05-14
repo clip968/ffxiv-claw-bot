@@ -9,7 +9,7 @@
 ## Current Phase
 
 v0.3-05 Drive rebuild chain (wiki/FTS/graph) 완료. v0.3 전체 완료.
-v0.4-00 OpenClaw Ingest Contract 완료. v0.4 feature 01~05는 미구현.
+v0.4-00 OpenClaw Ingest Contract 완료. v0.4-01 Drive Write Foundation 완료. v0.4 feature 02~05는 미구현.
 
 완료된 것:
 - v0.1 local KB pipeline
@@ -22,10 +22,12 @@ v0.4-00 OpenClaw Ingest Contract 완료. v0.4 feature 01~05는 미구현.
 - docs-first workflow tooling (DOC_OWNERS, finish_task, check_docs_freshness 등)
 - **Notion 문서 repo docs 이관 완료** (이전 세션, 2026-05-14)
 - **v0.4-00 OpenClaw Ingest Contract** (ingest request/result JSON 계약 정의)
+- **v0.4-01 Drive Write Foundation** (Drive write/publish 기반 구현)
 
 미구현:
 - Discord/OpenClaw 연결
-- OpenClaw/Discord 저장 요청 -> Google Drive 업로드/생성
+- OpenClaw/Discord 저장 요청 CLI/adapter 연결
+- publish 후 sync/rebuild 연결
 - 패치노트 자동 수집
 - embedding/vector DB
 
@@ -122,7 +124,49 @@ python -m unittest discover -s tests -p "test_*.py"
 python scripts/finish_task.py
 ```
 
-## 이번 세션 계획 수립: v0.4 OpenClaw Drive ingest
+## 이번 세션 완료: v0.4-01 Drive Write Foundation
+
+`docs/plans/v04/2026-05-14-v04-01-drive-write-foundation.md` 참조.
+
+ADR 0005: Drive write scope `drive` (full), file upload (no Docs convert), timestamp append 중복 정책, config file folder ID.
+
+### 구현한 것
+
+1. **`tools/publish_drive.py`** (신규, 670+ line):
+   - `--dry-run` / `--apply` / `--auth` CLI
+   - Drive API `files.create`로 folder 내 파일 업로드
+   - 로컬 `raw/drive/<category>/`에 raw content 저장
+   - `db/ffxiv.sqlite` `sources` 테이블 upsert
+   - 중복 title → timestamp append (`My Note__2026-05-14`)
+   - v04-00 ingest contract JSON 출력 형식 준수
+   - `source_type`: `text_note`, `markdown_file`, `plain_text_file` 지원 (`url`, `binary_attachment`는 v0.4-01에서 미지원)
+   - `--folders-config` YAML에서 category → folder ID 매핑
+
+2. **`tests/test_publish_drive.py`** (신규, 17 tests):
+   - Dry-run JSON shape 검증
+   - Drive API 호출 없음 검증
+   - Apply → Drive file 생성 검증 (FakeDriveService)
+   - Raw content 저장 검증
+   - DB sources upsert 검증
+   - 중복 title timestamp append 검증
+   - 오류 입력 검증 (missing body, invalid category, missing token, missing folder config)
+   - v04-00 contract format 준수 검증
+   - PyYAML 없는 환경에서 folders config fallback 검증
+   - Meta-test: 모든 unittest가 실제 API/token 없이 통과
+
+3. **`docs/adrs/0005-drive-write-scope-and-upload.md`** (신규)
+4. **`docs/runbooks/publish-drive.md`** (신규)
+5. **`docs/DOC_OWNERS.yml`** 업데이트 (publish_drive.py, test)
+
+### 결정 사항 (ADR 0005)
+
+| 항목 | 결정 |
+|---|---|
+| OAuth scope | `drive` (full) — 기존 read-only와 별도 token 관리 |
+| Upload 방식 | File upload (원본 `.md`/`.txt` 형식 보존, Google Docs convert 안 함) |
+| 중복 정책 | Timestamp append (`My Note__2026-05-14.md`) |
+| Folder ID 입력 | `config/drive_folders.yaml` config file |
+| 테스트 전략 | FakeDriveService mock + dry-run은 API 호출 없음 + smoke test 제외 |
 
 `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`와 `docs/plans/v04/` 참조.
 
@@ -141,8 +185,8 @@ embedding/vector DB는 필요성이 확인될 때까지 보류.
 | Feature | Status |
 |---|---|
 | `v04-00-openclaw-ingest-contract` | **Completed 2026-05-14** (ingest request/result JSON 계약 정의) |
-| `v04-01-drive-write-foundation` | [ ] 미구현 — 다음 구현 1순위 |
-| `v04-02-ingest-discord-note-cli` | [ ] 미구현 |
+| `v04-01-drive-write-foundation` | **Completed 2026-05-14** (Drive write/publish 구현 완료) |
+| `v04-02-ingest-discord-note-cli` | [ ] 미구현 — 다음 구현 1순위 |
 | `v04-03-openclaw-tool-adapter` | [ ] 미구현 |
 | `v04-04-publish-then-rebuild` | [ ] 미구현 |
 | `v04-05-discord-summary-notification` | [ ] 미구현 |

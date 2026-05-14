@@ -61,9 +61,12 @@ rules:
   - id: google-drive-sync
     paths:
       - "tools/sync_drive.py"
+      - "tools/publish_drive.py"
       - "tests/test_sync_drive.py"
+      - "tests/test_publish_drive.py"
     contract_docs:
       - "docs/specs/0003-google-drive-sync.md"
+      - "docs/adrs/0005-drive-write-scope-and-upload.md"
     procedure_docs:
       - "docs/runbooks/sync-drive.md"
       - "docs/runbooks/test.md"
