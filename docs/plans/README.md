@@ -11,3 +11,8 @@ plan은 spec이나 ADR을 대체하지 않는다. spec은 현재 시스템 동�
 - 완료된 plan은 필요하면 `docs/archive/`로 옮길 수 있다.
 - plan에 없는 큰 구현 변경이 필요해지면 먼저 plan을 갱신한다.
 - documentation-only change는 구현 계획 대신 문서 변경 범위와 검증 기준을 명확히 적는다.
+
+## Phase Plan Folders
+
+- `docs/plans/v03/`: Google Drive sync feature plans
+- `docs/plans/v04/`: OpenClaw Drive ingest feature plans

@@ -13,8 +13,8 @@ v0.3은 5개 feature plan으로 구성된다. 각 plan은 spec의 한 기능 단
 | 01 | `docs/plans/v03/2026-05-14-v03-01-manifest-dry-run.md` | [x] 완료 |
 | 02 | `docs/plans/v03/2026-05-14-v03-02-fixture-apply.md` | [x] 완료 |
 | 03 | `docs/plans/v03/2026-05-14-v03-03-drive-api-auth.md` | [x] 완료 |
-| 04 | `docs/plans/v03/2026-05-14-v03-04-drive-export-download.md` | [ ] 미구현 (다음 1순위) |
-| 05 | `docs/plans/v03/2026-05-14-v03-05-rebuild-chain.md` | [ ] 미구현 |
+| 04 | `docs/plans/v03/2026-05-14-v03-04-drive-export-download.md` | [x] 완료 |
+| 05 | `docs/plans/v03/2026-05-14-v03-05-rebuild-chain.md` | [ ] 미구현 (다음 1순위) |
 
 ## v0.3 Not In Scope
 

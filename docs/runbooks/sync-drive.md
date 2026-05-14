@@ -10,6 +10,8 @@ Google Drive `FFXIV_KB`는 사람이 관리하는 canonical source다.
 
 `--from-drive`는 Google Drive API에서 metadata를 조회하므로 local OAuth token과 Google client dependency가 필요하다.
 
+`--from-drive --download`는 metadata 조회 뒤 Drive content까지 가져오므로 네트워크와 Drive API export/download 권한이 필요하다.
+
 ## Manifest fixture
 
 현재 fixture:
@@ -127,9 +129,54 @@ python tools/sync_drive.py --from-drive \
 python tools/sync_drive.py --dry-run --manifest /tmp/drive-manifest.json
 ```
 
-`--from-drive --apply`는 아직 지원하지 않는다. Drive metadata만으로는 raw content를 저장할 수 없으므로 v0.3-04 export/download 이후 연결한다.
+## Drive export/download
+
+Drive에서 content까지 가져와 manifest JSON으로 확인한다.
+
+```bash
+python tools/sync_drive.py --from-drive \
+  --download \
+  --drive-folder-id <FFXIV_KB_FOLDER_ID>
+```
+
+쓰기 없이 실제 downloaded content hash 기준으로 dry-run을 확인한다.
+
+```bash
+python tools/sync_drive.py --from-drive \
+  --download \
+  --dry-run \
+  --drive-folder-id <FFXIV_KB_FOLDER_ID>
+```
+
+Drive content를 `raw/drive`에 저장하고 `sources` DB를 갱신한다.
+
+```bash
+python tools/sync_drive.py --from-drive \
+  --download \
+  --apply \
+  --drive-folder-id <FFXIV_KB_FOLDER_ID>
+```
+
+실험에서 실제 repo `raw/`와 `db/ffxiv.sqlite`를 건드리고 싶지 않으면 임시 경로를 지정한다.
+
+```bash
+python tools/sync_drive.py --from-drive \
+  --download \
+  --apply \
+  --drive-folder-id <FFXIV_KB_FOLDER_ID> \
+  --db-path /tmp/ffxiv-drive-download.sqlite \
+  --root-path /tmp/ffxiv-claw-bot-drive-download
+```
+
+동작:
+
+- Google Docs는 `text/markdown`으로 export하고 `.md`로 저장한다.
+- Google Sheets는 v0.3-04에서 `skipped`로 처리한다.
+- PDF, 이미지, text/plain, text/markdown 같은 일반 파일은 binary content를 download한다.
+- `content_hash`는 downloaded bytes의 SHA256 hex digest다.
+- `--from-drive --apply`만 단독으로 실행하면 parser error가 난다. 실제 raw content 저장에는 `--download`가 필요하다.
 
 ## 현재 한계
 
-- Google Docs export/download 없음
+- Google Sheets CSV 변환 없음
 - wiki/FTS/graph rebuild 연결 없음

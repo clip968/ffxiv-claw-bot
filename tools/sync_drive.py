@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sqlite3
@@ -17,9 +18,19 @@ DEFAULT_TOKEN_PATH = ROOT / "config" / "google_drive_token.json"
 DRIVE_SOURCE_PREFIX = "gdrive://"
 DRY_RUN_ACTIONS = ("new", "changed", "unchanged", "skipped")
 GOOGLE_DRIVE_FOLDER_MIME = "application/vnd.google-apps.folder"
+GOOGLE_APPS_MIME_PREFIX = "application/vnd.google-apps."
+GOOGLE_DOC_MIME = "application/vnd.google-apps.document"
+GOOGLE_DOC_EXPORT_MIME = "text/markdown"
 GOOGLE_DRIVE_SCOPES = ("https://www.googleapis.com/auth/drive.readonly",)
 GOOGLE_MIME_EXPORT_EXTENSIONS = {
-    "application/vnd.google-apps.document": "md",
+    GOOGLE_DOC_MIME: "md",
+    "text/plain": "txt",
+    "text/markdown": "md",
+}
+DOWNLOAD_MIME_EXTENSIONS = {
+    "application/pdf": "pdf",
+    "image/jpeg": "jpg",
+    "image/png": "png",
     "text/plain": "txt",
     "text/markdown": "md",
 }
@@ -161,7 +172,7 @@ def build_plan_item(
     }
 
     if action == "skipped":
-        result["reason"] = "missing required dry-run metadata"
+        result["reason"] = item.get("skipReason") or "missing required dry-run metadata"
 
     return result
 
@@ -191,6 +202,31 @@ def export_extension_for_mime(mime_type: str | None) -> str | None:
     if not mime_type:
         return None
     return GOOGLE_MIME_EXPORT_EXTENSIONS.get(mime_type)
+
+
+def file_name_extension(file_name: str | None) -> str | None:
+    if not file_name:
+        return None
+    extension = Path(file_name).suffix.lower().lstrip(".")
+    return extension or None
+
+
+def download_extension_for_drive_file(file_item: dict[str, Any]) -> str | None:
+    mime_type = file_item.get("mimeType")
+    export_ext = export_extension_for_mime(str(mime_type) if mime_type else None)
+    if export_ext:
+        return export_ext
+
+    if mime_type and str(mime_type).startswith(GOOGLE_APPS_MIME_PREFIX):
+        return None
+
+    name_ext = file_name_extension(str(file_item.get("name") or ""))
+    if name_ext:
+        return name_ext
+
+    if not mime_type:
+        return None
+    return DOWNLOAD_MIME_EXTENSIONS.get(str(mime_type))
 
 
 def content_hash_for_drive_file(file_item: dict[str, Any]) -> str | None:
@@ -234,7 +270,7 @@ def drive_files_to_manifest(
             "webViewLink": file_item.get("webViewLink"),
         }
 
-        export_ext = export_extension_for_mime(str(mime_type) if mime_type else None)
+        export_ext = download_extension_for_drive_file(file_item)
         if export_ext:
             manifest_item["exportExt"] = export_ext
 
@@ -369,6 +405,64 @@ def manifest_from_drive(
     return drive_files_to_manifest(files, root_folder, category_by_folder_id)
 
 
+def export_mime_for_drive_file(file_item: dict[str, Any]) -> str | None:
+    if file_item.get("mimeType") == GOOGLE_DOC_MIME:
+        return GOOGLE_DOC_EXPORT_MIME
+    return None
+
+
+def execute_drive_content_request(request: Any) -> bytes:
+    response = request.execute()
+    if isinstance(response, bytes):
+        return response
+    if isinstance(response, str):
+        return response.encode("utf-8")
+    raise DriveApiError("Drive download returned unsupported content type")
+
+
+def download_drive_file_content(service: Any, item: dict[str, Any]) -> bytes:
+    file_id = str(item["id"])
+    export_mime = export_mime_for_drive_file(item)
+    if export_mime:
+        request = service.files().export_media(fileId=file_id, mimeType=export_mime)
+    else:
+        request = service.files().get_media(fileId=file_id)
+    return execute_drive_content_request(request)
+
+
+def download_drive_contents(
+    service: Any,
+    manifest: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, bytes]]:
+    downloaded_files: list[dict[str, Any]] = []
+    content_by_file_id: dict[str, bytes] = {}
+
+    for item in manifest.get("files", []):
+        downloaded_item = dict(item)
+        file_id = downloaded_item.get("id")
+        export_ext = download_extension_for_drive_file(downloaded_item)
+
+        if not file_id:
+            downloaded_item["skipReason"] = "missing drive file id"
+            downloaded_files.append(downloaded_item)
+            continue
+        if not export_ext:
+            downloaded_item["skipReason"] = "unsupported download mime type"
+            downloaded_item.pop("contentHash", None)
+            downloaded_files.append(downloaded_item)
+            continue
+
+        downloaded_item["exportExt"] = export_ext
+        content = download_drive_file_content(service, downloaded_item)
+        content_by_file_id[str(file_id)] = content
+        downloaded_item["contentHash"] = hashlib.sha256(content).hexdigest()
+        downloaded_files.append(downloaded_item)
+
+    downloaded_manifest = dict(manifest)
+    downloaded_manifest["files"] = downloaded_files
+    return downloaded_manifest, content_by_file_id
+
+
 def resolve_content_fixture(manifest_path: Path, item: dict[str, Any]) -> Path | None:
     fixture = item.get("contentFixture")
     if not fixture:
@@ -385,10 +479,13 @@ def resolve_content_fixture(manifest_path: Path, item: dict[str, Any]) -> Path |
     return manifest_path.parent / fixture_path
 
 
-def write_raw_file(root_path: Path, relative_raw_path: str, content: str) -> None:
+def write_raw_file(root_path: Path, relative_raw_path: str, content: str | bytes) -> None:
     raw_path = root_path / relative_raw_path
     raw_path.parent.mkdir(parents=True, exist_ok=True)
-    raw_path.write_text(content, encoding="utf-8")
+    if isinstance(content, bytes):
+        raw_path.write_bytes(content)
+    else:
+        raw_path.write_text(content, encoding="utf-8")
 
 
 def upsert_drive_source(
@@ -400,7 +497,8 @@ def upsert_drive_source(
     now = utc_now()
     source_url = drive_source_url(str(item["id"]))
 
-    with sqlite3.connect(db_path) as conn:
+    conn = sqlite3.connect(db_path)
+    try:
         ensure_sources_table(conn)
         if existing_source:
             conn.execute(
@@ -448,14 +546,18 @@ def upsert_drive_source(
                 ),
             )
         conn.commit()
+    finally:
+        conn.close()
 
 
-def apply_sync(
-    manifest_path: Path,
+def apply_sync_manifest(
+    manifest: dict[str, Any],
     db_path: Path = DB_PATH,
     root_path: Path = ROOT,
+    *,
+    manifest_path: Path | None = None,
+    content_by_file_id: dict[str, bytes] | None = None,
 ) -> dict[str, Any]:
-    manifest = load_manifest(manifest_path)
     existing_sources = load_existing_drive_sources(db_path)
     items: list[dict[str, Any]] = []
 
@@ -464,14 +566,24 @@ def apply_sync(
         action = plan_item["action"]
 
         if action in ("new", "changed"):
-            content_fixture = resolve_content_fixture(manifest_path, item)
-            if content_fixture is None or not content_fixture.exists():
+            content: str | bytes | None = None
+            if content_by_file_id is not None:
+                content = content_by_file_id.get(str(item["id"]))
+            elif manifest_path is not None:
+                content_fixture = resolve_content_fixture(manifest_path, item)
+                if content_fixture is not None and content_fixture.exists():
+                    content = content_fixture.read_bytes()
+
+            if content is None:
                 plan_item["action"] = "skipped"
                 plan_item["planned_raw_path"] = None
-                plan_item["reason"] = "missing content fixture"
+                plan_item["reason"] = (
+                    "missing downloaded content"
+                    if content_by_file_id is not None
+                    else "missing content fixture"
+                )
             else:
                 relative_raw_path = str(plan_item["planned_raw_path"])
-                content = content_fixture.read_text(encoding="utf-8")
                 write_raw_file(root_path, relative_raw_path, content)
                 upsert_drive_source(
                     db_path,
@@ -493,6 +605,20 @@ def apply_sync(
         "summary": summary,
         "items": items,
     }
+
+
+def apply_sync(
+    manifest_path: Path,
+    db_path: Path = DB_PATH,
+    root_path: Path = ROOT,
+) -> dict[str, Any]:
+    manifest = load_manifest(manifest_path)
+    return apply_sync_manifest(
+        manifest,
+        db_path,
+        root_path,
+        manifest_path=manifest_path,
+    )
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -518,6 +644,11 @@ def main(argv: list[str] | None = None) -> None:
         "--apply",
         action="store_true",
         help="Write manifest fixture content and upsert Drive source records.",
+    )
+    parser.add_argument(
+        "--download",
+        action="store_true",
+        help="Download Drive content when using --from-drive.",
     )
     parser.add_argument(
         "--manifest",
@@ -562,7 +693,13 @@ def main(argv: list[str] | None = None) -> None:
 
     try:
         if args.auth:
-            if args.from_drive or args.dry_run or args.apply or args.output_manifest:
+            if (
+                args.from_drive
+                or args.dry_run
+                or args.apply
+                or args.download
+                or args.output_manifest
+            ):
                 parser.error("--auth cannot be combined with sync actions")
             result = run_drive_auth(args.credentials_path, args.token_path)
             print(json.dumps(result, ensure_ascii=False, indent=2))
@@ -571,13 +708,39 @@ def main(argv: list[str] | None = None) -> None:
         if args.from_drive:
             if not args.drive_folder_id:
                 parser.error("--from-drive requires --drive-folder-id")
-            if args.apply:
-                parser.error("--from-drive --apply requires export/download support")
-            manifest = manifest_from_drive(args.drive_folder_id, args.token_path)
+            if args.dry_run and args.apply:
+                parser.error("choose at most one of --dry-run or --apply with --from-drive")
+            if args.apply and not args.download:
+                parser.error("--from-drive --apply requires --download")
+
+            credentials = load_drive_credentials(args.token_path)
+            service = build_drive_service(credentials)
+            files = list_drive_files(service, args.drive_folder_id)
+            category_by_folder_id = {
+                str(file_item["id"]): str(file_item["name"])
+                for file_item in files
+                if file_item.get("mimeType") == GOOGLE_DRIVE_FOLDER_MIME
+            }
+            manifest = drive_files_to_manifest(
+                files,
+                "FFXIV_KB",
+                category_by_folder_id,
+            )
+            content_by_file_id: dict[str, bytes] | None = None
+            if args.download:
+                manifest, content_by_file_id = download_drive_contents(service, manifest)
+
             if args.output_manifest:
                 write_manifest(manifest, args.output_manifest)
 
-            if args.dry_run:
+            if args.apply:
+                result = apply_sync_manifest(
+                    manifest,
+                    args.db_path,
+                    args.root_path,
+                    content_by_file_id=content_by_file_id,
+                )
+            elif args.dry_run:
                 existing_sources = load_existing_drive_sources(args.db_path)
                 items = [
                     build_plan_item(item, existing_sources)
@@ -603,6 +766,8 @@ def main(argv: list[str] | None = None) -> None:
             print(json.dumps(result, ensure_ascii=False, indent=2))
             return
 
+        if args.download:
+            parser.error("--download requires --from-drive")
         if args.dry_run == args.apply:
             parser.error("choose exactly one of --dry-run or --apply")
         if not args.manifest:

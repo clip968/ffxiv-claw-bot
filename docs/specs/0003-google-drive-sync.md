@@ -6,7 +6,7 @@ Accepted
 
 ## Scope
 
-이 spec은 v0.3 Google Drive sync의 manifest 기반 dry-run, fixture 기반 local apply, Drive metadata listing 계약을 정의한다.
+이 spec은 v0.3 Google Drive sync의 manifest 기반 dry-run, fixture 기반 local apply, Drive metadata listing, Drive export/download 계약을 정의한다.
 
 > Notion `SPEC - v0.3 Google Drive Sync - ffxiv-claw-bot`에서 2026-05-14 repo docs로 이관 완료.
 
@@ -67,7 +67,7 @@ file item에서 dry-run 분류에 필요한 필드:
 - `name`: Drive file name
 - `category`: Drive category folder
 - `exportExt`: planned local extension
-- `contentHash`: export/download 결과의 hash 역할
+- `contentHash`: metadata 기반 hash 또는 export/download 결과 SHA256 hash
 - `contentFixture`: `--apply`에서 raw file로 저장할 repo-root relative fixture file path
 
 출력에 포함되는 추가 metadata:
@@ -186,7 +186,7 @@ apply 동작:
 
 ## Drive API 인증과 파일 목록 조회
 
-Drive API 인증/조회는 실제 Drive content export/download 전 단계다. 이 단계는 파일 metadata를 가져와 기존 manifest 형식으로 변환한다.
+Drive API 인증/조회는 파일 metadata를 가져와 기존 manifest 형식으로 변환한다. `--download`를 함께 쓰면 metadata 조회 뒤 content export/download까지 수행한다.
 
 ```bash
 python tools/sync_drive.py --auth
@@ -198,12 +198,13 @@ python tools/sync_drive.py --from-drive --output-manifest /tmp/drive-manifest.js
 
 - `--auth`: OAuth browser flow를 실행하고 token file을 저장한다.
 - `--from-drive`: Google Drive API에서 file metadata를 조회한다.
+- `--download`: `--from-drive`와 함께 Drive content를 export/download하고 SHA256 `contentHash`를 계산한다.
 - `--drive-folder-id <id>`: 조회할 Drive folder id다. v0.3-03에서는 folder search를 하지 않고 명시 입력을 요구한다.
 - `--credentials-path <path>`: OAuth client secret JSON path다. 기본값은 `config/google_drive_client_secret.json`이다.
 - `--token-path <path>`: OAuth token JSON path다. 기본값은 `config/google_drive_token.json`이다.
 - `--output-manifest <path>`: 조회 결과를 manifest JSON으로 저장한다.
 
-`--from-drive --apply`는 v0.3-04 export/download 구현 전까지 지원하지 않는다.
+`--from-drive --apply`는 raw content가 필요하므로 `--download`와 함께 사용할 때만 지원한다.
 
 Credential/token 규칙:
 
@@ -219,7 +220,28 @@ Drive API metadata는 기존 manifest item으로 변환된다.
 - text/markdown: `exportExt = md`
 - folder item은 manifest file 목록에서 제외한다.
 - category는 file parent id가 Drive 하위 folder id와 일치하면 해당 folder name을 사용한다.
-- `contentHash`는 `md5Checksum`, `headRevisionId`, `modifiedTime` 순서로 사용한다. 실제 export/download content hash는 v0.3-04 범위다.
+- `contentHash`는 `--download`가 없으면 `md5Checksum`, `headRevisionId`, `modifiedTime` 순서로 사용한다.
+- `--download`가 있으면 실제 export/download content bytes의 SHA256 hex digest를 `contentHash`로 사용한다.
+
+## Drive export/download
+
+`--from-drive --download`는 Drive metadata 조회 후 각 파일의 content를 가져온다.
+
+```bash
+python tools/sync_drive.py --from-drive --download --drive-folder-id <FFXIV_KB_FOLDER_ID>
+python tools/sync_drive.py --from-drive --download --dry-run --drive-folder-id <FFXIV_KB_FOLDER_ID>
+python tools/sync_drive.py --from-drive --download --apply --drive-folder-id <FFXIV_KB_FOLDER_ID>
+```
+
+동작:
+
+- Google Docs document는 Drive API `files.export` 계열 호출로 `text/markdown`에 export하고 `.md`로 저장한다.
+- Google Sheets는 v0.3-04에서 `skipped`로 처리한다. CSV 변환은 별도 plan에서 다룬다.
+- PDF, 이미지, text/plain, text/markdown 같은 일반 Drive file은 file content를 download한다.
+- 일반 file의 확장자는 파일명 suffix를 우선 사용하고, 없으면 MIME type mapping을 사용한다.
+- export/download bytes의 SHA256 hex digest를 `contentHash`로 사용한다.
+- `--apply`가 있으면 기존 apply 흐름과 같은 JSON shape로 출력하고 `raw/drive/<category>/...`와 `sources` DB를 갱신한다.
+- `--apply`가 없으면 raw file과 DB를 쓰지 않는다.
 
 ## Idempotent 재실행 원칙
 
@@ -229,7 +251,6 @@ apply는 같은 Drive file id와 같은 content hash에 대해 중복 raw 저장
 
 ## v0.3 manifest sync 범위 밖
 
-- Google Docs export/download
 - Discord/OpenClaw 연결
 - embedding/vector DB
 - Drive 변경 감지 후 wiki/FTS/graph 자동 재빌드
@@ -244,6 +265,7 @@ apply는 같은 Drive file id와 같은 content hash에 대해 중복 raw 저장
 - apply는 `sources.source_type = drive_document` row를 idempotent하게 upsert한다.
 - default unittest는 실제 Google Drive나 네트워크에 의존하지 않는다.
 - Drive metadata response를 manifest JSON 형식으로 변환할 수 있다.
+- `--from-drive --download --apply`는 Google Docs를 Markdown으로 export하고 일반 file을 download한 뒤 raw/drive와 DB를 갱신할 수 있다.
 - token이 없을 때 `--from-drive`는 명확한 에러를 반환한다.
 
 ## 테스트와 확인 명령
@@ -254,4 +276,5 @@ python -m unittest discover -s tests -p "test_*.py"
 python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json
 python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json
 python tools/sync_drive.py --from-drive --dry-run --drive-folder-id <FFXIV_KB_FOLDER_ID>
+python tools/sync_drive.py --from-drive --download --apply --drive-folder-id <FFXIV_KB_FOLDER_ID>
 ```

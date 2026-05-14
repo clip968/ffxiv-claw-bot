@@ -14,7 +14,7 @@
 | `tools/answer.py` | 검색 결과 기반 context pack 및 근거 답변 출력 | 완료 |
 | `tools/build_graph.py` | wiki/source 기반 deterministic graph 생성 | 완료 |
 | `tools/graph_path.py` | graph 관계 조회 | 완료 |
-| `tools/sync_drive.py` | Google Drive 동기화 (dry-run만) | dry-run 완료 |
+| `tools/sync_drive.py` | Google Drive 동기화 (manifest dry-run/apply, Drive API metadata 조회, export/download) | v0.3-04 완료 |
 
 ## Data / Output
 

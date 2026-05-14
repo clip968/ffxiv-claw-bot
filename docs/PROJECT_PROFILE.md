@@ -27,9 +27,8 @@ URL / Drive / Discord note
 
 ## Current Phase
 
-v0.3 Google Drive sync dry-run 완료.
-manifest 기반 --apply는 아직 미구현.
-실제 Google Drive API/OAuth/Google Docs export-download도 아직 미구현.
+v0.3 Google Drive sync dry-run, fixture apply, Drive API 인증/조회, Google Docs export/download 완료.
+Drive 변경 감지 후 wiki/FTS/graph 재빌드 연결은 아직 미구현.
 
 ## Key Tools
 
@@ -40,7 +39,7 @@ manifest 기반 --apply는 아직 미구현.
 - `tools/answer.py`: 검색 결과 기반 context pack 및 근거 답변 출력
 - `tools/build_graph.py`: wiki/source 기반 deterministic graph 생성
 - `tools/graph_path.py`: graph 관계 조회
-- `tools/sync_drive.py`: Google Drive 동기화 (현재 dry-run만)
+- `tools/sync_drive.py`: Google Drive 동기화 (manifest dry-run/apply, Drive API metadata 조회, export/download)
 
 ## Development Principles
 

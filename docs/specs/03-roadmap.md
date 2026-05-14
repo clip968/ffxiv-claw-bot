@@ -260,7 +260,13 @@ Google Docs 수정 → sync_drive 실행 → raw/drive 갱신 → wiki 갱신 �
 ## v0.4+
 
 ```
+- OpenClaw/Discord 저장 요청 수집
+- Google Drive FFXIV_KB 업로드/생성
+- Drive publish 후 local KB 재빌드
+- Discord 저장 결과/부분 실패 알림
 - 패치노트 자동 수집
 - Discord 자동 요약 게시
 - 필요 시 BGE-M3 또는 다른 embedding 모델 추가
 ```
+
+v0.4 OpenClaw Drive ingest 작업 분해는 `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`와 `docs/plans/v04/`에서 추적한다.

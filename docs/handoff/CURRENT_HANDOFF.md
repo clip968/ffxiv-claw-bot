@@ -8,7 +8,7 @@
 
 ## Current Phase
 
-v0.3 Google Drive API 인증/파일 목록 조회 완료.
+v0.3 Google Docs export/download 완료.
 
 완료된 것:
 - v0.1 local KB pipeline
@@ -16,13 +16,14 @@ v0.3 Google Drive API 인증/파일 목록 조회 완료.
 - v0.3 Google Drive sync dry-run (manifest 기반, 실제 Drive API 없음)
 - v0.3 Google Drive sync fixture apply (`--apply`, raw/drive 저장 + DB upsert, 실제 Drive API 없음)
 - v0.3 Google Drive API 인증/파일 목록 조회 (`--auth`, `--from-drive`, metadata -> manifest 변환)
+- v0.3 Google Docs export/download (`--from-drive --download`, Markdown export, binary download, SHA256 content hash, `--apply` 연결)
 - docs-first workflow tooling (DOC_OWNERS, finish_task, check_docs_freshness 등)
 - **Notion 문서 repo docs 이관 완료** (이번 세션, 2026-05-14)
 
 미구현:
-- Google Docs export-download
 - Drive 변경 감지 후 wiki/FTS/graph 재빌드 연결
 - Discord/OpenClaw 연결
+- OpenClaw/Discord 저장 요청 -> Google Drive 업로드/생성
 - 패치노트 자동 수집
 - embedding/vector DB
 
@@ -55,7 +56,9 @@ Notion 문서 매핑:
 7. `docs/plans/v03/2026-05-14-v03-03-drive-api-auth.md`
 8. `docs/plans/v03/2026-05-14-v03-01-manifest-dry-run.md`
 9. `docs/plans/v03/2026-05-14-v03-02-fixture-apply.md`
-10. `docs/plans/v03/2026-05-14-v03-04-drive-export-download.md` (다음 구현 1순위)
+10. `docs/plans/v03/2026-05-14-v03-04-drive-export-download.md`
+11. `docs/plans/v03/2026-05-14-v03-05-rebuild-chain.md` (다음 구현 1순위)
+12. `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
 
 ## 이번 세션 완료: manifest 기반 --apply
 
@@ -89,9 +92,36 @@ fixture 기반 local apply만 다룬다.
 이 단계는 아직 Google Docs export/download를 구현하지 않는다.
 content hash는 API metadata의 `md5Checksum`, `headRevisionId`, `modifiedTime` 순서로 사용한다.
 
-## 다음 구현 후보 1순위: Google Docs export/download
+## 이번 세션 완료: Google Docs export/download
 
 `docs/plans/v03/2026-05-14-v03-04-drive-export-download.md` 참조.
+
+완료된 하위 작업:
+1. `sync_drive.py`에 `--download` 플래그 추가
+2. `--from-drive --download`에서 Google Docs를 `text/markdown`으로 export
+3. PDF/이미지/text 계열 일반 Drive file은 binary download
+4. Google Sheets는 v0.3-04에서 `skipped` 처리
+5. export/download bytes의 SHA256 hex digest를 `contentHash`와 DB `content_hash`로 사용
+6. `--from-drive --download --apply`가 기존 raw 저장/DB upsert 흐름을 재사용
+7. `--from-drive --apply` 단독 실행은 `--download` 필요 parser error 반환
+8. Google Docs export, binary download, Sheets skip, CLI apply unittest 추가
+9. Windows test temp DB 잠금 방지를 위해 SQLite 연결을 명시적으로 close
+
+## 다음 구현 후보 1순위: Drive rebuild chain
+
+`docs/plans/v03/2026-05-14-v03-05-rebuild-chain.md` 참조.
+
+## 이번 세션 계획 수립: v0.4 OpenClaw Drive ingest
+
+`docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`와 `docs/plans/v04/` 참조.
+
+추가한 v0.4 feature plan:
+1. `v04-00-openclaw-ingest-contract`: OpenClaw/Discord ingest request/result 계약
+2. `v04-01-drive-write-foundation`: Drive write/upload 기반
+3. `v04-02-ingest-discord-note-cli`: Discord note ingest CLI
+4. `v04-03-openclaw-tool-adapter`: OpenClaw 설정/tool adapter
+5. `v04-04-publish-then-rebuild`: Drive publish 후 sync/rebuild 연결
+6. `v04-05-discord-summary-notification`: Discord 저장 결과/부분 실패 알림
 
 embedding/vector DB는 필요성이 확인될 때까지 보류.
 
@@ -141,4 +171,17 @@ python -m unittest tests.test_sync_drive
 python -m unittest discover -s tests -p "test_*.py"
 python scripts/check_docs_freshness.py --all
 python tools/sync_drive.py --from-drive --dry-run --drive-folder-id folder_root --token-path /tmp/ffxiv-missing-token.json  # expected parser error: OAuth token not found
+```
+
+이번 v0.3-04 세션에서 확인한 명령:
+
+```bash
+python -m unittest tests.test_sync_drive
+python -m unittest discover -s tests -p "test_*.py"
+python scripts/check_docs_freshness.py --all
+python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json
+python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json --db-path C:\Users\clip9\AppData\Local\Temp\ffxiv-claw-bot-v03-04-smoke.sqlite --root-path C:\Users\clip9\AppData\Local\Temp\ffxiv-claw-bot-v03-04-smoke
+python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json --db-path C:\Users\clip9\AppData\Local\Temp\ffxiv-claw-bot-v03-04-smoke.sqlite --root-path C:\Users\clip9\AppData\Local\Temp\ffxiv-claw-bot-v03-04-smoke
+python tools/sync_drive.py --download --manifest tests/fixtures/drive_manifest.json  # expected parser error: --download requires --from-drive
+python tools/sync_drive.py --from-drive --apply --drive-folder-id folder_root --token-path D:\tmp\ffxiv-missing-token.json  # expected parser error: --from-drive --apply requires --download
 ```

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import io
 import json
 import sqlite3
@@ -66,6 +67,48 @@ def create_sources_db(db_path: Path) -> None:
         conn.commit()
     finally:
         conn.close()
+
+
+class FakeDriveRequest:
+    def __init__(self, response: object) -> None:
+        self.response = response
+
+    def execute(self) -> object:
+        return self.response
+
+
+class FakeDriveFiles:
+    def __init__(
+        self,
+        *,
+        listed_files: list[dict[str, object]] | None = None,
+        export_contents: dict[str, bytes] | None = None,
+        download_contents: dict[str, bytes] | None = None,
+    ) -> None:
+        self.listed_files = listed_files or []
+        self.export_contents = export_contents or {}
+        self.download_contents = download_contents or {}
+        self.exports: list[tuple[str, str]] = []
+        self.downloads: list[str] = []
+
+    def list(self, **kwargs: object) -> FakeDriveRequest:
+        return FakeDriveRequest({"files": self.listed_files})
+
+    def export_media(self, *, fileId: str, mimeType: str) -> FakeDriveRequest:
+        self.exports.append((fileId, mimeType))
+        return FakeDriveRequest(self.export_contents[fileId])
+
+    def get_media(self, *, fileId: str) -> FakeDriveRequest:
+        self.downloads.append(fileId)
+        return FakeDriveRequest(self.download_contents[fileId])
+
+
+class FakeDriveService:
+    def __init__(self, files_resource: FakeDriveFiles) -> None:
+        self.files_resource = files_resource
+
+    def files(self) -> FakeDriveFiles:
+        return self.files_resource
 
 
 class SyncDriveTests(unittest.TestCase):
@@ -186,7 +229,8 @@ class SyncDriveTests(unittest.TestCase):
                 "Savage 3 macro updated for clock spots.\n",
             )
 
-            with sqlite3.connect(db_path) as conn:
+            conn = sqlite3.connect(db_path)
+            try:
                 conn.row_factory = sqlite3.Row
                 rows = conn.execute(
                     """
@@ -196,6 +240,8 @@ class SyncDriveTests(unittest.TestCase):
                      ORDER BY source_url
                     """
                 ).fetchall()
+            finally:
+                conn.close()
 
             self.assertEqual(len(rows), 3)
             by_url = {row["source_url"]: dict(row) for row in rows}
@@ -235,7 +281,8 @@ class SyncDriveTests(unittest.TestCase):
             self.assertEqual(second["summary"]["changed"], 0)
             self.assertEqual(second["summary"]["unchanged"], 3)
 
-            with sqlite3.connect(db_path) as conn:
+            conn = sqlite3.connect(db_path)
+            try:
                 count = conn.execute(
                     """
                     SELECT COUNT(*)
@@ -243,6 +290,8 @@ class SyncDriveTests(unittest.TestCase):
                      WHERE source_type = 'drive_document'
                     """
                 ).fetchone()[0]
+            finally:
+                conn.close()
 
             self.assertEqual(count, 3)
 
@@ -324,6 +373,179 @@ class SyncDriveTests(unittest.TestCase):
         self.assertEqual(manifest["files"][1]["exportExt"], "txt")
         self.assertEqual(manifest["files"][1]["contentHash"], "md5-txt-001")
 
+    def test_download_drive_contents_exports_google_docs_to_markdown_and_hashes_sha256(self) -> None:
+        content = b"# Black Mage Guide\n\nUse Ley Lines.\n"
+        files_resource = FakeDriveFiles(export_contents={"drive_doc_001": content})
+        service = FakeDriveService(files_resource)
+        manifest = {
+            "root_folder": "FFXIV_KB",
+            "files": [
+                {
+                    "id": "drive_doc_001",
+                    "name": "Black Mage Guide",
+                    "category": "job_guides",
+                    "mimeType": "application/vnd.google-apps.document",
+                    "modifiedTime": "2026-05-14T01:00:00Z",
+                    "webViewLink": "https://drive.google.com/file/d/drive_doc_001/view",
+                    "exportExt": "md",
+                    "contentHash": "rev-doc-001",
+                }
+            ],
+        }
+
+        downloaded_manifest, content_by_file_id = sync_drive.download_drive_contents(
+            service,
+            manifest,
+        )
+
+        self.assertEqual(
+            files_resource.exports,
+            [("drive_doc_001", "text/markdown")],
+        )
+        self.assertEqual(content_by_file_id["drive_doc_001"], content)
+        self.assertEqual(
+            downloaded_manifest["files"][0]["contentHash"],
+            hashlib.sha256(content).hexdigest(),
+        )
+
+    def test_download_drive_contents_downloads_binary_files_and_hashes_sha256(self) -> None:
+        content = b"%PDF-1.7\nbinary pdf content\n"
+        files_resource = FakeDriveFiles(download_contents={"drive_pdf_001": content})
+        service = FakeDriveService(files_resource)
+        manifest = {
+            "root_folder": "FFXIV_KB",
+            "files": [
+                {
+                    "id": "drive_pdf_001",
+                    "name": "Raid Timeline.pdf",
+                    "category": "raid_guides",
+                    "mimeType": "application/pdf",
+                    "modifiedTime": "2026-05-14T01:00:00Z",
+                    "webViewLink": "https://drive.google.com/file/d/drive_pdf_001/view",
+                }
+            ],
+        }
+
+        downloaded_manifest, content_by_file_id = sync_drive.download_drive_contents(
+            service,
+            manifest,
+        )
+
+        self.assertEqual(files_resource.downloads, ["drive_pdf_001"])
+        self.assertEqual(content_by_file_id["drive_pdf_001"], content)
+        self.assertEqual(downloaded_manifest["files"][0]["exportExt"], "pdf")
+        self.assertEqual(
+            downloaded_manifest["files"][0]["contentHash"],
+            hashlib.sha256(content).hexdigest(),
+        )
+
+    def test_download_drive_contents_skips_google_sheets(self) -> None:
+        files_resource = FakeDriveFiles()
+        service = FakeDriveService(files_resource)
+        manifest = {
+            "root_folder": "FFXIV_KB",
+            "files": [
+                {
+                    "id": "drive_sheet_001",
+                    "name": "BiS Sheet.csv",
+                    "category": "bis_sheets",
+                    "mimeType": "application/vnd.google-apps.spreadsheet",
+                    "modifiedTime": "2026-05-14T01:00:00Z",
+                    "webViewLink": "https://drive.google.com/file/d/drive_sheet_001/view",
+                }
+            ],
+        }
+
+        downloaded_manifest, content_by_file_id = sync_drive.download_drive_contents(
+            service,
+            manifest,
+        )
+
+        self.assertEqual(files_resource.downloads, [])
+        self.assertEqual(content_by_file_id, {})
+        self.assertEqual(
+            downloaded_manifest["files"][0]["skipReason"],
+            "unsupported download mime type",
+        )
+
+    def test_cli_from_drive_download_apply_writes_exported_doc_and_hash(self) -> None:
+        content = b"# Black Mage Guide\n\nUse Ley Lines.\n"
+        files_resource = FakeDriveFiles(
+            listed_files=[
+                {
+                    "id": "folder_job",
+                    "name": "job_guides",
+                    "mimeType": sync_drive.GOOGLE_DRIVE_FOLDER_MIME,
+                },
+                {
+                    "id": "drive_doc_001",
+                    "name": "Black Mage Guide",
+                    "mimeType": "application/vnd.google-apps.document",
+                    "modifiedTime": "2026-05-14T01:00:00Z",
+                    "webViewLink": "https://drive.google.com/file/d/drive_doc_001/view",
+                    "parents": ["folder_job"],
+                    "headRevisionId": "rev-doc-001",
+                },
+            ],
+            export_contents={"drive_doc_001": content},
+        )
+        service = FakeDriveService(files_resource)
+        original_load_credentials = sync_drive.load_drive_credentials
+        original_build_service = sync_drive.build_drive_service
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_path = Path(tmp_dir)
+            db_path = root_path / "ffxiv.sqlite"
+            create_sources_db(db_path)
+
+            try:
+                sync_drive.load_drive_credentials = lambda token_path: object()
+                sync_drive.build_drive_service = lambda credentials: service
+
+                stdout = io.StringIO()
+                with contextlib.redirect_stdout(stdout):
+                    sync_drive.main(
+                        [
+                            "--from-drive",
+                            "--download",
+                            "--apply",
+                            "--drive-folder-id",
+                            "folder_root",
+                            "--db-path",
+                            str(db_path),
+                            "--root-path",
+                            str(root_path),
+                        ]
+                    )
+            finally:
+                sync_drive.load_drive_credentials = original_load_credentials
+                sync_drive.build_drive_service = original_build_service
+
+            result = json.loads(stdout.getvalue())
+            raw_path = (
+                root_path
+                / "raw/drive/job_guides/black_mage_guide__drive_doc_001.md"
+            )
+
+            self.assertEqual(result["status"], "ok")
+            self.assertIs(result["dry_run"], False)
+            self.assertEqual(result["summary"]["new"], 1)
+            self.assertEqual(raw_path.read_bytes(), content)
+
+            conn = sqlite3.connect(db_path)
+            try:
+                content_hash = conn.execute(
+                    """
+                    SELECT content_hash
+                      FROM sources
+                     WHERE source_url = 'gdrive://drive_doc_001'
+                    """
+                ).fetchone()[0]
+            finally:
+                conn.close()
+
+            self.assertEqual(content_hash, hashlib.sha256(content).hexdigest())
+
     def test_missing_oauth_token_raises_actionable_error(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             token_path = Path(tmp_dir) / "missing-token.json"
@@ -355,7 +577,7 @@ class SyncDriveTests(unittest.TestCase):
         self.assertEqual(raised.exception.code, 2)
         self.assertIn("OAuth token not found", stderr.getvalue())
 
-    def test_cli_rejects_from_drive_apply_until_export_download_exists(self) -> None:
+    def test_cli_rejects_from_drive_apply_without_download(self) -> None:
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
             with self.assertRaises(SystemExit) as raised:
@@ -370,7 +592,7 @@ class SyncDriveTests(unittest.TestCase):
 
         self.assertEqual(raised.exception.code, 2)
         self.assertIn(
-            "--from-drive --apply requires export/download support",
+            "--from-drive --apply requires --download",
             stderr.getvalue(),
         )
 
