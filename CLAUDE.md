@@ -1,66 +1,45 @@
 # Agent Workflow
 
-This project uses Superpowers-style skills through ForgeCode project skills.
+This repository uses a docs-first workflow. The source of truth is the Markdown documentation under `docs/`; Notion is only a mirror/index for summaries and links.
 
-Before starting any non-trivial coding task:
+## Required Start Order
 
-1. Check the available skills.
-2. Prefer the relevant skill workflow instead of ad-hoc implementation.
-3. For new features, use `brainstorming` before writing code.
-4. After design approval, use `writing-plans` to create an implementation plan.
-5. Keep plans under `docs/plans/` unless the user says otherwise.
-6. Keep project documentation under `docs/`.
-7. During implementation, prefer small, reviewable changes.
-8. For bug fixes, use `systematic-debugging` before changing code.
-9. For code changes, verify with the most relevant test, typecheck, lint, or build command.
-10. Do not claim completion without verification.
+Before starting non-trivial work:
 
-## Project-specific constraints
+1. First read `docs/WORKFLOW.md`.
+2. Then read `docs/handoff/CURRENT_HANDOFF.md`.
+3. Check the relevant spec, runbook, ADR, or plan for the files you will touch.
+4. Check the working tree before editing:
+
+```bash
+git status --short
+git branch --show-current
+git log --oneline -5
+git diff --stat
+```
+
+Do not revert existing user changes unless the maintainer explicitly asks.
+
+## Implementation Rules
+
+1. For non-trivial behavior changes, confirm or create a spec before implementation.
+2. Create an ADR only when the change records a lasting technical decision.
+3. Keep implementation plans under `docs/plans/`; plans do not replace specs or runbooks.
+4. Write failing tests before implementation.
+5. If a red test cannot be written first, record the reason and alternate verification in the plan.
+6. Keep changes small and reviewable.
+7. Update relevant specs/runbooks/ADRs before handoff.
+8. Update `docs/handoff/CURRENT_HANDOFF.md` before running `finish_task`.
+9. Run `python scripts/finish_task.py` as the final verification gate.
+10. Do not commit or push unless explicitly requested by the maintainer.
+
+## Project Constraints
 
 - Project root: `/mnt/d/programming/ffxiv-claw-bot`
 - Avoid broad refactors unless explicitly requested.
-- Prefer small commits or small reviewable diffs.
-
-## Before starting work
-
-1. Check `CLAUDE.md` for workflow instructions.
-2. Check the latest session log under `logs/` to pick up where you left off.
-3. Review available skills (brainstorming, writing-plans, etc.) and prefer them over ad-hoc work.
-
-## During work
-
-- Briefly explain your intent before making code changes.
-- Keep changes small and reviewable.
-
-## After completing work
-
-1. `git add . && git commit -m "prefix: message" && git push` — **push까지 반드시 수행할 것**
-2. Write a session log entry to `logs/YYYY-MM-DD.md` using the format below.
-3. Check the latest file in `logs/` to track progress.
-
-### Session log entry format
-
-```
-### YYYY-MM-DD HH:MM — Title
-
-#### Files changed
-- `path/to/file` — added/modified/deleted
-
-#### Reason
-- Why the change was needed
-
-#### Changes
-- Specific details of what was changed (functions, classes, schema, logic, etc.)
-
-#### Result
-- Final state summary (execution output, table structure, example output, etc.)
-```
-
-### Git commit message rules
-
-- Written in Korean (한국어).
-- Prefix: `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`
-- Example: `feat: ingest_url.py added — URL input → HTML save → DB record`
+- Prefer the repository's existing unittest-based test style.
+- Do not introduce pytest unless a spec/plan explicitly adds that dependency and workflow.
+- Do not treat Notion pages, external links, `docs/plans/`, or `docs/archive/` as DOC_OWNERS contract owners.
 
 ## Development Commands
 
@@ -68,14 +47,13 @@ Before starting any non-trivial coding task:
 - URL ingest: `python tools/ingest_url.py <URL>`
 - Wiki compile: `python tools/compile_wiki.py --source-id <id>`
 - Search: `python tools/search_kb.py <query>`
-- Answer (context pack): `python tools/answer.py <question>`
+- Answer: `python tools/answer.py <question>`
 - Build graph: `python tools/build_graph.py`
 - Graph query: `python tools/graph_path.py --source <node_id>`
-- Git commit: `git add . && git commit -m "feat: 설명" && git push`
-- Session log: `logs/YYYY-MM-DD.md`
+- Drive sync dry-run: `python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json`
+- Test: `python -m unittest discover -s tests -p "test_*.py"`
+- Finish task: `python scripts/finish_task.py`
 
-## Session Logs
+## Git
 
-All session records are stored in the `logs/` directory as date-stamped files.
-
-- `logs/2026-05-14.md` — Initial project setup + session log refactor + compile_wiki + search_kb + answer
+Only commit or push when the maintainer explicitly asks. If requested, first report the intended files, validation result, and commit message.

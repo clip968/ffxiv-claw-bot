@@ -1,6 +1,6 @@
 # Finish Task Runbook
 
-작업 종료 전에는 단일 명령으로 검증을 실행한다.
+작업 종료 전에는 handoff를 갱신한 뒤 단일 명령으로 최종 검증을 실행한다.
 
 ```bash
 python scripts/finish_task.py
@@ -35,9 +35,19 @@ python scripts/finish_task.py
 - unstaged 파일
 - untracked 파일
 
-`check_docs_freshness.py`는 `docs/DOC_OWNERS.yml`의 required docs mapping을 읽는다. 매핑된 코드 파일이 변경되면 해당 `required_docs` 중 최소 하나가 변경되어야 통과한다.
+`check_docs_freshness.py`는 `docs/DOC_OWNERS.yml`의 rule 기반 정책을 읽는다.
 
-이 검사는 agent가 문서를 실제로 읽었는지 증명하지 않는다. 대신 코드 변경에 대응되는 spec/runbook/handoff 산출물이 작업 트리에 반영됐는지를 검증한다.
+코드 변경이 있으면 다음을 모두 만족해야 한다.
+
+- 변경된 코드 파일이 `rules[].paths` 중 하나와 매칭된다.
+- 매칭된 rule의 `contract_docs` 또는 `procedure_docs` 중 하나 이상이 같은 작업 트리에서 변경됐다.
+- `docs/handoff/CURRENT_HANDOFF.md`가 같은 작업 트리에서 변경됐다.
+
+`docs/handoff/CURRENT_HANDOFF.md`는 전역 종료 조건이지만 경로별 contract docs를 대체하지 않는다. handoff만 변경한 경우 contract freshness를 만족하지 않는다.
+
+`docs/archive/**`, Notion 문서, 외부 링크는 owner 문서로 인정하지 않는다.
+
+이 검사는 agent가 문서를 실제로 읽었는지 증명하지 않는다. 대신 코드 변경에 대응되는 spec/runbook/ADR/handoff 산출물이 작업 트리에 반영됐는지를 검증한다.
 
 pre-commit은 staged 파일만 대상으로 `check_docs_freshness.py --staged`를 계속 사용할 수 있다.
 

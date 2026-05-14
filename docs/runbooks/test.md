@@ -8,12 +8,7 @@
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
-현재 확인된 결과:
-
-```text
-Ran 3 tests
-OK
-```
+검증 결과는 작업 종료 시 `docs/handoff/CURRENT_HANDOFF.md`에 기록한다.
 
 ## 특정 테스트
 

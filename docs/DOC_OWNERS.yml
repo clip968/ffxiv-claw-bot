@@ -1,27 +1,82 @@
-tools/sync_drive.py:
-  required_docs:
-    - docs/specs/0003-google-drive-sync.md
-    - docs/runbooks/sync-drive.md
-    - docs/handoff/CURRENT_HANDOFF.md
+version: 1
 
-tests/test_sync_drive.py:
-  required_docs:
-    - docs/specs/0003-google-drive-sync.md
-    - docs/runbooks/sync-drive.md
+policy:
+  unmatched_code: fail
+  archive_docs_are_invalid_owners: true
+  notion_is_invalid_owner: true
+  handoff_only_satisfies_contract: false
 
-scripts/check_docs_freshness.py:
-  required_docs:
-    - docs/WORKFLOW.md
-    - docs/runbooks/finish-task.md
-    - docs/handoff/CURRENT_HANDOFF.md
+code_paths:
+  - "tools/**/*.py"
+  - "scripts/**/*.py"
+  - "tests/**/*.py"
+  - ".github/workflows/**/*.yml"
+  - ".pre-commit-config.yaml"
 
-scripts/finish_task.py:
-  required_docs:
-    - docs/WORKFLOW.md
-    - docs/runbooks/finish-task.md
-    - docs/handoff/CURRENT_HANDOFF.md
+ignored_paths:
+  - "docs/**"
+  - "data/**"
+  - "raw/**"
+  - "wiki/**"
+  - "graph/**"
+  - "db/**"
+  - "tmp/**"
+  - ".venv/**"
+  - ".git/**"
+  - "__pycache__/**"
+  - "*.pyc"
 
-scripts/sync_notion_handoff.py:
-  required_docs:
-    - docs/runbooks/notion-sync.md
-    - docs/handoff/CURRENT_HANDOFF.md
+global_required_on_code_change:
+  changed:
+    - "docs/handoff/CURRENT_HANDOFF.md"
+
+rules:
+  - id: local-kb-pipeline
+    paths:
+      - "tools/init_db.py"
+      - "tools/ingest_url.py"
+      - "tools/compile_wiki.py"
+      - "tools/search_kb.py"
+      - "tools/answer.py"
+    contract_docs:
+      - "docs/specs/0001-local-kb-pipeline.md"
+    procedure_docs:
+      - "docs/runbooks/test.md"
+      - "docs/runbooks/rebuild-kb.md"
+
+  - id: graph-layer
+    paths:
+      - "tools/build_graph.py"
+      - "tools/graph_path.py"
+      - "tools/search_kb.py"
+      - "tools/answer.py"
+    contract_docs:
+      - "docs/specs/0002-graph-layer.md"
+    procedure_docs:
+      - "docs/runbooks/test.md"
+      - "docs/runbooks/rebuild-kb.md"
+
+  - id: google-drive-sync
+    paths:
+      - "tools/sync_drive.py"
+      - "tests/test_sync_drive.py"
+    contract_docs:
+      - "docs/specs/0003-google-drive-sync.md"
+    procedure_docs:
+      - "docs/runbooks/sync-drive.md"
+      - "docs/runbooks/test.md"
+
+  - id: docs-workflow-tooling
+    paths:
+      - "scripts/check_docs_freshness.py"
+      - "scripts/finish_task.py"
+      - "scripts/sync_notion_handoff.py"
+      - "tests/test_check_docs_freshness.py"
+      - "tests/test_finish_task.py"
+      - ".pre-commit-config.yaml"
+      - ".github/workflows/**/*.yml"
+    contract_docs:
+      - "docs/WORKFLOW.md"
+    procedure_docs:
+      - "docs/runbooks/test.md"
+      - "docs/runbooks/finish-task.md"

@@ -5,7 +5,7 @@
 - GitHub: https://github.com/clip968/ffxiv-claw-bot
 - Local path: `/mnt/d/programming/ffxiv-claw-bot`
 - Current branch: `main`
-- Current phase: v0.3 Google Drive sync dry-run 완료
+- Current phase: docs-first workflow tooling 강화 진행
 
 ## 현재 상태
 
@@ -16,6 +16,8 @@
 - v0.3 Google Drive sync dry-run 완료
 - docs 기반 workflow 정리
 - 작업 종료 자동화 workflow
+- DOC_OWNERS rule 기반 contract freshness 정책 도입
+- check_docs_freshness.py 새 schema/TDD 정책 테스트 추가
 
 현재 큰 흐름:
 
@@ -35,7 +37,7 @@ Drive sync의 현재 완료 범위는 manifest 기반 `--dry-run`이다. manifes
 
 ## Docs workflow 상태
 
-구현 기준은 Notion이 아니라 레포 내부 Markdown 문서다.
+구현 기준은 Notion이 아니라 레포 내부 Markdown 문서다. Notion은 handoff 요약과 링크를 남기는 mirror/index 역할만 한다.
 
 - specs: 현재 시스템 동작 계약
 - adrs: 기술적 결정 이유
@@ -47,7 +49,23 @@ Drive sync의 현재 완료 범위는 manifest 기반 `--dry-run`이다. manifes
 
 Notion은 요약/인덱스만 담당한다.
 
-작업 종료 단일 명령:
+큰 코드 변경의 기준 순서:
+
+```text
+spec
+-> ADR(if needed)
+-> plan
+-> failing tests
+-> implementation
+-> docs update
+-> handoff update
+-> python scripts/finish_task.py
+-> optional Notion apply
+```
+
+행동이 바뀌는 코드 변경은 먼저 실패하는 테스트를 작성한다. 테스트를 먼저 작성하지 못하면 plan에 이유와 대체 검증 방법을 남긴다.
+
+작업 종료 단일 명령은 handoff 갱신 후 마지막에 실행한다.
 
 ```bash
 python scripts/finish_task.py
@@ -55,7 +73,16 @@ python scripts/finish_task.py
 
 이 명령은 unittest, 전체 작업 트리 대상 docs freshness check, Notion handoff dry-run, `git status --short`, `git diff --stat`을 실행한다.
 
-docs freshness check는 `docs/DOC_OWNERS.yml`을 읽는다. 매핑된 코드 파일이 바뀌면 해당 required docs 중 최소 하나가 변경되어야 한다. 이 검사는 문서 읽기 자체가 아니라 문서 반영 산출물을 검증한다.
+docs freshness check는 `docs/DOC_OWNERS.yml`을 읽는다. 새 schema는 `code_paths`, `ignored_paths`, `global_required_on_code_change`, `rules[].paths`, `contract_docs`, `procedure_docs`를 사용한다.
+
+정책:
+
+- 변경된 코드 파일은 matching rule이 있어야 한다.
+- 매칭된 rule의 contract/procedure docs 중 하나 이상이 같은 작업 트리에서 변경되어야 한다.
+- 코드 변경이 있으면 `docs/handoff/CURRENT_HANDOFF.md`도 변경되어야 한다.
+- handoff는 전역 종료 조건이지만 경로별 contract docs를 대체하지 않는다.
+- `docs/archive/**`, Notion 문서, 외부 링크는 owner로 인정하지 않는다.
+- `docs/plans/**`는 장기 owner로 쓰지 않는다.
 
 ## Reviewed docs
 
@@ -65,6 +92,7 @@ docs freshness check는 `docs/DOC_OWNERS.yml`을 읽는다. 매핑된 코드 파
 
 - `docs/WORKFLOW.md`
 - `docs/runbooks/finish-task.md`
+- `docs/runbooks/test.md`
 - `docs/handoff/CURRENT_HANDOFF.md`
 
 추가된 자동화:
@@ -77,17 +105,30 @@ docs freshness check는 `docs/DOC_OWNERS.yml`을 읽는다. 매핑된 코드 파
 - `.pre-commit-config.yaml`
 - `.github/pull_request_template.md`
 
+이번 workflow/tooling 변경의 관련 파일:
+
+- `scripts/check_docs_freshness.py`
+- `tests/test_check_docs_freshness.py`
+- `docs/DOC_OWNERS.yml`
+- `docs/WORKFLOW.md`
+- `docs/README.md`
+- `docs/runbooks/finish-task.md`
+- `docs/runbooks/test.md`
+- `docs/templates/SPEC_TEMPLATE.md`
+- `docs/templates/PLAN_TEMPLATE.md`
+- `docs/templates/HANDOFF_TEMPLATE.md`
+- `CLAUDE.md`
+- `.github/pull_request_template.md`
+
 ## 다음 agent가 먼저 읽을 문서
 
 1. `docs/README.md`
 2. `docs/WORKFLOW.md`
 3. `docs/handoff/CURRENT_HANDOFF.md`
-4. `docs/specs/0003-google-drive-sync.md`
-5. `docs/plans/2026-05-14-post-v03-next-steps.md`
-6. `docs/runbooks/test.md`
-7. `docs/runbooks/sync-drive.md`
-8. `docs/runbooks/finish-task.md`
-9. `docs/runbooks/notion-sync.md`
+4. `docs/DOC_OWNERS.yml`
+5. `docs/runbooks/test.md`
+6. `docs/runbooks/finish-task.md`
+7. 변경 대상과 관련된 `docs/specs/`, `docs/runbooks/`, `docs/adrs/`
 
 ## 다음 구현 후보
 
@@ -124,14 +165,9 @@ embedding/vector DB는 필요성이 확인될 때까지 보류한다.
 
 ## 현재 주의사항
 
-이 handoff 작성 시점에 로컬에는 docs 작업과 무관한 기존 변경이 있었다.
+이번 session 시작 시점의 `git status --short`와 `git diff --stat`은 비어 있었다.
 
-- `CLAUDE.md` 수정
-- `db/ffxiv.sqlite` 수정
-- `docs/plans/2026-05-14-graph-layer.md` 삭제
-- `.gitignore` 미추적
-
-다음 agent는 이 변경을 임의로 되돌리지 않는다.
+사용자 명시 없이 commit/push하지 않는다.
 
 ## 테스트 명령
 
@@ -146,3 +182,13 @@ python -m unittest discover -s tests -p "test_*.py"
 ```
 
 다음 agent는 작업 종료 전 `python scripts/finish_task.py`를 실행해야 한다.
+
+이번 변경에서 먼저 확인한 명령:
+
+```bash
+python -m unittest tests.test_check_docs_freshness
+python -m unittest discover -s tests -p "test_*.py"
+python scripts/check_docs_freshness.py --all
+```
+
+`check_docs_freshness.py --all`은 handoff 갱신 전에는 `docs/handoff/CURRENT_HANDOFF.md` 누락으로 실패했다. 이 handoff 갱신 후 다시 실행해야 한다.

@@ -4,10 +4,11 @@
 
 Proposed
 
-## Related Docs
+## Related contract
 
 - Spec: `docs/specs/...`
 - ADR: `docs/adrs/...`
+- Runbook: `docs/runbooks/...`
 
 ## Goal
 
@@ -19,13 +20,12 @@ Proposed
 
 ## Tasks
 
-1. 작업 단위
-   - 변경 파일:
-   - 검증 명령:
+### TASK-...
 
-2. 작업 단위
-   - 변경 파일:
-   - 검증 명령:
+- Files:
+- Red test:
+- Implementation:
+- Done when:
 
 ## Verification
 

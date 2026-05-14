@@ -12,22 +12,32 @@ Proposed
 
 - `path/to/file.py`: 역할
 
+## Requirements
+
+- REQ-XXXX-001:
+
 ## Contract
 
 시스템이 따라야 하는 입력, 출력, 저장 규칙, 에러 규칙을 적는다.
+
+## Acceptance Criteria
+
+- AC-XXXX-001:
+
+## Test Mapping
+
+- TEST-XXXX-001:
+  - Covers: REQ-XXXX-001, AC-XXXX-001
+  - Command: `python -m unittest discover -s tests -p "test_*.py"`
 
 ## Out of Scope
 
 - 이번 spec에서 하지 않는 것
 
-## Success Criteria
-
-- 검증 가능한 성공 기준
-
 ## Verification
 
 ```bash
-command
+python -m unittest discover -s tests -p "test_*.py"
 ```
 
 ## TODO
