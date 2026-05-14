@@ -14,26 +14,34 @@ Proposed
 
 이번 문서는 v0.3 Google Drive sync dry-run 완료 이후 후보를 작은 구현 단위로 나눈다. 아래 기능들은 이번 문서 작업에서 구현하지 않는다.
 
-## 후보 1: manifest 기반 --apply 구현
+## 후보 1 (1순위): manifest 기반 --apply 구현
+
+v0.3 다음 구현 1순위. manifest 기반 `--apply`는 fixture content를 로컬에 저장하고 DB를 갱신한다.
 
 작은 단위:
 
-1. manifest fixture의 content를 `raw/drive/<category>/...`에 저장한다.
-2. Drive 문서를 `sources.source_type = drive_document`로 DB upsert한다.
-3. `source_url = gdrive://<drive_file_id>`와 `content_hash` 기준으로 기존 row를 안정적으로 갱신한다.
-4. 같은 manifest를 여러 번 실행해도 중복 raw 저장과 중복 DB row가 생기지 않도록 idempotent 동작을 보장한다.
-5. 기존 `--dry-run --manifest ...` 동작과 JSON 출력 계약을 유지한다.
-6. manifest 기반 `--apply` unittest를 추가한다.
+1. `sync_drive.py`에 `--apply` 플래그를 추가한다.
+2. fixture manifest의 content fixture 파일을 `raw/drive/<category>/...`에 저장한다.
+3. Drive 문서를 `sources.source_type = drive_document`로 DB upsert한다.
+4. `source_url = gdrive://<drive_file_id>`와 `content_hash` 기준으로 기존 row를 안정적으로 갱신한다.
+5. 같은 manifest를 여러 번 실행해도 중복 raw 저장과 중복 DB row가 생기지 않도록 idempotent 동작을 보장한다.
+6. 기존 `--dry-run --manifest ...` 동작과 JSON 출력 계약을 유지한다.
+7. manifest 기반 `--apply` 전용 unittest를 추가한다.
+8. 기존 dry-run test가 `--apply` 추가 후에도 정상 동작하는지 확인한다.
 
 검증 후보:
 
 - `python -m unittest tests.test_sync_drive`
 - `python -m unittest discover -s tests -p "test_*.py"`
+- `python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json` (dry-run 유지 확인)
+- `python tools/sync_drive.py --apply --manifest tests/fixtures/drive_manifest.json` (apply 동작 확인)
+- 동일 manifest 재실행 시 중복 없음 확인 (idempotent)
 
 주의:
 
 - 이 단계는 여전히 실제 Google Drive API/OAuth/export-download를 구현하지 않는다.
 - fixture 기반 local apply만 다룬다.
+- apply 후 `raw/drive/` 디렉터리가 생성되고 fixture content가 저장된다.
 
 ## 후보 2: 실제 Google Drive API 인증/조회 설계
 

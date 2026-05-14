@@ -8,6 +8,8 @@ Accepted
 
 이 spec은 v0.3 Google Drive sync dry-run 완료 기준의 현재 구현 계약을 정의한다.
 
+> Notion `SPEC - v0.3 Google Drive Sync - ffxiv-claw-bot`에서 2026-05-14 repo docs로 이관 완료.
+
 현재 구현 파일:
 
 - `tools/sync_drive.py`
@@ -88,6 +90,23 @@ raw/drive/<category>/<safe_title>__<drive_file_id>.<ext>
 ```text
 raw/drive/job_guides/black_mage_7.5_guide__drive_file_001.md
 ```
+
+## Drive 폴더 구조
+
+초기 Drive 폴더는 다음 구조로 고정한다.
+
+```text
+Google Drive/FFXIV_KB/
+  patch_notes/
+  job_guides/
+  raid_guides/
+  static_docs/
+  macros/
+  bis_sheets/
+  personal_notes/
+```
+
+각 하위 폴더는 `source_type = drive_document` 안에서 category metadata로 해석한다. DB schema 변경을 최소화하기 위해 category 전용 컬럼은 추가하지 않고, manifest와 raw path 규칙으로 category를 보존한다.
 
 ## 변경 감지 기준
 

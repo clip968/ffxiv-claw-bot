@@ -168,3 +168,21 @@ Notion apply는 기본 종료 검증에 포함하지 않는다. 필요할 때만
 AI agent는 maintainer가 명시적으로 요청하지 않는 한 commit 또는 push를 하지 않는다.
 
 commit/push 요청이 있더라도 먼저 작업 트리 범위, 테스트 결과, 문서 갱신 상태를 확인한다. 사용자 변경이나 무관한 변경을 임의로 되돌리지 않는다.
+
+## Notion 문서 이관 이후 운영 원칙
+
+2026-05-14 기준으로 Notion에 있던 모든 프로젝트 문서를 repo `docs/`로 이관 완료했다.
+앞으로 Notion은 더 이상 source of truth가 아니다.
+
+새로운 문서는 다음 규칙을 따른다.
+
+- **새 결정**: `docs/adrs/`에 ADR로 기록한다.
+- **새 구현 계약**: `docs/specs/`에 spec으로 기록한다.
+- **새 작업 계획**: `docs/plans/`에 plan으로 기록한다.
+- **다음 세션 인계**: `docs/handoff/CURRENT_HANDOFF.md`에 기록한다.
+- **반복 실행 절차**: `docs/runbooks/`에 runbook으로 기록한다.
+
+Notion은 mirror/index 역할만 한다. Notion에 문서를 작성해야 한다면 repo docs에 먼저 작성하고 Notion에 요약/링크를 추가한다.
+
+Notion에만 있는 정보는 stale하다고 간주한다.
+AI agent는 Notion 문서보다 repo `docs/`의 내용을 우선하여 따라야 한다.
