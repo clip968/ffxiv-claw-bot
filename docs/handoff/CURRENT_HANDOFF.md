@@ -64,7 +64,7 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
    - `docs/specs/0004-v05-source-processing-pipeline.md` (1330 lines) — Goal, Non-Goals, Design Principle, Source Types, Storage Model, OpenClaw Skill Layer, Repo Execution Layer, CLI contract, Pipeline Steps, Output Contract, Status Semantics, Dry Run Semantics, Error Handling, Dedupe, URL Policy, Notion Integration, Test Plan, Acceptance Criteria, Future Work.
    - 핵심 원칙: `OpenClaw = 판단`, `process_source.py = 실행`.
 
-2. **v0.5 plan 구조 작성 완료**
+2. **v0.5 plan 구조 작성 완료 (v05-01 Completed)**
    - `docs/plans/v05/README.md` — feature map (01–08), red test map, scope/non-goals, status semantics, completion criteria.
    - `docs/plans/v05/2026-05-16-v05-01-spec-and-plan.md` — **Completed** (this session).
    - `docs/plans/v05/2026-05-16-v05-02-openclaw-skill-draft.md` — Pending.

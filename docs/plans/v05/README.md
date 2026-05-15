@@ -26,7 +26,7 @@ docs/plans/v05/2026-05-16-v05-source-processing-pipeline.md에서 전체 진행 
 
 | # | Plan | Purpose |
 |---|---|---|
-| 01 | 2026-05-16-v05-01-spec-and-plan.md | v0.5 통합 spec, master plan, task breakdown 고정 |
+| 01 | 2026-05-16-v05-01-spec-and-plan.md | v0.5 통합 spec, master plan, task breakdown 고정 | **Completed** 2026-05-16 |
 | 02 | 2026-05-16-v05-02-openclaw-skill-draft.md | OpenClaw Source Processing Skill 규칙 작성 |
 | 03 | 2026-05-16-v05-03-process-source-skeleton.md | tools/process_source.py CLI skeleton, validation, dry-run, JSON output 구현 |
 | 04 | 2026-05-16-v05-04-local-source-integration.md | text_note, markdown_file, plain_text_file을 Local Storage ingest로 연결 |
