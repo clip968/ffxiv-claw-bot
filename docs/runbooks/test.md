@@ -35,12 +35,12 @@ python -m unittest tests.test_v04_local_rebuild
 python -m unittest tests.test_v04_status_notification
 ```
 
-Current red targets:
+Current status:
 
-- `tests/test_v04_openclaw_notion_control.py` -> `tools/openclaw_notion_control.py`
-- `tests/test_v04_ingest_local_cli.py` -> `tools/ingest_local.py`
-- `tests/test_v04_local_rebuild.py` -> `tools/local_rebuild.py`
-- `tests/test_v04_status_notification.py` -> `tools/status_notification.py`
+- `tests/test_v04_openclaw_notion_control.py` -> `tools/openclaw_notion_control.py` (**Green** 2026-05-15)
+- `tests/test_v04_ingest_local_cli.py` -> `tools/ingest_local.py` (Red: not yet implemented)
+- `tests/test_v04_local_rebuild.py` -> `tools/local_rebuild.py` (Red: not yet implemented)
+- `tests/test_v04_status_notification.py` -> `tools/status_notification.py` (Red: not yet implemented)
 
 When these red tests are present and not yet implemented, full unittest discover is expected to fail on those planned v0.4 slices.
 

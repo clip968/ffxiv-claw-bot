@@ -8,7 +8,7 @@
 
 ## Status
 
-**Proposed**
+**Implemented**
 
 ## Goal
 
@@ -68,19 +68,28 @@ repo CLI result JSON 수신
 - File: `tests/test_v04_openclaw_notion_control.py`
 - Implementation target: `tools/openclaw_notion_control.py`
 - Expected callable: `build_notion_update(result)`
-- Current red reason: module/function does not exist yet.
+- Status: **Green** (2026-05-15)
 - Contract fixed by the test:
   - CLI result JSON maps to Notion properties such as `Status`, `Title`, `Category`, `Source ID`, `Local Source Path`, `Wiki Path`, and `Graph Status`.
   - File payload fields such as `body` and `attachments` must not be copied into the Notion update payload.
+  - `graph_status: "built"` promotes overall `Status` to `"Graph Built"`.
 
 ## Checklist
 
-- [ ] 실제 Notion database/page schema 위치 확인
-- [ ] 필드 이름과 enum 값을 확정한다
-- [ ] OpenClaw read flow와 update flow를 runbook에 반영한다
-- [ ] Notion에는 파일 본문이나 attachment를 올리지 않는 원칙을 재확인한다
-- [ ] local CLI result JSON에서 Notion status로 변환하는 규칙을 테스트 가능하게 분리한다
-- [ ] Discord/OpenClaw 사용자 문구는 v04-05로 넘기고 이 plan에서는 다루지 않는다
+- [x] 실제 Notion database/page schema 위치 확인
+- [x] 필드 이름과 enum 값을 확정한다
+- [x] OpenClaw read flow와 update flow를 runbook에 반영한다
+- [x] Notion에는 파일 본문이나 attachment를 올리지 않는 원칙을 재확인한다
+- [x] local CLI result JSON에서 Notion status로 변환하는 규칙을 테스트 가능하게 분리한다
+- [x] Discord/OpenClaw 사용자 문구는 v04-05로 넘기고 이 plan에서는 다루지 않는다
+
+## Implementation Notes
+
+- `tools/openclaw_notion_control.py` 생성.
+- `build_notion_update(result)` 함수: CLI result dict → Notion property payload dict.
+- Status 매핑: `ok` → `Indexed`, graph_status `built` 시 → `Graph Built`.
+- `body`, `attachments` 필드는 payload에서 제거 (블록리스트 방식).
+- Optional 필드: `last_processed`, `last_error`, `next_action` 지원.
 
 ## Verification
 

@@ -76,3 +76,36 @@ Notion status item 읽기
 ## Legacy / Deferred
 
 Drive URL이나 Drive file ID는 legacy optional integration metadata로만 기록한다. 현재 기본 운영 경로에서는 `Local Source Path`와 `Source ID`가 우선이다.
+
+## CLI Result → Notion Payload Mapping
+
+`tools/openclaw_notion_control.py`의 `build_notion_update(result)` 함수를 사용한다.
+
+### Status 매핑 규칙
+
+| CLI `status` | CLI `graph_status` | Notion `Status` |
+|---|---|---|
+| `ok` | `built` | `Graph Built` |
+| `ok` | 기타/없음 | `Indexed` |
+| `partial` | 어떤 값이든 | `Partial` |
+| `error` | 어떤 값이든 | `Error` |
+
+### 필드 매핑
+
+| CLI result key | Notion property |
+|---|---|
+| `status` (+ `graph_status`) | `Status` |
+| `title` | `Title` |
+| `category` | `Category` |
+| `source_id` | `Source ID` |
+| `local_source_path` | `Local Source Path` |
+| `wiki_path` | `Wiki Path` |
+| `graph_status` | `Graph Status` |
+| `last_processed` | `Last Processed` |
+| `last_error` | `Last Error` |
+| `next_action` | `Next Action` |
+
+### 절대 포함하지 않는 필드
+
+- `body`
+- `attachments`

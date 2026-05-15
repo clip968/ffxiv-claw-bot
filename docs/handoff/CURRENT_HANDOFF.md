@@ -62,6 +62,8 @@ Legacy Drive reference if needed:
 3. Updated docs:
    - `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`: Status → Implemented, checklist 전 항목 체크, Red Test → Green, Implementation Notes 추가.
    - `docs/runbooks/openclaw-notion.md`: CLI Result → Notion Payload Mapping 섹션 추가 (status 매핑 테이블, 필드 매핑 테이블, 블록리스트 필드 목록).
+   - `docs/runbooks/test.md`: v04-02 green 상태 반영.
+   - `docs/DOC_OWNERS.yml`: `openclaw-notion-control` rule 추가 (`tools/openclaw_notion_control.py` → `docs/runbooks/local-storage.md`).
    - `docs/handoff/CURRENT_HANDOFF.md`: 이 업데이트.
 4. Full test suite: 68 OK, 3 red (v04-03/04/05 미구현, 예정된 red 상태).
 

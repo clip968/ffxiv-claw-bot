@@ -164,7 +164,7 @@ raw/local_storage/<category>/<safe_title>__<source_id>.<ext>
 다음 동작은 아직 구현되지 않았다.
 
 - `compile_wiki.py`와 `build_graph.py` 자동 호출
-- Notion 상태판 update (v0.4-02 범위 아님. OpenClaw adapter 단계에서 sync_storage.py JSON 결과를 읽어 처리)
+- Notion 상태판 status mapping은 `tools/openclaw_notion_control.py`의 `build_notion_update(result)`로 구현됨 (v04-02). 실제 Notion API 호출은 OpenClaw adapter 단계에서 처리한다.
 
 ## Legacy / Deferred
 
