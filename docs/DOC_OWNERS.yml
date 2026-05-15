@@ -107,6 +107,14 @@ rules:
     procedure_docs:
       - "docs/runbooks/test.md"
 
+  - id: local-rebuild
+    paths:
+      - "tools/local_rebuild.py"
+    contract_docs:
+      - "docs/runbooks/rebuild-kb.md"
+    procedure_docs:
+      - "docs/runbooks/test.md"
+
   - id: docs-workflow-tooling
     paths:
       - "scripts/check_docs_freshness.py"

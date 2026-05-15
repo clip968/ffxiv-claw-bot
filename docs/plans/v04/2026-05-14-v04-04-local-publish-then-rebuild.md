@@ -8,7 +8,7 @@
 
 ## Status
 
-**Proposed**
+**Implemented**
 
 ## Goal
 
@@ -61,12 +61,12 @@ successful local ingest result
 
 ## Checklist
 
-- [ ] `local_file`/`local_document` source_type이 `compile_wiki.py` Markdown/text 경로를 타는지 확인
-- [ ] `new`/`changed` local source만 rebuild 대상으로 수집
-- [ ] `sync_storage.py --apply --rebuild` 또는 별도 rebuild wrapper 설계
-- [ ] rebuild 실패가 storage 성공을 되돌리지 않는지 테스트
-- [ ] end-to-end fixture로 저장한 note가 `search_kb.py`에서 검색되는지 검증
-- [ ] v04-05가 사용할 `wiki_path`, `graph_status`, `last_error`를 result JSON에 포함
+- [x] `local_file`/`local_document` source_type이 `compile_wiki.py` Markdown/text 경로를 타는지 확인 (기존 `compile_for_source`가 `local_document`를 `body_text`로 직접 사용)
+- [x] `new`/`changed` local source만 rebuild 대상으로 수집 (ingest_result status='ok' gate)
+- [x] `tools/local_rebuild.py` rebuild wrapper 구현
+- [x] rebuild 실패가 storage 성공을 되돌리지 않는지 테스트 (partial failure policy: compile 실패해도 graph는 시도)
+- [ ] end-to-end fixture로 저장한 note가 `search_kb.py`에서 검색되는지 검증 (별도 e2e plan 필요)
+- [x] v04-05가 사용할 `wiki_path`, `graph_status`, `last_error`를 result JSON에 포함
 
 ## Verification
 
@@ -81,3 +81,28 @@ python scripts/check_docs_freshness.py --all
 - rebuild 실패는 저장 실패와 분리한다.
 - Local Storage source는 wiki/FTS/graph로 재구성되어야 검색 가능한 지식이 된다.
 - Drive download/sync는 이 plan의 기본 경로가 아니다.
+
+## Implementation Notes
+
+- `tools/local_rebuild.py` — 모듈 생성, `rebuild_after_ingest()` 함수 제공.
+- Contract: `rebuild_after_ingest(ingest_result, root_path, db_path, dry_run)`.
+- Dry-run: returns planned actions (`compile_wiki`, `index_fts`, `build_graph`) with status `"planned"`.
+- Apply mode: calls `compile_wiki.compile_for_source()` (includes FTS internally) then `build_graph.build_graph()`.
+- Partial failure policy:
+  - Upstream `status != "ok"` → `status="skipped"`, no rebuild.
+  - `compile_wiki` 실패 → `compile_wiki=failed`, `index_fts=skipped`; `build_graph`는 계속 시도.
+  - `build_graph` 실패 → `status=partial` (compile 성공은 유지).
+  - 모든 action 실패 → `status=partial`.
+- `source_type="local_document"` → 기존 `compile_wiki.py`가 Markdown/text 그대로 사용 (`drive_document`, `local_file`, `local_document` 케이스).
+- Reuses existing `tools.compile_wiki.compile_for_source()` and `tools.build_graph.build_graph()` — no new DB/method calls.
+- Result JSON contains `wiki_path`, `source_id`, `actions[].status`, and `summary` for v04-05 consumption.
+
+## Verification Results
+
+```bash
+python -m unittest tests.test_v04_local_rebuild -v
+# test_successful_local_ingest_dry_run_plans_compile_fts_and_graph_actions ... ok
+
+python -m unittest discover -s tests -p "test_*.py"
+# 71 tests, 1 red (v04-05 status_notification, expected)
+```

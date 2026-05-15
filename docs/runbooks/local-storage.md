@@ -181,8 +181,8 @@ Result JSON follows v04-00 contract format with `actions`, `summary`, `status`, 
 
 다음 동작은 아직 구현되지 않았다.
 
-- `compile_wiki.py`와 `build_graph.py` 자동 호출
 - Notion 상태판 status mapping은 `tools/openclaw_notion_control.py`의 `build_notion_update(result)`로 구현됨 (v04-02). 실제 Notion API 호출은 OpenClaw adapter 단계에서 처리한다.
+- `compile_wiki.py` + `build_graph.py` 자동 호출은 `tools/local_rebuild.py`로 구현됨 (v04-04). `rebuild_after_ingest()` 참고.
 
 ## Legacy / Deferred
 

@@ -40,6 +40,50 @@ FTS 갱신은 `compile_wiki.py --source-id <source_id>` 실행 중 source 단위
 
 전체 FTS 재빌드 명령은 TODO다.
 
+## Local Rebuild After Ingest (`tools/local_rebuild.py`)
+
+v04-04 rebuild wrapper that connects compile_wiki → index_fts → build_graph after a successful local ingest.
+
+### Programmatic usage
+
+```python
+from tools.local_rebuild import rebuild_after_ingest
+
+result = rebuild_after_ingest(
+    ingest_result,
+    root_path=Path("."),
+    db_path=Path("db/ffxiv.sqlite"),
+    dry_run=True,
+)
+print(result["status"])  # "ok" in dry-run mode
+for action in result["actions"]:
+    print(action["action"], action["status"])
+```
+
+### Partial failure policy
+
+| Condition | Result |
+|---|---|
+| Upstream ingest `status != "ok"` | `status="skipped"`, no rebuild |
+| `compile_wiki` fails | `compile_wiki=failed`, `index_fts=skipped`; `build_graph` continues |
+| `build_graph` fails | `status="partial"`, compile success preserved |
+
+### Dry-run result format
+
+```json
+{
+  "status": "ok",
+  "dry_run": true,
+  "source_id": "local_001",
+  "source_type": "local_document",
+  "actions": [
+    {"action": "compile_wiki", "source_id": "local_001", "status": "planned", ...},
+    {"action": "index_fts",    "source_id": "local_001", "status": "planned", ...},
+    {"action": "build_graph",  "source_id": "local_001", "status": "planned", ...}
+  ]
+}
+```
+
 ## Graph build
 
 전체 graph build:
