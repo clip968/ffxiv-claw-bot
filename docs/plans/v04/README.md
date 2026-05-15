@@ -34,6 +34,8 @@ The active v0.4 plan files name the red test file for each implementation slice.
 | 04 | `tests/test_v04_local_rebuild.py` | `tools/local_rebuild.py` |
 | 05 | `tests/test_v04_status_notification.py` | `tools/status_notification.py` |
 
+Note: `tests/test_v04_status_notification.py` (v04-05) includes 4 tests as of 2026-05-16: the original `partial` result test, `ok+graph_status=built` promotion test (with body/attachments/Drive exclusion), `ok+graph_status=pending` stays Indexed, and `ok` missing graph status defaults Indexed.
+
 Note: `tests/test_v04_ingest_local_cli.py` (v04-03) includes 3 tests as of 2026-05-15: the original dry-run test plus 2 content_hash regression tests (`test_text_note_apply_stores_content_hash_on_insert`, `test_text_note_apply_stores_content_hash_on_update`) that verify `--apply` stores SHA-256 in the `sources.content_hash` column.
 
 ## Legacy Folder

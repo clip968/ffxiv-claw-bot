@@ -40,9 +40,19 @@ Current status:
 - `tests/test_v04_openclaw_notion_control.py` -> `tools/openclaw_notion_control.py` (**Green** 2026-05-15)
 - `tests/test_v04_ingest_local_cli.py` -> `tools/ingest_local.py` (**Green** 2026-05-15, 3 tests including content_hash regression)
 - `tests/test_v04_local_rebuild.py` -> `tools/local_rebuild.py` (**Green** 2026-05-15)
-- `tests/test_v04_status_notification.py` -> `tools/status_notification.py` (**Green** 2026-05-15)
+- `tests/test_v04_status_notification.py` -> `tools/status_notification.py` (**Green** 2026-05-16, 4 tests including Graph Built promotion)
 
-Full suite: **95 tests, 0 reds** (2026-05-15, +22 FTS5 syntax regression tests).
+Full suite: **98 tests, 0 reds** (2026-05-16, +3 Graph Built promotion regression tests).
+
+### Graph Built Status Promotion Tests
+
+New in `tests/test_v04_status_notification.py`:
+
+- `test_ok_with_graph_built_promotes_status_and_excludes_body_attachments_drive` — verifies `status=ok` + `graph_status=built` → Notion Status = `Graph Built`; confirms `body`, `attachments`, `drive_url` are excluded from payload.
+- `test_ok_without_graph_built_stays_indexed` — verifies `status=ok` + `graph_status=pending` → Notion Status = `Indexed`, Graph Status = `Pending`.
+- `test_ok_missing_graph_status_defaults_indexed` — verifies `status=ok` with no `graph_status` → Notion Status = `Indexed`, no Graph Status key.
+
+These tests prevent the `Status=Indexed` + `Graph Status=Built` contradiction from recurring.
 
 ### FTS5 Query Sanitization Tests
 

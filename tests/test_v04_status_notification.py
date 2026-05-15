@@ -59,5 +59,88 @@ class V04StatusNotificationRedTests(unittest.TestCase):
         self.assertEqual(notion_update["Next Action"], "rerun local rebuild")
 
 
+    def test_ok_with_graph_built_promotes_status_and_excludes_body_attachments_drive(self) -> None:
+        build_notion_status_update = require_callable(
+            self,
+            "tools.status_notification",
+            "build_notion_status_update",
+        )
+
+        result = {
+            "status": "ok",
+            "graph_status": "built",
+            "title": "discord_agent_smoke_test",
+            "category": "personal_notes",
+            "source_id": "local_862b7d9ed7d2",
+            "local_source_path": "/mnt/d/ffixiv-bot-storage/sources/personal_notes/discord_agent_smoke_test.md",
+            "wiki_path": "wiki/source_summaries/local_862b7d9ed7d2.md",
+            # These fields must never leak into the Notion payload
+            "body": "Discord에서 OpenClaw ffxiv agent가 tools/ingest_local.py를 호출할 수 있는지 확인하는 테스트 문서.",
+            "attachments": ["https://drive.google.com/file/d/fake1", "https://drive.google.com/file/d/fake2"],
+            "drive_url": "https://drive.google.com/drive/folders/fake",
+        }
+
+        payload = build_notion_status_update(result)
+
+        # --- Promotion checks ---
+        self.assertEqual(payload["Status"], "Graph Built")
+        self.assertEqual(payload["Graph Status"], "Built")
+
+        # --- Metadata fields present ---
+        self.assertEqual(payload["Title"], "discord_agent_smoke_test")
+        self.assertEqual(payload["Category"], "personal_notes")
+        self.assertEqual(payload["Source ID"], "local_862b7d9ed7d2")
+        self.assertEqual(
+            payload["Local Source Path"],
+            "/mnt/d/ffixiv-bot-storage/sources/personal_notes/discord_agent_smoke_test.md",
+        )
+        self.assertEqual(payload["Wiki Path"], "wiki/source_summaries/local_862b7d9ed7d2.md")
+
+        # --- Exclusion checks ---
+        self.assertNotIn("body", payload)
+        self.assertNotIn("attachments", payload)
+        self.assertNotIn("drive_url", payload)
+        # Any key that looks like Drive content should be absent
+        for key in payload:
+            self.assertNotIn("drive", key.lower())
+
+    def test_ok_without_graph_built_stays_indexed(self) -> None:
+        build_notion_status_update = require_callable(
+            self,
+            "tools.status_notification",
+            "build_notion_status_update",
+        )
+
+        result = {
+            "status": "ok",
+            "graph_status": "pending",
+            "title": "Test Note",
+            "category": "personal_notes",
+            "source_id": "local_002",
+        }
+
+        payload = build_notion_status_update(result)
+        self.assertEqual(payload["Status"], "Indexed")
+        self.assertEqual(payload["Graph Status"], "Pending")
+
+    def test_ok_missing_graph_status_defaults_indexed(self) -> None:
+        build_notion_status_update = require_callable(
+            self,
+            "tools.status_notification",
+            "build_notion_status_update",
+        )
+
+        result = {
+            "status": "ok",
+            "title": "Test Note",
+            "category": "personal_notes",
+            "source_id": "local_003",
+        }
+
+        payload = build_notion_status_update(result)
+        self.assertEqual(payload["Status"], "Indexed")
+        self.assertNotIn("Graph Status", payload)
+
+
 if __name__ == "__main__":
     unittest.main()
