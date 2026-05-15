@@ -305,6 +305,55 @@ class SyncStorageTests(unittest.TestCase):
             self.assertGreater(len(failed_actions), 0)
             self.assertEqual(failed_actions[0]["source_id"], "local_001")
 
+    def test_apply_rejects_canonical_path_outside_storage_root(self) -> None:
+        """Apply must never write a local source outside the configured storage root."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            db_path = Path(tmp_dir) / "ffxiv.sqlite"
+            root_path = Path(tmp_dir) / "repo"
+            storage_root = Path(tmp_dir) / "storage"
+            create_sources_db(db_path)
+            storage_root.mkdir(parents=True, exist_ok=True)
+
+            manifest = {
+                "files": [
+                    {
+                        "source_id": "local_escape",
+                        "title": "Escaping Local Source",
+                        "category": "job_guides",
+                        "source_type": "markdown_file",
+                        "content_type": "text/markdown",
+                        "canonical_path": "../outside.md",
+                        "content_hash": "hash-escape",
+                        "body": "# Should not be written outside storage root",
+                    }
+                ]
+            }
+            temp_manifest = Path(tmp_dir) / "storage_manifest.json"
+            temp_manifest.write_text(
+                json.dumps(manifest, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            result = sync_storage.apply_sync(
+                temp_manifest,
+                db_path,
+                root_path=root_path,
+                storage_root=storage_root,
+            )
+
+            self.assertFalse(
+                (Path(tmp_dir) / "outside.md").exists(),
+                "canonical_path traversal wrote a file outside storage_root",
+            )
+            self.assertEqual(result["status"], "error")
+            self.assertEqual(result["summary"]["failed"], 1)
+            failed_actions = [
+                action for action in result["actions"]
+                if action.get("source_id") == "local_escape"
+                and action.get("status") == "failed"
+            ]
+            self.assertEqual(failed_actions[0]["error_type"], "invalid_input")
+
     def test_apply_cli_outputs_json_result(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             db_path = Path(tmp_dir) / "ffxiv.sqlite"

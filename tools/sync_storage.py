@@ -233,12 +233,23 @@ def write_local_source(
     """Write the original source file under storage_root/sources/<category>/..."""
     canonical_path = canonical_path_for_item(item)
     source_id = source_id_for_item(item)
-    target_path = storage_root / canonical_path
+    target_path = (storage_root / canonical_path).resolve()
     action = {
         "action": "write_local_source",
         "source_id": source_id,
         "target": str(target_path),
     }
+
+    # Security: reject path traversal outside storage_root
+    try:
+        target_path.relative_to(storage_root.resolve())
+    except ValueError:
+        action["status"] = "failed"
+        action["error_type"] = "invalid_input"
+        action["message"] = (
+            f"canonical_path '{canonical_path}' resolves outside storage_root '{storage_root}'"
+        )
+        return action
 
     body = item.get("body")
     if not body:
@@ -377,6 +388,7 @@ def apply_sync(
         "skipped": 0,
     }
     had_failure = False
+    had_invalid_input = False
 
     for item in manifest.get("files", []):
         classifier = classify_item(item, existing_sources)
@@ -399,6 +411,8 @@ def apply_sync(
         if write_result.get("status") == "failed":
             summary["failed"] += 1
             had_failure = True
+            if write_result.get("error_type") == "invalid_input":
+                had_invalid_input = True
             continue
         summary["write_local_source"] += 1
 
@@ -424,8 +438,15 @@ def apply_sync(
             continue
         summary["upsert_source"] += 1
 
+    if had_invalid_input:
+        final_status = "error"
+    elif had_failure:
+        final_status = "partial"
+    else:
+        final_status = "ok"
+
     return {
-        "status": "partial" if had_failure else "ok",
+        "status": final_status,
         "dry_run": False,
         "storage_root": str(resolved_storage_root),
         "summary": summary,

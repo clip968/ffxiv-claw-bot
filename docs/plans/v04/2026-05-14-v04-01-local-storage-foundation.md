@@ -8,7 +8,9 @@
 
 ## Status
 
-**Proposed**
+**Implemented**
+
+All checklist items complete. 11/11 tests pass (`tests/test_sync_storage.py`).
 
 ## Goal
 
@@ -60,13 +62,13 @@ source_type = local_file | local_document
 
 ## Checklist
 
-- [ ] `VALID_CATEGORIES`와 local storage category 목록 일치 확인
-- [ ] safe filename 규칙을 문서화하고 테스트한다
-- [ ] 같은 title + category가 있을 때 timestamp append 또는 deterministic suffix 정책 결정
-- [ ] manifest dry-run 결과가 `new`, `changed`, `unchanged`, `skipped`를 반환하는지 확인
-- [ ] apply 결과가 `write_local_source`, `snapshot_raw`, `upsert_source` action을 반환하는지 확인
-- [ ] `docs/runbooks/local-storage.md`와 결과 JSON 예시를 맞춘다
-- [ ] v04-03 CLI가 이 storage foundation을 재사용하고 규칙을 중복 정의하지 않도록 interface를 명확히 한다
+- [x] `VALID_CATEGORIES`와 local storage category 목록 일치 확인
+- [x] safe filename 규칙을 문서화하고 테스트한다
+- [x] 같은 title + category가 있을 때 timestamp append 또는 deterministic suffix 정책 결정
+- [x] manifest dry-run 결과가 `new`, `changed`, `unchanged`, `skipped`를 반환하는지 확인
+- [x] apply 결과가 `write_local_source`, `snapshot_raw`, `upsert_source` action을 반환하는지 확인
+- [x] `docs/runbooks/local-storage.md`와 결과 JSON 예시를 맞춘다
+- [x] v04-03 CLI가 이 storage foundation을 재사용하고 규칙을 중복 정의하지 않도록 interface를 명확히 한다
 
 ## Verification
 

@@ -60,7 +60,7 @@ python tools/sync_storage.py --apply --manifest tests/fixtures/storage_manifest.
 
 ```json
 {
-  "status": "ok | partial",
+  "status": "ok | partial | error",
   "dry_run": false,
   "storage_root": "/mnt/d/ffixiv-bot-storage",
   "summary": {
@@ -80,6 +80,25 @@ python tools/sync_storage.py --apply --manifest tests/fixtures/storage_manifest.
       "message": "Written 45 bytes to ..."
     }
   ]
+}
+```
+
+`status` 값:
+
+- `"ok"`: 모든 new/changed 항목이 성공적으로 처리됨
+- `"partial"`: 일부 항목이 실패함 (body 누락 등 데이터 문제)
+- `"error"`: `canonical_path` path traversal 같은 보안/입력 오류가 포함됨
+
+path traversal 거부 시 action 예시:
+
+```json
+{
+  "action": "write_local_source",
+  "source_id": "local_escape",
+  "target": "...",
+  "status": "failed",
+  "error_type": "invalid_input",
+  "message": "canonical_path '../outside.md' resolves outside storage_root '...'"
 }
 ```
 

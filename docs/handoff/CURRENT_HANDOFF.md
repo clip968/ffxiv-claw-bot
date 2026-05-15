@@ -51,7 +51,21 @@ Legacy Drive reference if needed:
 
 ## This Session
 
-### v0.4 plan restructuring
+### v0.4-01: Local Storage Foundation -- Implemented
+
+1. Ran `tests/test_sync_storage.py` -> 10/11 pass, 1 fail.
+   - Failing: `test_apply_rejects_canonical_path_outside_storage_root`
+2. Fixed `tools/sync_storage.py`:
+   - `write_local_source`: added path traversal security check (`.resolve()` + `.relative_to()`).
+     Returns `status: "failed"`, `error_type: "invalid_input"` when `canonical_path` escapes `storage_root`.
+   - `apply_sync`: new `had_invalid_input` flag; returns `status: "error"` (not `"partial"`) when any `invalid_input` failure occurs.
+3. Updated docs:
+   - `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`: Status -> Implemented, all checklist items checked.
+   - `docs/runbooks/local-storage.md`: result JSON status values documented (`ok | partial | error`), path traversal rejection example added.
+   - `docs/handoff/CURRENT_HANDOFF.md`: this update.
+4. All 11 tests pass.
+
+### v0.4 plan restructuring (previous session)
 
 1. Investigated Drive references across `docs`, `tools`, `tests`, and `config`.
 2. Preserved Drive implementation and tests as legacy optional integration.
@@ -108,7 +122,7 @@ Drive-era v0.4 planning that was superseded:
 | # | Plan | Status |
 |---|---|---|
 | 00 | `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md` | Local contract reframed |
-| 01 | `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md` | Proposed |
+| 01 | `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md` | **Implemented** |
 | 02 | `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` | Proposed |
 | 03 | `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` | Proposed |
 | 04 | `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` | Proposed |
@@ -209,12 +223,9 @@ Workspace note:
 
 Recommended next implementation task:
 
-1. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md` 범위를 검토하고, 이미 구현된 `tools/sync_storage.py --apply`와 plan/checklist를 맞춘다.
-
-Then:
-
-2. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`에서 Notion schema와 status value를 확정한다.
-3. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`에 따라 `compile_wiki.py`/`build_graph.py` 자동 rebuild 연결을 진행한다.
+1. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` -- Notion schema와 status value를 확정한다.
+2. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` -- `compile_wiki.py`/`build_graph.py` 자동 rebuild 연결.
+3. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` -- OpenClaw/Discord request -> local ingest CLI facade.
 
 ## Do Not Touch Without Explicit Request
 
