@@ -79,7 +79,7 @@ When these red tests are present and not yet implemented, full unittest discover
 
 ## v0.5 Source Processing Tests
 
-Initial v0.5-02/v0.5-03 skeleton tests:
+v0.5 source processing tests:
 
 ```bash
 python -m unittest tests.test_v05_process_source -v
@@ -89,6 +89,7 @@ Current status:
 
 - `V05OpenClawSkillDocTests` -> `docs/skills/ffxiv-source-processing.md` (**Green** 2026-05-16)
 - `V05ProcessSourceSkeletonTests` -> `tools/process_source.py` (**Green** 2026-05-16)
+- `V05ProcessSourceLocalIntegrationTests` -> `tools/process_source.py`, `tools/ingest_local.py` (**Green** 2026-05-16)
 
 Covered contract:
 
@@ -96,13 +97,25 @@ Covered contract:
 - Validation errors print JSON to stdout for missing `--body`, missing `--url`, missing `--local-path`, missing local files, and simultaneous `--apply` + `--dry-run`.
 - Dry-run prints the v0.5 JSON contract, returns `status=skipped`, skips side-effect actions, and does not create storage directories or SQLite DB files.
 - Direct script execution via `python tools/process_source.py ...` works and prints JSON.
+- `text_note` apply writes a Local Storage source, raw snapshot, source DB row, and returns `source_id`, `canonical_path`, `local_source_path`, `raw_path`, and `content_hash`.
+- `markdown_file` apply reads `--local-path`, writes the content to Local Storage, and creates a raw snapshot.
+- `plain_text_file` apply reads `--local-path`, writes the content to a canonical `.md` Local Storage path, and creates a `.md` raw snapshot.
+- ingest failure returns `status=error`, `graph_status=skipped`, and a skipped rebuild action.
 
 Out of scope for these tests:
 
-- Actual Local Storage ingest
 - URL fetch
 - wiki/FTS/graph rebuild
 - Notion payload generation beyond dry-run/error skeleton fields
+
+v05-04 regression tests added:
+
+- `test_process_text_note_ok`
+- `test_process_markdown_file_ok`
+- `test_process_plain_text_file_ok`
+- `test_process_ingest_error_skips_rebuild`
+
+Full suite: **110 tests, 0 reds** (2026-05-16, +4 v05-04 local source integration tests).
 
 ## pytest
 

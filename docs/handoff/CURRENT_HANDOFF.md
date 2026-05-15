@@ -12,15 +12,16 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 
-v0.5-02 and v0.5-03 are implemented:
+v0.5-02, v0.5-03, and v0.5-04 are implemented:
 
 - `docs/skills/ffxiv-source-processing.md` documents the OpenClaw Source Processing Skill contract.
 - `tools/process_source.py` exists with CLI parsing, validation, dry-run behavior, and JSON stdout contract.
-- Actual apply-mode ingest, URL fetch, rebuild, and Notion payload generation remain v0.5-04+ work and are intentionally not implemented yet.
+- `process_source.py --apply` now ingests `text_note`, `markdown_file`, and `plain_text_file` through Local Storage via `tools.ingest_local.ingest_source()`.
+- URL fetch, rebuild execution, and Notion success payload generation remain v0.5-05+ work and are intentionally not implemented yet.
 
 v0.4 planning has been reframed from Google Drive write/publish to Local Storage + OpenClaw Notion direct control.
 
-The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest → rebuild → status payload in one call. The current implementation is only the v0.5-03 skeleton: validation and dry-run are usable, while apply-mode processing is still blocked until v0.5-04+.
+The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest → rebuild → status payload in one call. The current implementation supports validation, dry-run, and apply-mode Local Storage ingest for the three local text source types. Downstream URL fetch, rebuild, and Notion payload work remains pending.
 
 Default source of truth for user-managed source files:
 
@@ -127,6 +128,52 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
    - `python -m unittest discover -s tests -p "test_*.py"`: **106 tests, OK**.
    - `python scripts/check_docs_freshness.py --all`: **ok**.
    - `python scripts/finish_task.py --skip-notion-dry-run`: **finish_task ok**.
+
+### Current session update: v05-04 local source integration implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented only v0.5-04.
+   - Connected `text_note`, `markdown_file`, and `plain_text_file` apply mode in `tools/process_source.py` to Local Storage ingest.
+   - Did not implement URL fetch, rebuild execution, or Notion success payload generation.
+
+2. **Red tests first**
+   - Added local integration tests to `tests/test_v05_process_source.py`.
+   - Confirmed the new tests failed against the v05-03 skeleton because apply returned `status=error` and ingest failure did not include rebuild skip.
+
+3. **Implementation**
+   - `tools/ingest_local.py`
+     - Added reusable `ingest_source(...)` function.
+     - Preserved CLI JSON behavior.
+     - Added `root_path` injection for raw snapshot tests.
+     - Changed `plain_text_file` canonical extension to `.md` for v05 local source processing.
+   - `tools/process_source.py`
+     - Applies local source types through `ingest_local.ingest_source()`.
+     - Returns `source_id`, `canonical_path`, `local_source_path`, `raw_path`, `content_hash`.
+     - Leaves `graph_status=skipped` and emits rebuild skipped action until v05-06.
+     - On ingest failure, returns `status=error`, `graph_status=skipped`, and rebuild skipped with `reason=upstream_ingest_error`.
+
+4. **Docs updated after implementation**
+   - `docs/plans/v05/2026-05-16-v05-04-local-source-integration.md`: Status Completed, checklist, implementation notes, verification results.
+   - `docs/plans/v05/README.md`: v05-04 status Completed.
+   - `docs/specs/0004-v05-source-processing-pipeline.md`: v05-04 local ingest behavior note.
+   - `docs/runbooks/process-source.md`: new process_source runbook.
+   - `docs/runbooks/local-storage.md`: reusable `ingest_source()` and v05 local text storage behavior.
+   - `docs/runbooks/test.md`: v05-04 tests and full suite count.
+   - `docs/handoff/CURRENT_HANDOFF.md`: this update.
+
+5. **Verification before docs update**
+   - `python -m unittest tests.test_v05_process_source -v`: **12 tests, OK**.
+   - `python -m unittest tests.test_v04_ingest_local_cli tests.test_v04_local_rebuild -v`: **4 tests, OK**.
+   - `python -m unittest discover -s tests -p "test_*.py"`: **110 tests, OK**.
+   - `python -m py_compile tools/process_source.py tools/ingest_local.py`: **OK**.
+
+6. **Final docs verification**
+   - `python scripts/check_docs_freshness.py --all`: **ok**.
+   - `python scripts/finish_task.py`: **finish_task ok** (110 tests OK, docs freshness OK, Notion handoff dry-run OK).
+
+7. **Git**
+   - Code/test commit pushed: `34092fd Implement v05 local source processing`.
+   - Documentation update follows the code/test commit because `CLAUDE.md` requires docs/handoff freshness before finish gate.
 
 ### Previous session: v04 final cleanup -- 2026-05-16
 

@@ -9,7 +9,7 @@
 
 ## Status
 
-**Pending**
+**Completed** 2026-05-16
 
 ## Goal
 
@@ -43,34 +43,61 @@ Out of scope:
 
 ## Checklist
 
-- [ ] `--body`로 받은 텍스트를 임시 파일로 생성 (in-memory 또는 tempfile)
-- [ ] 생성한 파일을 `ingest_local._do_ingest()` 또는 유사 함수로 전달
-- [ ] source_id, canonical_path, raw_path, content_hash 반환
-- [ ] 저장 위치: `{storage_root}/sources/{category}/{title_slug}.md`
-- [ ] `--local-path`가 가리키는 `.md` 파일을 `ingest_local._do_ingest()`로 전달
-- [ ] 외부 파일을 `/mnt/d/ffixiv-bot-storage/sources/{category}/`로 복사
-- [ ] raw snapshot 생성
-- [ ] `--local-path`가 가리키는 `.txt` 파일을 `ingest_local._do_ingest()`로 전달
-- [ ] 외부 파일을 `/mnt/d/ffixiv-bot-storage/sources/{category}/`로 복사
-- [ ] raw snapshot 생성
-- [ ] 필요시 `.md`로 변환 (body wrapping)
-- [ ] `process_source.py`의 pipeline sequence에 ingest step 추가
-- [ ] ingest 성공 여부에 따라 rebuild skip 결정
-- [ ] ingest 실패 시 `status=error`, `graph_status=skipped`
-- [ ] `test_process_text_note_ok` — apply text_note → source_id 반환
-- [ ] `test_process_markdown_file_ok` — apply markdown_file → source_id 반환
-- [ ] `test_process_plain_text_file_ok` — apply plain_text_file → source_id 반환
-- [ ] `test_process_ingest_error_skips_rebuild` — ingest 실패 시 rebuild skip
+- [x] `--body`로 받은 텍스트를 Local Storage ingest body로 전달
+- [x] 생성한 body를 `ingest_local.ingest_source()`로 전달
+- [x] source_id, canonical_path, raw_path, content_hash 반환
+- [x] 저장 위치: `{storage_root}/sources/{category}/{title_slug}.md`
+- [x] `--local-path`가 가리키는 `.md` 파일을 `ingest_local.ingest_source()`로 전달
+- [x] 외부 파일을 `/mnt/d/ffixiv-bot-storage/sources/{category}/`로 복사
+- [x] raw snapshot 생성
+- [x] `--local-path`가 가리키는 `.txt` 파일을 `ingest_local.ingest_source()`로 전달
+- [x] 외부 파일을 `/mnt/d/ffixiv-bot-storage/sources/{category}/`로 복사
+- [x] raw snapshot 생성
+- [x] `.txt` 입력도 canonical Local Storage 경로는 `.md`로 저장
+- [x] `process_source.py`의 pipeline sequence에 ingest step 추가
+- [x] ingest 성공 여부에 따라 rebuild skip 결정
+- [x] ingest 실패 시 `status=error`, `graph_status=skipped`
+- [x] `test_process_text_note_ok` — apply text_note → source_id 반환
+- [x] `test_process_markdown_file_ok` — apply markdown_file → source_id 반환
+- [x] `test_process_plain_text_file_ok` — apply plain_text_file → source_id 반환
+- [x] `test_process_ingest_error_skips_rebuild` — ingest 실패 시 rebuild skip
 
 ## Verification
 
 ```bash
 python -m unittest tests.test_v05_process_source -v
-python tools/process_source.py --apply --source-type text_note --category personal_notes --title "Test" --body "hello" --storage-root /tmp/test-storage
-python tools/process_source.py --apply --source-type markdown_file --category raid_guides --local-path /tmp/test.md --storage-root /tmp/test-storage
+python -m unittest tests.test_v04_ingest_local_cli tests.test_v04_local_rebuild -v
+python -m unittest discover -s tests -p "test_*.py"
+python -m py_compile tools/process_source.py tools/ingest_local.py
 ```
 
 ## Key Decisions
 
-- 기존 `ingest_local.py`의 ingest 로직을 재사용한다. process_source.py는 orchestration만 담당한다.
-- `text_note`는 body를 파일로 저장해야 하므로 tempfile을 생성한 후 ingest_local로 전달한다.
+- 기존 `ingest_local.py`의 ingest 로직을 `ingest_source()` 함수로 노출해 재사용한다. `process_source.py`는 orchestration만 담당한다.
+- `text_note`는 body를 그대로 ingest body로 전달한다. 별도 URL fetch, rebuild 실행, Notion 성공 payload 생성은 v05-05~v05-07 범위로 남긴다.
+- `markdown_file`과 `plain_text_file`은 `--local-path` 파일을 UTF-8 텍스트로 읽어 Local Storage ingest에 전달한다.
+- `plain_text_file`도 v05-04 저장 규칙에 맞춰 canonical path와 raw snapshot 확장자를 `.md`로 사용한다.
+- v05-04에서 rebuild는 실행하지 않는다. ingest 성공 시 `rebuild` action은 `skipped`/`v05-06_not_implemented`, ingest 실패 시 `skipped`/`upstream_ingest_error`다.
+
+## Implementation Notes
+
+- `tools/process_source.py`
+  - `text_note`, `markdown_file`, `plain_text_file` apply path를 Local Storage ingest로 연결했다.
+  - 성공 JSON에 `source_id`, `canonical_path`, `local_source_path`, `raw_path`, `content_hash`, `graph_status=skipped`를 포함한다.
+  - URL, binary attachment, rebuild, Notion success payload는 구현하지 않았다.
+- `tools/ingest_local.py`
+  - CLI 내부 로직을 재사용 가능한 `ingest_source()`로 분리했다.
+  - `root_path`를 주입 가능하게 해 테스트가 repo 실제 `raw/`를 오염시키지 않게 했다.
+- `tests/test_v05_process_source.py`
+  - `test_process_text_note_ok`
+  - `test_process_markdown_file_ok`
+  - `test_process_plain_text_file_ok`
+  - `test_process_ingest_error_skips_rebuild`
+
+## Verification Results
+
+- 2026-05-16: red 확인 완료. 네 local integration test는 skeleton에서 실패했다.
+- 2026-05-16: `python -m unittest tests.test_v05_process_source -v` — 12 tests OK.
+- 2026-05-16: `python -m unittest tests.test_v04_ingest_local_cli tests.test_v04_local_rebuild -v` — 4 tests OK.
+- 2026-05-16: `python -m unittest discover -s tests -p "test_*.py"` — 110 tests OK.
+- 2026-05-16: `python -m py_compile tools/process_source.py tools/ingest_local.py` — OK.

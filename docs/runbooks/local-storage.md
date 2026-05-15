@@ -165,6 +165,26 @@ Result JSON follows v04-00 contract format with `actions`, `summary`, `status`, 
 
 `--apply` mode computes `content_hash = SHA-256(body)` and stores it in the `sources.content_hash` column (NOT NULL). Both INSERT and UPDATE paths include `content_hash`. Regression tests in `tests/test_v04_ingest_local_cli.py` verify this behavior.
 
+### Reusable Ingest Function
+
+`tools/ingest_local.py` also exposes `ingest_source(...)` for `tools/process_source.py`.
+
+`process_source.py` uses this function in v05-04 for:
+
+- `text_note`: pass `--body` directly as ingest body.
+- `markdown_file`: read `--local-path` as UTF-8 text and ingest the content.
+- `plain_text_file`: read `--local-path` as UTF-8 text and ingest the content.
+
+For v05 local source processing, all three local text source types are stored under:
+
+```text
+{storage_root}/sources/{category}/{title_slug}.md
+```
+
+That means `plain_text_file` input is copied into a canonical `.md` Local Storage path and a `.md` raw snapshot. The body is not otherwise transformed in v05-04.
+
+`ingest_source()` accepts a `root_path` argument so tests can create raw snapshots under a temporary repo root instead of writing to the checkout's real `raw/local_storage/` directory.
+
 ## Full Pipeline Target
 
 최종 목표 pipeline:

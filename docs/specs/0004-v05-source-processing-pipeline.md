@@ -460,6 +460,13 @@ Local ingest 성공 시 다음 값이 생성되어야 한다.
 - `category`
 - `source_type`
 
+v0.5-04 구현 기준:
+
+- `text_note`, `markdown_file`, `plain_text_file` apply는 `tools.ingest_local.ingest_source()`를 재사용한다.
+- 세 local text source type의 canonical path는 `sources/{category}/{title_slug}.md`다.
+- `plain_text_file` 입력도 canonical Local Storage path와 raw snapshot은 `.md` 확장자를 사용한다.
+- v0.5-04에서는 rebuild를 실행하지 않는다. Local ingest 성공 시 `rebuild` action은 `skipped`/`v05-06_not_implemented`, ingest 실패 시 `skipped`/`upstream_ingest_error`가 된다.
+
 ### 10.4 Rebuild
 
 ingest 성공 후 rebuild를 수행한다.
