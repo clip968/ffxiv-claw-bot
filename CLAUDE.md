@@ -43,6 +43,14 @@ Do not revert existing user changes unless the maintainer explicitly asks.
 
 ## Development Commands
 
+### v05 Pipeline (planned, not yet implemented)
+
+- Source processing entrypoint: `python tools/process_source.py --apply --source-type text_note --category personal_notes --title "..." --body "..."`
+- URL processing: `python tools/process_source.py --apply --source-type url --category patch_notes --url "https://..."`
+- Local file processing: `python tools/process_source.py --apply --source-type markdown_file --category raid_guides --local-path "/mnt/d/..."`
+- Runbook: `docs/runbooks/process-source.md`
+- Spec: `docs/specs/0004-v05-source-processing-pipeline.md`
+
 ### v04 Primary Pipeline
 
 - Local file ingest: `python tools/ingest_local.py <note_path>`

@@ -13,9 +13,11 @@
 
 ## Current Phase
 
-v0.3 Google Drive sync와 v0.4-01 Drive write foundation은 구현 완료 상태로 보존한다.
+v0.4 implementation is complete. v0.5 planning is complete.
 
 2026-05-15 현재 기본 v0.4 운영 경로는 Google Drive write/publish가 아니라 `/mnt/d/ffixiv-bot-storage` 기반 Local Storage + OpenClaw Notion direct control이다.
+
+v0.5는 이 구조 위에 OpenClaw가 단일 entrypoint(`process_source.py`)로 source 하나를 ingest → rebuild → status payload까지 처리할 수 있는 안정된 workflow를 추가한다.
 
 Drive 기반 sync/write 구조는 Legacy / Deferred / Optional Integration이다. 삭제하지 않는다.
 
@@ -44,6 +46,21 @@ Local storage / URL / Discord/OpenClaw request / Notion local path
 원본을 단순 저장하지 않고 FFXIV 개념 단위 wiki로 재구성한다. wiki 문서에서 entity와 relation을 뽑아 graph를 만든다.
 
 embedding/vector DB는 아직 도입하지 않는다.
+
+## v0.5 Planning
+
+Active v0.5 spec and plans:
+
+- `docs/specs/0004-v05-source-processing-pipeline.md`
+- `docs/plans/v05/README.md`
+- `docs/plans/v05/2026-05-16-v05-01-spec-and-plan.md` (Completed)
+- `docs/plans/v05/2026-05-16-v05-02-openclaw-skill-draft.md` (Pending)
+- `docs/plans/v05/2026-05-16-v05-03-process-source-skeleton.md` (Pending)
+- `docs/plans/v05/2026-05-16-v05-04-local-source-integration.md` (Pending)
+- `docs/plans/v05/2026-05-16-v05-05-url-integration.md` (Pending)
+- `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md` (Pending)
+- `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` (Pending)
+- `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` (Pending)
 
 ## v0.4 Planning
 
@@ -77,6 +94,10 @@ Active v0.4 feature map:
 - `tools/sync_storage.py`: Local Storage manifest dry-run/apply sync
 - `tools/sync_drive.py`: Google Drive sync, legacy optional integration
 - `tools/publish_drive.py`: Google Drive write/publish, legacy optional integration
+
+### v0.5 New Tools (planned, not yet implemented)
+
+- `tools/process_source.py`: source 하나를 ingest → rebuild → status payload까지 처리하는 통합 entrypoint
 
 ## Development Principles
 

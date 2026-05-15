@@ -138,3 +138,15 @@ rules:
     procedure_docs:
       - "docs/runbooks/test.md"
       - "docs/runbooks/finish-task.md"
+
+  - id: v05-source-pipeline
+    paths:
+      - "tools/process_source.py"
+      - "tools/fetch_url.py"
+      - "tests/test_v05_process_source.py"
+      - "tests/test_v05_fetch_url.py"
+    contract_docs:
+      - "docs/specs/0004-v05-source-processing-pipeline.md"
+    procedure_docs:
+      - "docs/runbooks/process-source.md"
+      - "docs/runbooks/test.md"

@@ -10,7 +10,11 @@
 
 v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
+v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
+
 v0.4 planning has been reframed from Google Drive write/publish to Local Storage + OpenClaw Notion direct control.
+
+The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest → rebuild → status payload in one call. Implementation not yet started.
 
 Default source of truth for user-managed source files:
 
@@ -34,17 +38,19 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 2. `docs/handoff/CURRENT_HANDOFF.md`
 3. `docs/PROJECT_PROFILE.md`
 4. `docs/FILE_INVENTORY.md`
-5. `docs/adrs/0006-local-storage-and-notion-control.md`
-6. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
-7. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
-8. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
-9. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
-10. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
-11. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
-12. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
-13. `docs/runbooks/rebuild-kb.md`
-14. `docs/runbooks/local-storage.md`
-15. `docs/runbooks/openclaw-notion.md`
+5. `docs/specs/0004-v05-source-processing-pipeline.md` (v05 spec — read first before any v05 work)
+6. `docs/plans/v05/README.md` (v05 feature map)
+7. `docs/adrs/0006-local-storage-and-notion-control.md`
+8. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
+9. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
+10. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
+11. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
+12. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
+13. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
+14. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
+15. `docs/runbooks/rebuild-kb.md`
+16. `docs/runbooks/local-storage.md`
+17. `docs/runbooks/openclaw-notion.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 - `docs/specs/0003-google-drive-sync.md`
 - `docs/runbooks/sync-drive.md`
@@ -52,7 +58,41 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
-### Current session: v04 final cleanup -- 2026-05-16
+### Current session: v05 spec and plan complete -- 2026-05-16
+
+1. **v0.5 spec 작성 완료**
+   - `docs/specs/0004-v05-source-processing-pipeline.md` (1330 lines) — Goal, Non-Goals, Design Principle, Source Types, Storage Model, OpenClaw Skill Layer, Repo Execution Layer, CLI contract, Pipeline Steps, Output Contract, Status Semantics, Dry Run Semantics, Error Handling, Dedupe, URL Policy, Notion Integration, Test Plan, Acceptance Criteria, Future Work.
+   - 핵심 원칙: `OpenClaw = 판단`, `process_source.py = 실행`.
+
+2. **v0.5 plan 구조 작성 완료**
+   - `docs/plans/v05/README.md` — feature map (01–08), red test map, scope/non-goals, status semantics, completion criteria.
+   - `docs/plans/v05/2026-05-16-v05-01-spec-and-plan.md` — **Completed** (this session).
+   - `docs/plans/v05/2026-05-16-v05-02-openclaw-skill-draft.md` — Pending.
+   - `docs/plans/v05/2026-05-16-v05-03-process-source-skeleton.md` — Pending.
+   - `docs/plans/v05/2026-05-16-v05-04-local-source-integration.md` — Pending.
+   - `docs/plans/v05/2026-05-16-v05-05-url-integration.md` — Pending.
+   - `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md` — Pending.
+   - `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` — Pending.
+   - `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` — Pending.
+
+3. **문서 갱신**
+   - `docs/handoff/CURRENT_HANDOFF.md`: current phase → v05, Read First → v05 spec/plans, new session entry.
+   - `docs/PROJECT_PROFILE.md`: Current Phase → v05 planning complete, mention process_source.py.
+   - `docs/FILE_INVENTORY.md`: add v05 spec and plans.
+   - `docs/DOC_OWNERS.yml`: add `v05-source-pipeline` rule placeholder (spec only, no code yet).
+   - `CLAUDE.md`: add v05 pipeline commands to Development Commands.
+
+4. **검증**
+   - `python -m unittest discover -s tests -p "test_*.py"`: **98 tests, 0 reds**.
+   - `python scripts/check_docs_freshness.py --all`: **ok**.
+   - `python scripts/finish_task.py --skip-notion-dry-run`: **finish_task ok**.
+
+5. **Git push**: main 브랜치에 v05 spec + plans 커밋 및 push 완료.
+
+6. **Google Drive**: not touched.
+7. **다음 작업**: v05-02 OpenClaw Skill Draft 작성.
+
+### Previous session: v04 final cleanup -- 2026-05-16
 
 1. **Notion status semantics 정리**
    - `docs/runbooks/openclaw-notion.md`: Status Values 섹션을 progression diagram(`New → Queued → Snapshot → Indexed → Graph Built`) + table + 원칙 4개로 보강.

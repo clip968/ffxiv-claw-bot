@@ -8,6 +8,7 @@
 |---|---|---|
 | `tools/init_db.py` | SQLite schema 생성 | Active |
 | `tools/ingest_url.py` | URL HTML 수집 및 raw 저장 | Active |
+| `tools/process_source.py` | (planned) 통합 source processing entrypoint | Planned v0.5 |
 | `tools/compile_wiki.py` | raw content -> wiki markdown 변환 및 FTS 색인 | Active |
 | `tools/search_kb.py` | `wiki_fts` 기반 검색, graph_paths 포함 | Active |
 | `tools/answer.py` | 검색 결과 기반 context pack과 근거 답변 출력 | Active |
@@ -53,7 +54,22 @@
 | `docs/runbooks/publish-drive.md` | Drive publish legacy runbook |
 | `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md` | Active v0.4 master plan |
 | `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md` | Historical legacy v0.4 Drive-era master plan |
+| `docs/specs/0004-v05-source-processing-pipeline.md` | v0.5 source processing pipeline spec |
 | `docs/handoff/CURRENT_HANDOFF.md` | 현재 상태 handoff |
+
+## v0.5 Plan Files
+
+| Path | Role | Status |
+|---|---|---|
+| `docs/plans/v05/README.md` | v0.5 feature map | Active |
+| `docs/plans/v05/2026-05-16-v05-01-spec-and-plan.md` | Spec + plan 작성 | **Completed** 2026-05-16 |
+| `docs/plans/v05/2026-05-16-v05-02-openclaw-skill-draft.md` | OpenClaw skill 문서 | Pending |
+| `docs/plans/v05/2026-05-16-v05-03-process-source-skeleton.md` | process_source.py CLI skeleton | Pending |
+| `docs/plans/v05/2026-05-16-v05-04-local-source-integration.md` | Local source ingest 연결 | Pending |
+| `docs/plans/v05/2026-05-16-v05-05-url-integration.md` | URL fetch + ingest 연결 | Pending |
+| `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md` | wiki/FTS/graph rebuild 연결 | Pending |
+| `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` | Notion payload 생성 연결 | Pending |
+| `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` | 테스트, runbook, handoff 정리 | Pending |
 
 ## v0.4 Plan Files
 
