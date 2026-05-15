@@ -20,7 +20,7 @@ from tools.sync_storage import (
 SOURCE_TYPE_EXTENSIONS: dict[str, str] = {
     "text_note": "md",
     "markdown_file": "md",
-    "plain_text_file": "txt",
+    "plain_text_file": "md",
     "url": "md",
     "binary_attachment": "bin",
 }
@@ -110,27 +110,57 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--db-path", default=str(DB_PATH), help="SQLite DB path")
     args = parser.parse_args(argv)
 
-    is_dry_run = bool(args.dry_run)
+    result = ingest_source(
+        source_type=args.source_type,
+        category=args.category,
+        title=args.title,
+        body=args.body,
+        storage_root=Path(args.storage_root),
+        db_path=Path(args.db_path),
+        root_path=ROOT,
+        dry_run=bool(args.dry_run),
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def ingest_source(
+    *,
+    source_type: str,
+    category: str,
+    title: str,
+    body: str | None,
+    storage_root: Path,
+    db_path: Path,
+    root_path: Path = ROOT,
+    dry_run: bool = False,
+) -> dict[str, Any]:
+    args = argparse.Namespace(
+        source_type=source_type,
+        category=category,
+        title=title,
+        body=body,
+        storage_root=str(storage_root),
+        db_path=str(db_path),
+    )
+    is_dry_run = bool(dry_run)
 
     # 1. Validate request
     validation_error = _validate(args)
     if validation_error:
         actions: list[dict[str, Any]] = [validation_error]
-        result: dict[str, Any] = {
+        return {
             "status": "error",
             "dry_run": is_dry_run,
             "actions": actions,
             "summary": {"total": 1, "ok": 0, "partial": 0, "errors": 1, "skipped": 0},
         }
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-        return
 
     # Build metadata
     canonical = _canonical_path(args.category, args.title, args.source_type)
     source_id = local_source_id(canonical)
-    storage_root = Path(args.storage_root)
     target_path = str(storage_root / canonical)
     raw_rel = _raw_path(args.category, args.title, args.source_type, source_id)
+    content_hash = hashlib.sha256((args.body or "").encode("utf-8")).hexdigest()
 
     actions: list[dict[str, Any]] = []
 
@@ -171,7 +201,7 @@ def main(argv: list[str] | None = None) -> None:
         # --apply mode: actually write files and upsert DB
         _do_write_local_source(actions, args, storage_root, canonical, source_id, target_path)
         if actions[-1].get("status") == "failed":
-            _finalize_result(
+            return _finalize_result(
                 is_dry_run=False,
                 actions=actions,
                 status_override="error",
@@ -179,10 +209,10 @@ def main(argv: list[str] | None = None) -> None:
                 canonical=canonical,
                 raw_rel=raw_rel,
                 storage_root=storage_root,
+                content_hash=content_hash,
             )
-            return
 
-        _do_snapshot_raw(actions, args, source_id, raw_rel)
+        _do_snapshot_raw(actions, args, source_id, raw_rel, root_path)
         _do_upsert_source(actions, args, source_id)
 
     summary = {
@@ -199,18 +229,20 @@ def main(argv: list[str] | None = None) -> None:
     }
     final_status = "error" if summary["errors"] > 0 else "ok"
 
-    result = {
+    return {
         "status": final_status,
         "dry_run": is_dry_run,
         "source_id": source_id,
+        "source_type": args.source_type,
+        "category": args.category,
+        "title": args.title,
         "canonical_path": canonical,
         "raw_path": raw_rel,
+        "content_hash": content_hash,
         "storage_root": str(storage_root),
         "actions": actions,
         "summary": summary,
     }
-
-    print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 def _do_write_local_source(
@@ -266,8 +298,9 @@ def _do_snapshot_raw(
     args: argparse.Namespace,
     source_id: str,
     raw_rel: str,
+    root_path: Path = ROOT,
 ) -> None:
-    raw_path = ROOT / raw_rel
+    raw_path = root_path / raw_rel
     raw_path.parent.mkdir(parents=True, exist_ok=True)
     body = args.body or ""
     raw_path.write_text(body, encoding="utf-8")
@@ -362,7 +395,8 @@ def _finalize_result(
     canonical: str,
     raw_rel: str,
     storage_root: Path,
-) -> None:
+    content_hash: str,
+) -> dict[str, Any]:
     summary = {
         "total": len(actions),
         "ok": sum(
@@ -375,17 +409,17 @@ def _finalize_result(
         "errors": sum(1 for a in actions if a.get("status") == "failed"),
         "skipped": sum(1 for a in actions if a.get("status") == "skipped"),
     }
-    result = {
+    return {
         "status": status_override,
         "dry_run": is_dry_run,
         "source_id": source_id,
         "canonical_path": canonical,
         "raw_path": raw_rel,
+        "content_hash": content_hash,
         "storage_root": str(storage_root),
         "actions": actions,
         "summary": summary,
     }
-    print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

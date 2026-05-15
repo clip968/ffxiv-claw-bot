@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from tools import ingest_local
 from tools.sync_storage import DB_PATH, DEFAULT_STORAGE_ROOT
 
 
@@ -46,17 +47,21 @@ def main(argv: list[str] | None = None) -> None:
         _print_json(_dry_run_result(args))
         return
 
+    if args.source_type in {"text_note", "markdown_file", "plain_text_file"}:
+        _print_json(_apply_local_source(args))
+        return
+
     _print_json(
         _error_result(
             args,
-            "Apply pipeline is not implemented in the v0.5-03 skeleton.",
-            "Implement v0.5-04 before running apply mode.",
+            f"Apply pipeline is not implemented for source_type={args.source_type}.",
+            "Implement the matching v0.5 follow-up goal before running apply mode.",
             actions=[
                 {"name": "validate_request", "status": "ok"},
                 {
-                    "name": "ingest_local",
+                    "name": "ingest",
                     "status": "error",
-                    "error": "Apply pipeline is not implemented in the v0.5-03 skeleton.",
+                    "error": f"Apply pipeline is not implemented for source_type={args.source_type}.",
                 },
             ],
         )
@@ -155,8 +160,10 @@ def _base_result(args: argparse.Namespace) -> dict[str, Any]:
         "source_type": args.source_type,
         "category": args.category,
         "title": args.title,
+        "canonical_path": None,
         "local_source_path": None,
         "raw_path": None,
+        "content_hash": None,
         "wiki_path": None,
         "graph_status": "skipped",
         "actions": [],
@@ -202,6 +209,112 @@ def _dry_run_result(args: argparse.Namespace) -> dict[str, Any]:
         "next_action": "Run with --apply after reviewing the request.",
     }
     return result
+
+
+def _apply_local_source(args: argparse.Namespace) -> dict[str, Any]:
+    body = _local_source_body(args)
+    ingest_result = ingest_local.ingest_source(
+        source_type=args.source_type,
+        category=args.category,
+        title=args.title or "untitled",
+        body=body,
+        storage_root=Path(args.storage_root),
+        db_path=Path(args.db_path),
+        root_path=ROOT,
+        dry_run=False,
+    )
+
+    if ingest_result.get("status") != "ok":
+        return _local_ingest_error_result(args, ingest_result)
+
+    result = _base_result(args)
+    canonical_path = ingest_result.get("canonical_path")
+    result.update(
+        {
+            "status": "ok",
+            "source_id": ingest_result.get("source_id"),
+            "canonical_path": canonical_path,
+            "local_source_path": canonical_path,
+            "raw_path": ingest_result.get("raw_path"),
+            "content_hash": ingest_result.get("content_hash"),
+            "graph_status": "skipped",
+            "actions": [
+                {"name": "validate_request", "status": "ok"},
+                {
+                    "name": "ingest_local",
+                    "status": "ok",
+                    "source_id": ingest_result.get("source_id"),
+                },
+                {
+                    "name": "rebuild",
+                    "status": "skipped",
+                    "reason": "v05-06_not_implemented",
+                },
+            ],
+            "summary": {
+                "message": "Local source ingested. Rebuild is intentionally skipped in v0.5-04.",
+                "next_action": "Run the v0.5-06 rebuild integration goal.",
+            },
+        }
+    )
+    return result
+
+
+def _local_source_body(args: argparse.Namespace) -> str:
+    if args.source_type == "text_note":
+        return args.body or ""
+    return Path(args.local_path).read_text(encoding="utf-8")
+
+
+def _local_ingest_error_result(
+    args: argparse.Namespace,
+    ingest_result: dict[str, Any],
+) -> dict[str, Any]:
+    error_message = _ingest_error_message(ingest_result)
+    result = _base_result(args)
+    canonical_path = ingest_result.get("canonical_path")
+    result.update(
+        {
+            "status": "error",
+            "source_id": ingest_result.get("source_id"),
+            "canonical_path": canonical_path,
+            "local_source_path": canonical_path,
+            "raw_path": ingest_result.get("raw_path"),
+            "content_hash": ingest_result.get("content_hash"),
+            "graph_status": "skipped",
+            "actions": [
+                {"name": "validate_request", "status": "ok"},
+                {
+                    "name": "ingest_local",
+                    "status": "error",
+                    "error": error_message,
+                },
+                {
+                    "name": "rebuild",
+                    "status": "skipped",
+                    "reason": "upstream_ingest_error",
+                },
+            ],
+            "notion_update": {
+                "Status": "Error",
+                "Graph Status": "Skipped",
+                "Last Error": error_message,
+                "Next Action": "Fix the local ingest error, then rerun process_source.py.",
+            },
+            "summary": {
+                "message": "Local ingest failed. Rebuild was skipped.",
+                "next_action": "Fix the local ingest error, then rerun process_source.py.",
+            },
+        }
+    )
+    return result
+
+
+def _ingest_error_message(ingest_result: dict[str, Any]) -> str:
+    for action in reversed(ingest_result.get("actions", [])):
+        if action.get("status") in {"failed", "error"}:
+            return str(action.get("message") or action.get("error") or "Local ingest failed.")
+    return "Local ingest failed."
 
 
 def _print_json(result: dict[str, Any]) -> None:

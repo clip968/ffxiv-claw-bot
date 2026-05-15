@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import importlib
 import io
 import json
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -32,6 +34,47 @@ def run_process_source(test: unittest.TestCase, argv: list[str]) -> dict[str, An
     with contextlib.redirect_stdout(stdout):
         main(argv)
     return json.loads(stdout.getvalue())
+
+
+SOURCES_SCHEMA = """
+CREATE TABLE IF NOT EXISTS sources (
+  id TEXT PRIMARY KEY,
+  source_type TEXT NOT NULL,
+  title TEXT,
+  source_url TEXT,
+  raw_path TEXT NOT NULL,
+  content_hash TEXT NOT NULL,
+  language TEXT,
+  patch TEXT,
+  job TEXT,
+  raid TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+)
+"""
+
+
+def ensure_sources_schema(db_path: Path) -> None:
+    conn = sqlite3.connect(str(db_path))
+    try:
+        conn.execute(SOURCES_SCHEMA)
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def run_process_source_with_temp_root(
+    test: unittest.TestCase,
+    argv: list[str],
+    root_path: Path,
+) -> dict[str, Any]:
+    module = importlib.import_module("tools.process_source")
+    old_root = getattr(module, "ROOT")
+    setattr(module, "ROOT", root_path)
+    try:
+        return run_process_source(test, argv)
+    finally:
+        setattr(module, "ROOT", old_root)
 
 
 class V05OpenClawSkillDocTests(unittest.TestCase):
@@ -250,3 +293,197 @@ class V05ProcessSourceSkeletonTests(unittest.TestCase):
         self.assertEqual(result["status"], "error")
         self.assertEqual(result["graph_status"], "skipped")
         self.assertIn("--apply and --dry-run cannot be used together", result["actions"][0]["error"])
+
+
+class V05ProcessSourceLocalIntegrationTests(unittest.TestCase):
+    def test_process_text_note_ok(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            body = "Use Reprisal before the tank buster."
+
+            result = run_process_source_with_temp_root(
+                self,
+                [
+                    "--apply",
+                    "--source-type",
+                    "text_note",
+                    "--category",
+                    "personal_notes",
+                    "--title",
+                    "Raid mitigation note",
+                    "--body",
+                    body,
+                    "--storage-root",
+                    str(storage_root),
+                    "--db-path",
+                    str(db_path),
+                ],
+                repo_root,
+            )
+
+            self.assertEqual(result["status"], "ok")
+            self.assertIs(result["dry_run"], False)
+            self.assertTrue(result["source_id"].startswith("local_"))
+            self.assertEqual(
+                result["local_source_path"],
+                "sources/personal_notes/raid_mitigation_note.md",
+            )
+            self.assertEqual(result["canonical_path"], result["local_source_path"])
+            self.assertEqual(
+                result["content_hash"],
+                hashlib.sha256(body.encode("utf-8")).hexdigest(),
+            )
+            self.assertEqual(result["graph_status"], "skipped")
+            self.assertEqual(
+                [(action["name"], action["status"]) for action in result["actions"]],
+                [
+                    ("validate_request", "ok"),
+                    ("ingest_local", "ok"),
+                    ("rebuild", "skipped"),
+                ],
+            )
+            self.assertEqual(
+                (storage_root / result["local_source_path"]).read_text(encoding="utf-8"),
+                body,
+            )
+            self.assertEqual(
+                (repo_root / result["raw_path"]).read_text(encoding="utf-8"),
+                body,
+            )
+
+    def test_process_markdown_file_ok(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            source_file = tmp / "guide.md"
+            body = "# Raid Guide\n\nStack middle for towers.\n"
+            source_file.write_text(body, encoding="utf-8")
+
+            result = run_process_source_with_temp_root(
+                self,
+                [
+                    "--apply",
+                    "--source-type",
+                    "markdown_file",
+                    "--category",
+                    "raid_guides",
+                    "--title",
+                    "Tower Guide",
+                    "--local-path",
+                    str(source_file),
+                    "--storage-root",
+                    str(storage_root),
+                    "--db-path",
+                    str(db_path),
+                ],
+                repo_root,
+            )
+
+            self.assertEqual(result["status"], "ok")
+            self.assertTrue(result["source_id"].startswith("local_"))
+            self.assertEqual(result["local_source_path"], "sources/raid_guides/tower_guide.md")
+            self.assertEqual(
+                (storage_root / result["local_source_path"]).read_text(encoding="utf-8"),
+                body,
+            )
+            self.assertEqual(
+                (repo_root / result["raw_path"]).read_text(encoding="utf-8"),
+                body,
+            )
+
+    def test_process_plain_text_file_ok(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            source_file = tmp / "macro.txt"
+            body = "/p Spread then stack\n"
+            source_file.write_text(body, encoding="utf-8")
+
+            result = run_process_source_with_temp_root(
+                self,
+                [
+                    "--apply",
+                    "--source-type",
+                    "plain_text_file",
+                    "--category",
+                    "macros",
+                    "--title",
+                    "Spread Stack Macro",
+                    "--local-path",
+                    str(source_file),
+                    "--storage-root",
+                    str(storage_root),
+                    "--db-path",
+                    str(db_path),
+                ],
+                repo_root,
+            )
+
+            self.assertEqual(result["status"], "ok")
+            self.assertTrue(result["source_id"].startswith("local_"))
+            self.assertEqual(
+                result["local_source_path"],
+                "sources/macros/spread_stack_macro.md",
+            )
+            self.assertEqual(
+                (storage_root / result["local_source_path"]).read_text(encoding="utf-8"),
+                body,
+            )
+            self.assertEqual(
+                (repo_root / result["raw_path"]).read_text(encoding="utf-8"),
+                body,
+            )
+
+    def test_process_ingest_error_skips_rebuild(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            missing_storage_root = tmp / "missing-storage"
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+
+            result = run_process_source_with_temp_root(
+                self,
+                [
+                    "--apply",
+                    "--source-type",
+                    "text_note",
+                    "--category",
+                    "personal_notes",
+                    "--title",
+                    "Storage failure",
+                    "--body",
+                    "hello",
+                    "--storage-root",
+                    str(missing_storage_root),
+                    "--db-path",
+                    str(db_path),
+                ],
+                repo_root,
+            )
+
+            self.assertEqual(result["status"], "error")
+            self.assertEqual(result["graph_status"], "skipped")
+            self.assertEqual(
+                [(action["name"], action["status"]) for action in result["actions"]],
+                [
+                    ("validate_request", "ok"),
+                    ("ingest_local", "error"),
+                    ("rebuild", "skipped"),
+                ],
+            )
+            self.assertIn("Storage root", result["actions"][1]["error"])
+            self.assertEqual(result["actions"][2]["reason"], "upstream_ingest_error")
