@@ -77,6 +77,33 @@ These tests prevent the `NOT NULL constraint failed: sources.content_hash` bug f
 
 When these red tests are present and not yet implemented, full unittest discover is expected to fail on those planned v0.4 slices.
 
+## v0.5 Source Processing Tests
+
+Initial v0.5-02/v0.5-03 skeleton tests:
+
+```bash
+python -m unittest tests.test_v05_process_source -v
+```
+
+Current status:
+
+- `V05OpenClawSkillDocTests` -> `docs/skills/ffxiv-source-processing.md` (**Green** 2026-05-16)
+- `V05ProcessSourceSkeletonTests` -> `tools/process_source.py` (**Green** 2026-05-16)
+
+Covered contract:
+
+- OpenClaw Source Processing Skill document exists and names the required command/source-type/Notion payload rules.
+- Validation errors print JSON to stdout for missing `--body`, missing `--url`, missing `--local-path`, missing local files, and simultaneous `--apply` + `--dry-run`.
+- Dry-run prints the v0.5 JSON contract, returns `status=skipped`, skips side-effect actions, and does not create storage directories or SQLite DB files.
+- Direct script execution via `python tools/process_source.py ...` works and prints JSON.
+
+Out of scope for these tests:
+
+- Actual Local Storage ingest
+- URL fetch
+- wiki/FTS/graph rebuild
+- Notion payload generation beyond dry-run/error skeleton fields
+
 ## pytest
 
 현재 레포에는 pytest 설정이나 requirements가 없다. 따라서 pytest를 기본 테스트 명령으로 쓰지 않는다.

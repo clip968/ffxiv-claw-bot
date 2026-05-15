@@ -24,16 +24,16 @@ docs/plans/v05/2026-05-16-v05-source-processing-pipeline.md에서 전체 진행 
 
 ## Active Feature Map
 
-| # | Plan | Purpose |
-|---|---|---|
+| # | Plan | Purpose | Status |
+|---|---|---|---|
 | 01 | 2026-05-16-v05-01-spec-and-plan.md | v0.5 통합 spec, master plan, task breakdown 고정 | **Completed** 2026-05-16 |
-| 02 | 2026-05-16-v05-02-openclaw-skill-draft.md | OpenClaw Source Processing Skill 규칙 작성 |
-| 03 | 2026-05-16-v05-03-process-source-skeleton.md | tools/process_source.py CLI skeleton, validation, dry-run, JSON output 구현 |
-| 04 | 2026-05-16-v05-04-local-source-integration.md | text_note, markdown_file, plain_text_file을 Local Storage ingest로 연결 |
-| 05 | 2026-05-16-v05-05-url-integration.md | 사용자가 제공한 단일 URL을 fetch하고 Local Storage ingest로 연결 |
-| 06 | 2026-05-16-v05-06-rebuild-integration.md | ingest 이후 wiki, FTS, graph rebuild를 process_source.py에 연결 |
-| 07 | 2026-05-16-v05-07-notion-payload-integration.md | 처리 결과를 안전한 Notion update payload로 변환 |
-| 08 | 2026-05-16-v05-08-tests-and-runbook.md | 테스트, runbook, handoff, workflow 문서 정리 |
+| 02 | 2026-05-16-v05-02-openclaw-skill-draft.md | OpenClaw Source Processing Skill 규칙 작성 | **Completed** 2026-05-16 |
+| 03 | 2026-05-16-v05-03-process-source-skeleton.md | tools/process_source.py CLI skeleton, validation, dry-run, JSON output 구현 | **Completed** 2026-05-16 |
+| 04 | 2026-05-16-v05-04-local-source-integration.md | text_note, markdown_file, plain_text_file을 Local Storage ingest로 연결 | Pending |
+| 05 | 2026-05-16-v05-05-url-integration.md | 사용자가 제공한 단일 URL을 fetch하고 Local Storage ingest로 연결 | Pending |
+| 06 | 2026-05-16-v05-06-rebuild-integration.md | ingest 이후 wiki, FTS, graph rebuild를 process_source.py에 연결 | Pending |
+| 07 | 2026-05-16-v05-07-notion-payload-integration.md | 처리 결과를 안전한 Notion update payload로 변환 | Pending |
+| 08 | 2026-05-16-v05-08-tests-and-runbook.md | 테스트, runbook, handoff, workflow 문서 정리 | Pending |
 
 ## Red Test Map
 

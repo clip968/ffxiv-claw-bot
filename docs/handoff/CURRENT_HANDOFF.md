@@ -12,9 +12,15 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 
+v0.5-02 and v0.5-03 are implemented:
+
+- `docs/skills/ffxiv-source-processing.md` documents the OpenClaw Source Processing Skill contract.
+- `tools/process_source.py` exists with CLI parsing, validation, dry-run behavior, and JSON stdout contract.
+- Actual apply-mode ingest, URL fetch, rebuild, and Notion payload generation remain v0.5-04+ work and are intentionally not implemented yet.
+
 v0.4 planning has been reframed from Google Drive write/publish to Local Storage + OpenClaw Notion direct control.
 
-The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest → rebuild → status payload in one call. Implementation not yet started.
+The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest → rebuild → status payload in one call. The current implementation is only the v0.5-03 skeleton: validation and dry-run are usable, while apply-mode processing is still blocked until v0.5-04+.
 
 Default source of truth for user-managed source files:
 
@@ -91,6 +97,36 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 6. **Google Drive**: not touched.
 7. **다음 작업**: v05-02 OpenClaw Skill Draft 작성.
+
+### Current session update: v05-02/v05-03 skeleton implemented -- 2026-05-16
+
+1. **Red tests first**
+   - Added `tests/test_v05_process_source.py`.
+   - Initial focused run failed because `docs/skills/ffxiv-source-processing.md` and `tools/process_source.py` did not exist.
+
+2. **v05-02 OpenClaw Skill Draft implemented**
+   - Created `docs/skills/ffxiv-source-processing.md`.
+   - Documents source type inference, category rules, ambiguity handling, `python tools/process_source.py` command construction, JSON parsing, and `notion_update` handling.
+
+3. **v05-03 process_source skeleton implemented**
+   - Created `tools/process_source.py`.
+   - Supports CLI parsing for `--apply`, `--dry-run`, `--source-type`, `--category`, `--title`, `--body`, `--local-path`, `--url`, `--storage-root`, `--db-path`, and `--notion-page-id`.
+   - Validation errors always print stdout JSON with `status=error` and `graph_status=skipped`.
+   - Dry-run prints stdout JSON with `status=skipped`, skips side-effect actions, and does not create files or DB rows.
+   - Direct script execution via `python tools/process_source.py ...` is covered by regression test.
+   - Valid `--apply` is intentionally not implemented yet and returns JSON error; v05-04+ owns actual ingest/rebuild/payload wiring.
+
+4. **Scope guard**
+   - v05-04, v05-05, v05-06, v05-07, and v05-08 implementation tasks were not executed.
+
+5. **Verification**
+   - `python -m unittest tests.test_v05_process_source -v`: **8 tests, OK**.
+   - `python tools/process_source.py --dry-run --source-type text_note --category personal_notes --title "Test" --body "hello"`: **OK**, JSON `status=skipped`.
+   - `python tools/process_source.py --dry-run --source-type url --category patch_notes --url "https://example.com"`: **OK**, JSON `status=skipped`.
+   - `python tools/process_source.py --apply --source-type text_note --category personal_notes --title "Apply guard" --body "hello"`: **OK**, JSON `status=error` with v05-04 next action.
+   - `python -m unittest discover -s tests -p "test_*.py"`: **106 tests, OK**.
+   - `python scripts/check_docs_freshness.py --all`: **ok**.
+   - `python scripts/finish_task.py --skip-notion-dry-run`: **finish_task ok**.
 
 ### Previous session: v04 final cleanup -- 2026-05-16
 
