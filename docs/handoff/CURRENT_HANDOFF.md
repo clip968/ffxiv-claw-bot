@@ -52,7 +52,49 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
-### Current session: FTS5 syntax error regression fix -- 2026-05-15
+### Current session: v04 final cleanup -- 2026-05-16
+
+1. **Notion status semantics 정리**
+   - `docs/runbooks/openclaw-notion.md`: Status Values 섹션을 progression diagram(`New → Queued → Snapshot → Indexed → Graph Built`) + table + 원칙 4개로 보강.
+   - `tools/status_notification.py`: `build_notion_status_update()`에서 `status=ok` + `graph_status=built` → Notion Status = `Graph Built`로 승격.
+   - runbook CLI‑to‑Notion status mapping table에 승격 규칙을 명시.
+
+2. **Notion test record 정리**
+   - `discord_agent_smoke_test` (page ID: `3614bf16-ed1f-8181-9e34-e9e2021bde9e`) 업데이트:
+     - Status: `Indexed` → `Graph Built`
+     - Graph Status: `Built` (변경 없음)
+     - Local Source Path, Wiki Path 정규화 (markdown link 제거)
+
+3. **env 이름 분리**
+   - `~/.openclaw/.env`:
+     - 기존: `NOTION_HANDOFF_PAGE_ID` (handoff mirror page 전용)
+     - 추가: `NOTION_FFXIV_SOURCES_DB_ID=3614bf16-ed1f-81d3-a15f-e36edc92aa86` (FFXIV KB Sources database 전용)
+   - 두 변수로 역할 분리 완료.
+
+4. **Generated artifact 정책 확인**
+   - `docs/FILE_INVENTORY.md`: `graph/nodes.json`, `graph/edges.json`이 "Derived cache"로 명시.
+   - `docs/PROJECT_PROFILE.md`: `raw/local_storage`, `wiki`, `db`, FTS, graph는 재생성 가능한 파생 계층.
+   - `.gitignore`에 이미 `graph/nodes.json`, `graph/edges.json` 포함 (`.gitignore:18-19`).
+   - `git ls-files`로 tracked not → 확인. 정책과 실제 일치, 추가 조치 불필요.
+
+5. **최종 검증**
+   - `python -m unittest discover -s tests -p "test_*.py"`: **95 tests, 0 reds**
+   - `python scripts/check_docs_freshness.py --all`: **ok** (DOCS_UPDATE_NOT_REQUIRED override for .gitignore; other rules satisfied)
+   - `python scripts/finish_task.py --skip-notion-dry-run`: **finish_task ok**
+
+6. **Regressions tests updated in this session**
+   - `tests/test_v04_status_notification.py`: +3 tests (Graph Built promotion, body/attachments/Drive exclusion, `ok` without `graph_status` defaults Indexed). Total: 4 tests.
+   - `docs/runbooks/test.md`: Graph Built Status Promotion Tests 섹션 추가. Suite count 95→98.
+   - `docs/plans/v04/README.md`: v04-05 test count 4로 갱신.
+   - `docs/handoff/CURRENT_HANDOFF.md`: 이 업데이트.
+   - Full suite: **98 tests, 0 reds**.
+   - `finish_task.py`: 통과.
+
+7. **Google Drive**: not touched.
+
+8. **후속 과제**: 한국어 검색 품질 개선, 실제 FFXIV 문서 대량 ingest.
+
+### Previous session: FTS5 syntax error regression fix -- 2026-05-15
 
 1. Answer.py E2E test exposed `sqlite3.OperationalError: FTS5 syntax error near "@[/]"`
    when user input contained FTS5-special characters (`@`, `/`, `"`, `(`, `)`, `-`, `+`, `*`, `^`, `:`).

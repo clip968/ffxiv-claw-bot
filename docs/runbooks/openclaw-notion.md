@@ -38,16 +38,29 @@ Notion은 OpenClaw가 직접 읽고 쓰는 작업 관리, 상태판, 문서 인�
 
 ## Status Values
 
-권장 상태:
+### Status progression
 
-- `New`: Notion에 등록되었지만 아직 처리하지 않음
-- `Queued`: OpenClaw가 처리 대상으로 잡음
-- `Snapshot`: `raw/local_storage` snapshot 생성 완료
-- `Indexed`: DB와 wiki/FTS 갱신 완료
-- `Graph Built`: graph 갱신 완료
-- `Partial`: 일부 action 실패
-- `Error`: 처리 실패
-- `Archived`: 현재 활성 사용하지 않음
+```
+New -> Queued -> Snapshot -> Indexed -> Graph Built
+```
+
+| Status | Meaning |
+|---|---|
+| `New` | Notion에 새 항목만 만들어졌고 아직 처리 시작 전 |
+| `Queued` | 처리 대기열에 들어간 상태 |
+| `Snapshot` | `ingest_local.py`가 원본 파일 저장, `raw/local_storage` snapshot, DB upsert까지 완료한 상태 |
+| `Indexed` | `compile_wiki`와 FTS indexing까지 완료했지만 graph build는 아직 안 됐거나 확인되지 않은 상태 |
+| `Graph Built` | wiki/FTS indexing과 graph build가 모두 완료된 최종 정상 상태 |
+| `Partial` | 일부 downstream 단계가 실패했지만 전체 ingest가 완전히 실패한 것은 아닌 상태 |
+| `Error` | ingest 또는 필수 처리 단계가 실패한 상태 |
+| `Archived` | 더 이상 active source로 쓰지 않는 문서 |
+
+### Status semantics 원칙
+
+1. Status는 전체 pipeline 단계의 **최종 상태**를 나타낸다.
+2. Graph Status는 graph 단계만 따로 나타낸다.
+3. Graph Status가 `Built`라면 정상 완료 케이스의 Status는 `Graph Built`가 되어야 한다.
+4. `Status=Indexed, Graph Status=Built` 조합은 가능한 한 피한다.
 
 ## Processing Flow
 
@@ -85,10 +98,13 @@ Drive URL이나 Drive file ID는 legacy optional integration metadata로만 기�
 
 | CLI `status` | CLI `graph_status` | Notion `Status` |
 |---|---|---|
-| `ok` | `built` | `Graph Built` |
+| `ok` | `built` | `Graph Built` (promoted) |
 | `ok` | 기타/없음 | `Indexed` |
 | `partial` | 어떤 값이든 | `Partial` |
 | `error` | 어떤 값이든 | `Error` |
+
+Note: `status=ok` + `graph_status=built` 조합은 Notion Status를 `Graph Built`로 승격한다.
+이는 Status semantics 원칙(Graph Built가 완료 상태를 나타냄)을 반영한다.
 
 ### 필드 매핑
 

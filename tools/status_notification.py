@@ -139,7 +139,11 @@ def build_notion_status_update(result: dict[str, Any]) -> dict[str, str]:
     next_action = result.get("next_action")
 
     # --- Status ---
-    payload["Status"] = _CLI_STATUS_TO_NOTION.get(status, "Error")
+    # If graph is built, promote "ok" -> "Graph Built"
+    if status == "ok" and graph_status_raw == "built":
+        payload["Status"] = "Graph Built"
+    else:
+        payload["Status"] = _CLI_STATUS_TO_NOTION.get(status, "Error")
 
     # --- Title ---
     if title:
