@@ -1,4 +1,4 @@
-# v0.4-05: Discord Summary and Notification
+﻿# v0.4-05: Discord Summary and Notification
 
 ## Superseded Notice
 
@@ -11,7 +11,7 @@ Use `docs/plans/v04/2026-05-14-v04-05-status-notification.md` for Local Storage,
 - `docs/specs/01-architecture.md`
 - `docs/specs/03-roadmap.md`
 - `agent.md`
-- Master plan: `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+- Master plan: `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 
 ## Status
 

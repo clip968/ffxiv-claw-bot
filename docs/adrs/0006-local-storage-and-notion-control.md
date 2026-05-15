@@ -1,4 +1,4 @@
-# ADR 0006: Local Storage and Notion Control
+﻿# ADR 0006: Local Storage and Notion Control
 
 ## Status
 
@@ -91,7 +91,7 @@ Notion은 원본 파일 저장소가 아니다. Notion은 OpenClaw가 직접 읽
 ## Migration Notes
 
 1. v0.4 기본 master plan은 `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`를 따른다.
-2. 기존 `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`는 historical legacy reference로 보존한다.
+2. 기존 `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`는 historical legacy reference로 보존한다.
 3. v04-01 Drive Write Foundation은 completed but deferred 상태로 유지한다.
 4. v04-03, v04-04, v04-05 Drive-era plan은 superseded notice를 붙이고 새 Local Storage/Notion plan으로 대체한다.
 5. OpenClaw/Discord 저장 요청은 Local Storage result JSON을 기준으로 처리한다.

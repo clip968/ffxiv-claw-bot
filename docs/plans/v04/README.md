@@ -1,4 +1,4 @@
-# v0.4 Feature Plans
+﻿# v0.4 Feature Plans
 
 v0.4 OpenClaw Local Ingest and Notion Control의 feature별 plan을 보관한다.
 
@@ -8,7 +8,7 @@ v0.4 OpenClaw Local Ingest and Notion Control의 feature별 plan을 보관한다
 
 `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`에서 전체 진행 상태를 추적한다.
 
-`docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`는 historical legacy reference다.
+`docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`는 historical legacy reference다.
 
 ## Active Feature Map
 

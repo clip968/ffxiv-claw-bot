@@ -1,4 +1,4 @@
-# v0.4-04: Publish Then Rebuild
+﻿# v0.4-04: Publish Then Rebuild
 
 ## Superseded Notice
 
@@ -10,7 +10,7 @@ Use `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` for Local S
 
 - `docs/specs/0003-google-drive-sync.md`
 - `docs/plans/v03/2026-05-14-v03-05-rebuild-chain.md`
-- Master plan: `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+- Master plan: `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 
 ## Status
 

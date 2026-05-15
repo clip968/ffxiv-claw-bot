@@ -1,5 +1,14 @@
 # v0.4 Legacy Plans
 
+## Legacy Files
+
+- `2026-05-14-v04-openclaw-drive-ingest.md`: historical Drive-era v0.4 master plan
+- `2026-05-14-v04-01-drive-write-foundation.md`: historical Drive write foundation
+- `2026-05-14-v04-02-ingest-discord-note-cli.md`: superseded ingest slice
+- `2026-05-14-v04-03-openclaw-tool-adapter.md`: superseded Drive-era adapter slice
+- `2026-05-14-v04-04-publish-then-rebuild.md`: superseded Drive publish/rebuild slice
+- `2026-05-14-v04-05-discord-summary-notification.md`: superseded Drive-era notification slice
+
 이 디렉터리는 현재 active v0.4 feature map에서 제외된 과거 plan을 보관한다.
 
 보존 원칙:

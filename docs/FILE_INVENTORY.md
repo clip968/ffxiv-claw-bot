@@ -1,4 +1,4 @@
-# FILE_INVENTORY - ffxiv-claw-bot
+﻿# FILE_INVENTORY - ffxiv-claw-bot
 
 이 문서는 AI agent가 다음 작업을 빠르게 이해하는 데 필요한 핵심 파일만 정리한다.
 
@@ -52,7 +52,7 @@
 | `docs/runbooks/sync-drive.md` | Drive sync legacy runbook |
 | `docs/runbooks/publish-drive.md` | Drive publish legacy runbook |
 | `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md` | Active v0.4 master plan |
-| `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md` | Historical legacy v0.4 Drive-era master plan |
+| `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md` | Historical legacy v0.4 Drive-era master plan |
 | `docs/handoff/CURRENT_HANDOFF.md` | 현재 상태 handoff |
 
 ## v0.4 Plan Files

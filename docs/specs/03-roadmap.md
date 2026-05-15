@@ -1,4 +1,4 @@
-# 구현 로드맵
+﻿# 구현 로드맵
 
 > 원본: Notion "ffxiv bot" §11-13
 > 동기화: 2026-05-14
@@ -272,4 +272,4 @@ Legacy / Deferred: Google Drive 기반 `sync_drive.py`와 `publish_drive.py`는 
 - 필요 시 BGE-M3 또는 다른 embedding 모델 추가
 ```
 
-v0.4 OpenClaw Local Storage ingest 작업 분해는 `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`와 `docs/plans/v04/`에서 추적한다.
+v0.4 OpenClaw Local Storage ingest 작업 분해는 `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`와 `docs/plans/v04/`에서 추적한다. 과거 Drive 중심 master plan은 `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`에 보존한다.

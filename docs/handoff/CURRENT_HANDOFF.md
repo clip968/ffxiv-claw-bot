@@ -42,7 +42,7 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 Legacy Drive reference if needed:
 
-- `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+- `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-01-drive-write-foundation.md`
 - `docs/plans/v04/2026-05-14-v04-legacy-drive-integration.md`
 - `docs/specs/0003-google-drive-sync.md`
@@ -51,7 +51,21 @@ Legacy Drive reference if needed:
 
 ## This Session
 
-### Current session: v04 red tests and Local Storage consistency
+### Current session: v04-02 OpenClaw Notion Control Contract -- Implemented
+
+1. Created `tools/openclaw_notion_control.py`:
+   - `build_notion_update(result)`: CLI result dict → Notion property payload dict.
+   - Status 매핑: `ok` → `Indexed`, graph_status `built` 시 → `Graph Built`.
+   - `body`, `attachments` 필드는 payload에서 제거 (블록리스튤 방식).
+   - Optional 필드: `last_processed`, `last_error`, `next_action` 지원.
+2. Red test → Green: `tests/test_v04_openclaw_notion_control.py` 1/1 pass.
+3. Updated docs:
+   - `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`: Status → Implemented, checklist 전 항목 체크, Red Test → Green, Implementation Notes 추가.
+   - `docs/runbooks/openclaw-notion.md`: CLI Result → Notion Payload Mapping 섹션 추가 (status 매핑 테이블, 필드 매핑 테이블, 블록리스트 필드 목록).
+   - `docs/handoff/CURRENT_HANDOFF.md`: 이 업데이트.
+4. Full test suite: 68 OK, 3 red (v04-03/04/05 미구현, 예정된 red 상태).
+
+### Previous session: v04 red tests and Local Storage consistency
 
 1. Added v04 red test files and documented them in active v04 plan files:
    - `tests/test_v04_openclaw_notion_control.py` -> `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
@@ -87,7 +101,7 @@ Legacy Drive reference if needed:
 3. Added a new active v0.4 master plan:
    - `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
 4. Marked old Drive-era master plan as historical:
-   - `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+   - `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 5. Reframed v04-00 ingest contract for Local Storage result actions and local error codes.
 6. Marked v04-01 Drive Write Foundation as Completed but Deferred.
 7. Added new Local/Notion feature plans:
@@ -126,7 +140,7 @@ Legacy optional integration to keep:
 
 Drive-era v0.4 planning that was superseded:
 
-- `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+- `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-02-ingest-discord-note-cli.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-03-openclaw-tool-adapter.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-04-publish-then-rebuild.md`
@@ -138,7 +152,7 @@ Drive-era v0.4 planning that was superseded:
 |---|---|---|
 | 00 | `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md` | Local contract reframed |
 | 01 | `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md` | **Implemented** |
-| 02 | `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` | Proposed |
+| 02 | `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` | **Implemented** |
 | 03 | `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` | Proposed |
 | 04 | `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` | Proposed |
 | 05 | `docs/plans/v04/2026-05-14-v04-05-status-notification.md` | Proposed |
@@ -238,9 +252,9 @@ Workspace note:
 
 Recommended next implementation task:
 
-1. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` -- Notion schema와 status value를 확정한다.
-2. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` -- `compile_wiki.py`/`build_graph.py` 자동 rebuild 연결.
-3. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` -- OpenClaw/Discord request -> local ingest CLI facade.
+1. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` -- `compile_wiki.py`/`build_graph.py` 자동 rebuild 연결.
+2. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` -- OpenClaw/Discord request -> local ingest CLI facade.
+3. `docs/plans/v04/2026-05-14-v04-05-status-notification.md` -- 최종 result -> Notion status update + Discord/OpenClaw summary.
 
 ## Do Not Touch Without Explicit Request
 

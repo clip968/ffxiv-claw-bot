@@ -1,4 +1,4 @@
-# v0.4-02: Local Storage Ingest CLI
+﻿# v0.4-02: Local Storage Ingest CLI
 
 ## Historical Notice
 
@@ -11,7 +11,7 @@ The refreshed v04-02 slot is now `docs/plans/v04/2026-05-14-v04-02-openclaw-noti
 - `docs/specs/01-architecture.md`
 - `docs/specs/03-roadmap.md`
 - `docs/adrs/0006-local-storage-and-notion-control.md`
-- Master plan: `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+- Master plan: `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 
 Legacy reference:
 - `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`

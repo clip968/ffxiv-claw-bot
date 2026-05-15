@@ -1,4 +1,4 @@
-# v0.4-03: OpenClaw Tool Adapter
+﻿# v0.4-03: OpenClaw Tool Adapter
 
 ## Superseded Notice
 
@@ -10,7 +10,7 @@ Use `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` for t
 
 - `docs/specs/01-architecture.md`
 - `agent.md`
-- Master plan: `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+- Master plan: `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 
 ## Status
 

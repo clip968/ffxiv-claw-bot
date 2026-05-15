@@ -1,4 +1,4 @@
-# v0.4-01: Drive Write Foundation
+﻿# v0.4-01: Drive Write Foundation
 
 ## Legacy / Deferred Notice
 
@@ -14,7 +14,7 @@ Current default v0.4 planning uses `/mnt/d/ffixiv-bot-storage` as the canonical 
 - `docs/specs/01-architecture.md`
 - `docs/adrs/0002-drive-is-canonical-source.md`
 - `docs/adrs/0005-drive-write-scope-and-upload.md`
-- Master plan: `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+- Master plan: `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 - Ingest contract: `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
 
 ## Status

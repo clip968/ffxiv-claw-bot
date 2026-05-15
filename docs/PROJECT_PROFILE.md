@@ -1,4 +1,4 @@
-# PROJECT PROFILE - ffxiv-claw-bot
+﻿# PROJECT PROFILE - ffxiv-claw-bot
 
 ## Repo
 
@@ -53,7 +53,7 @@ embedding/vector DB는 아직 도입하지 않는다.
 
 Historical legacy master plan:
 
-- `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+- `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 
 Active v0.4 feature map:
 
