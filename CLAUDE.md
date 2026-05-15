@@ -43,16 +43,31 @@ Do not revert existing user changes unless the maintainer explicitly asks.
 
 ## Development Commands
 
-- DB init: `python tools/init_db.py`
-- URL ingest: `python tools/ingest_url.py <URL>`
-- Wiki compile: `python tools/compile_wiki.py --source-id <id>`
-- Search: `python tools/search_kb.py <query>`
+### v04 Primary Pipeline
+
+- Local file ingest: `python tools/ingest_local.py <note_path>`
+- Full rebuild after ingest: `python tools/local_rebuild.py` (compile_wiki → FTS → graph)
+- Status notification: `python tools/status_notification.py <result_json>`
+- Notion status update (via openclaw_notion_control): `python tools/openclaw_notion_control.py ...`
+
+### Query
+
+- Search KB: `python tools/search_kb.py <query>`
 - Answer: `python tools/answer.py <question>`
-- Build graph: `python tools/build_graph.py`
-- Graph query: `python tools/graph_path.py --source <node_id>`
-- Drive sync dry-run: `python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json`
-- Test: `python -m unittest discover -s tests -p "test_*.py"`
-- Finish task: `python scripts/finish_task.py`
+- Graph path query: `python tools/graph_path.py --source <node_id>`
+
+### Legacy / Deferred Tools
+
+- URL ingest: `python tools/ingest_url.py <URL>` (deprecated in v04 active path)
+- Wiki compile (standalone): `python tools/compile_wiki.py --source-id <id>` (prefer via rebuild)
+- Build graph (standalone): `python tools/build_graph.py` (prefer via rebuild)
+- Drive sync: `python tools/sync_drive.py --dry-run --manifest tests/fixtures/drive_manifest.json` (legacy, deferred)
+- DB init: `python tools/init_db.py`
+
+### Validation
+
+- Run tests: `python -m unittest discover -s tests -p "test_*.py"`
+- Finish task (final gate): `python scripts/finish_task.py`
 
 ## Git
 
