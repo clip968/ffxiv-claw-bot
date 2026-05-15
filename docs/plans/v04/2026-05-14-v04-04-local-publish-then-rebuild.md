@@ -48,6 +48,17 @@ successful local ingest result
 - graph 실패: `status=partial`
 - Notion update 실패는 v04-05에서 처리
 
+## Red Test
+
+- File: `tests/test_v04_local_rebuild.py`
+- Implementation target: `tools/local_rebuild.py`
+- Expected callable: `rebuild_after_ingest(ingest_result, root_path, db_path, dry_run)`
+- Current red reason: module/function does not exist yet.
+- Contract fixed by the test:
+  - Successful local ingest result plans rebuild actions in this order: `compile_wiki`, `index_fts`, `build_graph`.
+  - Dry-run rebuild returns JSON without invoking Drive behavior.
+  - Rebuild consumes `source_id`, `raw_path`, and `source_type = local_document` from the local ingest result.
+
 ## Checklist
 
 - [ ] `local_file`/`local_document` source_type이 `compile_wiki.py` Markdown/text 경로를 타는지 확인

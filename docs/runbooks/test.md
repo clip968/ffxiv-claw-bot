@@ -24,6 +24,26 @@ Drive sync dry-run 테스트:
 python -m unittest tests.test_sync_drive
 ```
 
+## v0.4 Red Tests
+
+The active v0.4 plan files name their red tests. These tests are expected to fail until the matching implementation slice is written.
+
+```bash
+python -m unittest tests.test_v04_openclaw_notion_control
+python -m unittest tests.test_v04_ingest_local_cli
+python -m unittest tests.test_v04_local_rebuild
+python -m unittest tests.test_v04_status_notification
+```
+
+Current red targets:
+
+- `tests/test_v04_openclaw_notion_control.py` -> `tools/openclaw_notion_control.py`
+- `tests/test_v04_ingest_local_cli.py` -> `tools/ingest_local.py`
+- `tests/test_v04_local_rebuild.py` -> `tools/local_rebuild.py`
+- `tests/test_v04_status_notification.py` -> `tools/status_notification.py`
+
+When these red tests are present and not yet implemented, full unittest discover is expected to fail on those planned v0.4 slices.
+
 ## pytest
 
 현재 레포에는 pytest 설정이나 requirements가 없다. 따라서 pytest를 기본 테스트 명령으로 쓰지 않는다.

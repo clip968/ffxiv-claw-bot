@@ -63,6 +63,16 @@ repo CLI result JSON 수신
 - rebuild가 실패하면 `Status=Partial`, `Last Error=rebuild failed`
 - Notion update 자체가 실패하면 CLI result에는 `notion_update_failed`를 기록하고 파일 저장 결과는 유지한다
 
+## Red Test
+
+- File: `tests/test_v04_openclaw_notion_control.py`
+- Implementation target: `tools/openclaw_notion_control.py`
+- Expected callable: `build_notion_update(result)`
+- Current red reason: module/function does not exist yet.
+- Contract fixed by the test:
+  - CLI result JSON maps to Notion properties such as `Status`, `Title`, `Category`, `Source ID`, `Local Source Path`, `Wiki Path`, and `Graph Status`.
+  - File payload fields such as `body` and `attachments` must not be copied into the Notion update payload.
+
 ## Checklist
 
 - [ ] 실제 Notion database/page schema 위치 확인

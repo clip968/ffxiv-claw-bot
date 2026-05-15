@@ -51,6 +51,21 @@ Legacy Drive reference if needed:
 
 ## This Session
 
+### Current session: v04 red tests and Local Storage consistency
+
+1. Added v04 red test files and documented them in active v04 plan files:
+   - `tests/test_v04_openclaw_notion_control.py` -> `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
+   - `tests/test_v04_ingest_local_cli.py` -> `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
+   - `tests/test_v04_local_rebuild.py` -> `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
+   - `tests/test_v04_status_notification.py` -> `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
+2. Documented v04-01 tests in `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`.
+3. Tightened `tools/sync_storage.py` Local Storage behavior:
+   - request `source_type` values such as `markdown_file` and `plain_text_file` normalize to DB `source_type = local_document`
+   - missing storage root now fails with `local_storage_root_missing`
+   - `canonical_path` path traversal remains rejected with `invalid_input`
+4. Added `raw/local_storage/` to `.gitignore`.
+5. Updated `docs/runbooks/local-storage.md` and `docs/runbooks/test.md` with the new safety rules and red test map.
+
 ### v0.4-01: Local Storage Foundation -- Implemented
 
 1. Ran `tests/test_sync_storage.py` -> 10/11 pass, 1 fail.

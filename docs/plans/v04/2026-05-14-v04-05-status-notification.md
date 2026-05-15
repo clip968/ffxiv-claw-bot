@@ -43,6 +43,19 @@ Out of scope:
 
 Drive URL은 legacy optional integration 결과에서만 표시한다.
 
+## Red Test
+
+- File: `tests/test_v04_status_notification.py`
+- Implementation target: `tools/status_notification.py`
+- Expected callables:
+  - `format_discord_summary(result)`
+  - `build_notion_status_update(result)`
+- Current red reason: module/functions do not exist yet.
+- Contract fixed by the test:
+  - Partial local ingest/rebuild result formats a Discord/OpenClaw-facing summary with title, category, local source path, wiki path, graph status, failure reason, and next action.
+  - Default user-facing summary must not include a Drive URL.
+  - The same result maps to Notion fields such as `Status`, `Graph Status`, `Last Error`, and `Next Action`.
+
 ## Checklist
 
 - [ ] `ok` result JSON -> Korean user message 변환 규칙 작성

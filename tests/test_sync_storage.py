@@ -168,6 +168,7 @@ class SyncStorageTests(unittest.TestCase):
             root_path = Path(tmp_dir) / "repo"
             storage_root = Path(tmp_dir) / "storage"
             create_sources_db(db_path)
+            storage_root.mkdir(parents=True, exist_ok=True)
 
             result = sync_storage.apply_sync(
                 Path("tests/fixtures/storage_manifest.json"),
@@ -273,6 +274,39 @@ class SyncStorageTests(unittest.TestCase):
             self.assertEqual(row["content_hash"], "hash-newer",
                              "Changed item content_hash should be updated")
 
+            inserted = {r["id"]: r for r in rows}
+            self.assertEqual(
+                inserted["local_001"]["source_type"],
+                "local_document",
+                "Request source_type markdown_file must normalize to DB source_type local_document",
+            )
+            self.assertEqual(
+                inserted["local_003"]["source_type"],
+                "local_document",
+                "Request source_type plain_text_file must remain DB source_type local_document",
+            )
+
+    def test_apply_requires_existing_storage_root(self) -> None:
+        """Apply must fail instead of creating the external canonical storage root."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            db_path = Path(tmp_dir) / "ffxiv.sqlite"
+            root_path = Path(tmp_dir) / "repo"
+            storage_root = Path(tmp_dir) / "missing-storage-root"
+            create_sources_db(db_path)
+
+            result = sync_storage.apply_sync(
+                Path("tests/fixtures/storage_manifest.json"),
+                db_path,
+                root_path=root_path,
+                storage_root=storage_root,
+            )
+
+            self.assertFalse(storage_root.exists())
+            self.assertEqual(result["status"], "error")
+            self.assertEqual(result["summary"]["failed"], 1)
+            self.assertEqual(result["actions"][0]["status"], "failed")
+            self.assertEqual(result["actions"][0]["error_type"], "local_storage_root_missing")
+
     def test_apply_rejects_missing_body_for_new_items(self) -> None:
         """New items without body should be rejected."""
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -280,6 +314,7 @@ class SyncStorageTests(unittest.TestCase):
             root_path = Path(tmp_dir) / "repo"
             storage_root = Path(tmp_dir) / "storage"
             create_sources_db(db_path)
+            storage_root.mkdir(parents=True, exist_ok=True)
 
             # Patch manifest: remove body from local_001 (new, needs body to write)
             manifest = sync_storage.load_manifest(Path("tests/fixtures/storage_manifest.json"))

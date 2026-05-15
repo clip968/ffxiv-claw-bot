@@ -22,6 +22,18 @@ v0.4 OpenClaw Local Ingest and Notion Control의 feature별 plan을 보관한다
 | 05 | `2026-05-14-v04-05-status-notification.md` |
 | legacy | `2026-05-14-v04-legacy-drive-integration.md` |
 
+## Red Test Map
+
+The active v0.4 plan files name the red test file for each implementation slice.
+
+| Plan | Red test | Implementation target |
+|---|---|---|
+| 01 | `tests/test_sync_storage.py` | `tools/sync_storage.py` |
+| 02 | `tests/test_v04_openclaw_notion_control.py` | `tools/openclaw_notion_control.py` |
+| 03 | `tests/test_v04_ingest_local_cli.py` | `tools/ingest_local.py` |
+| 04 | `tests/test_v04_local_rebuild.py` | `tools/local_rebuild.py` |
+| 05 | `tests/test_v04_status_notification.py` | `tools/status_notification.py` |
+
 ## Legacy Folder
 
 `docs/plans/v04/legacy/`에는 현재 active feature map에서 제외된 과거 plan을 보관한다.

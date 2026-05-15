@@ -60,6 +60,17 @@ source_url = local://sources/<category>/<filename>
 source_type = local_file | local_document
 ```
 
+## Red Tests
+
+- File: `tests/test_sync_storage.py`
+- Implementation target: `tools/sync_storage.py`
+- Current status: green for the v04-01 foundation scope.
+- Covered contract points:
+  - Local request `source_type` values such as `markdown_file` and `plain_text_file` normalize to DB `source_type = local_document`.
+  - `--apply` fails with `local_storage_root_missing` when the configured canonical storage root does not exist.
+  - `canonical_path` traversal outside the storage root is rejected with `invalid_input`.
+  - `raw/local_storage/<category>/...` snapshot paths are planned and written only for processed local sources.
+
 ## Checklist
 
 - [x] `VALID_CATEGORIES`와 local storage category 목록 일치 확인

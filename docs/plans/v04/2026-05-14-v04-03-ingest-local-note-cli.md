@@ -42,6 +42,17 @@ CLI result에는 다음 storage actions가 포함될 수 있지만, 규칙은 v0
 
 `compile_wiki`, `index_fts`, `build_graph`, `update_notion_status`는 v04-04/v04-05 연결 단계에서 다룬다.
 
+## Red Test
+
+- File: `tests/test_v04_ingest_local_cli.py`
+- Implementation target: `tools/ingest_local.py`
+- Expected callable: `main(argv)`
+- Current red reason: module/function does not exist yet.
+- Contract fixed by the test:
+  - `text_note` dry-run accepts `--source-type`, `--category`, `--title`, `--body`, `--storage-root`, and `--db-path`.
+  - Dry-run outputs JSON actions in this order: `validate_request`, `write_local_source`, `snapshot_raw`, `upsert_source`.
+  - Dry-run does not write the local source file and does not perform `update_notion_status`.
+
 ## Checklist
 
 - [ ] CLI 이름 결정: `tools/ingest_local.py` 또는 기존 `tools/sync_storage.py` 확장

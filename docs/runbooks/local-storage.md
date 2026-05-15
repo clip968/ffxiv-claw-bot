@@ -102,6 +102,14 @@ path traversal 거부 시 action 예시:
 }
 ```
 
+## Source Type and Storage Root Rules
+
+- Request-level `source_type` values such as `text_note`, `markdown_file`, `plain_text_file`, `binary_attachment`, and `url` describe how OpenClaw or Discord received the input.
+- DB-level `sources.source_type` for Local Storage text/markdown sources is normalized to `local_document` unless the manifest already uses `local_file` or `local_document`.
+- `compile_wiki.py` uses DB `source_type` to decide whether raw content should be read as local text/markdown. This is why request source types must not be stored directly as DB source types.
+- `--apply` requires the configured storage root to already exist and be a directory. Missing roots fail with `error_type = local_storage_root_missing`; the CLI does not create the canonical external source root automatically.
+- `raw/local_storage/` is a derived processing snapshot directory and is ignored by Git.
+
 ## Manifest Dry-run
 
 현재 구현된 첫 범위는 manifest 기반 dry-run이다.

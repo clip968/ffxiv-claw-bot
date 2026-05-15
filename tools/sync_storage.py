@@ -26,6 +26,13 @@ VALID_CATEGORIES = {
     "personal_notes",
 }
 LOCAL_SOURCE_TYPES = {"local_file", "local_document"}
+LOCAL_REQUEST_SOURCE_TYPES = {
+    "text_note",
+    "markdown_file",
+    "plain_text_file",
+    "binary_attachment",
+    "url",
+}
 CONTENT_TYPE_EXTENSIONS = {
     "text/markdown": "md",
     "text/plain": "txt",
@@ -59,6 +66,15 @@ def local_source_url(canonical_path: str) -> str:
 def local_source_id(canonical_path: str) -> str:
     digest = hashlib.sha256(canonical_path.encode("utf-8")).hexdigest()[:12]
     return f"local_{digest}"
+
+
+def db_source_type_for_item(item: dict[str, Any]) -> str:
+    source_type = str(item.get("source_type") or item.get("sourceType") or "local_document")
+    if source_type in LOCAL_SOURCE_TYPES:
+        return source_type
+    if source_type in LOCAL_REQUEST_SOURCE_TYPES:
+        return "local_document"
+    return source_type
 
 
 def source_id_for_item(item: dict[str, Any]) -> str | None:
@@ -240,6 +256,12 @@ def write_local_source(
         "target": str(target_path),
     }
 
+    if not storage_root.exists() or not storage_root.is_dir():
+        action["status"] = "failed"
+        action["error_type"] = "local_storage_root_missing"
+        action["message"] = f"Storage root does not exist or is not a directory: {storage_root}"
+        return action
+
     # Security: reject path traversal outside storage_root
     try:
         target_path.relative_to(storage_root.resolve())
@@ -311,7 +333,7 @@ def upsert_source(
     canonical_path = canonical_path_for_item(item)
     raw_relative = planned_raw_path(item)
     title = str(item.get("title", ""))
-    source_type = str(item.get("source_type") or item.get("sourceType") or "local_document")
+    source_type = db_source_type_for_item(item)
     content_hash = str(item.get("content_hash") or item.get("contentHash") or "")
     source_url = local_source_url(canonical_path) if canonical_path else None
     timestamp = now_iso()
@@ -376,6 +398,34 @@ def apply_sync(
     manifest = load_manifest(manifest_path)
     # Explicit storage_root parameter takes priority over manifest value
     resolved_storage_root = storage_root
+
+    if not resolved_storage_root.exists() or not resolved_storage_root.is_dir():
+        return {
+            "status": "error",
+            "dry_run": False,
+            "storage_root": str(resolved_storage_root),
+            "summary": {
+                "write_local_source": 0,
+                "snapshot_raw": 0,
+                "upsert_source": 0,
+                "unchanged": 0,
+                "failed": 1,
+                "skipped": 0,
+            },
+            "actions": [
+                {
+                    "action": "validate_request",
+                    "target": str(resolved_storage_root),
+                    "status": "failed",
+                    "error_type": "local_storage_root_missing",
+                    "message": (
+                        "Storage root does not exist or is not a directory: "
+                        f"{resolved_storage_root}"
+                    ),
+                }
+            ],
+        }
+
     existing_sources = load_existing_local_sources(db_path)
 
     actions: list[dict[str, Any]] = []
