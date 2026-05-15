@@ -42,20 +42,20 @@ Partial failure policy:
 
 ## Checklist
 
-- [ ] ingest 성공 후 `compile_wiki.py` 호출 또는 `local_rebuild.rebuild_after_ingest()` 활용
-- [ ] wiki summary 생성 확인
-- [ ] wiki_path를 결과 JSON에 포함
-- [ ] wiki rebuild 후 FTS indexing 확인
-- [ ] `local_rebuild.rebuild_after_ingest()`가 FTS rebuild를 포함하는지 확인
-- [ ] wiki/FTS rebuild 후 graph build 확인
-- [ ] graph build 성공 시 `graph_status=built`
-- [ ] graph build 실패 시 `graph_status=failed`, 전체 status=partial
-- [ ] ingest 성공 + rebuild 실패 → `status=partial`
-- [ ] 각 rebuild 하위 단계 실패를 action log에 개별 기록
-- [ ] graph 실패 시에도 wiki/FTS 성공은 유지
-- [ ] `test_process_rebuild_error_returns_partial` — rebuild 실패 모의 → partial
-- [ ] `test_process_graph_failure_sets_graph_status_failed` — graph 실패
-- [ ] `test_process_text_note_e2e_creates_source_wiki_fts_graph` — e2e smoke
+- [x] ingest 성공 후 `compile_wiki.py` 호출 또는 `local_rebuild.rebuild_after_ingest()` 활용
+- [x] wiki summary 생성 확인
+- [x] wiki_path를 결과 JSON에 포함
+- [x] wiki rebuild 후 FTS indexing 확인
+- [x] `local_rebuild.rebuild_after_ingest()`가 FTS rebuild를 포함하는지 확인
+- [x] wiki/FTS rebuild 후 graph build 확인
+- [x] graph build 성공 시 `graph_status=built`
+- [x] graph build 실패 시 `graph_status=failed`, 전체 status=partial
+- [x] ingest 성공 + rebuild 실패 → `status=partial`
+- [x] 각 rebuild 하위 단계 실패를 action log에 개별 기록
+- [x] graph 실패 시에도 wiki/FTS 성공은 유지
+- [x] `test_process_rebuild_error_returns_partial` — rebuild 실패 모의 → partial
+- [x] `test_process_graph_failure_sets_graph_status_failed` — graph 실패
+- [x] `test_process_text_note_e2e_creates_source_wiki_fts_graph` — e2e smoke
 
 ## Implementation Notes
 

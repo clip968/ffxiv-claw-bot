@@ -1,4 +1,4 @@
-# v0.5-08: Tests and Runbook
+﻿# v0.5-08: Tests and Runbook
 
 ## Spec
 
@@ -52,22 +52,22 @@ Out of scope:
 
 ## Checklist
 
-- [ ] v05-03~07에서 누락된 unit test가 있으면 추가
-- [ ] 모든 test 파일이 테스트 runner에서 발견되는지 확인
-- [ ] `test_process_text_note_e2e_creates_source_wiki_fts_graph` — e2e smoke (mock/fixture 기반)
-- [ ] `docs/runbooks/process-source.md` 작성:
-  - [ ] process_source.py CLI 사용법
-  - [ ] source type별 예시
-  - [ ] dry-run 사용법
-  - [ ] 출력 JSON 설명
-  - [ ] OpenClaw skill 호출 순서
-  - [ ] 문제 해결 가이드
-- [ ] `docs/handoff/CURRENT_HANDOFF.md`에 v0.5 완료 상태 기록
-- [ ] 새 CLI 사용법 예시
-- [ ] 남은 제한 사항 (한국어 검색, binary attachment 등)
-- [ ] `docs/WORKFLOW.md` 업데이트 (필요시)
-- [ ] `CLAUDE.md` 업데이트 (필요시)
-- [ ] `docs/FILE_INVENTORY.md` 업데이트
+- [x] v05-03~07에서 누락된 unit test가 있으면 추가
+- [x] 모든 test 파일이 테스트 runner에서 발견되는지 확인
+- [x] `test_process_text_note_e2e_creates_source_wiki_fts_graph` — e2e smoke (mock/fixture 기반)
+- [x] `docs/runbooks/process-source.md` 작성:
+  - [x] process_source.py CLI 사용법
+  - [x] source type별 예시
+  - [x] dry-run 사용법
+  - [x] 출력 JSON 설명
+  - [x] OpenClaw skill 호출 순서
+  - [x] 문제 해결 가이드
+- [x] `docs/handoff/CURRENT_HANDOFF.md`에 v0.5 완료 상태 기록
+- [x] 새 CLI 사용법 예시
+- [x] 남은 제한 사항 (한국어 검색, binary attachment 등)
+- [x] `docs/WORKFLOW.md` 업데이트 (필요시)
+- [x] `CLAUDE.md` 업데이트 (필요시)
+- [x] `docs/FILE_INVENTORY.md` 업데이트
 
 ## Implementation Notes
 

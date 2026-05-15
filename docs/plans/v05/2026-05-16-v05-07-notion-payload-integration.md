@@ -42,18 +42,18 @@ Out of scope:
 
 ## Checklist
 
-- [ ] `tools/status_notification.py`의 `build_notion_status_update()` 함수 확인
-- [ ] process_source.py의 pipeline step 10에서 호출
-- [ ] rebuild 결과(graph_status) 반영한 payload 생성
-- [ ] notion_update payload에 body/attachment/raw HTML/binary가 포함되지 않는지 검증
-- [ ] payload 필드 확인: Status, Graph Status, Source ID, Local Source Path, Wiki Path, Last Processed, Last Error, Next Action
-- [ ] v0.4 status semantics 매핑 유지 (ok+graph_built → Graph Built, ok+graph_pending → Indexed)
-- [ ] payload 생성 실패는 source 처리 status와 분리
-- [ ] ingest/rebuild가 성공했으면 source status=ok 또는 partial 유지
-- [ ] payload 생성 실패를 action log에 error로 기록
-- [ ] `test_process_notion_payload_excludes_body` — body 전문이 payload에 없는지 검증
-- [ ] `test_process_notion_payload_ok_graph_built` — ok+graph_built → Graph Built
-- [ ] `test_process_notion_payload_ok_graph_pending` — ok+graph_pending → Indexed
+- [x] `tools/status_notification.py`의 `build_notion_status_update()` 함수 확인
+- [x] process_source.py의 pipeline step 10에서 호출
+- [x] rebuild 결과(graph_status) 반영한 payload 생성
+- [x] notion_update payload에 body/attachment/raw HTML/binary가 포함되지 않는지 검증
+- [x] payload 필드 확인: Status, Graph Status, Source ID, Local Source Path, Wiki Path, Last Processed, Last Error, Next Action
+- [x] v0.4 status semantics 매핑 유지 (ok+graph_built → Graph Built, ok+graph_pending → Indexed)
+- [x] payload 생성 실패는 source 처리 status와 분리
+- [x] ingest/rebuild가 성공했으면 source status=ok 또는 partial 유지
+- [x] payload 생성 실패를 action log에 error로 기록
+- [x] `test_process_notion_payload_excludes_body` — body 전문이 payload에 없는지 검증
+- [x] `test_process_notion_payload_ok_graph_built` — ok+graph_built → Graph Built
+- [x] `test_process_notion_payload_ok_graph_pending` — ok+graph_pending → Indexed
 
 ## Implementation Notes
 
