@@ -42,7 +42,19 @@ Current status:
 - `tests/test_v04_local_rebuild.py` -> `tools/local_rebuild.py` (**Green** 2026-05-15)
 - `tests/test_v04_status_notification.py` -> `tools/status_notification.py` (**Green** 2026-05-15)
 
-Full suite: **73 tests, 0 reds** (2026-05-15, +2 content_hash regression tests).
+Full suite: **95 tests, 0 reds** (2026-05-15, +22 FTS5 syntax regression tests).
+
+### FTS5 Query Sanitization Tests
+
+New in `tests/test_search_kb.py`:
+
+- **SanitizeFtsQueryTests** (13 tests): Each FTS5-special character (`@`, `/`, `"`, `(`, `)`, `-`, `+`, `*`, `^`, `:`) is removed by `sanitize_fts_query()`. Korean text, underscores, and whitespace are preserved.
+- **FormatQueryTests** (2 tests): Empty query is rejected, input is sanitized before FTS5 MATCH.
+- **AnswerBuildContextsNoCrashTests** (7 tests): Real paths (`tools/ingest_local.py`, `foo/bar baz`), special chars (`@`, `"`), OpenClaw/Discord input, `discord_agent_smoke_test` — all return results or `"찾을 수 없습니다"` without crashing.
+
+These tests prevent the `sqlite3.OperationalError: FTS5 syntax error near "@[/]"` bug from recurring (see answer.py E2E smoke test findings).
+
+**한국어 검색 한계**: FTS5 `unicode61` tokenizer는 CJK unigram 분할을 지원하지 않으므로, 한국어 검색어가 의도대로 매칭되지 않을 수 있습니다. 이는 tokenizer의 근본적인 한계이며 버그가 아닙니다.
 
 ### content_hash Regression Tests
 

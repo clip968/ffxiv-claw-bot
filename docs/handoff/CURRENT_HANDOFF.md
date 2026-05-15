@@ -52,7 +52,37 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
-### Current session: content_hash bugfix + regression test -- 2026-05-15
+### Current session: FTS5 syntax error regression fix -- 2026-05-15
+
+1. Answer.py E2E test exposed `sqlite3.OperationalError: FTS5 syntax error near "@[/]"`
+   when user input contained FTS5-special characters (`@`, `/`, `"`, `(`, `)`, `-`, `+`, `*`, `^`, `:`).
+2. Root cause: `format_query()` in `search_kb.py` passed raw user input directly to the FTS5 MATCH clause.
+3. Fix added:
+   - `tools/search_kb.py`: new `sanitize_fts_query()` function strips FTS5-special characters before MATCH.
+   - `tools/answer.py`: `build_contexts()` wraps `search_fts()` in try/except for `sqlite3.OperationalError`
+     as defense-in-depth, falling through to empty results.
+   - `tools/search_kb.py`: `search_fts()` OperationalError also falls through to empty results instead of
+     returning an error JSON to the CLI caller.
+4. Added 22 regression tests in `tests/test_search_kb.py`:
+   - 13 `SanitizeFtsQueryTests`: each special char (`@`, `/`, `"`, `(`, `)`, `-`, `+`, `*`, `^`, `:`) removed;
+     Korean text, underscores, whitespace collapse preserved.
+   - 2 `FormatQueryTests`: empty rejection, sanitization applied.
+   - 7 `AnswerBuildContextsNoCrashTests`: real paths (`tools/ingest_local.py`, `foo/bar baz`),
+     special chars (`@`, `"`), OpenClaw/Discord input, discord_agent_smoke_test,
+     empty results `format_answer_text` produces "찾을 수 없습니다" without crash.
+5. 한국어 검색 커버리지 한계: `unicode61` tokenizer는 CJK unigram 분할을 하지 않으므로
+   한국어 query가 분할되지 않은 채로 MATCH되면 의도한 대로 매칭되지 않을 수 있다.
+   이는 버그가 아닌 tokenizer 한계이며 FTS5 버전 업 또는 custom tokenizer 도입이 필요하다.
+6. Updated docs:
+   - `docs/runbooks/test.md`: FTS5 query sanitization tests section added, full suite count updated to 95.
+   - `docs/runbooks/rebuild-kb.md`: FTS5 sanitization note added to Search/Answer smoke test section.
+   - `docs/DOC_OWNERS.yml`: `tests/test_search_kb.py` added to `local-kb-pipeline` rule.
+   - `docs/specs/0001-local-kb-pipeline.md`: FTS5 query sanitization note added.
+   - `docs/handoff/CURRENT_HANDOFF.md`: 이 업데이트.
+7. Full test suite: **95 tests, 0 reds** — +22 FTS5 regression tests.
+8. Google Drive: not touched. No commit/push. Graph JSON and DB not included.
+
+### Previous session: content_hash bugfix + regression test -- 2026-05-15
 
 1. OpenClaw Discord E2E smoke test exposed `sqlite3.IntegrityError: NOT NULL constraint failed: sources.content_hash` during `--apply`.
    - Root cause: `_do_upsert_source()` INSERT and UPDATE SQL statements omitted `content_hash` column.
