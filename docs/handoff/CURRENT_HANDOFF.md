@@ -66,6 +66,26 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
+### Current session update: v05 duplicate canonical source policy locked -- 2026-05-16
+
+1. **Scope**
+   - Accepted the existing Local Storage behavior as the official v05 duplicate policy.
+   - Duplicate canonical sources are now documented as canonical `source_id` upsert/update, not `status=skipped`.
+
+2. **Implementation**
+   - Added `test_process_duplicate_source_upserts_existing_source_id` in `tests/test_v05_process_source.py`.
+   - The test runs the same `text_note` canonical source twice, verifies the same `source_id` and canonical path are reused, and checks the Local Storage file, raw snapshot, and `sources` row contain the latest body/hash.
+
+3. **Docs updated**
+   - `docs/specs/0004-v05-source-processing-pipeline.md`: Dedupe Policy and Test Plan now name `canonical_source_upsert`.
+   - `docs/runbooks/process-source.md`: Duplicate Policy section added.
+   - `docs/runbooks/test.md`: duplicate canonical source contract added.
+   - `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md`: duplicate coverage added.
+
+4. **Verification**
+   - `python -m unittest tests.test_v05_process_source.V05ProcessSourceLocalIntegrationTests.test_process_duplicate_source_upserts_existing_source_id -v`: OK.
+   - `python -m unittest tests.test_v05_process_source -v`: OK, 21 tests.
+
 ### Current session: v05 spec and plan complete -- 2026-05-16
 
 1. **v0.5 spec 작성 완료**

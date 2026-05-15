@@ -38,6 +38,7 @@ Red tests coverage:
 - `test_process_rebuild_error_returns_partial`
 - `test_process_graph_failure_sets_graph_status_failed`
 - `test_process_notion_payload_excludes_body`
+- `test_process_duplicate_source_upserts_existing_source_id`
 - `test_process_text_note_e2e_creates_source_wiki_fts_graph`
 
 Out of scope:
@@ -73,6 +74,7 @@ Out of scope:
 
 - Added v05-06 rebuild integration tests.
 - Added v05-07 Notion payload integration tests.
+- Added v05 duplicate canonical source coverage for existing `source_id` upsert/update.
 - Added a runbook contract test for `docs/runbooks/process-source.md`.
 - Updated `docs/runbooks/process-source.md`, `docs/runbooks/test.md`, `docs/plans/v05/README.md`, `docs/PROJECT_PROFILE.md`, `docs/FILE_INVENTORY.md`, and handoff state.
 - Did not implement Notion API calls, Notion polling, crawler, or scheduler behavior.

@@ -104,6 +104,7 @@ Covered contract:
 - Dry-run prints the v0.5 JSON contract, returns `status=skipped`, skips side-effect actions, and does not create storage directories or SQLite DB files.
 - Direct script execution via `python tools/process_source.py ...` works and prints JSON.
 - `text_note` apply writes a Local Storage source, raw snapshot, source DB row, rebuilds wiki/FTS/graph, and returns `source_id`, `canonical_path`, `local_source_path`, `raw_path`, `content_hash`, `wiki_path`, and `graph_status=built`.
+- Duplicate `text_note` apply for the same canonical source reuses the existing `source_id`, updates the Local Storage file, raw snapshot, and `sources` row, and does not return `status=skipped`.
 - `markdown_file` apply reads `--local-path`, writes the content to Local Storage, and creates a raw snapshot.
 - `plain_text_file` apply reads `--local-path`, writes the content to a canonical `.md` Local Storage path, and creates a `.md` raw snapshot.
 - `url` apply fetches exactly one mocked URL, writes fetched text to Local Storage, creates a raw snapshot, and rebuilds wiki/FTS/graph.

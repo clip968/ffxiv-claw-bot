@@ -158,6 +158,14 @@ Partial rebuild failure returns `status=partial`, keeps the saved source metadat
 
 Fetch or ingest failure returns `status=error`, `graph_status=skipped`, and skips downstream rebuild.
 
+## Duplicate Policy
+
+`process_source.py` uses the Local Storage canonical source policy from `ingest_local.py`.
+
+For local source types, the canonical path is derived from `category`, normalized `title`, and source extension. That canonical path determines the `local_source_id`. Running the same source again with new body content reuses the same `source_id`, updates the Local Storage file, overwrites the raw snapshot, updates the `sources` row, and then rebuilds wiki/FTS/graph from the latest content.
+
+Duplicate canonical sources are not returned as `status=skipped` in v0.5. A successful reprocess returns `status=ok` or `status=partial` with the existing `source_id`.
+
 ## OpenClaw Sequence
 
 1. Resolve source type, category, title, body/path/URL using `docs/skills/ffxiv-source-processing.md`.

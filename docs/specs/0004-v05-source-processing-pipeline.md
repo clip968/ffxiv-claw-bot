@@ -671,7 +671,7 @@ Top-level `status`는 다음 중 하나다.
 | `ok` | ingest, rebuild, FTS, graph, payload 생성 모두 성공 |
 | `partial` | source는 저장됐지만 일부 후속 단계 실패 |
 | `error` | source 처리 실패 |
-| `skipped` | dry-run, dedupe, 또는 정책상 생략 |
+| `skipped` | dry-run 또는 정책상 생략. canonical duplicate reprocess는 `skipped`가 아니다. |
 
 Notion status mapping은 다음을 따른다.
 
@@ -816,30 +816,30 @@ graph_status=built 또는 pending
 
 ## 15. Dedupe Policy
 
-v0.5는 content hash 또는 URL 기반 중복 감지를 고려해야 한다.
+v0.5의 기본 중복 정책은 canonical Local Storage path에서 파생한 `local_source_id` 기준 upsert/update다.
 
-최소 요구사항:
-
-- 같은 content hash가 이미 존재하면 중복으로 판단할 수 있어야 한다.
-- 같은 URL이 이미 존재하면 중복으로 판단할 수 있어야 한다.
-- 중복 정책은 `skip`, `reuse`, `rebuild` 중 하나로 확장 가능해야 한다.
-
-v0.5 기본 정책은 다음 중 하나로 선택한다.
+기본 정책:
 
 ```text
-기본값: skip
+기본값: canonical_source_upsert
 ```
 
-중복이면 새 source를 만들지 않고 다음을 반환한다.
+같은 `source_type`, `category`, `title` 조합이 같은 canonical path를 만들면 같은 `source_id`를 재사용한다.
+`process_source.py`는 이를 중복 skip으로 바꾸지 않고 기존 `ingest_local.py` 정책을 따른다.
+
+중복 처리 결과:
 
 ```text
-status=skipped
-reason=duplicate
-existing_source_id=...
+status=ok 또는 partial
+source_id=기존 canonical source_id
+canonical_path=기존 canonical path
+sources row=UPDATE
+local source/raw snapshot=latest body로 갱신
 ```
 
-단, 기존 repo의 ingest dedupe 정책이 이미 있다면 그 정책을 우선한다.  
-`process_source.py`는 기존 dedupe 규칙을 재정의하지 않는다.
+`status=skipped`, `reason=duplicate`, `existing_source_id=...` 응답은 v0.5 기본 정책이 아니다.
+
+향후 content hash 또는 URL 기반 정책이 필요하면 `skip`, `reuse`, `rebuild` 중 하나로 확장할 수 있지만, v0.5에서는 canonical source upsert가 공식 계약이다.
 
 ---
 
@@ -991,7 +991,7 @@ test_process_ingest_error_skips_rebuild
 test_process_rebuild_error_returns_partial
 test_process_graph_failure_sets_graph_status_failed
 test_process_notion_payload_excludes_body
-test_process_duplicate_source_returns_skipped_or_reuse
+test_process_duplicate_source_upserts_existing_source_id
 ```
 
 ### 20.2 Integration Tests

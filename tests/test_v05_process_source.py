@@ -387,6 +387,74 @@ class V05ProcessSourceLocalIntegrationTests(unittest.TestCase):
             self.assertTrue((repo_root / "graph" / "nodes.json").exists())
             self.assertTrue((repo_root / "graph" / "edges.json").exists())
 
+    def test_process_duplicate_source_upserts_existing_source_id(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            body_v1 = "Use Reprisal before the tank buster."
+            body_v2 = "Use Addle before the raidwide, then Reprisal."
+            base_args = [
+                "--apply",
+                "--source-type",
+                "text_note",
+                "--category",
+                "personal_notes",
+                "--title",
+                "Raid mitigation note",
+                "--storage-root",
+                str(storage_root),
+                "--db-path",
+                str(db_path),
+            ]
+
+            result_v1 = run_process_source_with_temp_root(
+                self,
+                [*base_args, "--body", body_v1],
+                repo_root,
+            )
+            result_v2 = run_process_source_with_temp_root(
+                self,
+                [*base_args, "--body", body_v2],
+                repo_root,
+            )
+
+            self.assertEqual(result_v1["status"], "ok")
+            self.assertEqual(result_v2["status"], "ok")
+            self.assertEqual(result_v2["source_id"], result_v1["source_id"])
+            self.assertEqual(result_v2["canonical_path"], result_v1["canonical_path"])
+            self.assertEqual(
+                result_v2["content_hash"],
+                hashlib.sha256(body_v2.encode("utf-8")).hexdigest(),
+            )
+            self.assertEqual(
+                (storage_root / result_v2["local_source_path"]).read_text(encoding="utf-8"),
+                body_v2,
+            )
+            self.assertEqual(
+                (repo_root / result_v2["raw_path"]).read_text(encoding="utf-8"),
+                body_v2,
+            )
+
+            conn = sqlite3.connect(str(db_path))
+            try:
+                row_count = conn.execute("SELECT COUNT(*) FROM sources").fetchone()[0]
+                row = conn.execute(
+                    "SELECT id, content_hash, raw_path FROM sources WHERE id = ?",
+                    (result_v1["source_id"],),
+                ).fetchone()
+            finally:
+                conn.close()
+
+            self.assertEqual(row_count, 1)
+            self.assertIsNotNone(row)
+            self.assertEqual(row[0], result_v1["source_id"])
+            self.assertEqual(row[1], result_v2["content_hash"])
+            self.assertEqual(row[2], result_v2["raw_path"])
+
     def test_process_markdown_file_ok(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp = Path(tmp_dir)
