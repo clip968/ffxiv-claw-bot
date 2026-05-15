@@ -8,7 +8,7 @@
 
 ## Current Phase
 
-v0.4 implementation is in progress (v04-04 completed). v04-05 remains.
+v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.4 planning has been reframed from Google Drive write/publish to Local Storage + OpenClaw Notion direct control.
 
@@ -41,19 +41,42 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 9. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
 10. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
 11. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
-12. `docs/runbooks/rebuild-kb.md`
-13. `docs/runbooks/local-storage.md`
-14. `docs/runbooks/openclaw-notion.md`
+12. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
+13. `docs/runbooks/rebuild-kb.md`
+14. `docs/runbooks/local-storage.md`
+15. `docs/runbooks/openclaw-notion.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
-- `docs/plans/v04/legacy/2026-05-14-v04-01-drive-write-foundation.md`
-- `docs/plans/v04/2026-05-14-v04-legacy-drive-integration.md`
 - `docs/specs/0003-google-drive-sync.md`
 - `docs/runbooks/sync-drive.md`
 - `docs/runbooks/publish-drive.md`
 
 ## This Session
 
-### Current session: v04-04 Local Publish Then Rebuild -- Implemented
+### Current session: v04-05 Status Notification -- Implemented
+
+1. Created `tools/status_notification.py`:
+   - `format_discord_summary(result)` — produces short Korean plain-text Discord/OpenClaw-facing summary.
+     - `ok` → `[category] title — 처리 완료` + paths
+     - `partial` → `[category] title — 일부 실패` + paths + error + next action
+     - `error` → `[category] title — 처리 실패` + error + next action
+     - `skipped` → `[category] title — 건너뜀 (처리 생략)`
+     - Never includes Drive URL (per v04-05 contract).
+   - `build_notion_status_update(result)` — flat dict of Notion property name→value pairs.
+     - Maps `status` → `Status` (ok→Indexed, partial→Partial, error→Error)
+     - Maps `graph_status` → `Graph Status` (built→Built, pending→Pending, failed→Failed, skipped→Skipped)
+     - Copies title, category, source_id, local_source_path, wiki_path, last_error, next_action verbatim.
+   - Used `tools/openclaw_notion_control.py` status mapping conventions but kept independent mapping constants (v04-05 uses "Failed" not "Error" for graph status).
+2. Red test → Green: `tests/test_v04_status_notification.py` 1/1 pass.
+3. Updated docs:
+   - `docs/plans/v04/2026-05-14-v04-05-status-notification.md`: Status → Implemented, checklist all [x], Implementation Notes + Verification Results added.
+   - `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`: v04-05 status → Implemented.
+   - `docs/runbooks/openclaw-notion.md`: Status Notification Functions 섹션 추가 (format_discord_summary, build_notion_status_update, message format tables, Notion property mapping table).
+   - `docs/runbooks/test.md`: v04-05 green 상태 반영.
+   - `docs/DOC_OWNERS.yml`: `status-notification` rule 추가 (`tools/status_notification.py` → `docs/runbooks/openclaw-notion.md`).
+   - `docs/handoff/CURRENT_HANDOFF.md`: 이 업데이트.
+4. Full test suite: **72 tests, 0 reds** — all v04 tests now green.
+
+### Previous session: v04-04 Local Publish Then Rebuild -- Implemented
 
 1. Created `tools/local_rebuild.py`:
    - `rebuild_after_ingest(ingest_result, root_path, db_path, dry_run)` — rebuild pipeline wrapper.
@@ -180,7 +203,7 @@ Drive-era v0.4 planning that was superseded:
 | 02 | `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` | **Implemented** |
 | 03 | `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` | **Implemented** |
 | 04 | `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` | **Implemented** |
-| 05 | `docs/plans/v04/2026-05-14-v04-05-status-notification.md` | Proposed |
+| 05 | `docs/plans/v04/2026-05-14-v04-05-status-notification.md` | **Implemented** |
 | legacy | `docs/plans/v04/2026-05-14-v04-legacy-drive-integration.md` | Deferred |
 
 ## Active Plan Boundaries
@@ -258,31 +281,40 @@ Do not introduce embedding/vector DB in the next task.
 Executed 2026-05-15:
 
 ```bash
-python -m unittest tests.test_v04_local_rebuild -v
+python -m unittest tests.test_v04_status_notification -v
 python -m unittest discover -s tests -p "test_*.py"
 python scripts/check_docs_freshness.py --all
 ```
 
 Results:
 
-- v04-04 test: green (1/1 pass)
+- v04-05 test: **green** (1/1 pass)
+- full suite: **72 tests, 0 reds** — all v04 tests now green
 - docs freshness: pending (will run finish_task.py as final gate)
-- unittest: 71 OK, 1 red (v04-05 expected failure -- pending implementation)
-
-Workspace note:
-
-- `tools/local_rebuild.py` is the new v04-04 implementation module.
+- `tools/status_notification.py` is the new v04-05 implementation module.
 - No Drive files were modified.
 - `raw/local_storage/` remains untracked, generated content only.
-- v04-05 (`tools/status_notification.py`) is the last remaining v04 implementation slice.
 
 ## Next Work
 
-Recommended next implementation task:
+All five v04 feature plans are now **Implemented**. v0.4 core pipeline is complete:
 
-1. `docs/plans/v04/2026-05-14-v04-05-status-notification.md` -- 최종 result -> Notion status update + Discord/OpenClaw summary.
+```text
+Discord/OpenClaw 저장 요청
+-> validate_request
+-> local source write
+-> raw snapshot
+-> DB upsert
+-> compile_wiki / index_fts / build_graph
+-> Notion status update + Discord summary
+```
 
-This is the last remaining v04 implementation slice. After v04-05, all five v04 feature plans will be implemented.
+Recommended next direction:
+
+1. **Integration / End-to-End testing** — Wire together all five tools into a single pipeline flow.
+2. **OpenClaw agent integration** — Connect the tools to a real OpenClaw agent workflow.
+3. **Operations** — Move beyond unittest into realistic dry-run → apply scenarios.
+4. **v0.5 planning** — The next version should define features beyond the current pipeline (e.g., watchers, scheduling, multi-source GC).
 
 ## Do Not Touch Without Explicit Request
 

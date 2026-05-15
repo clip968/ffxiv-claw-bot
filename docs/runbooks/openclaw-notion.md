@@ -109,3 +109,33 @@ Drive URL이나 Drive file ID는 legacy optional integration metadata로만 기�
 
 - `body`
 - `attachments`
+
+## Status Notification Functions
+
+`tools/status_notification.py` provides two functions that consume a final pipeline result JSON:
+
+### `format_discord_summary(result)`
+
+사용자-facing Discord/OpenClaw 메시지를 생성한다.
+
+| Result status | message format |
+|---|---|
+| `ok` | `[category] title — 처리 완료` + 경로 정보 |
+| `partial` | `[category] title — 일부 실패` + 경로 + 오류 + next action |
+| `error` | `[category] title — 처리 실패` + 오류 + next action |
+| `skipped` | `[category] title — 건너뜀 (처리 생략)` |
+
+Drive URL은 기본 응답에 포함되지 않는다.
+
+### `build_notion_status_update(result)`
+
+같은 result JSON을 Notion property update payload로 변환한다.
+
+| CLI key | Notion property |
+|---|---|
+| `status` | `Status` (ok→Indexed, partial→Partial, error→Error 등) |
+| `graph_status` | `Graph Status` (built→Built, pending→Pending, failed→Failed, skipped→Skipped) |
+| `title`, `category`, `source_id` | 대응 Notion property |
+| `local_source_path`, `wiki_path` | 대응 Notion property |
+| `last_error` | `Last Error` |
+| `next_action` | `Next Action` |

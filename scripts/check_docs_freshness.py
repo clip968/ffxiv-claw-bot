@@ -453,7 +453,7 @@ def is_invalid_owner_doc(path: str, config: DocOwnersConfig) -> bool:
     ):
         return True
     if config.policy.get("notion_is_invalid_owner", True) and (
-        lower.startswith(("http://", "https://")) or "notion" in lower
+        lower.startswith(("http://", "https://"))
     ):
         return True
     return False

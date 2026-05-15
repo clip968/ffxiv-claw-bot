@@ -110,7 +110,7 @@ Drive legacy 오류 코드:
 | 02 | `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` | [x] **Implemented** — build_notion_update(), CLI→Notion status mapping |
 | 03 | `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` | [x] **Implemented** — ingest_local.py, dry-run/apply CLI facade |
 | 04 | `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` | [x] **Implemented** — local_rebuild.py, rebuild_after_ingest(), compile/graph pipeline |
-| 05 | `docs/plans/v04/2026-05-14-v04-05-status-notification.md` | [ ] Notion status + Discord 결과 알림 |
+| 05 | `docs/plans/v04/2026-05-14-v04-05-status-notification.md` | [x] **Implemented** — status_notification.py, format_discord_summary + build_notion_status_update |
 | legacy | `docs/plans/v04/2026-05-14-v04-legacy-drive-integration.md` | [ ] Optional Drive integration 기록 |
 
 기존 `docs/plans/v04/legacy/2026-05-14-v04-01-drive-write-foundation.md`는 Completed but Deferred legacy plan으로 보존한다.

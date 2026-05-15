@@ -7,7 +7,7 @@
 
 ## Status
 
-**Proposed**
+**Implemented**
 
 ## Goal
 
@@ -58,12 +58,12 @@ Drive URL은 legacy optional integration 결과에서만 표시한다.
 
 ## Checklist
 
-- [ ] `ok` result JSON -> Korean user message 변환 규칙 작성
-- [ ] `partial` result JSON -> 저장은 되었지만 rebuild/graph/Notion 일부 실패 메시지 작성
-- [ ] `error` result JSON -> 저장 실패 사유와 next action 작성
-- [ ] v04-02의 Notion status value mapping을 사용한다
-- [ ] `tools/format_discord_result.py` 신설 여부 결정
-- [ ] Discord message는 짧게, 자세한 진단은 JSON/log에 남긴다
+- [x] `ok` result JSON -> Korean user message 변환 규칙 작성
+- [x] `partial` result JSON -> 저장은 되었지만 rebuild/graph/Notion 일부 실패 메시지 작성
+- [x] `error` result JSON -> 저장 실패 사유와 next action 작성
+- [x] v04-02의 Notion status value mapping을 사용한다
+- [x] `tools/status_notification.py` 신설 (format_discord_summary + build_notion_status_update)
+- [x] Discord message는 짧게, 자세한 진단은 JSON/log에 남긴다
 
 ## Verification
 
@@ -77,3 +77,28 @@ python scripts/check_docs_freshness.py --all
 - Notion status와 Discord summary는 같은 result JSON에서 파생한다.
 - Notion에는 파일을 업로드하지 않는다.
 - Drive link는 기본 응답 필드가 아니다.
+
+## Implementation Notes
+
+- Created `tools/status_notification.py` with two public functions:
+  - `format_discord_summary(result)` — produces a short Korean plain-text summary.
+    - `ok` → `[category] title — 처리 완료`
+    - `partial` → `[category] title — 일부 실패` with paths, error, next action
+    - `error` → `[category] title — 처리 실패` with error and next action
+    - Never includes Drive URL (per contract).
+  - `build_notion_status_update(result)` — flat dict of Notion property name→value pairs.
+    - Maps `status` → `Status` using v04-02 conventions (ok→Indexed, partial→Partial, error→Error)
+    - Maps `graph_status` → `Graph Status` (built→Built, pending→Pending, failed→Failed, skipped→Skipped)
+    - Copies title, category, source_id, local_source_path, wiki_path, last_error, next_action verbatim.
+- Used `tools/openclaw_notion_control.py` status mapping conventions but kept independent mapping constants (v04-05 uses "Failed" not "Error" for graph status).
+- `format_discord_result.py` naming was rejected; the functions live in `tools/status_notification.py` alongside the Notion mapping.
+
+## Verification Results
+
+```bash
+python -m unittest tests.test_v04_status_notification -v
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+- v04-05 test: **Green** (1/1 pass)
+- full suite: **72 tests, 0 reds** — all v04 tests now green
