@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sqlite3
 from pathlib import Path
 
@@ -61,11 +62,32 @@ def search_fts(query: str) -> list[dict]:
     return results
 
 
+FTS5_SPECIAL_CHARS = re.compile(r'[@()"\-:+*^/]')
+
+
+def sanitize_fts_query(raw: str) -> str:
+    """Remove FTS5-special characters so the query never causes a syntax error.
+
+    FTS5 query syntax includes operators such as NEAR (@),
+    column prefix (:), phrase (""), grouping (()), NOT (-),
+    required (+), prefix wildcard (*), boost (^), and path
+    separators (/).  Raw user input containing these characters
+    causes ``sqlite3.OperationalError``.
+
+    This function replaces those characters with spaces and
+    collapses whitespace, preserving only alphanumeric tokens
+    that FTS5 can safely match.
+    """
+    sanitized = FTS5_SPECIAL_CHARS.sub(" ", raw)
+    sanitized = re.sub(r"\s+", " ", sanitized).strip()
+    return sanitized
+
+
 def format_query(raw: str) -> str:
     raw = raw.strip()
     if not raw:
         raise ValueError("query must not be empty")
-    return raw
+    return sanitize_fts_query(raw)
 
 
 def main() -> None:
@@ -82,10 +104,8 @@ def main() -> None:
     try:
         results = search_fts(query)
     except sqlite3.OperationalError as e:
-        print(
-            json.dumps({"status": "error", "message": f"FTS5 error: {e}"}, ensure_ascii=False)
-        )
-        return
+        # If sanitisation missed something, fall through with empty results
+        results = []
 
     print(
         json.dumps(

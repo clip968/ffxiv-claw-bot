@@ -40,6 +40,7 @@ rules:
       - "tools/search_kb.py"
       - "tools/answer.py"
       - "tests/test_compile_wiki.py"
+      - "tests/test_search_kb.py"
     contract_docs:
       - "docs/specs/0001-local-kb-pipeline.md"
     procedure_docs:

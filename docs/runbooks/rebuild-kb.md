@@ -111,12 +111,19 @@ python tools/build_graph.py --source-id <source_id>
 python tools/search_kb.py "lodestone"
 ```
 
+FTS5 query sanitization: user input is sanitized before MATCH to prevent FTS5 syntax errors.
+Characters `@`, `/`, `"`, `(`, `)`, `-`, `+`, `*`, `^`, `:` are stripped automatically.
+Defense-in-depth catches `sqlite3.OperationalError` and returns empty results.
+
 ## Answer smoke test
 
 ```bash
 python tools/answer.py "lodestone"
 python tools/answer.py "lodestone" --format text
 ```
+
+Answer.py wraps `search_fts()` in try/except for `sqlite3.OperationalError` as a second layer.
+If FTS5 still errors or returns no results, `"찾을 수 없습니다"` is produced instead of a crash.
 
 ## 전체 재빌드 순서
 

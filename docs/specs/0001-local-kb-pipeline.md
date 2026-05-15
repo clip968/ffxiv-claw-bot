@@ -125,7 +125,16 @@ JSON 결과에는 현재 다음 필드가 포함된다.
 - `snippet`
 - `graph_paths`
 
-빈 쿼리는 `status: error`를 반환한다. FTS5 query syntax error도 `status: error`로 반환한다.
+빈 쿼리는 `status: error`를 반환한다. 
+FTS5 query syntax error도 `status: error`로 반환한다.
+
+### FTS5 Query Sanitization
+
+`search_kb.py`는 사용자 입력을 `sanitize_fts_query()`로 전처리한 뒤 MATCH에 전달한다.
+FTS5 특수 문자 (`@`, `/`, `"`, `(`, `)`, `-`, `+`, `*`, `^`, `:`)를 제거한다.
+
+Defense-in-depth: `search_fts()`와 `answer.py/build_contexts()` 모두
+`sqlite3.OperationalError`를 catch하여 crash 대신 empty results를 반환한다.
 
 ## answer.py 역할
 

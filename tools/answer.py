@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sqlite3
 import sys
 from pathlib import Path
 
@@ -28,7 +29,11 @@ def read_content_excerpt(md_path: str, max_chars: int = 1000) -> str:
 
 
 def build_contexts(query: str, limit: int = 3, max_chars: int = 1000) -> list[dict]:
-    results = search_fts(query)
+    try:
+        results = search_fts(query)
+    except sqlite3.OperationalError:
+        # FTS5 syntax error despite sanitisation — fall through to empty
+        results = []
     contexts: list[dict] = []
 
     for r in results[:limit]:
