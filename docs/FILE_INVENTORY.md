@@ -68,9 +68,9 @@
 | `docs/plans/v05/2026-05-16-v05-03-process-source-skeleton.md` | process_source.py CLI skeleton | **Completed** 2026-05-16 |
 | `docs/plans/v05/2026-05-16-v05-04-local-source-integration.md` | Local source ingest 연결 | **Completed** 2026-05-16 |
 | `docs/plans/v05/2026-05-16-v05-05-url-integration.md` | URL fetch + ingest 연결 | **Completed** 2026-05-16 |
-| `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md` | wiki/FTS/graph rebuild 연결 | Pending |
-| `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` | Notion payload 생성 연결 | Pending |
-| `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` | 테스트, runbook, handoff 정리 | Pending |
+| `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md` | wiki/FTS/graph rebuild 연결 | **Completed** 2026-05-16 |
+| `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` | Notion payload 생성 연결 | **Completed** 2026-05-16 |
+| `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` | 테스트, runbook, handoff 정리 | **Completed** 2026-05-16 |
 
 ## v0.4 Plan Files
 

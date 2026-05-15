@@ -9,7 +9,7 @@
 
 ## Status
 
-**Pending**
+**Completed** 2026-05-16
 
 ## Goal
 
@@ -54,6 +54,24 @@ Out of scope:
 - [ ] `test_process_notion_payload_excludes_body` — body 전문이 payload에 없는지 검증
 - [ ] `test_process_notion_payload_ok_graph_built` — ok+graph_built → Graph Built
 - [ ] `test_process_notion_payload_ok_graph_pending` — ok+graph_pending → Indexed
+
+## Implementation Notes
+
+- `tools/process_source.py` now reuses `tools.status_notification.build_notion_status_update()` after rebuild.
+- The process result includes `notion_update` with `Status`, `Graph Status`, `Source ID`, `Local Source Path`, `Wiki Path`, `Last Processed`, `Last Error`, and `Next Action`.
+- `ok + graph_status=built` maps to Notion `Status=Graph Built`.
+- `ok + graph_status=pending` maps to Notion `Status=Indexed`.
+- Payload generation does not call the Notion API and does not include body/raw HTML/attachments/binary data.
+- Payload generation failure is isolated to a `build_notion_payload` action and does not overwrite the ingest/rebuild status.
+
+## Verification Results
+
+```bash
+python -m unittest tests.test_v05_process_source.V05ProcessSourceNotionPayloadIntegrationTests -v
+python -m unittest tests.test_v04_status_notification -v
+```
+
+The v05-07 red tests failed first on missing `notion_update` fields, then passed after integration.
 
 ## Verification
 

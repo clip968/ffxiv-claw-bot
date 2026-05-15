@@ -9,7 +9,7 @@
 
 ## Status
 
-**Pending**
+**Completed** 2026-05-16
 
 ## Goal
 
@@ -56,6 +56,24 @@ Partial failure policy:
 - [ ] `test_process_rebuild_error_returns_partial` — rebuild 실패 모의 → partial
 - [ ] `test_process_graph_failure_sets_graph_status_failed` — graph 실패
 - [ ] `test_process_text_note_e2e_creates_source_wiki_fts_graph` — e2e smoke
+
+## Implementation Notes
+
+- `tools/process_source.py` now calls `tools.local_rebuild.rebuild_after_ingest()` after successful ingest.
+- Rebuild actions are merged into the process result as `compile_wiki`, `index_fts`, and `build_graph`.
+- Successful graph build returns `graph_status=built`.
+- Graph failure returns `graph_status=failed` and overall `status=partial`.
+- Rebuild failure keeps the saved source metadata and records `last_error`/`next_action`.
+- `tools/local_rebuild.py` now passes `summary_dir=root_path/wiki/source_summaries` so temp-root and repo-root rebuilds both emit the expected relative `wiki_path`.
+
+## Verification Results
+
+```bash
+python -m unittest tests.test_v05_process_source.V05ProcessSourceRebuildIntegrationTests -v
+python -m unittest tests.test_v05_process_source -v
+```
+
+Both focused v05-06 tests are green after the expected red failure.
 
 ## Verification
 

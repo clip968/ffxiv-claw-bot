@@ -9,7 +9,7 @@
 
 ## Status
 
-**Pending**
+**Completed** 2026-05-16
 
 ## Goal
 
@@ -68,6 +68,23 @@ Out of scope:
 - [ ] `docs/WORKFLOW.md` 업데이트 (필요시)
 - [ ] `CLAUDE.md` 업데이트 (필요시)
 - [ ] `docs/FILE_INVENTORY.md` 업데이트
+
+## Implementation Notes
+
+- Added v05-06 rebuild integration tests.
+- Added v05-07 Notion payload integration tests.
+- Added a runbook contract test for `docs/runbooks/process-source.md`.
+- Updated `docs/runbooks/process-source.md`, `docs/runbooks/test.md`, `docs/plans/v05/README.md`, `docs/PROJECT_PROFILE.md`, `docs/FILE_INVENTORY.md`, and handoff state.
+- Did not implement Notion API calls, Notion polling, crawler, or scheduler behavior.
+
+## Verification Results
+
+```bash
+python -m unittest tests.test_v05_process_source.V05ProcessSourceRunbookTests -v
+python -m unittest tests.test_v05_process_source -v
+```
+
+The v05-08 red test failed first because the runbook still described v05-06/v05-07 as unimplemented, then passed after the runbook update.
 
 ## Verification
 

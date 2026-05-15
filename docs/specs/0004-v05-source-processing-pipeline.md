@@ -479,6 +479,8 @@ v0.5-04 구현 기준:
 
 ### 10.4 Rebuild
 
+v05-06 implementation note: after any successful `text_note`, `markdown_file`, `plain_text_file`, or `url` ingest, `process_source.py` calls `tools.local_rebuild.rebuild_after_ingest()`. The final JSON records `compile_wiki`, `index_fts`, and `build_graph` actions. A graph success sets `graph_status=built`; graph failure sets `graph_status=failed` and overall `status=partial`.
+
 ingest 성공 후 rebuild를 수행한다.
 
 rebuild는 기존 `local_rebuild.py`, `compile_wiki.py`, `build_graph.py`의 기존 로직을 재사용해야 한다.
@@ -493,6 +495,8 @@ rebuild 결과는 다음 상태 중 하나여야 한다.
 | `skipped` | dry-run 또는 중복 등으로 생략 |
 
 ### 10.5 Notion Status Payload
+
+v05-07 implementation note: `process_source.py` builds the payload locally with `tools.status_notification.build_notion_status_update()`, adds `Last Processed`, and appends a `build_notion_payload` action. This does not call Notion.
 
 v0.5에서 `process_source.py`는 Notion API를 직접 호출하지 않아도 된다.
 

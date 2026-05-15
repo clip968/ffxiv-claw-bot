@@ -93,6 +93,9 @@ Current status:
 - `V05ProcessSourceLocalIntegrationTests` -> `tools/process_source.py`, `tools/ingest_local.py` (**Green** 2026-05-16)
 - `V05FetchUrlTests` -> `tools/fetch_url.py` (**Green** 2026-05-16)
 - `V05ProcessSourceUrlIntegrationTests` -> `tools/process_source.py`, `tools/fetch_url.py`, `tools/ingest_local.py` (**Green** 2026-05-16)
+- `V05ProcessSourceRebuildIntegrationTests` -> `tools/process_source.py`, `tools/local_rebuild.py` (**Green** 2026-05-16)
+- `V05ProcessSourceNotionPayloadIntegrationTests` -> `tools/process_source.py`, `tools/status_notification.py` (**Green** 2026-05-16)
+- `V05ProcessSourceRunbookTests` -> `docs/runbooks/process-source.md` (**Green** 2026-05-16)
 
 Covered contract:
 
@@ -100,19 +103,24 @@ Covered contract:
 - Validation errors print JSON to stdout for missing `--body`, missing `--url`, missing `--local-path`, missing local files, and simultaneous `--apply` + `--dry-run`.
 - Dry-run prints the v0.5 JSON contract, returns `status=skipped`, skips side-effect actions, and does not create storage directories or SQLite DB files.
 - Direct script execution via `python tools/process_source.py ...` works and prints JSON.
-- `text_note` apply writes a Local Storage source, raw snapshot, source DB row, and returns `source_id`, `canonical_path`, `local_source_path`, `raw_path`, and `content_hash`.
+- `text_note` apply writes a Local Storage source, raw snapshot, source DB row, rebuilds wiki/FTS/graph, and returns `source_id`, `canonical_path`, `local_source_path`, `raw_path`, `content_hash`, `wiki_path`, and `graph_status=built`.
 - `markdown_file` apply reads `--local-path`, writes the content to Local Storage, and creates a raw snapshot.
 - `plain_text_file` apply reads `--local-path`, writes the content to a canonical `.md` Local Storage path, and creates a `.md` raw snapshot.
-- `url` apply fetches exactly one mocked URL, writes fetched text to Local Storage, creates a raw snapshot, and skips rebuild until v05-06.
+- `url` apply fetches exactly one mocked URL, writes fetched text to Local Storage, creates a raw snapshot, and rebuilds wiki/FTS/graph.
 - URL fetch supports mocked `text/html`, `text/plain`, `application/json`, `+json`, HTTP failure, and unsupported content-type behavior.
 - CLI `--title` overrides fetched URL title.
 - URL fetch failure does not write Local Storage files or DB rows.
-- ingest failure returns `status=error`, `graph_status=skipped`, and a skipped rebuild action.
+- ingest failure returns `status=error`, `graph_status=skipped`, and skips rebuild.
+- rebuild failure returns `status=partial`, keeps saved source metadata, and records failed rebuild actions.
+- graph failure sets `graph_status=failed` without discarding wiki/FTS output.
+- successful apply includes a safe `notion_update` payload with `Status`, `Graph Status`, `Source ID`, `Local Source Path`, `Wiki Path`, and `Last Processed`.
+- `notion_update` excludes original body text, raw HTML, attachments, and binary data.
 
 Out of scope for these tests:
 
-- wiki/FTS/graph rebuild
-- Notion payload generation beyond dry-run/error skeleton fields
+- Notion API calls
+- Notion polling
+- crawler/scheduler behavior
 
 v05-05 regression tests added:
 
@@ -133,7 +141,17 @@ v05-04 regression tests added:
 - `test_process_plain_text_file_ok`
 - `test_process_ingest_error_skips_rebuild`
 
-Full suite: **117 tests, 0 reds** (2026-05-16, +7 v05-05 URL integration tests).
+Full suite before v05-06: **117 tests, 0 reds** (2026-05-16, +7 v05-05 URL integration tests).
+
+v05-06/v05-07/v05-08 regression tests added:
+
+- `test_process_rebuild_error_returns_partial`
+- `test_process_graph_failure_sets_graph_status_failed`
+- `test_process_notion_payload_excludes_body`
+- `test_process_notion_payload_ok_graph_pending`
+- `test_process_source_runbook_documents_completed_v05_workflow`
+
+Full suite target after v05-08: **122 tests, 0 reds**.
 
 ## pytest
 

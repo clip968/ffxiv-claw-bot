@@ -119,6 +119,7 @@ def _execute_apply(
         source_id,
         db_path=db_path,
         root_path=root_path,
+        summary_dir=root_path / "wiki" / "source_summaries",
     )
 
     if compile_result.get("status") == "ok":

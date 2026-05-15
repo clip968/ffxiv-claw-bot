@@ -13,7 +13,7 @@
 
 ## Current Phase
 
-v0.4 implementation is complete. v0.5 planning is complete. v0.5-02 through v0.5-05 are implemented.
+v0.4 implementation is complete. v0.5 source processing is implemented through v0.5-08.
 
 2026-05-15 현재 기본 v0.4 운영 경로는 Google Drive write/publish가 아니라 `/mnt/d/ffixiv-bot-storage` 기반 Local Storage + OpenClaw Notion direct control이다.
 
@@ -58,9 +58,9 @@ Active v0.5 spec and plans:
 - `docs/plans/v05/2026-05-16-v05-03-process-source-skeleton.md` (Completed)
 - `docs/plans/v05/2026-05-16-v05-04-local-source-integration.md` (Completed)
 - `docs/plans/v05/2026-05-16-v05-05-url-integration.md` (Completed)
-- `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md` (Pending)
-- `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` (Pending)
-- `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` (Pending)
+- `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md` (Completed)
+- `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` (Completed)
+- `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` (Completed)
 
 ## v0.4 Planning
 
@@ -98,7 +98,7 @@ Active v0.4 feature map:
 
 ### v0.5 New Tools
 
-- `tools/process_source.py`: source 하나를 처리하는 통합 entrypoint. 현재 text/file/url ingest를 지원하고 rebuild/status payload는 후속 v05 task 범위다.
+- `tools/process_source.py`: source 하나를 처리하는 통합 entrypoint. text/file/url ingest, wiki/FTS/graph rebuild, and safe `notion_update` payload generation are implemented.
 
 ## Development Principles
 

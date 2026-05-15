@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -11,6 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tools import ingest_local
+from tools import local_rebuild
+from tools import status_notification
 from tools.fetch_url import fetch_single_url
 from tools.sync_storage import DB_PATH, DEFAULT_STORAGE_ROOT
 
@@ -171,6 +174,8 @@ def _base_result(args: argparse.Namespace) -> dict[str, Any]:
         "content_hash": None,
         "wiki_path": None,
         "graph_status": "skipped",
+        "last_error": None,
+        "next_action": None,
         "actions": [],
         "notion_update": {},
         "summary": {},
@@ -232,37 +237,7 @@ def _apply_local_source(args: argparse.Namespace) -> dict[str, Any]:
     if ingest_result.get("status") != "ok":
         return _local_ingest_error_result(args, ingest_result)
 
-    result = _base_result(args)
-    canonical_path = ingest_result.get("canonical_path")
-    result.update(
-        {
-            "status": "ok",
-            "source_id": ingest_result.get("source_id"),
-            "canonical_path": canonical_path,
-            "local_source_path": canonical_path,
-            "raw_path": ingest_result.get("raw_path"),
-            "content_hash": ingest_result.get("content_hash"),
-            "graph_status": "skipped",
-            "actions": [
-                {"name": "validate_request", "status": "ok"},
-                {
-                    "name": "ingest_local",
-                    "status": "ok",
-                    "source_id": ingest_result.get("source_id"),
-                },
-                {
-                    "name": "rebuild",
-                    "status": "skipped",
-                    "reason": "v05-06_not_implemented",
-                },
-            ],
-            "summary": {
-                "message": "Local source ingested. Rebuild is intentionally skipped in v0.5-04.",
-                "next_action": "Run the v0.5-06 rebuild integration goal.",
-            },
-        }
-    )
-    return result
+    return _successful_ingest_result(args, ingest_result, fetch_action=None)
 
 
 def _apply_url_source(args: argparse.Namespace) -> dict[str, Any]:
@@ -286,44 +261,13 @@ def _apply_url_source(args: argparse.Namespace) -> dict[str, Any]:
     if ingest_result.get("status") != "ok":
         return _url_ingest_error_result(args, title, fetch_result, ingest_result)
 
-    result = _base_result(args)
-    canonical_path = ingest_result.get("canonical_path")
-    result.update(
-        {
-            "status": "ok",
-            "source_id": ingest_result.get("source_id"),
-            "title": title,
-            "canonical_path": canonical_path,
-            "local_source_path": canonical_path,
-            "raw_path": ingest_result.get("raw_path"),
-            "content_hash": ingest_result.get("content_hash"),
-            "graph_status": "skipped",
-            "actions": [
-                {"name": "validate_request", "status": "ok"},
-                {
-                    "name": "fetch_url",
-                    "status": "ok",
-                    "url": fetch_result.get("url") or args.url,
-                    "content_type": fetch_result.get("content_type"),
-                },
-                {
-                    "name": "ingest_local",
-                    "status": "ok",
-                    "source_id": ingest_result.get("source_id"),
-                },
-                {
-                    "name": "rebuild",
-                    "status": "skipped",
-                    "reason": "v05-06_not_implemented",
-                },
-            ],
-            "summary": {
-                "message": "URL source fetched and ingested. Rebuild is intentionally skipped in v0.5-05.",
-                "next_action": "Run the v0.5-06 rebuild integration goal.",
-            },
-        }
-    )
-    return result
+    fetch_action = {
+        "name": "fetch_url",
+        "status": "ok",
+        "url": fetch_result.get("url") or args.url,
+        "content_type": fetch_result.get("content_type"),
+    }
+    return _successful_ingest_result(args, ingest_result, fetch_action=fetch_action, title=title)
 
 
 def _local_source_body(args: argparse.Namespace) -> str:
@@ -474,6 +418,162 @@ def _url_ingest_error_result(
         }
     )
     return result
+
+
+def _successful_ingest_result(
+    args: argparse.Namespace,
+    ingest_result: dict[str, Any],
+    *,
+    fetch_action: dict[str, Any] | None,
+    title: str | None = None,
+) -> dict[str, Any]:
+    result = _base_result(args)
+    canonical_path = ingest_result.get("canonical_path")
+    base_actions = [{"name": "validate_request", "status": "ok"}]
+    if fetch_action:
+        base_actions.append(fetch_action)
+    base_actions.append(
+        {
+            "name": "ingest_local",
+            "status": "ok",
+            "source_id": ingest_result.get("source_id"),
+        }
+    )
+
+    rebuild_result = _run_rebuild(args, ingest_result)
+    rebuild_actions = _normalize_rebuild_actions(rebuild_result)
+    last_error = _first_rebuild_error(rebuild_actions)
+    next_action = (
+        "Fix the rebuild error, then rerun process_source.py."
+        if last_error
+        else None
+    )
+
+    result.update(
+        {
+            "status": "partial" if rebuild_result.get("status") != "ok" else "ok",
+            "source_id": ingest_result.get("source_id"),
+            "title": title or ingest_result.get("title") or args.title,
+            "canonical_path": canonical_path,
+            "local_source_path": canonical_path,
+            "raw_path": ingest_result.get("raw_path"),
+            "content_hash": ingest_result.get("content_hash"),
+            "wiki_path": rebuild_result.get("wiki_path"),
+            "graph_status": _graph_status_from_rebuild(rebuild_actions),
+            "last_error": last_error,
+            "next_action": next_action,
+            "actions": base_actions + rebuild_actions,
+            "summary": {
+                "message": (
+                    "Source ingested and rebuilt."
+                    if not last_error
+                    else "Source ingested, but one or more rebuild steps failed."
+                ),
+                "next_action": next_action or "Review the generated Notion payload.",
+            },
+        }
+    )
+    _attach_notion_update(result)
+    return result
+
+
+def _run_rebuild(
+    args: argparse.Namespace,
+    ingest_result: dict[str, Any],
+) -> dict[str, Any]:
+    try:
+        return local_rebuild.rebuild_after_ingest(
+            ingest_result,
+            root_path=ROOT,
+            db_path=Path(args.db_path),
+            dry_run=False,
+        )
+    except Exception as exc:
+        return {
+            "status": "partial",
+            "source_id": ingest_result.get("source_id"),
+            "wiki_path": None,
+            "actions": [
+                {
+                    "action": "rebuild",
+                    "status": "failed",
+                    "message": str(exc),
+                }
+            ],
+            "summary": {"total": 1, "ok": 0, "partial": 0, "errors": 1, "skipped": 0},
+        }
+
+
+def _normalize_rebuild_actions(rebuild_result: dict[str, Any]) -> list[dict[str, Any]]:
+    normalized: list[dict[str, Any]] = []
+    for action in rebuild_result.get("actions", []):
+        status = str(action.get("status") or "")
+        name = str(action.get("name") or action.get("action") or "rebuild")
+        normalized_action: dict[str, Any] = {
+            "name": name,
+            "status": "error" if status == "failed" else status,
+        }
+        for key in (
+            "source_id",
+            "wiki_path",
+            "char_count",
+            "nodes",
+            "edges",
+            "message",
+            "error",
+            "error_type",
+            "reason",
+        ):
+            if key in action:
+                normalized_action[key] = action[key]
+        normalized.append(normalized_action)
+    return normalized
+
+
+def _first_rebuild_error(actions: list[dict[str, Any]]) -> str | None:
+    for action in actions:
+        if action.get("status") == "error":
+            return str(
+                action.get("error")
+                or action.get("message")
+                or f"{action.get('name', 'rebuild')} failed"
+            )
+    return None
+
+
+def _graph_status_from_rebuild(actions: list[dict[str, Any]]) -> str:
+    for action in actions:
+        if action.get("name") == "build_graph":
+            if action.get("status") == "ok":
+                return "built"
+            if action.get("status") == "error":
+                return "failed"
+            return str(action.get("status") or "pending")
+    return "pending"
+
+
+def _attach_notion_update(result: dict[str, Any]) -> None:
+    try:
+        payload = status_notification.build_notion_status_update(result)
+        payload["Last Processed"] = _now_iso()
+        payload.setdefault("Last Error", str(result.get("last_error") or ""))
+        payload.setdefault("Next Action", str(result.get("next_action") or ""))
+        result["notion_update"] = payload
+        result["actions"].append({"name": "build_notion_payload", "status": "ok"})
+    except Exception as exc:
+        result["notion_update"] = {}
+        result["last_error"] = str(exc)
+        result["actions"].append(
+            {
+                "name": "build_notion_payload",
+                "status": "error",
+                "error": str(exc),
+            }
+        )
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _print_json(result: dict[str, Any]) -> None:

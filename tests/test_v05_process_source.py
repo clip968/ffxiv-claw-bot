@@ -56,9 +56,11 @@ CREATE TABLE IF NOT EXISTS sources (
 
 
 def ensure_sources_schema(db_path: Path) -> None:
+    from tools.init_db import SCHEMA
+
     conn = sqlite3.connect(str(db_path))
     try:
-        conn.execute(SOURCES_SCHEMA)
+        conn.executescript(SCHEMA)
         conn.commit()
     finally:
         conn.close()
@@ -339,13 +341,20 @@ class V05ProcessSourceLocalIntegrationTests(unittest.TestCase):
                 result["content_hash"],
                 hashlib.sha256(body.encode("utf-8")).hexdigest(),
             )
-            self.assertEqual(result["graph_status"], "skipped")
+            self.assertEqual(result["graph_status"], "built")
+            self.assertEqual(
+                result["wiki_path"],
+                f"wiki/source_summaries/{result['source_id']}.md",
+            )
             self.assertEqual(
                 [(action["name"], action["status"]) for action in result["actions"]],
                 [
                     ("validate_request", "ok"),
                     ("ingest_local", "ok"),
-                    ("rebuild", "skipped"),
+                    ("compile_wiki", "ok"),
+                    ("index_fts", "ok"),
+                    ("build_graph", "ok"),
+                    ("build_notion_payload", "ok"),
                 ],
             )
             self.assertEqual(
@@ -356,6 +365,27 @@ class V05ProcessSourceLocalIntegrationTests(unittest.TestCase):
                 (repo_root / result["raw_path"]).read_text(encoding="utf-8"),
                 body,
             )
+            self.assertIn(
+                body,
+                (repo_root / result["wiki_path"]).read_text(encoding="utf-8"),
+            )
+            conn = sqlite3.connect(str(db_path))
+            try:
+                fts_row = conn.execute(
+                    "SELECT title, body FROM wiki_fts WHERE page_id = ?",
+                    (f"wiki_{result['source_id']}",),
+                ).fetchone()
+                graph_node_count = conn.execute("SELECT COUNT(*) FROM graph_nodes").fetchone()[0]
+                graph_edge_count = conn.execute("SELECT COUNT(*) FROM graph_edges").fetchone()[0]
+            finally:
+                conn.close()
+            self.assertIsNotNone(fts_row)
+            self.assertEqual(fts_row[0], "Raid mitigation note")
+            self.assertIn("Use Reprisal", fts_row[1])
+            self.assertGreaterEqual(graph_node_count, 2)
+            self.assertGreaterEqual(graph_edge_count, 1)
+            self.assertTrue((repo_root / "graph" / "nodes.json").exists())
+            self.assertTrue((repo_root / "graph" / "edges.json").exists())
 
     def test_process_markdown_file_ok(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -390,6 +420,8 @@ class V05ProcessSourceLocalIntegrationTests(unittest.TestCase):
             )
 
             self.assertEqual(result["status"], "ok")
+            self.assertEqual(result["graph_status"], "built")
+            self.assertTrue(result["wiki_path"].startswith("wiki/source_summaries/"))
             self.assertTrue(result["source_id"].startswith("local_"))
             self.assertEqual(result["local_source_path"], "sources/raid_guides/tower_guide.md")
             self.assertEqual(
@@ -434,6 +466,8 @@ class V05ProcessSourceLocalIntegrationTests(unittest.TestCase):
             )
 
             self.assertEqual(result["status"], "ok")
+            self.assertEqual(result["graph_status"], "built")
+            self.assertTrue(result["wiki_path"].startswith("wiki/source_summaries/"))
             self.assertTrue(result["source_id"].startswith("local_"))
             self.assertEqual(
                 result["local_source_path"],
@@ -544,18 +578,21 @@ class V05ProcessSourceUrlIntegrationTests(unittest.TestCase):
                 result["content_hash"],
                 hashlib.sha256(fetched_body.encode("utf-8")).hexdigest(),
             )
-            self.assertEqual(result["graph_status"], "skipped")
+            self.assertEqual(result["graph_status"], "built")
+            self.assertTrue(result["wiki_path"].startswith("wiki/source_summaries/"))
             self.assertEqual(
                 [(action["name"], action["status"]) for action in result["actions"]],
                 [
                     ("validate_request", "ok"),
                     ("fetch_url", "ok"),
                     ("ingest_local", "ok"),
-                    ("rebuild", "skipped"),
+                    ("compile_wiki", "ok"),
+                    ("index_fts", "ok"),
+                    ("build_graph", "ok"),
+                    ("build_notion_payload", "ok"),
                 ],
             )
             self.assertEqual(result["actions"][1]["url"], url)
-            self.assertEqual(result["actions"][3]["reason"], "v05-06_not_implemented")
             self.assertEqual(
                 (storage_root / result["local_source_path"]).read_text(encoding="utf-8"),
                 fetched_body,
@@ -666,3 +703,260 @@ class V05ProcessSourceUrlIntegrationTests(unittest.TestCase):
             finally:
                 conn.close()
             self.assertEqual(count, 0)
+
+
+class V05ProcessSourceRebuildIntegrationTests(unittest.TestCase):
+    def test_process_rebuild_error_returns_partial(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            local_rebuild = importlib.import_module("tools.local_rebuild")
+
+            with patch.object(local_rebuild, "rebuild_after_ingest") as rebuild:
+                rebuild.return_value = {
+                    "status": "partial",
+                    "source_id": "local_placeholder",
+                    "wiki_path": None,
+                    "actions": [
+                        {
+                            "action": "compile_wiki",
+                            "status": "failed",
+                            "message": "Source not found",
+                        },
+                        {
+                            "action": "index_fts",
+                            "status": "skipped",
+                            "message": "Skipped due to compile_wiki failure",
+                        },
+                        {
+                            "action": "build_graph",
+                            "status": "ok",
+                            "message": "Graph built",
+                        },
+                    ],
+                    "summary": {"total": 3, "ok": 1, "partial": 0, "errors": 1, "skipped": 1},
+                }
+
+                result = run_process_source_with_temp_root(
+                    self,
+                    [
+                        "--apply",
+                        "--source-type",
+                        "text_note",
+                        "--category",
+                        "personal_notes",
+                        "--title",
+                        "Rebuild failure note",
+                        "--body",
+                        "This source should still be saved.",
+                        "--storage-root",
+                        str(storage_root),
+                        "--db-path",
+                        str(db_path),
+                    ],
+                    repo_root,
+                )
+
+        rebuild.assert_called_once()
+        self.assertEqual(result["status"], "partial")
+        self.assertEqual(result["graph_status"], "built")
+        self.assertIsNone(result["wiki_path"])
+        self.assertEqual(
+            [(action["name"], action["status"]) for action in result["actions"]],
+            [
+                ("validate_request", "ok"),
+                ("ingest_local", "ok"),
+                ("compile_wiki", "error"),
+                ("index_fts", "skipped"),
+                ("build_graph", "ok"),
+                ("build_notion_payload", "ok"),
+            ],
+        )
+        self.assertIn("Source not found", result["last_error"])
+
+    def test_process_graph_failure_sets_graph_status_failed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            local_rebuild = importlib.import_module("tools.local_rebuild")
+
+            with patch.object(local_rebuild, "rebuild_after_ingest") as rebuild:
+                rebuild.return_value = {
+                    "status": "partial",
+                    "source_id": "local_placeholder",
+                    "wiki_path": "wiki/source_summaries/local_placeholder.md",
+                    "actions": [
+                        {
+                            "action": "compile_wiki",
+                            "status": "ok",
+                            "wiki_path": "wiki/source_summaries/local_placeholder.md",
+                        },
+                        {"action": "index_fts", "status": "ok"},
+                        {
+                            "action": "build_graph",
+                            "status": "failed",
+                            "message": "graph table missing",
+                        },
+                    ],
+                    "summary": {"total": 3, "ok": 2, "partial": 0, "errors": 1, "skipped": 0},
+                }
+
+                result = run_process_source_with_temp_root(
+                    self,
+                    [
+                        "--apply",
+                        "--source-type",
+                        "text_note",
+                        "--category",
+                        "personal_notes",
+                        "--title",
+                        "Graph failure note",
+                        "--body",
+                        "Wiki should remain usable if graph fails.",
+                        "--storage-root",
+                        str(storage_root),
+                        "--db-path",
+                        str(db_path),
+                    ],
+                    repo_root,
+                )
+
+        self.assertEqual(result["status"], "partial")
+        self.assertEqual(result["graph_status"], "failed")
+        self.assertEqual(result["wiki_path"], "wiki/source_summaries/local_placeholder.md")
+        self.assertIn("graph table missing", result["last_error"])
+        self.assertEqual(result["actions"][-2]["name"], "build_graph")
+        self.assertEqual(result["actions"][-2]["status"], "error")
+        self.assertEqual(result["actions"][-1]["name"], "build_notion_payload")
+        self.assertEqual(result["actions"][-1]["status"], "ok")
+
+
+class V05ProcessSourceNotionPayloadIntegrationTests(unittest.TestCase):
+    def test_process_notion_payload_excludes_body(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            body = "Sensitive strategy body that must stay out of Notion."
+
+            result = run_process_source_with_temp_root(
+                self,
+                [
+                    "--apply",
+                    "--source-type",
+                    "text_note",
+                    "--category",
+                    "personal_notes",
+                    "--title",
+                    "Notion payload body exclusion",
+                    "--body",
+                    body,
+                    "--storage-root",
+                    str(storage_root),
+                    "--db-path",
+                    str(db_path),
+                ],
+                repo_root,
+            )
+
+        payload = result["notion_update"]
+        self.assertEqual(result["status"], "ok")
+        self.assertIn("Status", payload)
+        self.assertIn("Graph Status", payload)
+        self.assertEqual(payload["Status"], "Graph Built")
+        self.assertEqual(payload["Graph Status"], "Built")
+        self.assertEqual(payload["Source ID"], result["source_id"])
+        self.assertEqual(payload["Local Source Path"], result["local_source_path"])
+        self.assertEqual(payload["Wiki Path"], result["wiki_path"])
+        self.assertIn("Last Processed", payload)
+        self.assertNotIn("body", payload)
+        self.assertNotIn("raw_html", payload)
+        self.assertNotIn("attachments", payload)
+        self.assertNotIn(body, json.dumps(payload, ensure_ascii=False))
+
+    def test_process_notion_payload_ok_graph_pending(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            local_rebuild = importlib.import_module("tools.local_rebuild")
+
+            with patch.object(local_rebuild, "rebuild_after_ingest") as rebuild:
+                rebuild.return_value = {
+                    "status": "ok",
+                    "source_id": "local_placeholder",
+                    "wiki_path": "wiki/source_summaries/local_placeholder.md",
+                    "actions": [
+                        {
+                            "action": "compile_wiki",
+                            "status": "ok",
+                            "wiki_path": "wiki/source_summaries/local_placeholder.md",
+                        },
+                        {"action": "index_fts", "status": "ok"},
+                    ],
+                    "summary": {"total": 2, "ok": 2, "partial": 0, "errors": 0, "skipped": 0},
+                }
+
+                result = run_process_source_with_temp_root(
+                    self,
+                    [
+                        "--apply",
+                        "--source-type",
+                        "text_note",
+                        "--category",
+                        "personal_notes",
+                        "--title",
+                        "Pending graph note",
+                        "--body",
+                        "Graph can be pending for this payload.",
+                        "--storage-root",
+                        str(storage_root),
+                        "--db-path",
+                        str(db_path),
+                    ],
+                    repo_root,
+                )
+
+        payload = result["notion_update"]
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["graph_status"], "pending")
+        self.assertIn("Status", payload)
+        self.assertIn("Graph Status", payload)
+        self.assertEqual(payload["Status"], "Indexed")
+        self.assertEqual(payload["Graph Status"], "Pending")
+
+
+class V05ProcessSourceRunbookTests(unittest.TestCase):
+    def test_process_source_runbook_documents_completed_v05_workflow(self) -> None:
+        runbook = Path("docs/runbooks/process-source.md").read_text(encoding="utf-8")
+
+        required_fragments = [
+            "wiki/FTS/graph rebuild",
+            "build_notion_payload",
+            "notion_update",
+            "Last Processed",
+            "Graph Built",
+            "python scripts/finish_task.py",
+            "No crawler",
+            "No scheduler",
+            "Notion API",
+        ]
+        for fragment in required_fragments:
+            self.assertIn(fragment, runbook)
+
+        self.assertNotIn("v05-06 rebuild execution is not implemented", runbook)
+        self.assertNotIn("v05-07 Notion success payload generation is not implemented", runbook)

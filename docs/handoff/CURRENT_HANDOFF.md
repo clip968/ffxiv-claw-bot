@@ -12,17 +12,17 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 
-v0.5-02, v0.5-03, v0.5-04, and v0.5-05 are implemented:
+v0.5-02 through v0.5-08 are implemented:
 
 - `docs/skills/ffxiv-source-processing.md` documents the OpenClaw Source Processing Skill contract.
 - `tools/process_source.py` exists with CLI parsing, validation, dry-run behavior, and JSON stdout contract.
 - `process_source.py --apply` now ingests `text_note`, `markdown_file`, and `plain_text_file` through Local Storage via `tools.ingest_local.ingest_source()`.
 - `process_source.py --apply --source-type url` now fetches exactly one user-provided URL via `tools.fetch_url.fetch_single_url()` and ingests the fetched body through Local Storage.
-- Rebuild execution and Notion success payload generation remain v0.5-06+ work and are intentionally not implemented yet.
+- Rebuild execution and Notion success payload generation are implemented. `process_source.py --apply` now runs ingest -> wiki/FTS/graph rebuild -> safe `notion_update` payload generation.
 
 v0.4 planning has been reframed from Google Drive write/publish to Local Storage + OpenClaw Notion direct control.
 
-The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest → rebuild → status payload in one call. The current implementation supports validation, dry-run, apply-mode Local Storage ingest for local text source types, and single URL fetch into Local Storage. Downstream rebuild and Notion payload work remains pending.
+The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest -> rebuild -> status payload in one call. The current implementation supports validation, dry-run, apply-mode Local Storage ingest for local text source types, single URL fetch into Local Storage, wiki/FTS/graph rebuild, and metadata-only Notion payload generation.
 
 Default source of truth for user-managed source files:
 
@@ -175,6 +175,50 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 7. **Git**
    - Code/test commit pushed: `34092fd Implement v05 local source processing`.
    - Documentation update follows the code/test commit because `CLAUDE.md` requires docs/handoff freshness before finish gate.
+
+### Current session update: v05-06/v05-07/v05-08 completed -- 2026-05-16
+
+1. **Scope**
+   - Implemented v05-06 rebuild integration, v05-07 Notion payload generation, and v05-08 tests/runbook/handoff cleanup.
+   - Did not implement Notion API direct calls, Notion polling, crawler, or scheduler behavior.
+
+2. **Red tests first**
+   - Added rebuild red tests in `tests/test_v05_process_source.py`; confirmed failures because `process_source.py` did not call `local_rebuild.rebuild_after_ingest()`.
+   - Added Notion payload red tests; confirmed failures because `notion_update` was empty.
+   - Added runbook red test; confirmed failure because `docs/runbooks/process-source.md` still described v05-06/v05-07 as unimplemented.
+
+3. **Implementation**
+   - `tools/process_source.py`
+     - Calls `tools.local_rebuild.rebuild_after_ingest()` after successful local or URL ingest.
+     - Merges `compile_wiki`, `index_fts`, and `build_graph` actions into the final JSON.
+     - Sets `graph_status=built`, `failed`, or `pending` from rebuild actions.
+     - Returns `status=partial` when ingest succeeded but rebuild failed.
+     - Builds metadata-only `notion_update` payload with `tools.status_notification.build_notion_status_update()`.
+     - Adds `Last Processed` and `build_notion_payload` action.
+   - `tools/local_rebuild.py`
+     - Passes `summary_dir=root_path/wiki/source_summaries` into `compile_for_source()` so temp-root rebuild tests produce the expected relative wiki path.
+
+4. **Docs updated**
+   - `docs/runbooks/process-source.md`: completed workflow, examples, JSON output, OpenClaw sequence, troubleshooting, and validation.
+   - `docs/runbooks/test.md`: v05-06/v05-07/v05-08 test coverage.
+   - `docs/plans/v05/README.md`: v05-06/07/08 marked Completed.
+   - `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md`: status and implementation notes.
+   - `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md`: status and implementation notes.
+   - `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md`: status and implementation notes.
+   - `docs/specs/0004-v05-source-processing-pipeline.md`: v05-06/v05-07 implementation notes.
+   - `docs/PROJECT_PROFILE.md`, `docs/FILE_INVENTORY.md`, and this handoff updated.
+
+5. **Verification**
+   - `python -m unittest tests.test_v05_process_source.V05ProcessSourceRebuildIntegrationTests -v`: OK.
+   - `python -m unittest tests.test_v05_process_source.V05ProcessSourceNotionPayloadIntegrationTests -v`: OK.
+   - `python -m unittest tests.test_v05_process_source.V05ProcessSourceRunbookTests -v`: OK.
+   - `python -m unittest tests.test_v05_process_source -v`: OK, 20 tests.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 122 tests.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `python scripts/finish_task.py`: finish_task ok.
+
+6. **Git**
+   - Commit and push requested by maintainer; pending after this handoff update is re-verified.
 
 ### Current session update: v05-05 URL integration implemented -- 2026-05-16
 
