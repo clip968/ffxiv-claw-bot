@@ -8,6 +8,8 @@
 
 ## Current Phase
 
+v0.4 implementation is in progress (v04-03 completed). v04-04 and v04-05 remain.
+
 v0.4 planning has been reframed from Google Drive write/publish to Local Storage + OpenClaw Notion direct control.
 
 Default source of truth for user-managed source files:
@@ -37,10 +39,9 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 7. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
 8. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
 9. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
-10. `docs/runbooks/local-storage.md`
-11. `docs/runbooks/openclaw-notion.md`
-
-Legacy Drive reference if needed:
+10. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
+11. `docs/runbooks/local-storage.md`
+12. `docs/runbooks/openclaw-notion.md`
 
 - `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-01-drive-write-foundation.md`
@@ -51,24 +52,25 @@ Legacy Drive reference if needed:
 
 ## This Session
 
-### Current session: v04-02 OpenClaw Notion Control Contract -- Implemented
+### Current session: v04-03 Ingest Local Note CLI -- Implemented
 
-1. Created `tools/openclaw_notion_control.py`:
-   - `build_notion_update(result)`: CLI result dict → Notion property payload dict.
-   - Status 매핑: `ok` → `Indexed`, graph_status `built` 시 → `Graph Built`.
-   - `body`, `attachments` 필드는 payload에서 제거 (블록리스튤 방식).
-   - Optional 필드: `last_processed`, `last_error`, `next_action` 지원.
-2. Red test → Green: `tests/test_v04_openclaw_notion_control.py` 1/1 pass.
+1. Created `tools/ingest_local.py`:
+   - CLI facade for OpenClaw/Discord request to Local Storage ingestion.
+   - `--dry-run` and `--apply` modes, JSON result output.
+   - Supports `--source-type`: `text_note`, `markdown_file`, `plain_text_file`, `url`, `binary_attachment`.
+   - Reuses `tools.sync_storage` helpers: `safe_path_part`, `local_source_id`, `VALID_CATEGORIES`, `LOCAL_REQUEST_SOURCE_TYPES`.
+   - Security: path traversal rejection, storage root existence check.
+2. Red test → Green: `tests/test_v04_ingest_local_cli.py` 1/1 pass.
 3. Updated docs:
-   - `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`: Status → Implemented, checklist 전 항목 체크, Red Test → Green, Implementation Notes 추가.
-   - `docs/runbooks/openclaw-notion.md`: CLI Result → Notion Payload Mapping 섹션 추가 (status 매핑 테이블, 필드 매핑 테이블, 블록리스트 필드 목록).
-   - `docs/runbooks/test.md`: v04-02 green 상태 반영.
-   - `docs/DOC_OWNERS.yml`: `openclaw-notion-control` rule 추가 (`tools/openclaw_notion_control.py` → `docs/runbooks/local-storage.md`).
+   - `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`: Status → Implemented, checklist 전 항목 체크, Implementation Notes 추가.
+   - `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`: v04-03 status → Implemented.
+   - `docs/runbooks/local-storage.md`: Ingest Local CLI 섹션 추가 (사용법, 지원 타입, dry-run action 목록).
+   - `docs/runbooks/test.md`: v04-03 green 상태 반영.
+   - `docs/DOC_OWNERS.yml`: `ingest-local-cli` rule 추가 (`tools/ingest_local.py` → `docs/runbooks/local-storage.md`).
    - `docs/handoff/CURRENT_HANDOFF.md`: 이 업데이트.
-4. Full test suite: 68 OK, 3 red (v04-03/04/05 미구현, 예정된 red 상태).
+4. Full test suite: 71 OK, 2 red (v04-04/05 미구현, 예정된 red 상태).
 
-### Previous session: v04 red tests and Local Storage consistency
-
+### Previous session: v04-02 OpenClaw Notion Control Contract -- Implemented
 1. Added v04 red test files and documented them in active v04 plan files:
    - `tests/test_v04_openclaw_notion_control.py` -> `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
    - `tests/test_v04_ingest_local_cli.py` -> `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
@@ -155,7 +157,7 @@ Drive-era v0.4 planning that was superseded:
 | 00 | `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md` | Local contract reframed |
 | 01 | `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md` | **Implemented** |
 | 02 | `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` | **Implemented** |
-| 03 | `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` | Proposed |
+| 03 | `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` | **Implemented** |
 | 04 | `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` | Proposed |
 | 05 | `docs/plans/v04/2026-05-14-v04-05-status-notification.md` | Proposed |
 | legacy | `docs/plans/v04/2026-05-14-v04-legacy-drive-integration.md` | Deferred |
@@ -241,22 +243,21 @@ python scripts/finish_task.py
 
 Results:
 
-- docs freshness: ok (`changed files: 29`, `code files: 0`)
-- finish_task: ok
-- unittest discover inside finish_task: 65 tests OK
-- Notion handoff dry-run: ok, mirror/index only
+- docs freshness: pending (will run finish_task.py as final gate)
+- unittest: 71 OK, 2 red (v04-04, v04-05 expected failures -- pending implementation)
 
 Workspace note:
 
-- `raw/local_storage/` is untracked and was not created by this documentation-only restructuring. It contains generated local snapshot files and was left untouched.
+- `raw/local_storage/` is untracked and contains generated local snapshot files.
+- `tools/ingest_local.py` is the new v04-03 implementation module.
+- No Drive files were modified.
 
 ## Next Work
 
 Recommended next implementation task:
 
 1. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` -- `compile_wiki.py`/`build_graph.py` 자동 rebuild 연결.
-2. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` -- OpenClaw/Discord request -> local ingest CLI facade.
-3. `docs/plans/v04/2026-05-14-v04-05-status-notification.md` -- 최종 result -> Notion status update + Discord/OpenClaw summary.
+2. `docs/plans/v04/2026-05-14-v04-05-status-notification.md` -- 최종 result -> Notion status update + Discord/OpenClaw summary.
 
 ## Do Not Touch Without Explicit Request
 

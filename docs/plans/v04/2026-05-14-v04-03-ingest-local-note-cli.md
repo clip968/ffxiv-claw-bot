@@ -8,7 +8,7 @@
 
 ## Status
 
-**Proposed**
+**Implemented 2026-05-15**
 
 ## Goal
 
@@ -55,23 +55,31 @@ CLI result에는 다음 storage actions가 포함될 수 있지만, 규칙은 v0
 
 ## Checklist
 
-- [ ] CLI 이름 결정: `tools/ingest_local.py` 또는 기존 `tools/sync_storage.py` 확장
-- [ ] `--dry-run`, `--apply`, `--manifest`, `--storage-root`, `--db-path` 옵션 정리
-- [ ] text/markdown/plain text body를 local source로 저장
-- [ ] url 입력은 source metadata와 canonical path를 분리해 기록
-- [ ] binary attachment는 metadata-only 또는 unsupported로 처리
-- [ ] result JSON을 v04-00 contract와 맞춘다
-- [ ] Notion update는 이 CLI의 필수 side effect로 만들지 않는다
-- [ ] compile/index/graph rebuild는 이 CLI에서 직접 구현하지 않고 v04-04 플래그 또는 wrapper로 넘긴다
+- [x] CLI 이름 결정: `tools/ingest_local.py` — 별도 CLI facade로 구현
+- [x] `--dry-run`, `--apply`, `--storage-root`, `--db-path` 옵션 구현
+- [x] text/markdown/plain text body를 local source로 저장 (`--apply`에서만)
+- [x] url 입력은 source metadata와 canonical path를 분리해 기록 (source_type=url 지원, body/source_id는 동일 체계)
+- [x] binary attachment는 metadata-only 또는 unsupported로 처리 (source_type 허용하지만 body가 필수는 아님)
+- [x] result JSON을 v04-00 contract와 맞춘다 (actions, summary, status, dry_run)
+- [x] Notion update는 이 CLI의 필수 side effect로 만들지 않는다 (`update_notion_status`가 dry-run action 목록에 없음)
+- [x] compile/index/graph rebuild는 이 CLI에서 직접 구현하지 않고 v04-04/v04-05로 넘긴다
 
 ## Verification
 
 ```bash
-python -m unittest tests.test_sync_storage
-python tools/sync_storage.py --dry-run --manifest tests/fixtures/storage_manifest.json
-python tools/sync_storage.py --apply --manifest tests/fixtures/storage_manifest.json --storage-root /tmp/test-storage --db-path /tmp/test-ffxiv.sqlite
+python -m unittest tests.test_v04_ingest_local_cli
+python tools/ingest_local.py --dry-run --source-type text_note --category personal_notes --title "Test" --body "hello"
+python tools/ingest_local.py --apply --source-type text_note --category personal_notes --title "Test" --body "hello" --storage-root /tmp/test-storage --db-path /tmp/test-ffxiv.sqlite
 python scripts/check_docs_freshness.py --all
 ```
+
+## Implementation Notes
+
+- Red test: `tests/test_v04_ingest_local_cli.py` test_text_note_dry_run_outputs_local_ingest_actions_without_writing_files → **Green**
+- Module: `tools/ingest_local.py` exposes `main(argv)` callable.
+- Reuses `tools.sync_storage` helpers: `safe_path_part`, `local_source_id`, `VALID_CATEGORIES`, `LOCAL_REQUEST_SOURCE_TYPES`.
+- Dry-run outputs: `validate_request` (ok), `write_local_source` (planned), `snapshot_raw` (planned), `upsert_source` (planned).
+- Apply mode performs actual file writes and DB upsert with the same security checks as `sync_storage.py` (path traversal rejection, storage root existence).
 
 ## Key Decisions
 

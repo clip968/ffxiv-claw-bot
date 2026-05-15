@@ -38,7 +38,7 @@ python -m unittest tests.test_v04_status_notification
 Current status:
 
 - `tests/test_v04_openclaw_notion_control.py` -> `tools/openclaw_notion_control.py` (**Green** 2026-05-15)
-- `tests/test_v04_ingest_local_cli.py` -> `tools/ingest_local.py` (Red: not yet implemented)
+- `tests/test_v04_ingest_local_cli.py` -> `tools/ingest_local.py` (**Green** 2026-05-15)
 - `tests/test_v04_local_rebuild.py` -> `tools/local_rebuild.py` (Red: not yet implemented)
 - `tests/test_v04_status_notification.py` -> `tools/status_notification.py` (Red: not yet implemented)
 

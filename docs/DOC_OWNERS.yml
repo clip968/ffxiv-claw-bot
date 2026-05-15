@@ -99,6 +99,14 @@ rules:
     procedure_docs:
       - "docs/runbooks/test.md"
 
+  - id: ingest-local-cli
+    paths:
+      - "tools/ingest_local.py"
+    contract_docs:
+      - "docs/runbooks/local-storage.md"
+    procedure_docs:
+      - "docs/runbooks/test.md"
+
   - id: docs-workflow-tooling
     paths:
       - "scripts/check_docs_freshness.py"

@@ -108,7 +108,7 @@ Drive legacy 오류 코드:
 | 00 | `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md` | [x] Local Storage result contract로 정리 완료 |
 | 01 | `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md` | [x] **Implemented** — sync_storage.py, path traversal 보안, manifest apply |
 | 02 | `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` | [x] **Implemented** — build_notion_update(), CLI→Notion status mapping |
-| 03 | `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` | [ ] Local ingest CLI |
+| 03 | `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` | [x] **Implemented** — ingest_local.py, dry-run/apply CLI facade |
 | 04 | `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` | [ ] Local publish/snapshot 후 rebuild |
 | 05 | `docs/plans/v04/2026-05-14-v04-05-status-notification.md` | [ ] Notion status + Discord 결과 알림 |
 | legacy | `docs/plans/v04/2026-05-14-v04-legacy-drive-integration.md` | [ ] Optional Drive integration 기록 |

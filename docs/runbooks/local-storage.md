@@ -145,6 +145,24 @@ Planned snapshot path:
 raw/local_storage/<category>/<safe_title>__<source_id>.<ext>
 ```
 
+## Ingest Local CLI (`tools/ingest_local.py`)
+
+v04-03 CLI facade for OpenClaw/Discord request to Local Storage ingestion.
+
+```bash
+# Dry-run: plan only, no writes
+python tools/ingest_local.py --dry-run --source-type text_note --category personal_notes --title "Raid note" --body "Use Reprisal"
+
+# Apply: write source, snapshot, upsert DB
+python tools/ingest_local.py --apply --source-type text_note --category personal_notes --title "Raid note" --body "Use Reprisal" --storage-root /mnt/d/ffixiv-bot-storage --db-path db/ffxiv.sqlite
+```
+
+Supports `--source-type`: `text_note`, `markdown_file`, `plain_text_file`, `url`, `binary_attachment`.
+
+Dry-run outputs these actions in order: `validate_request` → `write_local_source` → `snapshot_raw` → `upsert_source`.
+
+Result JSON follows v04-00 contract format with `actions`, `summary`, `status`, `dry_run`.
+
 ## Full Pipeline Target
 
 최종 목표 pipeline:
