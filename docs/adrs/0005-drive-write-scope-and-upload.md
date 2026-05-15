@@ -18,7 +18,7 @@ v0.3까지의 Google Drive 연동은 read-only sync/export/download 중심이었
 5. CLI 구조: `sync_drive.py`에 write를 추가할지, 별도 CLI로 분리할지
 
 관련 문서:
-- `docs/plans/v04/2026-05-14-v04-01-drive-write-foundation.md`
+- `docs/plans/v04/legacy/2026-05-14-v04-01-drive-write-foundation.md`
 - `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
 - `docs/specs/0003-google-drive-sync.md`
 - `docs/adrs/0002-drive-is-canonical-source.md`

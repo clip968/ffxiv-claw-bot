@@ -9,66 +9,95 @@
 
 이 프로젝트는 파이널판타지14 전용 로컬 지식 베이스와 OpenClaw/Discord agent를 만들기 위한 프로젝트다.
 
-목표는 단순 RAG 챗봇이 아니라, URL, 문서, 패치노트, 공대 자료를 지속적으로 저장하고 이를 raw archive, wiki markdown, SQLite FTS5, graph layer로 재구성한 뒤 근거 기반 답변을 제공하는 것이다.
+목표는 단순 RAG 챗봇이 아니다. URL, 문서, 패치노트, 공대 자료를 지속적으로 저장하고, 이를 raw archive, LLM Wiki markdown, SQLite FTS5, graph layer로 재구성한 뒤 근거 기반 답변을 제공한다.
+
+## Current Phase
+
+v0.3 Google Drive sync와 v0.4-01 Drive write foundation은 구현 완료 상태로 보존한다.
+
+2026-05-15 현재 기본 v0.4 운영 경로는 Google Drive write/publish가 아니라 `/mnt/d/ffixiv-bot-storage` 기반 Local Storage + OpenClaw Notion direct control이다.
+
+Drive 기반 sync/write 구조는 Legacy / Deferred / Optional Integration이다. 삭제하지 않는다.
+
+## Source of Truth
+
+- 원본 파일 저장소: `/mnt/d/ffixiv-bot-storage`
+- 문서 source of truth: repo `docs/`
+- 작업 관리/status/index layer: Notion
+- 처리용 snapshot: `raw/local_storage`
+- 파생 산출물: `wiki`, `graph`, `db/ffxiv.sqlite`
+
+Notion은 원본 파일 저장소가 아니다. Notion에는 local source path, category, source_id, processing status, wiki path, graph status, last error 같은 상태 metadata만 기록한다.
 
 ## Core Pipeline
 
 ```text
 Local storage / URL / Discord/OpenClaw request / Notion local path
-  -> raw/local_storage snapshot 또는 raw/urls 저장
-  -> sources DB 기록
-  -> wiki markdown 생성
-  -> SQLite FTS 색인
-  -> search_kb.py 검색
-  -> answer.py context pack 생성
-  -> graph 구축
-  -> graph path 포함 답변
+-> raw/local_storage snapshot 또는 raw/urls 저장
+-> sources DB upsert
+-> compile_wiki.py 로 LLM Wiki markdown 생성
+-> wiki_fts 색인
+-> build_graph.py 로 graph nodes/edges 생성
+-> search_kb.py 와 answer.py 에서 FTS + graph traversal 기반 답변
 ```
 
-## Current Phase
+원본을 단순 저장하지 않고 FFXIV 개념 단위 wiki로 재구성한다. wiki 문서에서 entity와 relation을 뽑아 graph를 만든다.
 
-v0.3 Google Drive sync와 v0.4-01 Drive write foundation은 구현 완료 상태로 보존한다.
-2026-05-14 이후 기본 운영 경로는 Google Drive가 아니라 `/mnt/d/ffixiv-bot-storage` 기반 Local Storage + OpenClaw Notion direct control로 전환한다.
+embedding/vector DB는 아직 도입하지 않는다.
 
-Drive 기반 sync/write 구조는 Legacy / Deferred / Optional Integration이다.
+## v0.4 Planning
+
+기본 v0.4 master plan:
+
+- `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
+
+Historical legacy master plan:
+
+- `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`
+
+Active v0.4 feature map:
+
+1. `v04-00-openclaw-ingest-contract`
+2. `v04-01-local-storage-foundation`
+3. `v04-02-openclaw-notion-control-contract`
+4. `v04-03-ingest-local-note-cli`
+5. `v04-04-local-publish-then-rebuild`
+6. `v04-05-status-notification`
+7. `v04-legacy-drive-integration`
 
 ## Key Tools
 
 - `tools/init_db.py`: SQLite schema 생성
 - `tools/ingest_url.py`: URL HTML 수집 및 raw 저장
-- `tools/compile_wiki.py`: raw HTML을 wiki markdown으로 변환하고 FTS 색인 갱신
-- `tools/search_kb.py`: SQLite FTS5 기반 검색 (graph_paths 포함)
-- `tools/answer.py`: 검색 결과 기반 context pack 및 근거 답변 출력
+- `tools/compile_wiki.py`: raw content를 wiki markdown으로 변환하고 FTS 색인 갱신
+- `tools/search_kb.py`: SQLite FTS5 기반 검색, graph_paths 포함
+- `tools/answer.py`: 검색 결과 기반 context pack과 근거 답변 출력
 - `tools/build_graph.py`: wiki/source 기반 deterministic graph 생성
 - `tools/graph_path.py`: graph 관계 조회
-- `tools/sync_storage.py`: Local Storage manifest dry-run sync skeleton (new/changed/unchanged/skipped 분류, JSON 출력)
-- `tools/sync_drive.py`: Google Drive 동기화 (Legacy / Deferred optional integration)
-- `tools/publish_drive.py`: Google Drive write/publish (Legacy / Deferred optional integration)
+- `tools/sync_storage.py`: Local Storage manifest dry-run/apply sync
+- `tools/sync_drive.py`: Google Drive sync, legacy optional integration
+- `tools/publish_drive.py`: Google Drive write/publish, legacy optional integration
 
 ## Development Principles
 
-1. 큰 기능을 한 번에 구현하지 않는다.
-2. 각 기능은 CLI에서 먼저 검증한다.
-3. Discord/OpenClaw 연결은 로컬 CLI 파이프라인이 안정화된 뒤 진행한다.
-4. v0.1~v0.3에서는 embedding을 추가하지 않는다.
-5. FFXIV 정보는 로컬 KB에 근거가 있을 때만 확정적으로 답한다.
-6. 출처 없는 패치 내용, 직업 변경점, BIS 정보는 생성하지 않는다.
-7. `/mnt/d/ffixiv-bot-storage`가 사람이 관리하는 원본 파일 저장소다.
-8. 로컬 `raw/local_storage`, `wiki`, `db`, FTS, graph는 재생성 가능한 파생 캐시다.
-9. Notion은 원본 파일 저장소가 아니라 OpenClaw가 직접 읽고 쓰는 작업 관리, 상태판, 문서 인덱스 계층이다.
-10. Google Drive 구현은 삭제하지 않고 Legacy / Deferred / Optional Integration으로 유지한다.
+1. 기능은 작은 CLI 단위로 먼저 검증한다.
+2. Discord/OpenClaw 연결은 로컬 CLI pipeline이 안정화된 뒤 진행한다.
+3. 행동이 바뀌는 코드 변경은 먼저 실패하는 unittest를 작성한다.
+4. `/mnt/d/ffixiv-bot-storage`가 사용자가 관리하는 원본 파일 저장소다.
+5. `raw/local_storage`, `wiki`, `db`, FTS, graph는 재생성 가능한 파생 계층이다.
+6. Notion은 파일 저장소가 아니라 OpenClaw control/status/index layer다.
+7. Google Drive 구현은 삭제하지 않고 Legacy / Deferred / Optional Integration으로 유지한다.
+8. embedding/vector DB는 별도 결정 전까지 도입하지 않는다.
+9. 출처 없는 패치 내용, 직업 변경점, BIS 정보는 생성하지 않는다.
+10. repo `docs/`가 구현 계약과 작업 흐름의 source of truth다.
 
-## Docs Structure (Source of Truth)
-
-GitHub repo `docs/`가 유일한 source of truth다.
+## Docs Structure
 
 - `docs/specs/`: 구현 계약
 - `docs/adrs/`: 기술 결정 이유
-- `docs/plans/`: 작업 계획 (임시)
-- `docs/runbooks/`: 실행 절차
+- `docs/plans/`: 작업 계획
+- `docs/runbooks/`: 반복 가능한 실행 절차
 - `docs/handoff/`: 다음 session 인계
-- `docs/archive/`: 오래된 문서 보관
+- `docs/archive/`: 현재 실행 대상이 아닌 과거 문서
 
-Notion은 더 이상 문서 source of truth가 아니다. Notion 내용은 2026-05-14에 모두 repo docs로 이관 완료되었다.
-
-OpenClaw는 Notion을 직접 다루되, Notion에는 원본 파일 자체를 올리지 않는다. Notion에는 local source path, category, source_id, processing status, wiki path, graph status, last error 같은 상태 metadata만 기록한다.
+Notion 문서보다 repo `docs/`를 우선한다. Notion에만 있는 정보는 stale할 수 있다고 간주한다.

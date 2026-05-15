@@ -1,58 +1,76 @@
 # FILE_INVENTORY - ffxiv-claw-bot
 
-이 문서는 AI가 다음 작업을 빠르게 이해하는 데 필요한 핵심 파일만 정리한다.
-전체 작업 트리 복제가 목적이 아니다.
+이 문서는 AI agent가 다음 작업을 빠르게 이해하는 데 필요한 핵심 파일만 정리한다.
 
 ## Core Tools
 
 | Path | Role | Status |
 |---|---|---|
-| `tools/init_db.py` | SQLite schema 생성 | 완료 |
-| `tools/ingest_url.py` | URL HTML 수집 및 raw 저장 | 완료 |
-| `tools/compile_wiki.py` | raw HTML -> wiki markdown 변환 및 FTS 색인 | 완료 |
-| `tools/search_kb.py` | `wiki_fts` 기반 검색 (graph_paths 포함) | 완료 |
-| `tools/answer.py` | 검색 결과 기반 context pack 및 근거 답변 출력 | 완료 |
-| `tools/build_graph.py` | wiki/source 기반 deterministic graph 생성 | 완료 |
-| `tools/graph_path.py` | graph 관계 조회 | 완료 |
-| `tools/sync_storage.py` | Local Storage manifest dry-run sync skeleton | v0.4-02 첫 slice 완료 |
-| `tools/sync_drive.py` | Google Drive 동기화 (manifest dry-run/apply, Drive API metadata 조회, export/download) | Legacy / Deferred optional integration |
+| `tools/init_db.py` | SQLite schema 생성 | Active |
+| `tools/ingest_url.py` | URL HTML 수집 및 raw 저장 | Active |
+| `tools/compile_wiki.py` | raw content -> wiki markdown 변환 및 FTS 색인 | Active |
+| `tools/search_kb.py` | `wiki_fts` 기반 검색, graph_paths 포함 | Active |
+| `tools/answer.py` | 검색 결과 기반 context pack과 근거 답변 출력 | Active |
+| `tools/build_graph.py` | wiki/source 기반 deterministic graph 생성 | Active |
+| `tools/graph_path.py` | graph 관계 조회 | Active |
+| `tools/sync_storage.py` | Local Storage manifest dry-run/apply sync | Active v0.4 local path |
+| `tools/sync_drive.py` | Google Drive sync | Legacy / Deferred optional integration |
 | `tools/publish_drive.py` | Google Drive write/publish | Legacy / Deferred optional integration |
 
 ## Data / Output
 
 | Path | Role | Status |
 |---|---|---|
-| `db/ffxiv.sqlite` | sources, wiki_pages, wiki_fts, graph 테이블 저장 | 생성 산출물 |
-| `raw/urls/` | 수집한 URL HTML 저장 | 생성 산출물 |
-| `/mnt/d/ffixiv-bot-storage/` | 사용자가 관리하는 원본 파일 저장소 | repo 외부 원본 |
-| `raw/local_storage/` | Local Storage 원본의 처리용 snapshot | 생성 산출물 |
+| `/mnt/d/ffixiv-bot-storage/` | 사용자가 관리하는 원본 파일 저장소 | External canonical source |
+| `raw/local_storage/` | Local Storage source의 처리용 snapshot | Derived cache |
+| `raw/urls/` | 수집한 URL HTML 저장 | Derived cache |
+| `db/ffxiv.sqlite` | sources, wiki_pages, wiki_fts, graph table 저장 | Derived local DB |
+| `wiki/source_summaries/` | source 단위 LLM Wiki markdown | Derived cache |
+| `graph/nodes.json` | graph node export | Derived cache |
+| `graph/edges.json` | graph edge export | Derived cache |
 | `raw/drive/` | Google Drive 문서 local cache | Legacy / Deferred optional integration |
-| `wiki/source_summaries/` | source 단위 wiki markdown 저장 | 생성 산출물 |
-| `graph/nodes.json` | graph node export | 생성 산출물 |
-| `graph/edges.json` | graph edge export | 생성 산출물 |
 
-## Docs (Source of Truth)
+## Docs Source of Truth
 
 | Path | Role |
 |---|---|
-| `docs/PROJECT_PROFILE.md` | 프로젝트 개요와 개발 원칙 |
-| `docs/FILE_INVENTORY.md` | 핵심 파일 인벤토리 |
+| `docs/PROJECT_PROFILE.md` | 프로젝트 개요와 현재 운영 원칙 |
+| `docs/FILE_INVENTORY.md` | 핵심 파일 inventory |
 | `docs/WORKFLOW.md` | 작업 흐름 규칙 |
-| `docs/README.md` | docs 디렉터리 개요 |
-| `docs/specs/0001-local-kb-pipeline.md` | v0.1 local KB pipeline spec |
-| `docs/specs/0002-graph-layer.md` | v0.2 graph layer spec |
-| `docs/specs/0003-google-drive-sync.md` | v0.3 Google Drive sync spec (Legacy / Deferred optional integration) |
+| `docs/README.md` | docs directory 개요 |
+| `docs/specs/0001-local-kb-pipeline.md` | local KB pipeline spec |
+| `docs/specs/0002-graph-layer.md` | graph layer spec |
+| `docs/specs/0003-google-drive-sync.md` | Google Drive sync spec, legacy optional integration |
 | `docs/adrs/0001-use-sqlite-fts-before-vector-db.md` | FTS 우선 결정 |
-| `docs/adrs/0002-drive-is-canonical-source.md` | Drive canonical source 결정 (superseded) |
+| `docs/adrs/0002-drive-is-canonical-source.md` | Drive canonical source 결정, superseded |
 | `docs/adrs/0003-notion-is-index-not-source-of-truth.md` | Notion index 결정 |
-| `docs/adrs/0004-dry-run-before-real-drive-api.md` | dry-run 우선 결정 |
-| `docs/adrs/0005-drive-write-scope-and-upload.md` | Drive write 결정 (Legacy / Deferred optional integration) |
+| `docs/adrs/0004-dry-run-before-real-drive-api.md` | Drive dry-run 우선 결정 |
+| `docs/adrs/0005-drive-write-scope-and-upload.md` | Drive write 결정, legacy optional integration |
 | `docs/adrs/0006-local-storage-and-notion-control.md` | Local Storage + Notion direct control 결정 |
 | `docs/runbooks/local-storage.md` | Local Storage ingest/sync 실행 절차 |
-| `docs/runbooks/openclaw-notion.md` | OpenClaw가 Notion 상태판을 직접 다루는 절차 |
-| `docs/plans/2026-05-14-post-v03-next-steps.md` | v0.3 이후 다음 단계 |
+| `docs/runbooks/openclaw-notion.md` | OpenClaw Notion direct control 실행 절차 |
+| `docs/runbooks/sync-drive.md` | Drive sync legacy runbook |
+| `docs/runbooks/publish-drive.md` | Drive publish legacy runbook |
+| `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md` | Active v0.4 master plan |
+| `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md` | Historical legacy v0.4 Drive-era master plan |
 | `docs/handoff/CURRENT_HANDOFF.md` | 현재 상태 handoff |
-| `docs/archive/notion/` | Notion에서 이관한 오래된 문서 (참고용) |
+
+## v0.4 Plan Files
+
+| Path | Role | Status |
+|---|---|---|
+| `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md` | Local Storage ingest request/result contract | Active |
+| `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md` | Local Storage foundation plan | Active proposed |
+| `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` | OpenClaw Notion control contract plan | Active proposed |
+| `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` | Local note ingest CLI plan | Active proposed |
+| `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md` | Local publish/snapshot/rebuild plan | Active proposed |
+| `docs/plans/v04/2026-05-14-v04-05-status-notification.md` | Notion status + Discord summary plan | Active proposed |
+| `docs/plans/v04/2026-05-14-v04-legacy-drive-integration.md` | Drive optional integration plan | Deferred |
+| `docs/plans/v04/legacy/2026-05-14-v04-01-drive-write-foundation.md` | Drive write foundation | Completed but deferred |
+| `docs/plans/v04/legacy/2026-05-14-v04-02-ingest-discord-note-cli.md` | Historical local ingest CLI slice | Historical |
+| `docs/plans/v04/legacy/2026-05-14-v04-03-openclaw-tool-adapter.md` | Drive-era adapter plan | Superseded |
+| `docs/plans/v04/legacy/2026-05-14-v04-04-publish-then-rebuild.md` | Drive-era publish/rebuild plan | Superseded |
+| `docs/plans/v04/legacy/2026-05-14-v04-05-discord-summary-notification.md` | Drive-era Discord summary plan | Superseded |
 
 ## Notion에 기록하지 않을 것
 
@@ -66,7 +84,8 @@
 - 임시 로그 파일
 - 테스트 출력 전문
 
-## 기록 원칙
+## Notion 기록 원칙
 
-Notion에는 핵심 엔트리포인트, local path, 처리 상태, 실패 사유, 다음 액션만 기록한다.
-실제 파일 내용은 `/mnt/d/ffixiv-bot-storage`, 문서 계약과 변경 이력은 GitHub/repo docs를 source of truth로 삼는다.
+Notion에는 인덱스 포인트, local path, 처리 상태, 실패 사유, 다음 액션만 기록한다.
+
+실제 파일 내용은 `/mnt/d/ffixiv-bot-storage`, 문서 계약과 변경 이력은 GitHub/repo docs를 source of truth로 따른다.

@@ -70,6 +70,34 @@ Notion은 원본 파일 저장소가 아니다. Notion은 OpenClaw가 직접 읽
 - 로컬 저장소 백업은 별도 운영 책임이다.
 - 기존 Drive 중심 문서와 계획은 legacy/deferred 상태로 해석해야 한다.
 
+## Alternatives Considered
+
+### Keep Google Drive as default canonical source
+
+기각한다. Drive를 기본 경로로 두면 OAuth, folder ID, 네트워크, 외부 cloud 상태가 저장 요청의 필수 의존성이 된다. Drive 구현은 이미 있으므로 삭제하지 않고 optional legacy integration으로 유지한다.
+
+### Use Notion as source file storage
+
+기각한다. Notion은 작업 관리와 상태판에는 적합하지만 원본 PDF, XLSX, DOCX, markdown, text 파일 저장소로 쓰면 stale surface가 커지고 repo docs source of truth 원칙이 약해진다.
+
+### Store original files inside the repo
+
+기각한다. 원본 파일을 repo 내부에 대량 저장하면 Git history가 커지고 binary/doc attachment 운영이 어려워진다. repo 내부 `raw/local_storage`, `wiki`, `graph`, `db/ffxiv.sqlite`는 파생 산출물로 둔다.
+
+### Add embedding/vector DB in v0.4
+
+기각한다. 현재 검색/답변 구조는 metadata + SQLite FTS + graph traversal을 우선한다. embedding/vector DB는 품질 필요성이 확인된 뒤 별도 ADR/spec으로 검토한다.
+
+## Migration Notes
+
+1. v0.4 기본 master plan은 `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`를 따른다.
+2. 기존 `docs/plans/2026-05-14-v04-openclaw-drive-ingest.md`는 historical legacy reference로 보존한다.
+3. v04-01 Drive Write Foundation은 completed but deferred 상태로 유지한다.
+4. v04-03, v04-04, v04-05 Drive-era plan은 superseded notice를 붙이고 새 Local Storage/Notion plan으로 대체한다.
+5. OpenClaw/Discord 저장 요청은 Local Storage result JSON을 기준으로 처리한다.
+6. Notion에는 `local path`, `category`, `source_id`, `processing status`, `wiki path`, `graph status`, `last error`만 기록한다.
+7. Drive URL, Drive file ID, Drive auth error는 legacy optional integration metadata로만 다룬다.
+
 ## Legacy / Deferred
 
 Google Drive 기반 sync/write 구조는 v0.4-01까지 구현되어 있으나, 현재 기본 운영 경로에서는 사용하지 않는다. 향후 외부 클라우드 동기화가 필요할 때 optional integration으로 재검토한다.

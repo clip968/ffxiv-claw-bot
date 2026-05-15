@@ -1,4 +1,18 @@
-# v0.4 Master Plan: OpenClaw Local Storage Ingest
+# v0.4 Legacy Master Plan: OpenClaw Drive Ingest
+
+## Legacy Notice
+
+This file is preserved as a historical v0.4 transition plan. It is no longer the default v0.4 master plan.
+
+Current default v0.4 planning lives in:
+
+`docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
+
+Google Drive write/publish remains a Legacy / Deferred / Optional Integration. The default source of truth for user-managed source files is `/mnt/d/ffixiv-bot-storage`; Notion is an OpenClaw control/status/index layer, not file storage.
+
+---
+
+# Historical v0.4 Master Plan: OpenClaw Local Storage Ingest
 
 Spec:
 - `docs/specs/01-architecture.md`
@@ -27,11 +41,11 @@ Google Drive 기반 sync/write 구조는 v0.4-01까지 구현되어 있으나, �
 | # | Plan | Status |
 |---|---|---|
 | 00 | `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md` | [x] Completed 2026-05-14, Drive 중심 계약은 legacy reference |
-| 01 | `docs/plans/v04/2026-05-14-v04-01-drive-write-foundation.md` | [x] Completed 2026-05-14, optional legacy integration |
-| 02 | `docs/plans/v04/2026-05-14-v04-02-ingest-discord-note-cli.md` | [ ] Local Storage ingest/sync 기본 경로로 전환 |
-| 03 | `docs/plans/v04/2026-05-14-v04-03-openclaw-tool-adapter.md` | [ ] OpenClaw Notion direct control adapter로 재정의 필요 |
-| 04 | `docs/plans/v04/2026-05-14-v04-04-publish-then-rebuild.md` | [ ] Local publish/snapshot 후 rebuild로 재정의 필요 |
-| 05 | `docs/plans/v04/2026-05-14-v04-05-discord-summary-notification.md` | [ ] Notion status + Discord 결과 알림으로 재정의 필요 |
+| 01 | `docs/plans/v04/legacy/2026-05-14-v04-01-drive-write-foundation.md` | [x] Completed 2026-05-14, optional legacy integration |
+| 02 | `docs/plans/v04/legacy/2026-05-14-v04-02-ingest-discord-note-cli.md` | Historical local ingest slice |
+| 03 | `docs/plans/v04/legacy/2026-05-14-v04-03-openclaw-tool-adapter.md` | Superseded by Local Storage/Notion plans |
+| 04 | `docs/plans/v04/legacy/2026-05-14-v04-04-publish-then-rebuild.md` | Superseded by Local Storage rebuild plan |
+| 05 | `docs/plans/v04/legacy/2026-05-14-v04-05-discord-summary-notification.md` | Superseded by status notification plan |
 
 ## v0.4 Default Goal
 

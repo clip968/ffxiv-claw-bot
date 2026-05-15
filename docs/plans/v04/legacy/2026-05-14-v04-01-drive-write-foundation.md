@@ -1,5 +1,13 @@
 # v0.4-01: Drive Write Foundation
 
+## Legacy / Deferred Notice
+
+This plan is completed and preserved, but it is no longer part of the default v0.4 operating path.
+
+Current default v0.4 planning uses `/mnt/d/ffixiv-bot-storage` as the canonical local source store and OpenClaw Notion direct control as the status/task/index layer. See `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`.
+
+`tools/publish_drive.py`, `tools/sync_drive.py`, and related tests remain available as Legacy / Deferred / Optional Integration for future cloud sync needs.
+
 ## Spec
 
 - `docs/specs/0003-google-drive-sync.md`

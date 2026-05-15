@@ -1,5 +1,11 @@
 # v0.4-03: OpenClaw Tool Adapter
 
+## Superseded Notice
+
+This Drive-era plan is superseded for the default v0.4 path.
+
+Use `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md` for the Notion control contract and `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md` for the Local Storage ingest CLI. Drive-related command mappings in this file are historical reference only.
+
 ## Spec
 
 - `docs/specs/01-architecture.md`
@@ -44,4 +50,3 @@ python tools/answer.py "흑마 7.5 변경점 알려줘"
 - OpenClaw adapter는 repo 내부 파일을 직접 쓰지 않는다.
 - 모든 side effect는 CLI tool의 `--apply` 경로에서만 발생한다.
 - OpenClaw 설정 schema가 불명확하면 먼저 조사 plan을 갱신한다.
-

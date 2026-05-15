@@ -1,5 +1,11 @@
 # v0.4-02: Local Storage Ingest CLI
 
+## Historical Notice
+
+This file records the first Local Storage ingest CLI implementation slice. Under the refreshed v0.4 feature map, the active implementation plan is `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`.
+
+The refreshed v04-02 slot is now `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`.
+
 ## Spec
 
 - `docs/specs/01-architecture.md`
@@ -9,7 +15,7 @@
 
 Legacy reference:
 - `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
-- `docs/plans/v04/2026-05-14-v04-01-drive-write-foundation.md`
+- `docs/plans/v04/legacy/2026-05-14-v04-01-drive-write-foundation.md`
 
 ## Status
 

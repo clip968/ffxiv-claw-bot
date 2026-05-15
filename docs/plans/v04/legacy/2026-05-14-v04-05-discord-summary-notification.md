@@ -1,5 +1,11 @@
 # v0.4-05: Discord Summary and Notification
 
+## Superseded Notice
+
+This Drive-era notification plan is superseded for the default v0.4 path.
+
+Use `docs/plans/v04/2026-05-14-v04-05-status-notification.md` for Local Storage, Notion status, and Discord/OpenClaw result messages. Drive link wording in this file is historical optional integration context only.
+
 ## Spec
 
 - `docs/specs/01-architecture.md`
@@ -44,4 +50,3 @@ python -m unittest discover -s tests -p "test_*.py"
 - Discord 사용자 메시지는 짧게 유지한다.
 - 자세한 진단은 JSON/log에 남기고 Discord에는 다음 행동만 노출한다.
 - 자동 요약 게시와 패치노트 자동 수집은 이 plan에서 구현하지 않는다.
-
