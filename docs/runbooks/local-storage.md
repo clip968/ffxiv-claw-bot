@@ -163,6 +163,8 @@ Dry-run outputs these actions in order: `validate_request` → `write_local_sour
 
 Result JSON follows v04-00 contract format with `actions`, `summary`, `status`, `dry_run`.
 
+`--apply` mode computes `content_hash = SHA-256(body)` and stores it in the `sources.content_hash` column (NOT NULL). Both INSERT and UPDATE paths include `content_hash`. Regression tests in `tests/test_v04_ingest_local_cli.py` verify this behavior.
+
 ## Full Pipeline Target
 
 최종 목표 pipeline:

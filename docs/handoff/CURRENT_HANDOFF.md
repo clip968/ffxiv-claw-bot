@@ -52,7 +52,24 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
-### Current session: v04-05 Status Notification -- Implemented
+### Current session: content_hash bugfix + regression test -- 2026-05-15
+
+1. OpenClaw Discord E2E smoke test exposed `sqlite3.IntegrityError: NOT NULL constraint failed: sources.content_hash` during `--apply`.
+   - Root cause: `_do_upsert_source()` INSERT and UPDATE SQL statements omitted `content_hash` column.
+2. OpenClaw agent applied temporary fix (add `hashlib.sha256` content_hash computation) to unblock the E2E run.
+3. Stabilized the fix in the repo:
+   - `tools/ingest_local.py`: `_do_upsert_source()` now computes `body_hash = hashlib.sha256((args.body or "").encode("utf-8")).hexdigest()` and includes it in both INSERT and UPDATE SQL statements.
+4. Added 2 regression tests in `tests/test_v04_ingest_local_cli.py`:
+   - `test_text_note_apply_stores_content_hash_on_insert` — verifies `--apply` stores non-NULL `content_hash` matching body SHA-256 on INSERT.
+   - `test_text_note_apply_stores_content_hash_on_update` — verifies `--apply` updates `content_hash` to match new body SHA-256 on UPDATE.
+5. Updated docs:
+   - `docs/runbooks/test.md`: content_hash regression tests documented, full suite count updated to 73.
+   - `docs/runbooks/local-storage.md`: content_hash behavior documented in Ingest Local CLI section.
+   - `docs/plans/v04/README.md`: note added about 3 tests in v04-03 test file.
+   - `docs/handoff/CURRENT_HANDOFF.md`: 이 업데이트.
+6. Full test suite: **73 tests, 0 reds** — +2 content_hash regression tests.
+
+### Previous session: v04-05 Status Notification -- Implemented
 
 1. Created `tools/status_notification.py`:
    - `format_discord_summary(result)` — produces short Korean plain-text Discord/OpenClaw-facing summary.
@@ -281,12 +298,23 @@ Do not introduce embedding/vector DB in the next task.
 Executed 2026-05-15:
 
 ```bash
-python -m unittest tests.test_v04_status_notification -v
+python -m unittest tests.test_v04_ingest_local_cli -v
 python -m unittest discover -s tests -p "test_*.py"
 python scripts/check_docs_freshness.py --all
 ```
 
-Results:
+Results (current session: content_hash bugfix):
+
+- Discord/OpenClaw E2E smoke test: **passed**
+- ingest_local dry-run: **passed**
+- ingest_local apply: **passed** (after content_hash fix)
+- content_hash NOT NULL 누락 버그 발견 및 수정
+- regression tests (x2) 추가: 1) INSERT content_hash 검증, 2) UPDATE content_hash 검증
+- v04 ingest CLI tests: **3/3 green** (original dry-run + 2 content_hash regression tests)
+- full suite: **73 tests, 0 reds** — +2 content_hash regression tests
+- Google Drive: not touched
+
+Previous verification (v04-05):
 
 - v04-05 test: **green** (1/1 pass)
 - full suite: **72 tests, 0 reds** — all v04 tests now green
@@ -296,20 +324,6 @@ Results:
 - `raw/local_storage/` remains untracked, generated content only.
 
 ## Next Work
-
-All five v04 feature plans are now **Implemented**. v0.4 core pipeline is complete:
-
-```text
-Discord/OpenClaw 저장 요청
--> validate_request
--> local source write
--> raw snapshot
--> DB upsert
--> compile_wiki / index_fts / build_graph
--> Notion status update + Discord summary
-```
-
-Recommended next direction:
 
 1. **Integration / End-to-End testing** — Wire together all five tools into a single pipeline flow.
 2. **OpenClaw agent integration** — Connect the tools to a real OpenClaw agent workflow.

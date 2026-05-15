@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sqlite3
 from pathlib import Path
@@ -301,6 +302,7 @@ def _do_upsert_source(
     canonical = _canonical_path(args.category, args.title, args.source_type)
     source_url = f"local://{canonical}"
     raw_rel = _raw_path(args.category, args.title, args.source_type, source_id)
+    body_hash = hashlib.sha256((args.body or "").encode("utf-8")).hexdigest()
 
     conn = sqlite3.connect(db_path)
     try:
@@ -313,18 +315,18 @@ def _do_upsert_source(
                 """
                 UPDATE sources
                    SET title = ?, source_url = ?, raw_path = ?,
-                       updated_at = ?
+                       content_hash = ?, updated_at = ?
                  WHERE id = ?
                 """,
-                (args.title, source_url, raw_rel, timestamp, source_id),
+                (args.title, source_url, raw_rel, body_hash, timestamp, source_id),
             )
             status = "updated"
         else:
             conn.execute(
                 """
                 INSERT INTO sources (id, source_type, title, source_url,
-                                     raw_path, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                                     raw_path, content_hash, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     source_id,
@@ -332,6 +334,7 @@ def _do_upsert_source(
                     args.title,
                     source_url,
                     raw_rel,
+                    body_hash,
                     timestamp,
                     timestamp,
                 ),

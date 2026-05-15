@@ -34,6 +34,8 @@ The active v0.4 plan files name the red test file for each implementation slice.
 | 04 | `tests/test_v04_local_rebuild.py` | `tools/local_rebuild.py` |
 | 05 | `tests/test_v04_status_notification.py` | `tools/status_notification.py` |
 
+Note: `tests/test_v04_ingest_local_cli.py` (v04-03) includes 3 tests as of 2026-05-15: the original dry-run test plus 2 content_hash regression tests (`test_text_note_apply_stores_content_hash_on_insert`, `test_text_note_apply_stores_content_hash_on_update`) that verify `--apply` stores SHA-256 in the `sources.content_hash` column.
+
 ## Legacy Folder
 
 `docs/plans/v04/legacy/`에는 현재 active feature map에서 제외된 과거 plan을 보관한다.

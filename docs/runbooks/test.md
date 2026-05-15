@@ -38,9 +38,20 @@ python -m unittest tests.test_v04_status_notification
 Current status:
 
 - `tests/test_v04_openclaw_notion_control.py` -> `tools/openclaw_notion_control.py` (**Green** 2026-05-15)
-- `tests/test_v04_ingest_local_cli.py` -> `tools/ingest_local.py` (**Green** 2026-05-15)
+- `tests/test_v04_ingest_local_cli.py` -> `tools/ingest_local.py` (**Green** 2026-05-15, 3 tests including content_hash regression)
 - `tests/test_v04_local_rebuild.py` -> `tools/local_rebuild.py` (**Green** 2026-05-15)
 - `tests/test_v04_status_notification.py` -> `tools/status_notification.py` (**Green** 2026-05-15)
+
+Full suite: **73 tests, 0 reds** (2026-05-15, +2 content_hash regression tests).
+
+### content_hash Regression Tests
+
+New in `tests/test_v04_ingest_local_cli.py`:
+
+- `test_text_note_apply_stores_content_hash_on_insert` — runs `--apply`, verifies `sources.content_hash` is not NULL and matches SHA-256 of the body.
+- `test_text_note_apply_stores_content_hash_on_update` — runs `--apply` twice with different bodies, verifies `content_hash` matches SHA-256 of the second body.
+
+These tests prevent the `NOT NULL constraint failed: sources.content_hash` bug from recurring (see v04 E2E smoke test findings).
 
 When these red tests are present and not yet implemented, full unittest discover is expected to fail on those planned v0.4 slices.
 
