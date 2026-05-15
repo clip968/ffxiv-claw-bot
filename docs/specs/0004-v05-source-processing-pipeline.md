@@ -445,6 +445,16 @@ v0.5에서는 arbitrary crawling을 하지 않는다.
 
 URL fetch 실패 시 ingest를 진행하지 않고 `status=error`를 반환한다.
 
+v0.5-05 구현 기준:
+
+- `tools.fetch_url.fetch_single_url()`이 단일 URL fetch를 담당한다.
+- `text/html`은 HTML title과 visible text로 변환한다.
+- `text/plain`, `application/json`, `+json`은 text body로 저장한다.
+- 지원하지 않는 content-type, HTTP 오류, 빈 body는 fetch error로 처리한다.
+- `process_source.py --apply --source-type url`은 fetch 결과 body를 `tools.ingest_local.ingest_source(source_type="url", ...)`로 전달한다.
+- URL fetch 성공 후 rebuild는 v05-06 전까지 `skipped`로 남긴다.
+- crawler, scheduler, search engine, sitemap, recursive crawling은 v05-05 범위가 아니다.
+
 ### 10.3 Local Ingest
 
 Local ingest는 기존 `ingest_local.py`의 로직을 재사용해야 한다.

@@ -82,6 +82,7 @@ When these red tests are present and not yet implemented, full unittest discover
 v0.5 source processing tests:
 
 ```bash
+python -m unittest tests.test_v05_fetch_url -v
 python -m unittest tests.test_v05_process_source -v
 ```
 
@@ -90,6 +91,8 @@ Current status:
 - `V05OpenClawSkillDocTests` -> `docs/skills/ffxiv-source-processing.md` (**Green** 2026-05-16)
 - `V05ProcessSourceSkeletonTests` -> `tools/process_source.py` (**Green** 2026-05-16)
 - `V05ProcessSourceLocalIntegrationTests` -> `tools/process_source.py`, `tools/ingest_local.py` (**Green** 2026-05-16)
+- `V05FetchUrlTests` -> `tools/fetch_url.py` (**Green** 2026-05-16)
+- `V05ProcessSourceUrlIntegrationTests` -> `tools/process_source.py`, `tools/fetch_url.py`, `tools/ingest_local.py` (**Green** 2026-05-16)
 
 Covered contract:
 
@@ -100,13 +103,28 @@ Covered contract:
 - `text_note` apply writes a Local Storage source, raw snapshot, source DB row, and returns `source_id`, `canonical_path`, `local_source_path`, `raw_path`, and `content_hash`.
 - `markdown_file` apply reads `--local-path`, writes the content to Local Storage, and creates a raw snapshot.
 - `plain_text_file` apply reads `--local-path`, writes the content to a canonical `.md` Local Storage path, and creates a `.md` raw snapshot.
+- `url` apply fetches exactly one mocked URL, writes fetched text to Local Storage, creates a raw snapshot, and skips rebuild until v05-06.
+- URL fetch supports mocked `text/html`, `text/plain`, `application/json`, `+json`, HTTP failure, and unsupported content-type behavior.
+- CLI `--title` overrides fetched URL title.
+- URL fetch failure does not write Local Storage files or DB rows.
 - ingest failure returns `status=error`, `graph_status=skipped`, and a skipped rebuild action.
 
 Out of scope for these tests:
 
-- URL fetch
 - wiki/FTS/graph rebuild
 - Notion payload generation beyond dry-run/error skeleton fields
+
+v05-05 regression tests added:
+
+- `tests/test_v05_fetch_url.py`
+  - `test_fetch_html_extracts_title_and_visible_text`
+  - `test_fetch_plain_text_uses_url_fallback_title`
+  - `test_fetch_unsupported_content_type_raises_url_fetch_error`
+  - `test_fetch_http_error_raises_url_fetch_error`
+- `tests/test_v05_process_source.py`
+  - `test_process_url_ok_fetches_single_url_and_ingests_local_storage`
+  - `test_process_url_prefers_cli_title_over_fetched_title`
+  - `test_process_url_fetch_fails_returns_error_without_ingest`
 
 v05-04 regression tests added:
 
@@ -115,7 +133,7 @@ v05-04 regression tests added:
 - `test_process_plain_text_file_ok`
 - `test_process_ingest_error_skips_rebuild`
 
-Full suite: **110 tests, 0 reds** (2026-05-16, +4 v05-04 local source integration tests).
+Full suite: **117 tests, 0 reds** (2026-05-16, +7 v05-05 URL integration tests).
 
 ## pytest
 

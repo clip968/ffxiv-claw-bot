@@ -6,7 +6,7 @@ Current implementation status:
 
 - v05-03: validation, dry-run, and JSON stdout contract are implemented.
 - v05-04: local text sources are connected to Local Storage ingest.
-- v05-05 URL fetch is not implemented.
+- v05-05 URL fetch is connected to Local Storage ingest for a single user-provided URL.
 - v05-06 rebuild execution is not implemented in `process_source.py`.
 - v05-07 Notion success payload generation is not implemented.
 
@@ -61,6 +61,41 @@ python tools/process_source.py \
 
 `--storage-root` must already exist. Missing storage roots fail with `status=error` and `graph_status=skipped`.
 
+## URL Source Apply
+
+Supported in v05-05:
+
+```bash
+python tools/process_source.py \
+  --apply \
+  --source-type url \
+  --category patch_notes \
+  --url "https://example.com/ffxiv/patch-note" \
+  --storage-root /mnt/d/ffixiv-bot-storage \
+  --db-path db/ffxiv.sqlite
+```
+
+Optional title override:
+
+```bash
+python tools/process_source.py \
+  --apply \
+  --source-type url \
+  --category patch_notes \
+  --title "Maintainer Provided Patch Title" \
+  --url "https://example.com/ffxiv/patch-note"
+```
+
+Behavior:
+
+- `tools.fetch_url.fetch_single_url()` fetches exactly the provided URL.
+- `text/html` is converted to visible text and title.
+- `text/plain`, `application/json`, and `+json` content are stored as text.
+- Unsupported content types fail before Local Storage ingest.
+- The fetched body is passed to `tools.ingest_local.ingest_source(source_type="url", ...)`.
+- Rebuild remains skipped with `reason=v05-06_not_implemented`.
+- No crawler, scheduler, search engine, sitemap, or recursive crawling behavior is part of v05-05.
+
 ## Output Contract
 
 Successful v05-04 local ingest returns JSON with:
@@ -106,6 +141,37 @@ Ingest failure returns:
 }
 ```
 
+Successful v05-05 URL ingest returns the same core fields plus a `fetch_url` action:
+
+```json
+{
+  "status": "ok",
+  "dry_run": false,
+  "source_id": "local_...",
+  "source_type": "url",
+  "category": "patch_notes",
+  "title": "Patch 7.5 Notes",
+  "local_source_path": "sources/patch_notes/patch_7.5_notes.md",
+  "raw_path": "raw/local_storage/patch_notes/patch_7.5_notes__local_....md",
+  "content_hash": "sha256...",
+  "wiki_path": null,
+  "graph_status": "skipped",
+  "actions": [
+    {"name": "validate_request", "status": "ok"},
+    {"name": "fetch_url", "status": "ok", "url": "https://example.com/ffxiv/patch-note"},
+    {"name": "ingest_local", "status": "ok", "source_id": "local_..."},
+    {"name": "rebuild", "status": "skipped", "reason": "v05-06_not_implemented"}
+  ],
+  "notion_update": {},
+  "summary": {
+    "message": "URL source fetched and ingested. Rebuild is intentionally skipped in v0.5-05.",
+    "next_action": "Run the v0.5-06 rebuild integration goal."
+  }
+}
+```
+
+Fetch failure returns `status=error`, `source_id=null`, `graph_status=skipped`, `fetch_url=error`, `ingest_local=skipped`, and `rebuild=skipped`.
+
 ## Storage Behavior
 
 `process_source.py` delegates storage rules to `tools.ingest_local.ingest_source()`.
@@ -129,6 +195,7 @@ raw/local_storage/{category}/{title_slug}__{source_id}.md
 Focused tests:
 
 ```bash
+python -m unittest tests.test_v05_fetch_url -v
 python -m unittest tests.test_v05_process_source -v
 ```
 

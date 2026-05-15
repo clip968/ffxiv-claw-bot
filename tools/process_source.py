@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tools import ingest_local
+from tools.fetch_url import fetch_single_url
 from tools.sync_storage import DB_PATH, DEFAULT_STORAGE_ROOT
 
 
@@ -49,6 +50,10 @@ def main(argv: list[str] | None = None) -> None:
 
     if args.source_type in {"text_note", "markdown_file", "plain_text_file"}:
         _print_json(_apply_local_source(args))
+        return
+
+    if args.source_type == "url":
+        _print_json(_apply_url_source(args))
         return
 
     _print_json(
@@ -260,6 +265,67 @@ def _apply_local_source(args: argparse.Namespace) -> dict[str, Any]:
     return result
 
 
+def _apply_url_source(args: argparse.Namespace) -> dict[str, Any]:
+    try:
+        fetch_result = fetch_single_url(args.url)
+    except Exception as exc:
+        return _url_fetch_error_result(args, str(exc))
+
+    title = args.title or fetch_result.get("title") or "untitled"
+    ingest_result = ingest_local.ingest_source(
+        source_type="url",
+        category=args.category,
+        title=title,
+        body=fetch_result.get("body", ""),
+        storage_root=Path(args.storage_root),
+        db_path=Path(args.db_path),
+        root_path=ROOT,
+        dry_run=False,
+    )
+
+    if ingest_result.get("status") != "ok":
+        return _url_ingest_error_result(args, title, fetch_result, ingest_result)
+
+    result = _base_result(args)
+    canonical_path = ingest_result.get("canonical_path")
+    result.update(
+        {
+            "status": "ok",
+            "source_id": ingest_result.get("source_id"),
+            "title": title,
+            "canonical_path": canonical_path,
+            "local_source_path": canonical_path,
+            "raw_path": ingest_result.get("raw_path"),
+            "content_hash": ingest_result.get("content_hash"),
+            "graph_status": "skipped",
+            "actions": [
+                {"name": "validate_request", "status": "ok"},
+                {
+                    "name": "fetch_url",
+                    "status": "ok",
+                    "url": fetch_result.get("url") or args.url,
+                    "content_type": fetch_result.get("content_type"),
+                },
+                {
+                    "name": "ingest_local",
+                    "status": "ok",
+                    "source_id": ingest_result.get("source_id"),
+                },
+                {
+                    "name": "rebuild",
+                    "status": "skipped",
+                    "reason": "v05-06_not_implemented",
+                },
+            ],
+            "summary": {
+                "message": "URL source fetched and ingested. Rebuild is intentionally skipped in v0.5-05.",
+                "next_action": "Run the v0.5-06 rebuild integration goal.",
+            },
+        }
+    )
+    return result
+
+
 def _local_source_body(args: argparse.Namespace) -> str:
     if args.source_type == "text_note":
         return args.body or ""
@@ -315,6 +381,99 @@ def _ingest_error_message(ingest_result: dict[str, Any]) -> str:
         if action.get("status") in {"failed", "error"}:
             return str(action.get("message") or action.get("error") or "Local ingest failed.")
     return "Local ingest failed."
+
+
+def _url_fetch_error_result(args: argparse.Namespace, error_message: str) -> dict[str, Any]:
+    result = _base_result(args)
+    result.update(
+        {
+            "status": "error",
+            "graph_status": "skipped",
+            "actions": [
+                {"name": "validate_request", "status": "ok"},
+                {
+                    "name": "fetch_url",
+                    "status": "error",
+                    "url": args.url,
+                    "error": error_message,
+                },
+                {
+                    "name": "ingest_local",
+                    "status": "skipped",
+                    "reason": "upstream_fetch_error",
+                },
+                {
+                    "name": "rebuild",
+                    "status": "skipped",
+                    "reason": "upstream_fetch_error",
+                },
+            ],
+            "notion_update": {
+                "Status": "Error",
+                "Graph Status": "Skipped",
+                "Last Error": error_message,
+                "Next Action": "Fix the URL fetch error, then rerun process_source.py.",
+            },
+            "summary": {
+                "message": "URL fetch failed. Local ingest was skipped.",
+                "next_action": "Fix the URL fetch error, then rerun process_source.py.",
+            },
+        }
+    )
+    return result
+
+
+def _url_ingest_error_result(
+    args: argparse.Namespace,
+    title: str,
+    fetch_result: dict[str, Any],
+    ingest_result: dict[str, Any],
+) -> dict[str, Any]:
+    error_message = _ingest_error_message(ingest_result)
+    result = _base_result(args)
+    canonical_path = ingest_result.get("canonical_path")
+    result.update(
+        {
+            "status": "error",
+            "source_id": ingest_result.get("source_id"),
+            "title": title,
+            "canonical_path": canonical_path,
+            "local_source_path": canonical_path,
+            "raw_path": ingest_result.get("raw_path"),
+            "content_hash": ingest_result.get("content_hash"),
+            "graph_status": "skipped",
+            "actions": [
+                {"name": "validate_request", "status": "ok"},
+                {
+                    "name": "fetch_url",
+                    "status": "ok",
+                    "url": fetch_result.get("url") or args.url,
+                    "content_type": fetch_result.get("content_type"),
+                },
+                {
+                    "name": "ingest_local",
+                    "status": "error",
+                    "error": error_message,
+                },
+                {
+                    "name": "rebuild",
+                    "status": "skipped",
+                    "reason": "upstream_ingest_error",
+                },
+            ],
+            "notion_update": {
+                "Status": "Error",
+                "Graph Status": "Skipped",
+                "Last Error": error_message,
+                "Next Action": "Fix the local ingest error, then rerun process_source.py.",
+            },
+            "summary": {
+                "message": "URL was fetched, but local ingest failed. Rebuild was skipped.",
+                "next_action": "Fix the local ingest error, then rerun process_source.py.",
+            },
+        }
+    )
+    return result
 
 
 def _print_json(result: dict[str, Any]) -> None:

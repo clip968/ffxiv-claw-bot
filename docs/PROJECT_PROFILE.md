@@ -13,7 +13,7 @@
 
 ## Current Phase
 
-v0.4 implementation is complete. v0.5 planning is complete.
+v0.4 implementation is complete. v0.5 planning is complete. v0.5-02 through v0.5-05 are implemented.
 
 2026-05-15 현재 기본 v0.4 운영 경로는 Google Drive write/publish가 아니라 `/mnt/d/ffixiv-bot-storage` 기반 Local Storage + OpenClaw Notion direct control이다.
 
@@ -54,10 +54,10 @@ Active v0.5 spec and plans:
 - `docs/specs/0004-v05-source-processing-pipeline.md`
 - `docs/plans/v05/README.md`
 - `docs/plans/v05/2026-05-16-v05-01-spec-and-plan.md` (Completed)
-- `docs/plans/v05/2026-05-16-v05-02-openclaw-skill-draft.md` (Pending)
-- `docs/plans/v05/2026-05-16-v05-03-process-source-skeleton.md` (Pending)
-- `docs/plans/v05/2026-05-16-v05-04-local-source-integration.md` (Pending)
-- `docs/plans/v05/2026-05-16-v05-05-url-integration.md` (Pending)
+- `docs/plans/v05/2026-05-16-v05-02-openclaw-skill-draft.md` (Completed)
+- `docs/plans/v05/2026-05-16-v05-03-process-source-skeleton.md` (Completed)
+- `docs/plans/v05/2026-05-16-v05-04-local-source-integration.md` (Completed)
+- `docs/plans/v05/2026-05-16-v05-05-url-integration.md` (Completed)
 - `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md` (Pending)
 - `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` (Pending)
 - `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` (Pending)
@@ -86,6 +86,7 @@ Active v0.4 feature map:
 
 - `tools/init_db.py`: SQLite schema 생성
 - `tools/ingest_url.py`: URL HTML 수집 및 raw 저장
+- `tools/fetch_url.py`: v0.5 단일 URL fetch, title/body 추출, content-type 검증
 - `tools/compile_wiki.py`: raw content를 wiki markdown으로 변환하고 FTS 색인 갱신
 - `tools/search_kb.py`: SQLite FTS5 기반 검색, graph_paths 포함
 - `tools/answer.py`: 검색 결과 기반 context pack과 근거 답변 출력
@@ -95,9 +96,9 @@ Active v0.4 feature map:
 - `tools/sync_drive.py`: Google Drive sync, legacy optional integration
 - `tools/publish_drive.py`: Google Drive write/publish, legacy optional integration
 
-### v0.5 New Tools (planned, not yet implemented)
+### v0.5 New Tools
 
-- `tools/process_source.py`: source 하나를 ingest → rebuild → status payload까지 처리하는 통합 entrypoint
+- `tools/process_source.py`: source 하나를 처리하는 통합 entrypoint. 현재 text/file/url ingest를 지원하고 rebuild/status payload는 후속 v05 task 범위다.
 
 ## Development Principles
 

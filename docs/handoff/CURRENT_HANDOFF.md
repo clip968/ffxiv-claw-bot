@@ -12,16 +12,17 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 
-v0.5-02, v0.5-03, and v0.5-04 are implemented:
+v0.5-02, v0.5-03, v0.5-04, and v0.5-05 are implemented:
 
 - `docs/skills/ffxiv-source-processing.md` documents the OpenClaw Source Processing Skill contract.
 - `tools/process_source.py` exists with CLI parsing, validation, dry-run behavior, and JSON stdout contract.
 - `process_source.py --apply` now ingests `text_note`, `markdown_file`, and `plain_text_file` through Local Storage via `tools.ingest_local.ingest_source()`.
-- URL fetch, rebuild execution, and Notion success payload generation remain v0.5-05+ work and are intentionally not implemented yet.
+- `process_source.py --apply --source-type url` now fetches exactly one user-provided URL via `tools.fetch_url.fetch_single_url()` and ingests the fetched body through Local Storage.
+- Rebuild execution and Notion success payload generation remain v0.5-06+ work and are intentionally not implemented yet.
 
 v0.4 planning has been reframed from Google Drive write/publish to Local Storage + OpenClaw Notion direct control.
 
-The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest → rebuild → status payload in one call. The current implementation supports validation, dry-run, and apply-mode Local Storage ingest for the three local text source types. Downstream URL fetch, rebuild, and Notion payload work remains pending.
+The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest → rebuild → status payload in one call. The current implementation supports validation, dry-run, apply-mode Local Storage ingest for local text source types, and single URL fetch into Local Storage. Downstream rebuild and Notion payload work remains pending.
 
 Default source of truth for user-managed source files:
 
@@ -174,6 +175,45 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 7. **Git**
    - Code/test commit pushed: `34092fd Implement v05 local source processing`.
    - Documentation update follows the code/test commit because `CLAUDE.md` requires docs/handoff freshness before finish gate.
+
+### Current session update: v05-05 URL integration implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented only v0.5-05.
+   - Added single user-provided URL fetch and connected it to Local Storage ingest.
+   - Did not implement crawler, scheduler, search engine usage, sitemap parsing, recursive crawling, rebuild execution, or Notion success payload generation.
+
+2. **Red tests first**
+   - Added `tests/test_v05_fetch_url.py`.
+   - Added URL integration tests to `tests/test_v05_process_source.py`.
+   - Confirmed red failures: `tools.fetch_url` missing and `process_source.py` URL apply path not connected.
+
+3. **Implementation**
+   - `tools/fetch_url.py`
+     - Added `fetch_single_url()` and `UrlFetchError`.
+     - Supports `text/html`, `text/plain`, `application/json`, and `+json`.
+     - Extracts HTML title and visible text using existing `tools.html_utils`.
+     - Uses `requests` when installed and stdlib `urllib` fallback otherwise.
+   - `tools/process_source.py`
+     - Connects `--apply --source-type url` to `fetch_single_url()`.
+     - Sends fetched body into `tools.ingest_local.ingest_source(source_type="url", ...)`.
+     - Emits `fetch_url`, `ingest_local`, and skipped `rebuild` actions.
+     - Fetch failure returns `status=error`, `source_id=null`, `graph_status=skipped`, and does not ingest.
+
+4. **Docs updated**
+   - `docs/plans/v05/2026-05-16-v05-05-url-integration.md`: Status Completed, checklist, implementation notes, verification results.
+   - `docs/plans/v05/README.md`: v05-05 status Completed.
+   - `docs/specs/0004-v05-source-processing-pipeline.md`: v05-05 URL behavior note.
+   - `docs/runbooks/process-source.md`: URL apply usage and output behavior.
+   - `docs/runbooks/test.md`: v05-05 test coverage and full suite count.
+   - `docs/PROJECT_PROFILE.md` and `docs/FILE_INVENTORY.md`: v05-05 current file/status updates.
+   - `docs/handoff/CURRENT_HANDOFF.md`: this update.
+
+5. **Verification**
+   - `python -m unittest tests.test_v05_fetch_url -v`: **4 tests, OK**.
+   - `python -m unittest tests.test_v05_process_source -v`: **15 tests, OK**.
+   - `python -m py_compile tools/fetch_url.py tools/process_source.py`: **OK**.
+   - `python -m unittest discover -s tests -p "test_*.py"`: **117 tests, OK**.
 
 ### Previous session: v04 final cleanup -- 2026-05-16
 

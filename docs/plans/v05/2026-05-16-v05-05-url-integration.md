@@ -4,75 +4,111 @@
 
 - Master plan: `docs/plans/v05/README.md`
 - Pipeline spec: `docs/specs/0004-v05-source-processing-pipeline.md`
-- Sections: [Sec 5] Supported Source Types (url), [Sec 10.2] URL Fetch, [Sec 14.2] Fetch Error, [Sec 16] URL Policy
+- Sections: Supported Source Types (`url`), URL Fetch, Fetch Error, URL Policy
 
 ## Status
 
-**Pending**
+**Completed** 2026-05-16
 
 ## Goal
 
-`process_source.py`가 사용자가 제공한 단일 URL을 fetch하고, 결과를 Local Storage에 저장할 수 있도록 한다.
+Connect a user-provided single URL to the v0.5 source pipeline:
+
+```text
+provided URL -> fetch text content -> Local Storage ingest -> JSON result
+```
 
 ## Scope
 
-- URL fetch helper 구현 (HTTP GET → status/content-type/content)
-- content-type 기반 body 추출:
-  - text/html → HTML title 추출 + main text 추출 (html2text 또는 regex)
-  - text/plain → 그대로 사용
-  - application/json → 그대로 사용
-  - 기타 content-type → error
-- Title extraction: HTML `<title>` 태그 → `--title` CLI override → URL domain+path fallback
-- URL → Local ingest 연결
-- 저장 위치: `{storage_root}/sources/{category}/{url_slug}.md`
-- fetch 실패 시 `status=error`, source_id=null
+- Implement a URL fetch helper.
+- Fetch exactly one user-provided URL.
+- Support `text/html`, `text/plain`, `application/json`, and `+json` content.
+- Extract HTML title and visible text for HTML pages.
+- Preserve plain text and JSON bodies as text.
+- Prefer CLI `--title` over fetched title.
+- Use URL domain + path as fallback title.
+- Connect fetched body to Local Storage through `tools.ingest_local.ingest_source()`.
+- Return `status=error`, `source_id=null`, and skipped ingest/rebuild on fetch failure.
 
 Out of scope:
 
-- 재귀 URL fetch
-- sitemap parsing
-- 크롤링
-- 인증이 필요한 URL
+- Crawlers
+- Recursive crawling
+- Sitemap parsing
+- Scheduler or daemon behavior
+- Search engine usage
+- Auth-required URLs
+- Rebuild integration, owned by v05-06
+- Notion success payload generation, owned by v05-07
 
-## Red Test
+## Red Tests
 
 - File: `tests/test_v05_fetch_url.py`, `tests/test_v05_process_source.py`
 - Implementation target: `tools/fetch_url.py`, `tools/process_source.py`
-- Current red reason: fetch_url module does not exist, process_source.py URL path not connected.
-- Contract fixed by the test:
-  - Mock HTTP GET으로 URL fetch 성공 시 source_id 반환.
-  - Mock fetch 실패 시 error JSON 반환.
-  - 지원하지 않는 content-type 처리.
+- Initial red reason: `tools.fetch_url` did not exist and `process_source.py` did not connect `source_type=url` apply mode.
+
+Contracts fixed by the tests:
+
+- URL fetch succeeds with mocked HTTP GET and extracts title/body.
+- Unsupported content type raises `UrlFetchError`.
+- HTTP/status errors raise `UrlFetchError`.
+- `process_source.py --apply --source-type url` calls a mocked `fetch_single_url()` exactly once for the provided URL.
+- URL fetch success creates a Local Storage source and raw snapshot.
+- URL fetch failure does not write Local Storage files or DB rows.
+- CLI `--title` overrides the fetched title.
 
 ## Checklist
 
-- [ ] `tools/fetch_url.py` 또는 기존 fetch 함수 확인
-- [ ] URL fetch 함수 구현 (HTTP GET → status/content-type/content)
-- [ ] text/html → HTML title 추출 + main text 추출 (html2text 또는 regex)
-- [ ] text/plain → 그대로 사용
-- [ ] application/json → 그대로 사용
-- [ ] 기타 content-type → error
-- [ ] HTML 문서에서 `<title>` 태그 추출
-- [ ] `--title`이 CLI로 제공된 경우 제공된 title 우선
-- [ ] title이 없으면 URL domain + path 기반 생성
-- [ ] fetch 결과 body를 `ingest_local._do_ingest()`로 전달
-- [ ] source_type은 `url`, category는 사용자 제공 category
-- [ ] 저장 위치: `{storage_root}/sources/{category}/{url_slug}.md`
-- [ ] fetch 실패 시 `status=error`, source_id=null
-- [ ] `test_process_url_ok` — 목 fetch로 url 처리 성공 검증
-- [ ] `test_process_url_fetch_fails_returns_error` — fetch 실패 시 error
-- [ ] `test_fetch_url_unsupported_content_type` — 지원 않는 content-type 처리
+- [x] Add `tools/fetch_url.py`.
+- [x] Implement `fetch_single_url()`.
+- [x] Add `UrlFetchError`.
+- [x] Support `text/html`.
+- [x] Support `text/plain`.
+- [x] Support `application/json` and `+json`.
+- [x] Reject unsupported content types.
+- [x] Extract HTML `<title>`.
+- [x] Extract visible HTML body text.
+- [x] Use URL domain + path fallback title.
+- [x] Prefer process_source CLI `--title`.
+- [x] Connect URL fetch result to `ingest_local.ingest_source(source_type="url", ...)`.
+- [x] Preserve `source_type=url` in process_source output.
+- [x] Skip rebuild with `reason=v05-06_not_implemented`.
+- [x] Add mocked URL fetch unit tests.
+- [x] Add mocked process_source URL integration tests.
+- [x] Avoid crawler, scheduler, search engine, sitemap, or recursive behavior.
+
+## Implementation Notes
+
+- `tools/fetch_url.py` uses `requests` when available.
+- If `requests` is unavailable, it falls back to stdlib `urllib` so this repo still works without a dependency file.
+- `fetch_single_url()` returns a dict with `url`, `content_type`, `title`, and `body`.
+- HTML body extraction reuses `tools.html_utils.extract_text_from_html()`.
+- `tools/process_source.py` catches fetch errors before Local Storage ingest.
+- URL ingest still delegates storage path, source ID, raw snapshot, DB upsert, and content hash behavior to `tools.ingest_local.ingest_source()`.
+- v05-05 intentionally leaves wiki/FTS/graph rebuild skipped.
 
 ## Verification
+
+Commands:
 
 ```bash
 python -m unittest tests.test_v05_fetch_url -v
 python -m unittest tests.test_v05_process_source -v
-python tools/process_source.py --dry-run --source-type url --category patch_notes --url "https://example.com/ffxiv/patch"
+python -m py_compile tools/fetch_url.py tools/process_source.py
+python -m unittest discover -s tests -p "test_*.py"
 ```
+
+Results:
+
+- `python -m unittest tests.test_v05_fetch_url -v`: **4 tests, OK**.
+- `python -m unittest tests.test_v05_process_source -v`: **15 tests, OK**.
+- `python -m py_compile tools/fetch_url.py tools/process_source.py`: **OK**.
+- `python -m unittest discover -s tests -p "test_*.py"`: **117 tests, OK**.
 
 ## Key Decisions
 
-- 단일 URL만 fetch한다. 재귀/crawling은 v0.5 non-goal.
-- fetch helper는 모듈 분리하여 `process_source.py` 외부에서도 재사용 가능하게 한다.
-- HTTP 오류(4xx, 5xx)는 fetch 실패로 처리하고 error JSON을 반환한다.
+- Only a single user-provided URL is fetched.
+- URL fetch is isolated in `tools/fetch_url.py` for focused tests.
+- `process_source.py` remains the v0.5 execution entrypoint.
+- Existing Local Storage ingest remains the source of truth for canonical paths and DB writes.
+- HTTP/network/content-type failures are fetch failures and stop the pipeline before ingest.

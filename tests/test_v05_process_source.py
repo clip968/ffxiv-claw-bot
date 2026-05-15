@@ -12,6 +12,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from typing import Any, Callable
+from unittest.mock import patch
 
 
 def require_process_source_main(test: unittest.TestCase) -> Callable[[list[str]], None]:
@@ -487,3 +488,181 @@ class V05ProcessSourceLocalIntegrationTests(unittest.TestCase):
             )
             self.assertIn("Storage root", result["actions"][1]["error"])
             self.assertEqual(result["actions"][2]["reason"], "upstream_ingest_error")
+
+
+class V05ProcessSourceUrlIntegrationTests(unittest.TestCase):
+    def test_process_url_ok_fetches_single_url_and_ingests_local_storage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            url = "https://example.com/ffxiv/patch-7-5"
+            fetched_body = "Patch 7.5 Notes\nNew raid adjustments are available."
+            module = importlib.import_module("tools.process_source")
+
+            with patch.object(module, "fetch_single_url") as fetch_single_url:
+                fetch_single_url.return_value = {
+                    "url": url,
+                    "content_type": "text/html; charset=utf-8",
+                    "title": "Patch 7.5 Notes",
+                    "body": fetched_body,
+                }
+
+                result = run_process_source_with_temp_root(
+                    self,
+                    [
+                        "--apply",
+                        "--source-type",
+                        "url",
+                        "--category",
+                        "patch_notes",
+                        "--url",
+                        url,
+                        "--storage-root",
+                        str(storage_root),
+                        "--db-path",
+                        str(db_path),
+                    ],
+                    repo_root,
+                )
+
+            fetch_single_url.assert_called_once_with(url)
+            self.assertEqual(result["status"], "ok")
+            self.assertIs(result["dry_run"], False)
+            self.assertTrue(result["source_id"].startswith("local_"))
+            self.assertEqual(result["source_type"], "url")
+            self.assertEqual(result["category"], "patch_notes")
+            self.assertEqual(result["title"], "Patch 7.5 Notes")
+            self.assertEqual(
+                result["local_source_path"],
+                "sources/patch_notes/patch_7.5_notes.md",
+            )
+            self.assertEqual(
+                result["content_hash"],
+                hashlib.sha256(fetched_body.encode("utf-8")).hexdigest(),
+            )
+            self.assertEqual(result["graph_status"], "skipped")
+            self.assertEqual(
+                [(action["name"], action["status"]) for action in result["actions"]],
+                [
+                    ("validate_request", "ok"),
+                    ("fetch_url", "ok"),
+                    ("ingest_local", "ok"),
+                    ("rebuild", "skipped"),
+                ],
+            )
+            self.assertEqual(result["actions"][1]["url"], url)
+            self.assertEqual(result["actions"][3]["reason"], "v05-06_not_implemented")
+            self.assertEqual(
+                (storage_root / result["local_source_path"]).read_text(encoding="utf-8"),
+                fetched_body,
+            )
+            self.assertEqual(
+                (repo_root / result["raw_path"]).read_text(encoding="utf-8"),
+                fetched_body,
+            )
+
+    def test_process_url_prefers_cli_title_over_fetched_title(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            url = "https://example.com/ffxiv/patch"
+            module = importlib.import_module("tools.process_source")
+
+            with patch.object(module, "fetch_single_url") as fetch_single_url:
+                fetch_single_url.return_value = {
+                    "url": url,
+                    "content_type": "text/html",
+                    "title": "Fetched HTML Title",
+                    "body": "Fetched page body",
+                }
+
+                result = run_process_source_with_temp_root(
+                    self,
+                    [
+                        "--apply",
+                        "--source-type",
+                        "url",
+                        "--category",
+                        "patch_notes",
+                        "--title",
+                        "Maintainer Provided Patch Title",
+                        "--url",
+                        url,
+                        "--storage-root",
+                        str(storage_root),
+                        "--db-path",
+                        str(db_path),
+                    ],
+                    repo_root,
+                )
+
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["title"], "Maintainer Provided Patch Title")
+        self.assertEqual(
+            result["local_source_path"],
+            "sources/patch_notes/maintainer_provided_patch_title.md",
+        )
+
+    def test_process_url_fetch_fails_returns_error_without_ingest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            url = "https://example.com/missing"
+            module = importlib.import_module("tools.process_source")
+
+            with patch.object(module, "fetch_single_url") as fetch_single_url:
+                fetch_single_url.side_effect = RuntimeError("404 Client Error")
+
+                result = run_process_source_with_temp_root(
+                    self,
+                    [
+                        "--apply",
+                        "--source-type",
+                        "url",
+                        "--category",
+                        "patch_notes",
+                        "--url",
+                        url,
+                        "--storage-root",
+                        str(storage_root),
+                        "--db-path",
+                        str(db_path),
+                    ],
+                    repo_root,
+                )
+
+            self.assertEqual(result["status"], "error")
+            self.assertIsNone(result["source_id"])
+            self.assertEqual(result["graph_status"], "skipped")
+            self.assertEqual(
+                [(action["name"], action["status"]) for action in result["actions"]],
+                [
+                    ("validate_request", "ok"),
+                    ("fetch_url", "error"),
+                    ("ingest_local", "skipped"),
+                    ("rebuild", "skipped"),
+                ],
+            )
+            self.assertIn("404 Client Error", result["actions"][1]["error"])
+            self.assertEqual(result["actions"][2]["reason"], "upstream_fetch_error")
+            self.assertEqual(result["actions"][3]["reason"], "upstream_fetch_error")
+            self.assertFalse(any((storage_root / "sources").rglob("*")))
+
+            conn = sqlite3.connect(str(db_path))
+            try:
+                count = conn.execute("SELECT COUNT(*) FROM sources").fetchone()[0]
+            finally:
+                conn.close()
+            self.assertEqual(count, 0)
