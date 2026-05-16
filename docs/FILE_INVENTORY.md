@@ -20,6 +20,13 @@
 | `tools/sync_drive.py` | Google Drive sync | Legacy / Deferred optional integration |
 | `tools/publish_drive.py` | Google Drive write/publish | Legacy / Deferred optional integration |
 
+## v0.6 Source Processing Packages
+
+| Path | Role | Status |
+|---|---|---|
+| `src/source_processing/models.py` | v0.6 `ExtractedSource` shared model | Active v0.6 |
+| `src/source_processing/errors.py` | v0.6 extractor error hierarchy | Active v0.6 |
+
 ## Data / Output
 
 | Path | Role | Status |
@@ -58,6 +65,8 @@
 | `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md` | Historical legacy v0.4 Drive-era master plan |
 | `docs/specs/0004-v05-source-processing-pipeline.md` | v0.5 source processing pipeline spec |
 | `docs/specs/0004a-v05.1-source-processing-hardening.md` | v05.1 source processing hardening spec |
+| `docs/specs/0005- v06-Multi-format-Source-Processing.md` | v0.6 multi-format source processing and derived wiki spec |
+| `docs/plans/v06/README.md` | v0.6 feature map |
 | `docs/handoff/CURRENT_HANDOFF.md` | 현재 상태 handoff |
 
 ## v0.5 Plan Files

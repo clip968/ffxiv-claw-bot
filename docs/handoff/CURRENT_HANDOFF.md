@@ -12,6 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 is implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -54,22 +55,42 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 7. `docs/specs/0004a-v05.1-source-processing-hardening.md`
 8. `docs/plans/v05.1/README.md`
 9. `docs/adrs/0006-local-storage-and-notion-control.md`
-10. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
-11. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
-12. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
-13. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
-14. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
-15. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
-16. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
-17. `docs/runbooks/rebuild-kb.md`
-18. `docs/runbooks/local-storage.md`
-19. `docs/runbooks/openclaw-notion.md`
+10. `docs/specs/0005- v06-Multi-format-Source-Processing.md`
+11. `docs/plans/v06/README.md`
+12. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
+13. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
+14. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
+15. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
+16. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
+17. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
+18. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
+19. `docs/runbooks/rebuild-kb.md`
+20. `docs/runbooks/local-storage.md`
+21. `docs/runbooks/openclaw-notion.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 - `docs/specs/0003-google-drive-sync.md`
 - `docs/runbooks/sync-drive.md`
 - `docs/runbooks/publish-drive.md`
 
 ## This Session
+
+### Current session update: v06-01 extractor model and errors implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-01 only.
+   - Added the `src.source_processing` package foundation with `ExtractedSource`, `SourceExtractionError`, `UnsupportedSourceExtensionError`, `SourceDecodingError`, and `SourceParseError`.
+   - Did not implement extractor registry, actual extractors, pending loop, derived wiki generation, or FTS expansion.
+
+2. **Red tests first**
+   - Added `V06ExtractorModelTests` in `tests/test_v06_extractors.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v06_extractors -v` failed with 5 `ModuleNotFoundError: No module named 'src'` errors.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_extractors -v`: OK, 5 tests.
+   - `python -m py_compile src/source_processing/models.py src/source_processing/errors.py src/source_processing/__init__.py src/__init__.py`: OK.
+
+4. **Next tasks**
+   - v06-02: extractor registry and stub mapping.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

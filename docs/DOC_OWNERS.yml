@@ -7,6 +7,7 @@ policy:
   handoff_only_satisfies_contract: false
 
 code_paths:
+  - "src/**/*.py"
   - "tools/**/*.py"
   - "scripts/**/*.py"
   - "tests/**/*.py"
@@ -150,6 +151,25 @@ rules:
     contract_docs:
       - "docs/specs/0004-v05-source-processing-pipeline.md"
       - "docs/specs/0004a-v05.1-source-processing-hardening.md"
+    procedure_docs:
+      - "docs/runbooks/process-source.md"
+      - "docs/runbooks/test.md"
+
+  - id: v06-multi-format-source-processing
+    paths:
+      - "src/**/*.py"
+      - "tools/process_source.py"
+      - "tools/process_pending_sources.py"
+      - "tools/generate_job_wiki.py"
+      - "tools/generate_derived_wiki.py"
+      - "tools/compile_wiki.py"
+      - "tools/search_kb.py"
+      - "tests/test_v06_extractors.py"
+      - "tests/test_v06_pending_sources.py"
+      - "tests/test_v06_job_wiki_generator.py"
+      - "tests/test_v06_fts_indexing.py"
+    contract_docs:
+      - "docs/specs/0005- v06-Multi-format-Source-Processing.md"
     procedure_docs:
       - "docs/runbooks/process-source.md"
       - "docs/runbooks/test.md"

@@ -79,6 +79,23 @@ When these red tests are present and not yet implemented, full unittest discover
 
 ## v0.5 Source Processing Tests
 
+## v0.6 Multi-format Source Processing Tests
+
+Focused v0.6 extractor tests:
+
+```bash
+python -m unittest tests.test_v06_extractors -v
+```
+
+Current status:
+
+- `V06ExtractorModelTests` -> `src/source_processing/models.py`, `src/source_processing/errors.py` (**Green** 2026-05-16, 5 tests)
+
+Red/green notes:
+
+- v06-01 red check: `python -m unittest tests.test_v06_extractors -v` failed with 5 expected `ModuleNotFoundError: No module named 'src'` errors.
+- v06-01 green check: `python -m unittest tests.test_v06_extractors -v` passed 5 tests after adding the shared model and error layer.
+
 v0.5 source processing tests:
 
 ```bash
