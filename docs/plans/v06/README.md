@@ -46,7 +46,7 @@ local source file
 | 07 | 2026-05-16-v06-07-pending-source-loop.md | `tools/process_pending_sources.py` 일괄 처리 CLI 구현 | **Completed** 2026-05-16 |
 | 08 | 2026-05-16-v06-08-derived-wiki-foundation.md | source summaries loader/writer/templates foundation 추가 | **Completed** 2026-05-16 |
 | 09 | 2026-05-16-v06-09-job-catalog-and-aliases.md | FFXIV 직업 canonical slug와 alias resolver 정의 | **Completed** 2026-05-16 |
-| 10 | 2026-05-16-v06-10-job-wiki-generator.md | `wiki/jobs/<job>.md` deterministic generator 구현 | Pending |
+| 10 | 2026-05-16-v06-10-job-wiki-generator.md | `wiki/jobs/<job>.md` deterministic generator 구현 | **Completed** 2026-05-16 |
 | 11 | 2026-05-16-v06-11-generate-derived-wiki-cli.md | `tools/generate_derived_wiki.py` 통합 CLI 구현 | Pending |
 | 12 | 2026-05-16-v06-12-fts-indexing-extension.md | FTS 인덱싱에 derived wiki 문서 포함 | Pending |
 | 13 | 2026-05-16-v06-13-derived-wiki-hook.md | source 처리 후 derived wiki 생성 hook 연결 | Pending |

@@ -158,5 +158,153 @@ class V06JobCatalogTests(unittest.TestCase):
         self.assertTrue(resolve_job("BLU").is_limited)
 
 
+class V06JobWikiGeneratorTests(unittest.TestCase):
+    fixture_dir = Path("tests/fixtures/source_summaries")
+
+    def _summaries(self):
+        from src.derived_wiki.summary_loader import load_summaries
+
+        return load_summaries(self.fixture_dir)
+
+    def _job(self, query: str = "gunbreaker"):
+        from src.derived_wiki.job_catalog import resolve_job
+
+        job = resolve_job(query)
+        self.assertIsNotNone(job)
+        return job
+
+    def test_generate_single_job_wiki_creates_file(self) -> None:
+        from src.derived_wiki.job_wiki_generator import generate_job_wiki
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target_root = Path(tmp_dir) / "wiki" / "jobs"
+
+            result = generate_job_wiki(self._job(), self._summaries(), target_root)
+
+            self.assertIsNotNone(result)
+            self.assertEqual(result.path, target_root / "gunbreaker.md")
+            self.assertTrue(result.path.exists())
+
+    def test_generate_job_wiki_includes_job_title(self) -> None:
+        from src.derived_wiki.job_wiki_generator import generate_job_wiki
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            result = generate_job_wiki(self._job(), self._summaries(), Path(tmp_dir))
+
+            self.assertIn("# Gunbreaker 변경 이력", result.content)
+
+    def test_generate_job_wiki_includes_matching_patch_entries(self) -> None:
+        from src.derived_wiki.job_wiki_generator import generate_job_wiki
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            result = generate_job_wiki(self._job(), self._summaries(), Path(tmp_dir))
+
+            self.assertIn("Continuation potency adjusted", result.content)
+            self.assertIn("No Mercy window clarified", result.content)
+            self.assertNotIn("Atonement combo flow updated", result.content)
+            self.assertNotIn("Inner Release timing adjusted", result.content)
+
+    def test_generate_job_wiki_preserves_source_id(self) -> None:
+        from src.derived_wiki.job_wiki_generator import generate_job_wiki
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            result = generate_job_wiki(self._job(), self._summaries(), Path(tmp_dir))
+
+            self.assertIn("## 7.0", result.content)
+            self.assertIn("source_id: patch_7_0", result.content)
+            self.assertIn("source_id: patch_7_1", result.content)
+
+    def test_generate_job_wiki_sorts_entries_by_patch_version(self) -> None:
+        from src.derived_wiki.job_wiki_generator import generate_job_wiki
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            result = generate_job_wiki(self._job(), list(reversed(self._summaries())), Path(tmp_dir))
+
+            self.assertLess(result.content.index("## 7.0"), result.content.index("## 7.1"))
+
+    def test_generate_job_wiki_deduplicates_duplicate_entries(self) -> None:
+        from src.derived_wiki.job_wiki_generator import generate_job_wiki
+        from src.derived_wiki.summary_loader import load_summaries
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir) / "summaries"
+            root.mkdir()
+            (root / "patch_7_0.md").write_text(
+                "# Patch 7.0 Notes\n\nsource_id: patch_7_0\n\n## Gunbreaker\n\n- Duplicate change.\n",
+                encoding="utf-8",
+            )
+            (root / "patch_7_1.md").write_text(
+                "# Patch 7.1 Notes\n\nsource_id: patch_7_1\n\n## Gunbreaker\n\n- Duplicate change.\n",
+                encoding="utf-8",
+            )
+
+            result = generate_job_wiki(self._job(), load_summaries(root), Path(tmp_dir) / "jobs")
+
+            self.assertEqual(result.content.count("Duplicate change."), 1)
+
+    def test_generate_job_wiki_dry_run_does_not_write_file(self) -> None:
+        from src.derived_wiki.job_wiki_generator import generate_job_wiki
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target_root = Path(tmp_dir) / "jobs"
+
+            result = generate_job_wiki(
+                self._job(),
+                self._summaries(),
+                target_root,
+                dry_run=True,
+            )
+
+            self.assertIsNotNone(result)
+            self.assertFalse(result.path.exists())
+            self.assertFalse(result.written)
+
+    def test_generate_job_wiki_patch_range_filter(self) -> None:
+        from src.derived_wiki.job_wiki_generator import generate_job_wiki
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            result = generate_job_wiki(
+                self._job(),
+                self._summaries(),
+                Path(tmp_dir),
+                patch_range="7.1..7.1",
+            )
+
+            self.assertNotIn("Continuation potency adjusted", result.content)
+            self.assertIn("No Mercy window clarified", result.content)
+            self.assertNotIn("## 7.0", result.content)
+            self.assertIn("## 7.1", result.content)
+
+    def test_generate_job_wiki_cli_dry_run_does_not_write_file(self) -> None:
+        import contextlib
+        import io
+        import json
+
+        from tools.generate_job_wiki import main
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target_root = Path(tmp_dir) / "jobs"
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                main(
+                    [
+                        "--job",
+                        "gunbreaker",
+                        "--summary-root",
+                        str(self.fixture_dir),
+                        "--target-root",
+                        str(target_root),
+                        "--dry-run",
+                    ]
+                )
+
+            result = json.loads(stdout.getvalue())
+
+        self.assertEqual(result["status"], "ok")
+        self.assertTrue(result["dry_run"])
+        self.assertEqual(result["summary"]["generated"], 1)
+        self.assertFalse((target_root / "gunbreaker.md").exists())
+
+
 if __name__ == "__main__":
     unittest.main()

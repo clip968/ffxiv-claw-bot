@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -93,32 +93,32 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/derived_wiki/job_wiki_generator.py` 구현
-  - [ ] `collect_job_entries(job: JobEntry, summaries: list[SourceSummary]) -> list[JobEntry]`
-  - [ ] alias 기반 line/section matching
-  - [ ] patch_version 정렬
-  - [ ] 중복 제거 (정규화된 텍스트 hash)
-  - [ ] `render_job_wiki(job, entries) -> str` (templates 사용)
-  - [ ] `generate_job_wiki(job, summaries, target_root, dry_run=False) -> Path | None`
-- [ ] `tools/generate_job_wiki.py` CLI 구현
-  - [ ] `--all`
-  - [ ] `--job <slug>`
-  - [ ] `--patch-range A..B`
-  - [ ] `--dry-run`
-  - [ ] `--summary-root` (default `wiki/source_summaries`)
-  - [ ] `--target-root` (default `wiki/jobs`)
-- [ ] 의존성: v06-08 summary_loader/writer, v06-09 job_catalog
-- [ ] `tests/test_v06_job_wiki_generator.py`에 다음 테스트 추가
-  - [ ] `test_generate_single_job_wiki_creates_file`
-  - [ ] `test_generate_job_wiki_includes_job_title`
-  - [ ] `test_generate_job_wiki_includes_matching_patch_entries`
-  - [ ] `test_generate_job_wiki_preserves_source_id`
-  - [ ] `test_generate_job_wiki_sorts_entries_by_patch_version`
-  - [ ] `test_generate_job_wiki_deduplicates_duplicate_entries`
-  - [ ] `test_generate_job_wiki_dry_run_does_not_write_file`
-  - [ ] `test_generate_job_wiki_patch_range_filter`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/derived_wiki/job_wiki_generator.py` 구현
+  - [x] `collect_job_entries(job: JobEntry, summaries: list[SourceSummary])`
+  - [x] alias 기반 line/section matching
+  - [x] patch_version 정렬
+  - [x] 중복 제거 (정규화된 텍스트 hash)
+  - [x] `render_job_wiki(job, entries) -> str`
+  - [x] `generate_job_wiki(job, summaries, target_root, dry_run=False)`
+- [x] `tools/generate_job_wiki.py` CLI 구현
+  - [x] `--all`
+  - [x] `--job <slug>`
+  - [x] `--patch-range A..B`
+  - [x] `--dry-run`
+  - [x] `--summary-root` (default `wiki/source_summaries`)
+  - [x] `--target-root` (default `wiki/jobs`)
+- [x] 의존성: v06-08 summary_loader/writer, v06-09 job_catalog
+- [x] `tests/test_v06_job_wiki_generator.py`에 다음 테스트 추가
+  - [x] `test_generate_single_job_wiki_creates_file`
+  - [x] `test_generate_job_wiki_includes_job_title`
+  - [x] `test_generate_job_wiki_includes_matching_patch_entries`
+  - [x] `test_generate_job_wiki_preserves_source_id`
+  - [x] `test_generate_job_wiki_sorts_entries_by_patch_version`
+  - [x] `test_generate_job_wiki_deduplicates_duplicate_entries`
+  - [x] `test_generate_job_wiki_dry_run_does_not_write_file`
+  - [x] `test_generate_job_wiki_patch_range_filter`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -143,4 +143,10 @@ python tools/generate_job_wiki.py --dry-run --job gunbreaker
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_job_wiki_generator.V06JobWikiGeneratorTests -v` failed with 9 expected missing module errors for `src.derived_wiki.job_wiki_generator` and `tools.generate_job_wiki`.
+- Green: `python -m unittest tests.test_v06_job_wiki_generator.V06JobWikiGeneratorTests -v` passed 9 tests after adding deterministic section/line matching, rendering, writing, dry-run, patch-range filtering, and the job CLI.
+- Regression: `python -m unittest tests.test_v06_job_wiki_generator -v` passed 23 tests.
+- CLI smoke: `python tools/generate_job_wiki.py --dry-run --job gunbreaker --summary-root tests/fixtures/source_summaries --target-root /tmp/ffxiv-claw-bot-v06-jobs` returned `status=ok`, `generated=1`, `written=false`.
+- Regression: `python -m py_compile src/derived_wiki/job_wiki_generator.py tools/generate_job_wiki.py src/derived_wiki/__init__.py` passed.
+- Docs: `python scripts/check_docs_freshness.py --all` passed.
+- Full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 201 tests.

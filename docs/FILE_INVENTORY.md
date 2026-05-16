@@ -11,6 +11,7 @@
 | `tools/fetch_url.py` | v0.5 단일 URL fetch helper | Active v0.5 |
 | `tools/process_source.py` | 통합 source processing entrypoint; v0.6 local file extractor registry integration | Active v0.6 |
 | `tools/process_pending_sources.py` | v0.6 `source_processing_queue` pending source orchestration CLI | Active v0.6 |
+| `tools/generate_job_wiki.py` | v0.6 deterministic `wiki/jobs/<job>.md` generator CLI | Active v0.6 |
 | `tools/extractors/lodestone.py` | Lodestone `.news__detail__wrapper` article extractor | Active v05.1 |
 | `tools/compile_wiki.py` | raw content -> wiki markdown 변환 및 FTS 색인 | Active |
 | `tools/search_kb.py` | `wiki_fts` 기반 검색, graph_paths 포함 | Active |
@@ -41,6 +42,7 @@
 |---|---|---|
 | `src/derived_wiki/summary_loader.py` | v0.6 source summary filesystem loader and `SourceSummary` model | Active v0.6 |
 | `src/derived_wiki/job_catalog.py` | v0.6 FFXIV job catalog and Korean/English/abbreviation alias resolver | Active v0.6 |
+| `src/derived_wiki/job_wiki_generator.py` | v0.6 deterministic job wiki entry collector, renderer, and writer | Active v0.6 |
 | `src/derived_wiki/writer.py` | v0.6 derived wiki UTF-8 file writer | Active v0.6 |
 | `src/derived_wiki/templates.py` | v0.6 Markdown heading/section template helpers | Active v0.6 |
 

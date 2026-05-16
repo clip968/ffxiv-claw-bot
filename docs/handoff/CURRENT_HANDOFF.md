@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-09 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-10 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -264,6 +264,30 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-10: implement deterministic job wiki generator.
+
+### Current session update: v06-10 job wiki generator implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-10 only.
+   - Added `src/derived_wiki/job_wiki_generator.py` for deterministic job entry collection, rendering, and writing.
+   - Added `tools/generate_job_wiki.py` with `--all`, `--job`, `--patch-range`, `--dry-run`, `--summary-root`, `--target-root`, and `--include-limited`.
+   - Matching is alias-based and evidence-preserving; generated content includes patch sections and `source_id`.
+   - Did not implement generic `generate_derived_wiki.py`, FTS integration, or source-processing derived hook.
+
+2. **Red tests first**
+   - Added `V06JobWikiGeneratorTests` in `tests/test_v06_job_wiki_generator.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v06_job_wiki_generator.V06JobWikiGeneratorTests -v` failed with 9 missing module errors for `job_wiki_generator` and `generate_job_wiki`.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_job_wiki_generator.V06JobWikiGeneratorTests -v`: OK, 9 tests.
+   - `python -m unittest tests.test_v06_job_wiki_generator -v`: OK, 23 tests.
+   - `python tools/generate_job_wiki.py --dry-run --job gunbreaker --summary-root tests/fixtures/source_summaries --target-root /tmp/ffxiv-claw-bot-v06-jobs`: returned `status=ok`, `generated=1`, `written=false`.
+   - `python -m py_compile src/derived_wiki/job_wiki_generator.py tools/generate_job_wiki.py src/derived_wiki/__init__.py`: OK.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 201 tests.
+
+4. **Next tasks**
+   - v06-11: implement generic `tools/generate_derived_wiki.py` CLI.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

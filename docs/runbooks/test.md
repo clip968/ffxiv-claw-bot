@@ -98,6 +98,7 @@ Current status:
 - `V06PendingSourceLoopTests` -> `tools/process_pending_sources.py`, `tools/init_db.py` (**Green** 2026-05-16, 6 tests)
 - `V06DerivedWikiFoundationTests` -> `src/derived_wiki/summary_loader.py`, `writer.py`, `templates.py` (**Green** 2026-05-16, 7 tests)
 - `V06JobCatalogTests` -> `src/derived_wiki/job_catalog.py` (**Green** 2026-05-16, 7 tests)
+- `V06JobWikiGeneratorTests` -> `src/derived_wiki/job_wiki_generator.py`, `tools/generate_job_wiki.py` (**Green** 2026-05-16, 9 tests)
 
 Red/green notes:
 
@@ -120,6 +121,8 @@ Red/green notes:
 - v06-08 green check: `python -m unittest tests.test_v06_job_wiki_generator -v` passed 7 tests after adding source summary loader, writer, and template helpers.
 - v06-09 red check: `python -m unittest tests.test_v06_job_wiki_generator.V06JobCatalogTests -v` failed with 7 expected missing `src.derived_wiki.job_catalog` module errors.
 - v06-09 green check: `python -m unittest tests.test_v06_job_wiki_generator.V06JobCatalogTests -v` passed 7 tests after adding the job catalog and alias resolver.
+- v06-10 red check: `python -m unittest tests.test_v06_job_wiki_generator.V06JobWikiGeneratorTests -v` failed with 9 expected missing generator/CLI module errors.
+- v06-10 green check: `python -m unittest tests.test_v06_job_wiki_generator.V06JobWikiGeneratorTests -v` passed 9 tests after adding deterministic job wiki generation and `tools/generate_job_wiki.py`.
 
 v0.5 source processing tests:
 

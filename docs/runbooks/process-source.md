@@ -115,6 +115,28 @@ Status behavior:
 
 The queue loop is not a scheduler, daemon, watcher, crawler, or Notion polling tool.
 
+## Job Wiki Generation
+
+`tools/generate_job_wiki.py` is the v0.6 deterministic job wiki generator. It reads `wiki/source_summaries/*.md`, finds job-related lines/sections through the v0.6 job catalog aliases, sorts entries by patch version, deduplicates identical entry text, and writes `wiki/jobs/<job>.md`.
+
+Commands:
+
+```bash
+python tools/generate_job_wiki.py --job gunbreaker --dry-run
+python tools/generate_job_wiki.py --job gunbreaker
+python tools/generate_job_wiki.py --job gunbreaker --patch-range 7.0..7.5
+python tools/generate_job_wiki.py --all
+```
+
+Options:
+
+- `--summary-root`: source summary input root, default `wiki/source_summaries`
+- `--target-root`: generated job wiki root, default `wiki/jobs`
+- `--include-limited`: include limited jobs such as Blue Mage when using `--all`
+- `--dry-run`: return JSON actions and generated paths without writing files
+
+The generator is evidence-preserving: generated job wiki entries include patch version sections and `source_id` lines. It does not call an LLM and does not invent summaries beyond matched source summary text.
+
 ## Local Source Apply
 
 Text note:
