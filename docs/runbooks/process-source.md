@@ -79,6 +79,8 @@ Notion boundary:
 
 `tools/process_pending_sources.py` is the v0.6 orchestration layer for queued source rows. It repeatedly calls `tools/process_source.py` for one source at a time; it does not duplicate extractor, ingest, rebuild, or Notion payload logic.
 
+Detailed queue operations are documented in `docs/runbooks/process-pending-sources.md`.
+
 Queue table:
 
 ```text
@@ -144,6 +146,8 @@ Options:
 The generator is evidence-preserving: generated job wiki entries include patch version sections and `source_id` lines. It does not call an LLM and does not invent summaries beyond matched source summary text.
 
 `tools/generate_derived_wiki.py` is the v0.6 unified derived wiki entrypoint. In v0.6, only `--kind jobs` is supported. `raids`, `items`, and `systems` return an unsupported-kind error until a later spec implements them.
+
+Detailed generator operations are documented in `docs/runbooks/generate-derived-wiki.md`.
 
 ## Derived Wiki Source Hook
 

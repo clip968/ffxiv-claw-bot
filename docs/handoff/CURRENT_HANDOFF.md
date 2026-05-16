@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-13 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is complete. v06-01 through v06-14 are implemented and documented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -58,16 +58,19 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 10. `docs/specs/0005- v06-Multi-format-Source-Processing.md`
 11. `docs/plans/v06/README.md`
 12. `docs/plans/v06/2026-05-16-v06-13-derived-wiki-hook.md`
-13. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
-14. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
-15. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
-16. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
-17. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
-18. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
-19. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
-20. `docs/runbooks/rebuild-kb.md`
-21. `docs/runbooks/local-storage.md`
-22. `docs/runbooks/openclaw-notion.md`
+13. `docs/runbooks/process-source.md`
+14. `docs/runbooks/process-pending-sources.md`
+15. `docs/runbooks/generate-derived-wiki.md`
+16. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
+17. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
+18. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
+19. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
+20. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
+21. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
+22. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
+23. `docs/runbooks/rebuild-kb.md`
+24. `docs/runbooks/local-storage.md`
+25. `docs/runbooks/openclaw-notion.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 - `docs/specs/0003-google-drive-sync.md`
 - `docs/runbooks/sync-drive.md`
@@ -363,6 +366,29 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-14: README/handoff/final documentation gate and final verification for the v0.6 slice.
+
+### Current session update: v06-14 README and handoff documentation completed -- 2026-05-16
+
+1. **Scope**
+   - Completed the v06-14 documentation-only final gate.
+   - Updated root `README.md` with v0.6 pipeline, supported formats, common source-processing commands, pending queue commands, derived wiki commands, and final verification commands.
+   - Added `docs/runbooks/process-pending-sources.md` for queue CLI options, status transitions, retry policy, derived wiki hook behavior, and troubleshooting.
+   - Added `docs/runbooks/generate-derived-wiki.md` for job wiki generation, unified derived wiki CLI usage, FTS indexing, hook behavior, and troubleshooting.
+   - Updated docs index/profile/inventory/owners/handoff/v06 feature map to mark v0.6 complete.
+
+2. **Runtime changes**
+   - None. This task is documentation-only.
+
+3. **Verification**
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - v06-14 changed files path-scoped `git diff --check`: OK.
+   - `python scripts/finish_task.py`: finish_task ok.
+     - `python -m unittest discover -s tests -p "test_*.py"`: OK, 218 tests.
+     - docs freshness check: ok.
+     - Notion handoff dry-run: ok.
+
+4. **Next tasks**
+   - Future v0.6.1/v0.7 work should be separate specs: PDF/DOCX/OCR, scheduler/daemon, raids/items/systems derived wiki, and LLM-based summarization.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

@@ -134,6 +134,7 @@ Red/green notes:
 - v06-13 guard red check: `python -m unittest tests.test_v05_process_source.V05ProcessSourceRebuildIntegrationTests.test_process_rebuild_partial_skips_derived_wiki_hook -v` failed as expected because partial rebuild still attempted the derived wiki hook.
 - v06-13 guard green check: `python -m unittest tests.test_v05_process_source -v` passed 32 tests after skipping the hook when source processing is not `status=ok`.
 - v06-13 full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 218 tests.
+- v06-14 documentation final gate: `python scripts/finish_task.py` passed, including full suite 218 tests, docs freshness check, and Notion handoff dry-run.
 
 v0.5 source processing tests:
 

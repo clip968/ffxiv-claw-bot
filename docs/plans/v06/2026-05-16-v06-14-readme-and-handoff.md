@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -61,33 +61,33 @@ No red test required. This is a documentation-only task.
 
 ## Checklist
 
-- [ ] `README.md` 또는 `docs/README.md`에 v0.6 섹션 추가/갱신
-  - [ ] 지원 확장자
-  - [ ] extractor 구조
-  - [ ] CLI 사용법
-  - [ ] derived wiki 사용법
-  - [ ] known limitations
-- [ ] `docs/handoff/CURRENT_HANDOFF.md` 갱신
-  - [ ] v0.5/v05.1 완료 상태 유지
-  - [ ] v0.6 진행/완료 상태 반영
-  - [ ] 다음 작업자가 읽을 문서 목록
-- [ ] `docs/runbooks/process-source.md` 갱신
-  - [ ] file source extractor 동작 추가
-  - [ ] 미지원 확장자 처리
-- [ ] `docs/runbooks/process-pending-sources.md` 신규 작성
-  - [ ] CLI 옵션
-  - [ ] 상태 전이
-  - [ ] retry policy
-  - [ ] dry-run
-- [ ] `docs/runbooks/generate-derived-wiki.md` 신규 작성
-  - [ ] `generate_job_wiki.py` 사용법
-  - [ ] `generate_derived_wiki.py` 통합 CLI
-  - [ ] 출력 위치 (`wiki/jobs/*.md`)
-- [ ] `docs/plans/v06/README.md` feature map status를 모두 Completed로 갱신
-- [ ] 다음 명령으로 docs freshness 검증
-  - [ ] `python scripts/check_docs_freshness.py --all`
-- [ ] whitespace 검증
-  - [ ] `git diff --check`
+- [x] `README.md` 또는 `docs/README.md`에 v0.6 섹션 추가/갱신
+  - [x] 지원 확장자
+  - [x] extractor 구조
+  - [x] CLI 사용법
+  - [x] derived wiki 사용법
+  - [x] known limitations
+- [x] `docs/handoff/CURRENT_HANDOFF.md` 갱신
+  - [x] v0.5/v05.1 완료 상태 유지
+  - [x] v0.6 진행/완료 상태 반영
+  - [x] 다음 작업자가 읽을 문서 목록
+- [x] `docs/runbooks/process-source.md` 갱신
+  - [x] file source extractor 동작 추가
+  - [x] 미지원 확장자 처리
+- [x] `docs/runbooks/process-pending-sources.md` 신규 작성
+  - [x] CLI 옵션
+  - [x] 상태 전이
+  - [x] retry policy
+  - [x] dry-run
+- [x] `docs/runbooks/generate-derived-wiki.md` 신규 작성
+  - [x] `generate_job_wiki.py` 사용법
+  - [x] `generate_derived_wiki.py` 통합 CLI
+  - [x] 출력 위치 (`wiki/jobs/*.md`)
+- [x] `docs/plans/v06/README.md` feature map status를 모두 Completed로 갱신
+- [x] 다음 명령으로 docs freshness 검증
+  - [x] `python scripts/check_docs_freshness.py --all`
+- [x] whitespace 검증
+  - [x] v06-14 변경 파일 대상 `git diff --check`
 
 ## Verification
 
@@ -113,4 +113,11 @@ python scripts/finish_task.py
 
 ## Verification Results
 
-- Pending.
+- `python scripts/check_docs_freshness.py --all`: ok.
+- v06-14 changed files path-scoped `git diff --check`: OK.
+- `python scripts/finish_task.py`: finish_task ok.
+  - Includes `python -m unittest discover -s tests -p "test_*.py"`: OK, 218 tests.
+  - Includes docs freshness check: ok.
+  - Includes Notion handoff dry-run: ok.
+
+Note: the worktree still has pre-existing unstaged `.gitignore` and `AGENTS.md` edits outside v06-14 scope, so whitespace checking was scoped to v06-14 files.

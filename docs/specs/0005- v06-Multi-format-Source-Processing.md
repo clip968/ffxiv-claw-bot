@@ -1,6 +1,6 @@
 # SPEC 0006 - v0.6 Multi-format Source Processing and Derived Wiki Generation
 
-Status: Active
+Status: Implemented 2026-05-16
 
 Target version: v0.6
 
@@ -482,7 +482,7 @@ source 처리 상태는 최소한 다음 상태를 표현할 수 있어야 한�
 
 v0.6 완료 조건은 다음과 같다.
 
-1. `.txt`, `.md`, `.html`, `.csv`, `.xlsx` source를 등록하고 처리할 수 있다.
+1. `.txt`, `.md`, `.html`, `.htm`, `.csv`, `.xlsx` source를 등록하고 처리할 수 있다.
 2. 지원하지 않는 확장자는 명확한 error 상태로 남는다.
 3. pending source 여러 개를 `process_pending_sources.py`로 일괄 처리할 수 있다.
 4. source 처리 성공 시 source summary, FTS, graph가 갱신된다.

@@ -13,11 +13,13 @@
 
 ## Current Phase
 
-v0.4 implementation is complete. v0.5 source processing is implemented through v0.5-08. v05.1 hardening is in progress; v05.1-02 and v05.1-03 added the Lodestone fixture and article extractor.
+v0.4 implementation is complete. v0.5 source processing is implemented through v0.5-08. v05.1 source processing hardening is complete. v0.6 multi-format source processing and derived wiki generation is complete through v06-14.
 
 2026-05-15 현재 기본 v0.4 운영 경로는 Google Drive write/publish가 아니라 `/mnt/d/ffixiv-bot-storage` 기반 Local Storage + OpenClaw Notion direct control이다.
 
 v0.5는 이 구조 위에 OpenClaw가 단일 entrypoint(`process_source.py`)로 source 하나를 ingest → rebuild → status payload까지 처리할 수 있는 안정된 workflow를 추가한다.
+
+v0.6은 `.txt`, `.md`, `.html`, `.htm`, `.csv`, `.xlsx` local file extraction, pending source queue processing, deterministic job wiki generation, and derived wiki FTS indexing support를 추가한다.
 
 Drive 기반 sync/write 구조는 Legacy / Deferred / Optional Integration이다. 삭제하지 않는다.
 
@@ -62,6 +64,16 @@ Active v0.5 spec and plans:
 - `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` (Completed)
 - `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` (Completed)
 
+## v0.6 Planning
+
+Active v0.6 spec and plans:
+
+- `docs/specs/0005- v06-Multi-format-Source-Processing.md`
+- `docs/plans/v06/README.md`
+- `docs/runbooks/process-source.md`
+- `docs/runbooks/process-pending-sources.md`
+- `docs/runbooks/generate-derived-wiki.md`
+
 ## v0.4 Planning
 
 기본 v0.4 master plan:
@@ -100,6 +112,15 @@ Active v0.4 feature map:
 
 - `tools/process_source.py`: source 하나를 처리하는 통합 entrypoint. text/file/url ingest, wiki/FTS/graph rebuild, and safe `notion_update` payload generation are implemented.
 - `tools/extractors/lodestone.py`: v05.1 Lodestone article extractor. It extracts title/body/extractor metadata from `.news__detail__wrapper`; URL routing remains a separate hardening slice.
+
+### v0.6 New Tools
+
+- `tools/process_pending_sources.py`: queued source rows를 `process_source.py`로 일괄 처리하는 runner.
+- `tools/generate_job_wiki.py`: `wiki/source_summaries/*.md`에서 `wiki/jobs/<job>.md`를 생성하는 deterministic generator.
+- `tools/generate_derived_wiki.py`: v0.6 unified derived wiki CLI. 현재 `--kind jobs`만 지원한다.
+- `src/source_processing/`: extractor model, error hierarchy, extension registry, and concrete `.txt`/`.md`/`.html`/`.csv`/`.xlsx` extractors.
+- `src/derived_wiki/`: source summary loader, job catalog/aliases, job wiki generator, writer, and template helpers.
+- `src/wiki_indexing/`: source summaries와 derived job wiki pages를 FTS indexing 대상으로 스캔하는 helper.
 
 ## Development Principles
 

@@ -87,6 +87,9 @@
 | `docs/adrs/0006-local-storage-and-notion-control.md` | Local Storage + Notion direct control 결정 |
 | `docs/runbooks/local-storage.md` | Local Storage ingest/sync 실행 절차 |
 | `docs/runbooks/openclaw-notion.md` | OpenClaw Notion direct control 실행 절차 |
+| `docs/runbooks/process-source.md` | v0.5/v05.1/v0.6 source processing entrypoint 실행 절차 |
+| `docs/runbooks/process-pending-sources.md` | v0.6 pending source queue 실행 절차 |
+| `docs/runbooks/generate-derived-wiki.md` | v0.6 derived wiki/job wiki 생성 절차 |
 | `docs/runbooks/sync-drive.md` | Drive sync legacy runbook |
 | `docs/runbooks/publish-drive.md` | Drive publish legacy runbook |
 | `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md` | Active v0.4 master plan |
@@ -96,6 +99,26 @@
 | `docs/specs/0005- v06-Multi-format-Source-Processing.md` | v0.6 multi-format source processing and derived wiki spec |
 | `docs/plans/v06/README.md` | v0.6 feature map |
 | `docs/handoff/CURRENT_HANDOFF.md` | 현재 상태 handoff |
+
+## v0.6 Plan Files
+
+| Path | Role | Status |
+|---|---|---|
+| `docs/plans/v06/README.md` | v0.6 feature map | Active |
+| `docs/plans/v06/2026-05-16-v06-01-extractor-model-and-errors.md` | extractor model/error foundation | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-02-extractor-registry.md` | extension registry | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-03-text-markdown-html-extractors.md` | text/markdown/html extractors | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-04-csv-extractor.md` | CSV extractor | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-05-xlsx-extractor.md` | XLSX extractor | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-06-process-source-integration.md` | process_source extractor integration | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-07-pending-source-loop.md` | pending source queue runner | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-08-derived-wiki-foundation.md` | derived wiki loader/writer/templates | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-09-job-catalog-and-aliases.md` | job catalog and aliases | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-10-job-wiki-generator.md` | job wiki generator | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-11-generate-derived-wiki-cli.md` | unified derived wiki CLI | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-12-fts-indexing-extension.md` | derived wiki FTS indexing support | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-13-derived-wiki-hook.md` | optional derived wiki source hook | **Completed** 2026-05-16 |
+| `docs/plans/v06/2026-05-16-v06-14-readme-and-handoff.md` | README/runbook/handoff finalization | **Completed** 2026-05-16 |
 
 ## v0.5 Plan Files
 
@@ -119,11 +142,11 @@
 | `docs/plans/v05.1/2026-05-16-v05.1-01-spec-and-plan.md` | v05.1 scope, spec, task breakdown 고정 | **Completed** 2026-05-16 |
 | `docs/plans/v05.1/2026-05-16-v05.1-02-lodestone-fixture-and-red-tests.md` | Lodestone fixture와 extractor red test 작성 | **Completed** 2026-05-16 |
 | `docs/plans/v05.1/2026-05-16-v05.1-03-lodestone-extractor.md` | Lodestone 전용 article extractor 구현 | **Completed** 2026-05-16 |
-| `docs/plans/v05.1/2026-05-16-v05.1-04-fetch-url-routing.md` | `fetch_url.py`에서 Lodestone URL을 전용 extractor로 라우팅 | Pending |
-| `docs/plans/v05.1/2026-05-16-v05.1-05-process-source-extractor-metadata.md` | `process_source.py` action log에 extractor metadata 포함 | Pending |
-| `docs/plans/v05.1/2026-05-16-v05.1-06-entrypoint-boundary-docs.md` | 공식 entrypoint와 helper boundary 문서화 | Pending |
-| `docs/plans/v05.1/2026-05-16-v05.1-07-runbook-regression-tests.md` | helper misuse/Notion boundary 문서 회귀 테스트 추가 | Pending |
-| `docs/plans/v05.1/2026-05-16-v05.1-08-final-verification-and-handoff.md` | 전체 검증, docs freshness, handoff 마무리 | Pending |
+| `docs/plans/v05.1/2026-05-16-v05.1-04-fetch-url-routing.md` | `fetch_url.py`에서 Lodestone URL을 전용 extractor로 라우팅 | **Completed** 2026-05-16 |
+| `docs/plans/v05.1/2026-05-16-v05.1-05-process-source-extractor-metadata.md` | `process_source.py` action log에 extractor metadata 포함 | **Completed** 2026-05-16 |
+| `docs/plans/v05.1/2026-05-16-v05.1-06-entrypoint-boundary-docs.md` | 공식 entrypoint와 helper boundary 문서화 | **Completed** 2026-05-16 |
+| `docs/plans/v05.1/2026-05-16-v05.1-07-runbook-regression-tests.md` | helper misuse/Notion boundary 문서 회귀 테스트 추가 | **Completed** 2026-05-16 |
+| `docs/plans/v05.1/2026-05-16-v05.1-08-final-verification-and-handoff.md` | 전체 검증, docs freshness, handoff 마무리 | **Completed** 2026-05-16 |
 
 ## v0.4 Plan Files
 

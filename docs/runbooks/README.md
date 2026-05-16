@@ -19,3 +19,6 @@ runbook은 반복 가능한 명령과 절차를 기록하는 문서다.
 - `rebuild-kb.md`: 로컬 KB 재빌드 절차
 - `finish-task.md`: 작업 종료 검증 자동화
 - `notion-sync.md`: Notion handoff mirror dry-run/apply 절차
+- `process-source.md`: v0.5/v05.1/v0.6 source processing entrypoint 절차
+- `process-pending-sources.md`: v0.6 pending source queue 처리 절차
+- `generate-derived-wiki.md`: v0.6 derived wiki/job wiki 생성 절차

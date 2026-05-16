@@ -26,6 +26,7 @@ Notion은 source of truth가 아니다. Notion에는 handoff 요약, 링크, dec
 - Notion 문서나 외부 링크는 DOC_OWNERS owner가 아니다.
 - 코드 변경 task는 plan/handoff만 갱신하지 말고 관련 spec/runbook/ADR 중 필요한 문서도 갱신한다.
 - 원본 파일 저장소는 repo 외부 `/mnt/d/ffixiv-bot-storage`이며, Notion에는 파일 자체를 올리지 않는다.
+- v0.6 source processing은 `.txt`, `.md`, `.html`, `.htm`, `.csv`, `.xlsx`를 extractor registry로 정규화하고, `wiki/jobs/*.md` derived wiki를 생성할 수 있다.
 
 ## Start Here
 
@@ -34,6 +35,14 @@ Notion은 source of truth가 아니다. Notion에는 handoff 요약, 링크, dec
 1. `docs/WORKFLOW.md`
 2. `docs/handoff/CURRENT_HANDOFF.md`
 3. 변경 대상과 관련된 `docs/specs/`, `docs/runbooks/`, `docs/adrs/`
+
+v0.6 source/derived wiki 작업은 다음 문서를 함께 읽는다.
+
+- `docs/specs/0005- v06-Multi-format-Source-Processing.md`
+- `docs/plans/v06/README.md`
+- `docs/runbooks/process-source.md`
+- `docs/runbooks/process-pending-sources.md`
+- `docs/runbooks/generate-derived-wiki.md`
 
 작업 종료 전에는 handoff를 갱신한 뒤 다음을 실행한다.
 

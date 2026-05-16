@@ -4,7 +4,7 @@ v0.6 Multi-format Source Processing and Derived Wiki Generation의 feature별 pl
 
 v0.6의 목표는 두 가지다.
 
-1. 다양한 원본 파일 형식(`.txt`, `.md`, `.html`, `.csv`, `.xlsx`)을 source로 등록하고 자동 처리한다.
+1. 다양한 원본 파일 형식(`.txt`, `.md`, `.html`, `.htm`, `.csv`, `.xlsx`)을 source로 등록하고 자동 처리한다.
 2. source별 요약(`wiki/source_summaries/*.md`)을 다시 주제별 derived wiki 문서(`wiki/jobs/*.md` 등)로 재구성한다.
 
 v0.5/v05.1과 동일하게 기본 운영 경로는 `/mnt/d/ffixiv-bot-storage` 기반 Local Storage이며, Notion은 원본 파일 저장소가 아니라 control/status/index layer로만 사용한다.
@@ -50,7 +50,7 @@ local source file
 | 11 | 2026-05-16-v06-11-generate-derived-wiki-cli.md | `tools/generate_derived_wiki.py` 통합 CLI 구현 | **Completed** 2026-05-16 |
 | 12 | 2026-05-16-v06-12-fts-indexing-extension.md | FTS 인덱싱에 derived wiki 문서 포함 | **Completed** 2026-05-16 |
 | 13 | 2026-05-16-v06-13-derived-wiki-hook.md | source 처리 후 derived wiki 생성 hook 연결 | **Completed** 2026-05-16 |
-| 14 | 2026-05-16-v06-14-readme-and-handoff.md | README와 handoff 문서 업데이트 | Pending |
+| 14 | 2026-05-16-v06-14-readme-and-handoff.md | README와 handoff 문서 업데이트 | **Completed** 2026-05-16 |
 
 ## Red Test Map
 

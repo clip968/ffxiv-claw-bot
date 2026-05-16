@@ -153,6 +153,8 @@ rules:
       - "docs/specs/0004a-v05.1-source-processing-hardening.md"
     procedure_docs:
       - "docs/runbooks/process-source.md"
+      - "docs/runbooks/process-pending-sources.md"
+      - "docs/runbooks/generate-derived-wiki.md"
       - "docs/runbooks/test.md"
 
   - id: v06-multi-format-source-processing
