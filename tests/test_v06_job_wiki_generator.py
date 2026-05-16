@@ -306,5 +306,123 @@ class V06JobWikiGeneratorTests(unittest.TestCase):
         self.assertFalse((target_root / "gunbreaker.md").exists())
 
 
+class V06GenerateDerivedWikiCliTests(unittest.TestCase):
+    fixture_dir = Path("tests/fixtures/source_summaries")
+
+    def _run_cli(self, argv: list[str]) -> dict:
+        import contextlib
+        import io
+        import json
+
+        from tools.generate_derived_wiki import main
+
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout):
+            main(argv)
+        return json.loads(stdout.getvalue())
+
+    def test_generate_derived_wiki_jobs_invokes_job_generator(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target_root = Path(tmp_dir) / "jobs"
+
+            result = self._run_cli(
+                [
+                    "--kind",
+                    "jobs",
+                    "--job",
+                    "gunbreaker",
+                    "--summary-root",
+                    str(self.fixture_dir),
+                    "--target-root",
+                    str(target_root),
+                ]
+            )
+
+            self.assertEqual(result["status"], "ok")
+            self.assertEqual(result["kind"], "jobs")
+            self.assertEqual(result["summary"]["generated"], 1)
+            self.assertTrue((target_root / "gunbreaker.md").exists())
+
+    def test_generate_derived_wiki_jobs_passes_job_filter(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target_root = Path(tmp_dir) / "jobs"
+
+            result = self._run_cli(
+                [
+                    "--kind",
+                    "jobs",
+                    "--job",
+                    "paladin",
+                    "--summary-root",
+                    str(self.fixture_dir),
+                    "--target-root",
+                    str(target_root),
+                ]
+            )
+
+            self.assertEqual(result["actions"][0]["job"], "paladin")
+            self.assertTrue((target_root / "paladin.md").exists())
+            self.assertFalse((target_root / "gunbreaker.md").exists())
+
+    def test_generate_derived_wiki_jobs_passes_patch_range(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target_root = Path(tmp_dir) / "jobs"
+
+            self._run_cli(
+                [
+                    "--kind",
+                    "jobs",
+                    "--job",
+                    "gunbreaker",
+                    "--patch-range",
+                    "7.1..7.1",
+                    "--summary-root",
+                    str(self.fixture_dir),
+                    "--target-root",
+                    str(target_root),
+                ]
+            )
+
+            content = (target_root / "gunbreaker.md").read_text(encoding="utf-8")
+            self.assertNotIn("## 7.0", content)
+            self.assertIn("## 7.1", content)
+
+    def test_generate_derived_wiki_jobs_dry_run(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target_root = Path(tmp_dir) / "jobs"
+
+            result = self._run_cli(
+                [
+                    "--kind",
+                    "jobs",
+                    "--job",
+                    "gunbreaker",
+                    "--summary-root",
+                    str(self.fixture_dir),
+                    "--target-root",
+                    str(target_root),
+                    "--dry-run",
+                ]
+            )
+
+            self.assertTrue(result["dry_run"])
+            self.assertEqual(result["summary"]["generated"], 1)
+            self.assertFalse((target_root / "gunbreaker.md").exists())
+
+    def test_generate_derived_wiki_rejects_unknown_kind(self) -> None:
+        import subprocess
+        import sys
+
+        completed = subprocess.run(
+            [sys.executable, "tools/generate_derived_wiki.py", "--kind", "raids"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("not supported in v0.6", completed.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()

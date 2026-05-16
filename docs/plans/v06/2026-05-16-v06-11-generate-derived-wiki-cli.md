@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -60,25 +60,25 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tools/generate_derived_wiki.py` 생성
-- [ ] argparse 옵션
-  - [ ] `--kind {jobs}` (required, choices에 `raids`, `items`, `systems`는 unsupported로 분기)
-  - [ ] `--job <slug>` (optional)
-  - [ ] `--patch-range A..B` (optional)
-  - [ ] `--dry-run`
-  - [ ] `--summary-root`
-  - [ ] `--target-root`
-  - [ ] `--include-limited` (optional)
-- [ ] `--kind jobs` 핸들러에서 v06-10 generator 호출
-- [ ] unknown/unsupported kind 처리
-- [ ] `tests/test_v06_job_wiki_generator.py`에 다음 테스트 추가
-  - [ ] `test_generate_derived_wiki_jobs_invokes_job_generator`
-  - [ ] `test_generate_derived_wiki_jobs_passes_job_filter`
-  - [ ] `test_generate_derived_wiki_jobs_passes_patch_range`
-  - [ ] `test_generate_derived_wiki_jobs_dry_run`
-  - [ ] `test_generate_derived_wiki_rejects_unknown_kind`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `tools/generate_derived_wiki.py` 생성
+- [x] argparse 옵션
+  - [x] `--kind jobs` (required)
+  - [x] `--job <slug>` (optional)
+  - [x] `--patch-range A..B` (optional)
+  - [x] `--dry-run`
+  - [x] `--summary-root`
+  - [x] `--target-root`
+  - [x] `--include-limited` (optional)
+- [x] `--kind jobs` 핸들러에서 v06-10 generator 호출
+- [x] unknown/unsupported kind 처리
+- [x] `tests/test_v06_job_wiki_generator.py`에 다음 테스트 추가
+  - [x] `test_generate_derived_wiki_jobs_invokes_job_generator`
+  - [x] `test_generate_derived_wiki_jobs_passes_job_filter`
+  - [x] `test_generate_derived_wiki_jobs_passes_patch_range`
+  - [x] `test_generate_derived_wiki_jobs_dry_run`
+  - [x] `test_generate_derived_wiki_rejects_unknown_kind`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -103,4 +103,11 @@ python tools/generate_derived_wiki.py --kind jobs --dry-run
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_job_wiki_generator.V06GenerateDerivedWikiCliTests -v` failed with 4 expected missing `tools.generate_derived_wiki` errors and one file-missing subprocess error.
+- Green: `python -m unittest tests.test_v06_job_wiki_generator.V06GenerateDerivedWikiCliTests -v` passed 5 tests after adding the unified `--kind jobs` wrapper and v0.6 unsupported-kind exit.
+- Regression: `python -m unittest tests.test_v06_job_wiki_generator -v` passed 28 tests.
+- CLI help: `python tools/generate_derived_wiki.py --help` completed successfully.
+- CLI smoke: `python tools/generate_derived_wiki.py --kind jobs --dry-run --job gunbreaker --summary-root tests/fixtures/source_summaries --target-root /tmp/ffxiv-claw-bot-v06-derived-jobs` returned `status=ok`, `kind=jobs`, `generated=1`, `written=false`.
+- Regression: `python -m py_compile tools/generate_derived_wiki.py` passed.
+- Docs: `python scripts/check_docs_freshness.py --all` passed.
+- Full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 206 tests.

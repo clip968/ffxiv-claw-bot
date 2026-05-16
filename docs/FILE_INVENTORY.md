@@ -12,6 +12,7 @@
 | `tools/process_source.py` | 통합 source processing entrypoint; v0.6 local file extractor registry integration | Active v0.6 |
 | `tools/process_pending_sources.py` | v0.6 `source_processing_queue` pending source orchestration CLI | Active v0.6 |
 | `tools/generate_job_wiki.py` | v0.6 deterministic `wiki/jobs/<job>.md` generator CLI | Active v0.6 |
+| `tools/generate_derived_wiki.py` | v0.6 unified derived wiki CLI; supports `--kind jobs` | Active v0.6 |
 | `tools/extractors/lodestone.py` | Lodestone `.news__detail__wrapper` article extractor | Active v05.1 |
 | `tools/compile_wiki.py` | raw content -> wiki markdown 변환 및 FTS 색인 | Active |
 | `tools/search_kb.py` | `wiki_fts` 기반 검색, graph_paths 포함 | Active |

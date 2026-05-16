@@ -126,6 +126,8 @@ python tools/generate_job_wiki.py --job gunbreaker --dry-run
 python tools/generate_job_wiki.py --job gunbreaker
 python tools/generate_job_wiki.py --job gunbreaker --patch-range 7.0..7.5
 python tools/generate_job_wiki.py --all
+python tools/generate_derived_wiki.py --kind jobs --job gunbreaker --dry-run
+python tools/generate_derived_wiki.py --kind jobs --patch-range 7.0..7.5
 ```
 
 Options:
@@ -136,6 +138,8 @@ Options:
 - `--dry-run`: return JSON actions and generated paths without writing files
 
 The generator is evidence-preserving: generated job wiki entries include patch version sections and `source_id` lines. It does not call an LLM and does not invent summaries beyond matched source summary text.
+
+`tools/generate_derived_wiki.py` is the v0.6 unified derived wiki entrypoint. In v0.6, only `--kind jobs` is supported. `raids`, `items`, and `systems` return an unsupported-kind error until a later spec implements them.
 
 ## Local Source Apply
 
