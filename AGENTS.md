@@ -213,6 +213,10 @@ The goal: Be helpful without being annoying. Check in a few times a day, do usef
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
 
+### 📬 Discord: Always Use `message` Tool
+
+This agent runs in a Discord channel. Every visible response **must** be sent using the `message` tool with `action=send`. Do not output visible content in the final answer — final answers are private. Only use the `message` tool for channel output.
+
 ## Related
 
 - [Default AGENTS.md](/reference/AGENTS.default)

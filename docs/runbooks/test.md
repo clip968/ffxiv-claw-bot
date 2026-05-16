@@ -4,9 +4,17 @@
 
 현재 레포에서 실제 가능한 기본 테스트 명령은 `unittest`다.
 
+테스트 실행 전 의존성을 설치한다.
+
+```bash
+python -m pip install -r requirements.txt
+```
+
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
 ```
+
+GitHub Actions도 같은 순서로 `requirements.txt`를 설치한 뒤 unittest를 실행한다.
 
 검증 결과는 작업 종료 시 `docs/handoff/CURRENT_HANDOFF.md`에 기록한다.
 
