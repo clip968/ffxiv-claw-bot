@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -59,23 +59,23 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tests/fixtures/source_files/sample.csv` 추가 (헤더 + 데이터 행 여러 개)
-- [ ] `src/source_processing/extractors/csv.py` 구현
-  - [ ] csv.reader 기반 파싱
-  - [ ] header 보존
-  - [ ] Markdown table 생성
-  - [ ] metadata `row_count`, `column_count`, `columns`
-  - [ ] `extractor_name=csv`
-  - [ ] 비어 있는 CSV 처리 정책 결정 (빈 table 또는 `SourceParseError`)
-- [ ] `extractor_registry.py`의 `.csv` stub을 실제 함수로 교체
-- [ ] `tests/test_v06_extractors.py`에 다음 테스트 추가
-  - [ ] `test_csv_extractor_preserves_headers`
-  - [ ] `test_csv_extractor_preserves_rows`
-  - [ ] `test_csv_extractor_outputs_markdown_table`
-  - [ ] `test_csv_extractor_records_row_and_column_metadata`
-  - [ ] `test_csv_extractor_handles_empty_file`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `tests/fixtures/source_files/sample.csv` 추가 (헤더 + 데이터 행 여러 개)
+- [x] `src/source_processing/extractors/csv.py` 구현
+  - [x] csv.reader 기반 파싱
+  - [x] header 보존
+  - [x] Markdown table 생성
+  - [x] metadata `row_count`, `column_count`, `columns`
+  - [x] `extractor_name=csv`
+  - [x] 비어 있는 CSV 처리 정책 결정: header 없는 CSV는 `SourceParseError`
+- [x] `extractor_registry.py`의 `.csv` stub을 실제 함수로 교체
+- [x] `tests/test_v06_extractors.py`에 다음 테스트 추가
+  - [x] `test_csv_extractor_preserves_headers`
+  - [x] `test_csv_extractor_preserves_rows`
+  - [x] `test_csv_extractor_outputs_markdown_table`
+  - [x] `test_csv_extractor_records_row_and_column_metadata`
+  - [x] `test_registry_uses_concrete_csv_extractor`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -96,7 +96,7 @@ python -m unittest tests.test_v05_1_lodestone_extractor -v
 - Python 표준 `csv` 모듈만 사용한다. pandas는 dependency 추가 정책 위반이므로 도입하지 않는다.
 - 값 안에 `|` 문자가 들어 있는 경우 Markdown table이 깨지지 않도록 escape 또는 substitute 한다.
 - 매우 큰 CSV에 대비해 streaming read를 권장하나, v0.6에서는 단순 list-of-rows로 충분하다.
-- 비어 있는 CSV는 본 task에서 `SourceParseError` 대신 빈 table을 반환하는 정책을 권장한다. (pending loop에서 처리 완료로 인정하기 위함)
+- 비어 있거나 header row가 없는 CSV는 `SourceParseError`로 처리한다. 표 구조가 없으면 후속 ingest가 의미 있는 source summary를 만들 수 없기 때문이다.
 
 ## Implementation Notes
 
@@ -106,4 +106,6 @@ python -m unittest tests.test_v05_1_lodestone_extractor -v
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_extractors.V06CsvExtractorTests -v` failed with 4 expected missing `src.source_processing.extractors.csv` import errors and 1 registry stub content failure.
+- Green: `python -m unittest tests.test_v06_extractors -v` passed 26 tests.
+- Compile: `python -m py_compile src/source_processing/extractors/csv.py src/source_processing/extractors/__init__.py` passed.

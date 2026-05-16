@@ -210,3 +210,46 @@ class V06TextMarkdownHtmlExtractorTests(unittest.TestCase):
         self.assertIn("Plain text opener", txt.text)
         self.assertIn("Gunbreaker", markdown.text)
         self.assertIn("Gunbreaker potency", html.text)
+
+
+class V06CsvExtractorTests(unittest.TestCase):
+    def test_csv_extractor_preserves_headers(self) -> None:
+        from src.source_processing.extractors.csv import extract_csv_file
+
+        extracted = extract_csv_file(SOURCE_FIXTURES / "sample.csv")
+
+        self.assertIn("| Dungeon | Boss | Item |", extracted.text)
+        self.assertEqual(extracted.metadata["columns"], ["Dungeon", "Boss", "Item"])
+
+    def test_csv_extractor_preserves_rows(self) -> None:
+        from src.source_processing.extractors.csv import extract_csv_file
+
+        extracted = extract_csv_file(SOURCE_FIXTURES / "sample.csv")
+
+        self.assertIn("| The Aetherfont | Lyngbakr | Hypostatic Gear |", extracted.text)
+        self.assertIn("| The Lunar Subterrane | Durante | Voidmoon Gear |", extracted.text)
+
+    def test_csv_extractor_outputs_markdown_table(self) -> None:
+        from src.source_processing.extractors.csv import extract_csv_file
+
+        extracted = extract_csv_file(SOURCE_FIXTURES / "sample.csv")
+
+        self.assertTrue(extracted.text.startswith("# Source: sample.csv"))
+        self.assertIn("| --- | --- | --- |", extracted.text)
+
+    def test_csv_extractor_records_row_and_column_metadata(self) -> None:
+        from src.source_processing.extractors.csv import extract_csv_file
+
+        extracted = extract_csv_file(SOURCE_FIXTURES / "sample.csv")
+
+        self.assertEqual(extracted.metadata["row_count"], 2)
+        self.assertEqual(extracted.metadata["column_count"], 3)
+        self.assertEqual(extracted.metadata["extractor_name"], "csv")
+
+    def test_registry_uses_concrete_csv_extractor(self) -> None:
+        from src.source_processing.extractor_registry import extract_source_text
+
+        extracted = extract_source_text(SOURCE_FIXTURES / "sample.csv")
+
+        self.assertIn("Hypostatic Gear", extracted.text)
+        self.assertEqual(extracted.metadata["extractor_name"], "csv")

@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-03 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-04 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -129,6 +129,26 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-04: replace `.csv` stub with the concrete CSV extractor.
+
+### Current session update: v06-04 CSV extractor implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-04 only.
+   - Added `src/source_processing/extractors/csv.py`.
+   - Replaced the `.csv` registry stub with the concrete extractor.
+   - XLSX remains a temporary stub for v06-05.
+
+2. **Red tests first**
+   - Added `tests/fixtures/source_files/sample.csv`.
+   - Added `V06CsvExtractorTests` in `tests/test_v06_extractors.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v06_extractors.V06CsvExtractorTests -v` failed with missing CSV module errors and registry stub content failure.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_extractors -v`: OK, 26 tests.
+   - `python -m py_compile src/source_processing/extractors/csv.py src/source_processing/extractors/__init__.py`: OK.
+
+4. **Next tasks**
+   - v06-05: replace `.xlsx` stub with the concrete XLSX extractor.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

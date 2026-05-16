@@ -92,6 +92,7 @@ Current status:
 - `V06ExtractorModelTests` -> `src/source_processing/models.py`, `src/source_processing/errors.py` (**Green** 2026-05-16, 5 tests)
 - `V06ExtractorRegistryTests` -> `src/source_processing/extractor_registry.py`, `src/source_processing/extractors/__init__.py` (**Green** 2026-05-16, 8 tests)
 - `V06TextMarkdownHtmlExtractorTests` -> `src/source_processing/extractors/text.py`, `markdown.py`, `html.py` (**Green** 2026-05-16, 8 tests)
+- `V06CsvExtractorTests` -> `src/source_processing/extractors/csv.py` (**Green** 2026-05-16, 5 tests)
 
 Red/green notes:
 
@@ -102,6 +103,8 @@ Red/green notes:
 - v06-03 red check: `python -m unittest tests.test_v06_extractors.V06TextMarkdownHtmlExtractorTests -v` failed with expected missing concrete modules and registry stub content failure.
 - v06-03 green check: `python -m unittest tests.test_v06_extractors -v` passed 21 tests after implementing text, markdown, and generic HTML extractors.
 - v06-03 Lodestone regression: `python -m unittest tests.test_v05_1_lodestone_extractor -v` passed 5 tests.
+- v06-04 red check: `python -m unittest tests.test_v06_extractors.V06CsvExtractorTests -v` failed with expected missing CSV module and registry stub content failure.
+- v06-04 green check: `python -m unittest tests.test_v06_extractors -v` passed 26 tests after implementing CSV extraction.
 
 v0.5 source processing tests:
 
