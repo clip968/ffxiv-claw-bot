@@ -10,6 +10,7 @@
 | `tools/ingest_url.py` | URL HTML 수집 및 raw 저장 | Legacy v0.1 path |
 | `tools/fetch_url.py` | v0.5 단일 URL fetch helper | Active v0.5 |
 | `tools/process_source.py` | 통합 source processing entrypoint; v0.6 local file extractor registry integration | Active v0.6 |
+| `tools/process_pending_sources.py` | v0.6 `source_processing_queue` pending source orchestration CLI | Active v0.6 |
 | `tools/extractors/lodestone.py` | Lodestone `.news__detail__wrapper` article extractor | Active v05.1 |
 | `tools/compile_wiki.py` | raw content -> wiki markdown 변환 및 FTS 색인 | Active |
 | `tools/search_kb.py` | `wiki_fts` 기반 검색, graph_paths 포함 | Active |
@@ -42,6 +43,7 @@
 | `raw/local_storage/` | Local Storage source의 처리용 snapshot | Derived cache |
 | `raw/urls/` | 수집한 URL HTML 저장 | Derived cache |
 | `db/ffxiv.sqlite` | sources, wiki_pages, wiki_fts, graph table 저장 | Derived local DB |
+| `source_processing_queue` | v0.6 pending source work item table inside `db/ffxiv.sqlite` | Runtime queue |
 | `wiki/source_summaries/` | source 단위 LLM Wiki markdown | Derived cache |
 | `graph/nodes.json` | graph node export | Derived cache |
 | `graph/edges.json` | graph edge export | Derived cache |

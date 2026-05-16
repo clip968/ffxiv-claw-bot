@@ -9,7 +9,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -70,28 +70,28 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tools/process_pending_sources.py` 생성
-- [ ] argparse 옵션
-  - [ ] `--limit` (default 10)
-  - [ ] `--source-type` (optional filter)
-  - [ ] `--dry-run`
-  - [ ] `--retry-errors`
-  - [ ] `--max-retry` (default 3)
-  - [ ] `--db-path` (default `db/ffxiv.sqlite`)
-  - [ ] `--storage-root` (default `/mnt/d/ffixiv-bot-storage`)
-- [ ] DB access: pending source 조회 / 상태 전이 / retry_count 업데이트
-- [ ] process_source 호출 wiring (직접 main 호출 또는 함수 import)
-- [ ] dry-run 시 status 변경 금지
-- [ ] result JSON 또는 stdout summary
-- [ ] `tests/test_v06_pending_sources.py`에 다음 테스트
-  - [ ] `test_pending_loop_processes_pending_sources_up_to_limit`
-  - [ ] `test_pending_loop_dry_run_does_not_mutate_status`
-  - [ ] `test_pending_loop_marks_successful_source_processed`
-  - [ ] `test_pending_loop_marks_failed_source_error`
-  - [ ] `test_pending_loop_increments_retry_count`
-  - [ ] `test_retry_errors_only_retries_below_max_retry`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `tools/process_pending_sources.py` 생성
+- [x] argparse 옵션
+  - [x] `--limit` (default 10)
+  - [x] `--source-type` (optional filter)
+  - [x] `--dry-run`
+  - [x] `--retry-errors`
+  - [x] `--max-retry` (default 3)
+  - [x] `--db-path` (default `db/ffxiv.sqlite`)
+  - [x] `--storage-root` (default `/mnt/d/ffixiv-bot-storage`)
+- [x] DB access: pending source 조회 / 상태 전이 / retry_count 업데이트
+- [x] process_source 호출 wiring (직접 main 호출)
+- [x] dry-run 시 status 변경 금지
+- [x] result JSON 또는 stdout summary
+- [x] `tests/test_v06_pending_sources.py`에 다음 테스트
+  - [x] `test_pending_loop_processes_pending_sources_up_to_limit`
+  - [x] `test_pending_loop_dry_run_does_not_mutate_status`
+  - [x] `test_pending_loop_marks_successful_source_processed`
+  - [x] `test_pending_loop_marks_failed_source_error`
+  - [x] `test_pending_loop_increments_retry_count`
+  - [x] `test_retry_errors_only_retries_below_max_retry`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -123,4 +123,11 @@ python -m unittest tests.test_v06_extractors -v
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_pending_sources -v` failed with 6 expected failures because `tools.process_pending_sources` did not exist.
+- Green: `python -m unittest tests.test_v06_pending_sources -v` passed 6 tests after adding `source_processing_queue` orchestration.
+- CLI smoke: `python tools/process_pending_sources.py --dry-run --limit 3` returned `status=skipped`, `targeted=0` against the local default DB without creating work.
+- Regression: `python -m unittest tests.test_v05_process_source -v` passed 31 tests.
+- Regression: `python -m unittest tests.test_v06_extractors -v` passed 32 tests.
+- Regression: `python -m py_compile tools/process_pending_sources.py tools/init_db.py` passed.
+- Docs: `python scripts/check_docs_freshness.py --all` passed.
+- Full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 178 tests.

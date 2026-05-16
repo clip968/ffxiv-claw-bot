@@ -95,6 +95,7 @@ Current status:
 - `V06CsvExtractorTests` -> `src/source_processing/extractors/csv.py` (**Green** 2026-05-16, 5 tests)
 - `V06XlsxExtractorTests` -> `src/source_processing/extractors/xlsx.py` (**Green** 2026-05-16, 6 tests)
 - `V06ProcessSourceExtractorIntegrationTests` -> `tools/process_source.py`, `tools/ingest_local.py`, `src/source_processing/*` (**Green** 2026-05-16, 4 tests)
+- `V06PendingSourceLoopTests` -> `tools/process_pending_sources.py`, `tools/init_db.py` (**Green** 2026-05-16, 6 tests)
 
 Red/green notes:
 
@@ -111,6 +112,8 @@ Red/green notes:
 - v06-05 green check: `python -m unittest tests.test_v06_extractors -v` passed 32 tests after implementing standard-library XLSX extraction.
 - v06-06 red check: `python -m unittest tests.test_v05_process_source.V06ProcessSourceExtractorIntegrationTests -v` failed with expected missing `extract` actions, missing `extract_metadata`, missing extract-stage errors, and unimplemented `binary_attachment` apply behavior.
 - v06-06 green check: `python -m unittest tests.test_v05_process_source.V06ProcessSourceExtractorIntegrationTests -v` passed 4 tests after routing local file sources through the extractor registry.
+- v06-07 red check: `python -m unittest tests.test_v06_pending_sources -v` failed with 6 expected failures because `tools.process_pending_sources` did not exist.
+- v06-07 green check: `python -m unittest tests.test_v06_pending_sources -v` passed 6 tests after adding the `source_processing_queue` pending loop.
 
 v0.5 source processing tests:
 

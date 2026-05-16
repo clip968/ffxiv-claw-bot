@@ -69,6 +69,27 @@ CREATE TABLE IF NOT EXISTS ingest_log (
   message TEXT,
   created_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS source_processing_queue (
+  id TEXT PRIMARY KEY,
+  source_type TEXT NOT NULL,
+  category TEXT NOT NULL,
+  title TEXT,
+  body TEXT,
+  local_path TEXT,
+  url TEXT,
+  status TEXT NOT NULL DEFAULT 'pending',
+  error_stage TEXT,
+  error_message TEXT,
+  retry_count INTEGER NOT NULL DEFAULT 0,
+  processed_source_id TEXT,
+  graph_status TEXT,
+  result_json TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  last_attempt_at TEXT,
+  last_success_at TEXT
+);
 """
 
 

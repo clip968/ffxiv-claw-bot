@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-06 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-07 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -193,6 +193,30 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-07: implement `tools/process_pending_sources.py` pending source loop.
+
+### Current session update: v06-07 pending source loop implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-07 only.
+   - Added `source_processing_queue` to `tools/init_db.py`.
+   - Added `tools/process_pending_sources.py` with `--limit`, `--source-type`, `--dry-run`, `--retry-errors`, `--max-retry`, `--db-path`, and `--storage-root`.
+   - The pending loop calls `tools.process_source.main()` for each selected queue row and does not duplicate extractor, ingest, rebuild, or Notion payload logic.
+
+2. **Red tests first**
+   - Added `V06PendingSourceLoopTests` in `tests/test_v06_pending_sources.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v06_pending_sources -v` failed with 6 missing-module failures because `tools.process_pending_sources` did not exist.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_pending_sources -v`: OK, 6 tests.
+   - `python tools/process_pending_sources.py --dry-run --limit 3`: returned `status=skipped`, `targeted=0`.
+   - `python -m unittest tests.test_v05_process_source -v`: OK, 31 tests.
+   - `python -m unittest tests.test_v06_extractors -v`: OK, 32 tests.
+   - `python -m py_compile tools/process_pending_sources.py tools/init_db.py`: OK.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 178 tests.
+
+4. **Next tasks**
+   - v06-08: implement derived wiki foundation (`summary_loader`, `writer`, `templates`).
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

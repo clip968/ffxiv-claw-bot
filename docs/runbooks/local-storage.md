@@ -110,6 +110,20 @@ path traversal 거부 시 action 예시:
 - `--apply` requires the configured storage root to already exist and be a directory. Missing roots fail with `error_type = local_storage_root_missing`; the CLI does not create the canonical external source root automatically.
 - `raw/local_storage/` is a derived processing snapshot directory and is ignored by Git.
 
+## Source Processing Queue
+
+v0.6 adds `source_processing_queue` for pending source orchestration. Queue rows are not canonical source records; they are work items consumed by `tools/process_pending_sources.py`.
+
+Key fields:
+
+- `source_type`, `category`, `title`
+- one input field: `body`, `local_path`, or `url`
+- `status`: `pending`, `in_progress`, `processed`, or `error`
+- `retry_count`, `error_stage`, `error_message`
+- `processed_source_id`, `graph_status`, `result_json`
+
+Successful queue processing creates or updates the canonical source through `tools/process_source.py`; the resulting canonical source id is stored in `processed_source_id`.
+
 ## Manifest Dry-run
 
 현재 구현된 첫 범위는 manifest 기반 dry-run이다.

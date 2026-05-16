@@ -23,6 +23,7 @@ Implemented slices:
 - v05.1-04: Lodestone HTML URLs route through the Lodestone article extractor before generic HTML extraction.
 - v05.1-05: URL fetch actions include extractor metadata when `fetch_single_url()` returns it.
 - v06-06: local file sources route through the v0.6 extractor registry before Local Storage ingest.
+- v06-07: `tools/process_pending_sources.py` processes queued pending sources through `process_source.py`.
 
 Out of scope:
 
@@ -72,6 +73,47 @@ Notion boundary:
 - `process_source.py itself does not call the Notion API`.
 - If `result["notion_update"]` is present, OpenClaw may apply it to the Notion control/status database.
 - A generated `notion_update` payload is not already applied to Notion DB state.
+
+## Pending Source Loop
+
+`tools/process_pending_sources.py` is the v0.6 orchestration layer for queued source rows. It repeatedly calls `tools/process_source.py` for one source at a time; it does not duplicate extractor, ingest, rebuild, or Notion payload logic.
+
+Queue table:
+
+```text
+source_processing_queue
+```
+
+Required queue fields:
+
+- `id`
+- `source_type`
+- `category`
+- `title`
+- one input field: `body`, `local_path`, or `url`
+- `status`
+- `retry_count`
+
+Normal commands:
+
+```bash
+python tools/process_pending_sources.py --dry-run --limit 3
+python tools/process_pending_sources.py --limit 10
+python tools/process_pending_sources.py --source-type local_file --limit 10
+python tools/process_pending_sources.py --retry-errors --max-retry 3 --limit 10
+```
+
+Status behavior:
+
+- `--dry-run` returns planned targets and does not create or mutate queue rows.
+- Normal processing selects `status=pending` rows.
+- `--retry-errors` also selects `status=error` rows with `retry_count < max_retry`.
+- Each selected row is marked `in_progress` before calling `process_source.py`.
+- `process_source.py` `status=ok` marks the queue row `processed`.
+- Any non-ok result marks the queue row `error`, stores `error_stage` and `error_message`, and increments `retry_count`.
+- `--source-type local_file` filters to `markdown_file`, `plain_text_file`, and `binary_attachment`.
+
+The queue loop is not a scheduler, daemon, watcher, crawler, or Notion polling tool.
 
 ## Local Source Apply
 
