@@ -695,6 +695,8 @@ test_ask_cli_job_change_history_e2e
 
 ### v07-01. Query model and normalization
 
+Status: Completed 2026-05-17
+
 Files:
 
 ```text
@@ -713,6 +715,7 @@ Acceptance:
 
 - Query model can preserve raw and normalized query
 - Terms are extracted deterministically
+- Verified by `tests/test_v07_query_parser.py`
 
 ---
 

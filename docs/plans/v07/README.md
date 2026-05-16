@@ -28,7 +28,7 @@ user question
 
 | # | Plan | Purpose | Status |
 |---|---|---|---|
-| 01 | 2026-05-17-v07-01-query-model-and-normalization.md | ParsedQuery 모델과 normalization helpers 추가 | Pending |
+| 01 | 2026-05-17-v07-01-query-model-and-normalization.md | ParsedQuery 모델과 normalization helpers 추가 | Completed 2026-05-17 |
 | 02 | 2026-05-17-v07-02-job-detector.md | 사용자 질문에서 FFXIV 직업 감지 | Pending |
 | 03 | 2026-05-17-v07-03-patch-range-parser.md | 패치 버전 범위 파싱 | Pending |
 | 04 | 2026-05-17-v07-04-intent-detector.md | 결정론적 intent 분류 | Pending |

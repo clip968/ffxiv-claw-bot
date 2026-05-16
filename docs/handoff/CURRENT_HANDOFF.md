@@ -79,6 +79,24 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
+### Current session update: v07-01 query model and normalization implemented -- 2026-05-17
+
+1. **Scope**
+   - Implemented v07-01 only.
+   - Added `src/query` package foundation with `ParsedQuery`, `normalize_query()`, and `extract_terms()`.
+   - Did not implement job detection, patch parsing, intent detection, parser integration, retrieval, or answer composition.
+
+2. **Red tests first**
+   - Added `V07QueryModelTests` in `tests/test_v07_query_parser.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v07_query_parser -v` failed with `ModuleNotFoundError: No module named 'src.query'`.
+
+3. **Verification**
+   - `python -m unittest tests.test_v07_query_parser -v`: OK, 3 tests.
+   - `python -m py_compile src/query/models.py src/query/normalize.py src/query/__init__.py`: OK.
+
+4. **Next tasks**
+   - v07-02: add job detection by reusing the v06 job catalog.
+
 ### Current session update: v06-01 extractor model and errors implemented -- 2026-05-16
 
 1. **Scope**

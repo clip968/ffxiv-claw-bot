@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -47,18 +47,18 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/query/__init__.py` 생성
-- [ ] `src/query/models.py` 생성 (`ParsedQuery` frozen dataclass)
-- [ ] `src/query/normalize.py` 생성
-  - [ ] `normalize_query()` 구현
-  - [ ] `extract_terms()` 구현
-- [ ] `tests/test_v07_query_parser.py` 생성
-  - [ ] `test_parsed_query_preserves_raw_and_normalized_query`
-  - [ ] `test_normalize_query_casefolds_english_but_preserves_korean`
-  - [ ] `test_tokenize_query_extracts_terms`
-- [ ] red 상태 확인 (`python -m unittest tests.test_v07_query_parser -v`)
-- [ ] 최소 구현으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] `src/query/__init__.py` 생성
+- [x] `src/query/models.py` 생성 (`ParsedQuery` frozen dataclass)
+- [x] `src/query/normalize.py` 생성
+  - [x] `normalize_query()` 구현
+  - [x] `extract_terms()` 구현
+- [x] `tests/test_v07_query_parser.py` 생성
+  - [x] `test_parsed_query_preserves_raw_and_normalized_query`
+  - [x] `test_normalize_query_casefolds_english_but_preserves_korean`
+  - [x] `test_tokenize_query_extracts_terms`
+- [x] red 상태 확인 (`python -m unittest tests.test_v07_query_parser -v`)
+- [x] 최소 구현으로 green 전환
+- [x] handoff/README feature map status 갱신
 
 ## Verification
 
@@ -78,6 +78,9 @@ python -m py_compile src/query/models.py src/query/normalize.py src/query/__init
 - import path는 `from src.query import ParsedQuery` 형태가 되도록 `__init__.py`에 re-export 한다.
 - 이 task는 행동 변경이 없으므로 기존 `tools/search_kb.py`, `tools/answer.py`에 영향을 주지 않는다.
 - 후속 v07-02~05에서 이 모델과 함수를 그대로 사용한다.
+- Red verification: `python -m unittest tests.test_v07_query_parser -v` failed with `ModuleNotFoundError: No module named 'src.query'`.
+- Green verification: `python -m unittest tests.test_v07_query_parser -v` passed 3 tests.
+- Compile verification: `python -m py_compile src/query/models.py src/query/normalize.py src/query/__init__.py` passed.
 
 ## Agent Prompt
 
