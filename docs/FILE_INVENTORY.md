@@ -35,6 +35,14 @@
 | `src/source_processing/extractors/csv.py` | v0.6 CSV-to-Markdown-table extractor | Active v0.6 |
 | `src/source_processing/extractors/xlsx.py` | v0.6 standard-library XLSX-to-Markdown-table extractor | Active v0.6 |
 
+## v0.6 Derived Wiki Packages
+
+| Path | Role | Status |
+|---|---|---|
+| `src/derived_wiki/summary_loader.py` | v0.6 source summary filesystem loader and `SourceSummary` model | Active v0.6 |
+| `src/derived_wiki/writer.py` | v0.6 derived wiki UTF-8 file writer | Active v0.6 |
+| `src/derived_wiki/templates.py` | v0.6 Markdown heading/section template helpers | Active v0.6 |
+
 ## Data / Output
 
 | Path | Role | Status |

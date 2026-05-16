@@ -96,6 +96,7 @@ Current status:
 - `V06XlsxExtractorTests` -> `src/source_processing/extractors/xlsx.py` (**Green** 2026-05-16, 6 tests)
 - `V06ProcessSourceExtractorIntegrationTests` -> `tools/process_source.py`, `tools/ingest_local.py`, `src/source_processing/*` (**Green** 2026-05-16, 4 tests)
 - `V06PendingSourceLoopTests` -> `tools/process_pending_sources.py`, `tools/init_db.py` (**Green** 2026-05-16, 6 tests)
+- `V06DerivedWikiFoundationTests` -> `src/derived_wiki/summary_loader.py`, `writer.py`, `templates.py` (**Green** 2026-05-16, 7 tests)
 
 Red/green notes:
 
@@ -114,6 +115,8 @@ Red/green notes:
 - v06-06 green check: `python -m unittest tests.test_v05_process_source.V06ProcessSourceExtractorIntegrationTests -v` passed 4 tests after routing local file sources through the extractor registry.
 - v06-07 red check: `python -m unittest tests.test_v06_pending_sources -v` failed with 6 expected failures because `tools.process_pending_sources` did not exist.
 - v06-07 green check: `python -m unittest tests.test_v06_pending_sources -v` passed 6 tests after adding the `source_processing_queue` pending loop.
+- v06-08 red check: `python -m unittest tests.test_v06_job_wiki_generator -v` failed with 7 expected missing `src.derived_wiki` module errors.
+- v06-08 green check: `python -m unittest tests.test_v06_job_wiki_generator -v` passed 7 tests after adding source summary loader, writer, and template helpers.
 
 v0.5 source processing tests:
 

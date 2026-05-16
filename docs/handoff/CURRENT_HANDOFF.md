@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-07 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-08 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -217,6 +217,29 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-08: implement derived wiki foundation (`summary_loader`, `writer`, `templates`).
+
+### Current session update: v06-08 derived wiki foundation implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-08 only.
+   - Added `src/derived_wiki/summary_loader.py` with `SourceSummary` and filesystem-based `load_summaries()`.
+   - Added `src/derived_wiki/writer.py` and `src/derived_wiki/templates.py`.
+   - Added source summary fixtures for patch 7.0 and patch 7.1.
+   - Did not implement job catalog, job wiki generation, CLI, FTS integration, or derived wiki hook.
+
+2. **Red tests first**
+   - Added `V06DerivedWikiFoundationTests` in `tests/test_v06_job_wiki_generator.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v06_job_wiki_generator -v` failed with 7 missing `src.derived_wiki` module errors.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_job_wiki_generator -v`: OK, 7 tests.
+   - `python -m unittest tests.test_v06_pending_sources tests.test_v05_process_source tests.test_v06_extractors -v`: OK, 69 tests.
+   - `python -m py_compile src/derived_wiki/summary_loader.py src/derived_wiki/writer.py src/derived_wiki/templates.py src/derived_wiki/__init__.py`: OK.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 185 tests.
+
+4. **Next tasks**
+   - v06-09: implement job catalog and aliases.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

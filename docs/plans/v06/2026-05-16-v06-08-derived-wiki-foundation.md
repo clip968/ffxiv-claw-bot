@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -60,31 +60,31 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/derived_wiki/__init__.py` 생성
-- [ ] `src/derived_wiki/summary_loader.py` 구현
-  - [ ] `load_summaries(root: Path) -> list[SourceSummary]`
-  - [ ] source_id 추출 (filename stem 또는 metadata)
-  - [ ] patch_version 추출 (filename → heading → metadata)
-  - [ ] title 추출 (첫 heading 또는 metadata)
-  - [ ] text 본문 로딩
-- [ ] `src/derived_wiki/writer.py` 구현
-  - [ ] `write_derived_wiki(path: Path, content: str)`
-  - [ ] parent directory 생성
-  - [ ] UTF-8 write
-- [ ] `src/derived_wiki/templates.py` 구현
-  - [ ] 기본 heading/section template helper
-- [ ] fixture 추가
-  - [ ] `tests/fixtures/source_summaries/patch_7_0.md`
-  - [ ] `tests/fixtures/source_summaries/patch_7_1.md`
-- [ ] `tests/test_v06_job_wiki_generator.py`에 다음 테스트 추가
-  - [ ] `test_summary_loader_reads_source_summary_files`
-  - [ ] `test_summary_loader_extracts_source_id`
-  - [ ] `test_summary_loader_extracts_patch_version_from_filename`
-  - [ ] `test_summary_loader_extracts_patch_version_from_heading`
-  - [ ] `test_summary_writer_writes_to_target_path`
-  - [ ] `test_summary_writer_creates_missing_parent_directory`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/derived_wiki/__init__.py` 생성
+- [x] `src/derived_wiki/summary_loader.py` 구현
+  - [x] `load_summaries(root: Path) -> list[SourceSummary]`
+  - [x] source_id 추출 (filename stem 또는 metadata)
+  - [x] patch_version 추출 (filename → heading → metadata)
+  - [x] title 추출 (첫 heading 또는 metadata)
+  - [x] text 본문 로딩
+- [x] `src/derived_wiki/writer.py` 구현
+  - [x] `write_derived_wiki(path: Path, content: str)`
+  - [x] parent directory 생성
+  - [x] UTF-8 write
+- [x] `src/derived_wiki/templates.py` 구현
+  - [x] 기본 heading/section template helper
+- [x] fixture 추가
+  - [x] `tests/fixtures/source_summaries/patch_7_0.md`
+  - [x] `tests/fixtures/source_summaries/patch_7_1.md`
+- [x] `tests/test_v06_job_wiki_generator.py`에 다음 테스트 추가
+  - [x] `test_summary_loader_reads_source_summary_files`
+  - [x] `test_summary_loader_extracts_source_id`
+  - [x] `test_summary_loader_extracts_patch_version_from_filename`
+  - [x] `test_summary_loader_extracts_patch_version_from_heading`
+  - [x] `test_summary_writer_writes_to_target_path`
+  - [x] `test_summary_writer_creates_missing_parent_directory`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -111,4 +111,9 @@ python -m py_compile \
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_job_wiki_generator -v` failed with 7 expected `ModuleNotFoundError: No module named 'src.derived_wiki'` errors.
+- Green: `python -m unittest tests.test_v06_job_wiki_generator -v` passed 7 tests after adding loader, writer, template helpers, and source summary fixtures.
+- Regression: `python -m unittest tests.test_v06_pending_sources tests.test_v05_process_source tests.test_v06_extractors -v` passed 69 tests.
+- Regression: `python -m py_compile src/derived_wiki/summary_loader.py src/derived_wiki/writer.py src/derived_wiki/templates.py src/derived_wiki/__init__.py` passed.
+- Docs: `python scripts/check_docs_freshness.py --all` passed.
+- Full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 185 tests.
