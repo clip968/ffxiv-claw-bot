@@ -95,7 +95,7 @@ Current status:
 - `V06CsvExtractorTests` -> `src/source_processing/extractors/csv.py` (**Green** 2026-05-16, 5 tests)
 - `V06XlsxExtractorTests` -> `src/source_processing/extractors/xlsx.py` (**Green** 2026-05-16, 6 tests)
 - `V06ProcessSourceExtractorIntegrationTests` -> `tools/process_source.py`, `tools/ingest_local.py`, `src/source_processing/*` (**Green** 2026-05-16, 4 tests)
-- `V06PendingSourceLoopTests` -> `tools/process_pending_sources.py`, `tools/process_source.py`, `tools/init_db.py` (**Green** 2026-05-16, 10 tests)
+- `V06PendingSourceLoopTests` -> `tools/process_pending_sources.py`, `tools/process_source.py`, `tools/init_db.py` (**Green** 2026-05-16, 11 tests)
 - `V06DerivedWikiFoundationTests` -> `src/derived_wiki/summary_loader.py`, `writer.py`, `templates.py` (**Green** 2026-05-16, 7 tests)
 - `V06JobCatalogTests` -> `src/derived_wiki/job_catalog.py` (**Green** 2026-05-16, 7 tests)
 - `V06JobWikiGeneratorTests` -> `src/derived_wiki/job_wiki_generator.py`, `tools/generate_job_wiki.py` (**Green** 2026-05-16, 9 tests)
@@ -135,6 +135,9 @@ Red/green notes:
 - v06-13 guard green check: `python -m unittest tests.test_v05_process_source -v` passed 32 tests after skipping the hook when source processing is not `status=ok`.
 - v06-13 full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 218 tests.
 - v06-14 documentation final gate: `python scripts/finish_task.py` passed, including full suite 218 tests, docs freshness check, and Notion handoff dry-run.
+- v06.1 red check: direct `process_source.py --build-derived-wiki` and `process_pending_sources.py --build-derived-wiki` FTS regression tests failed as expected because `derived_wiki.fts_index` was missing and `job_gunbreaker` was not guaranteed in `wiki_fts`.
+- v06.1 green check: `python -m unittest tests.test_v05_process_source -v` passed 34 tests, `python -m unittest tests.test_v06_pending_sources -v` passed 11 tests, and `python -m unittest tests.test_v06_fts_indexing -v` passed 7 tests after adding automatic `index_wiki_documents()` hook execution.
+- v06.1 full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 221 tests.
 
 v0.5 source processing tests:
 

@@ -1,6 +1,6 @@
 # SPEC 0006 - v0.6 Multi-format Source Processing and Derived Wiki Generation
 
-Status: Implemented 2026-05-16
+Status: Implemented 2026-05-16; v06.1 FTS hardening added 2026-05-16
 
 Target version: v0.6
 
@@ -201,6 +201,8 @@ source file 등록
 
 -> derived wiki도 FTS 인덱싱
 
+v06.1 hardening note: when `process_source.py --build-derived-wiki` or `process_pending_sources.py --build-derived-wiki` generates job wiki pages, the same pipeline run must call `tools.compile_wiki.index_wiki_documents()` so generated `wiki/jobs/*.md` pages are immediately present in `wiki_fts`.
+
 ## 7. Extractor 설계
 
 모든 extractor는 동일한 interface를 따라야 한다.
@@ -271,6 +273,7 @@ metadata: dict
 - 표는 Markdown table 형태로 변환한다
 - 수식 자체를 해석하지 않는다
 - 가능하면 셀에 저장된 값 또는 표시 값을 사용한다
+- v0.6/v06.1의 XLSX 지원은 기본 표 추출이다. 날짜 표시 형식, 수식 cached value 부재, 병합 셀, 숨김 행/열, 여러 줄 셀의 표현, 빈 첫 행 뒤 header 추론은 고급 Excel 처리 범위로 남긴다.
 
 예시 출력:
 

@@ -171,9 +171,13 @@ Result JSON always includes a `derived_wiki` block:
 - Default skip: `{"status": "skipped", "reason": "not_requested"}`
 - Upstream source/rebuild not ok: `{"status": "skipped", "reason": "upstream_source_not_ok"}`
 - Success: `{"status": "ok", "targets": [...], "summary": {...}}`
+- Success with FTS indexing: `{"status": "ok", "targets": [...], "summary": {...}, "fts_index": {"status": "ok", "summary": {...}}}`
+- Derived wiki generated but FTS indexing failed: `{"status": "partial", "targets": [...], "summary": {...}, "fts_index": {"status": "error", "error_stage": "derived_wiki_fts_index", "error_message": "..."}}`
 - Failure: `{"status": "error", "error_stage": "derived_wiki_generate", "error_message": "..."}`
 
-The hook only runs after source processing returns `status=ok`. Failure in this hook does not turn the source ingest/rebuild result into `status=error`. The error is reported separately so operators can retry derived wiki generation without treating the source itself as failed.
+The hook only runs after source processing returns `status=ok`. Successful derived wiki generation immediately calls `tools.compile_wiki.index_wiki_documents(root_path=ROOT, db_path=...)`, so generated `wiki/jobs/*.md` pages are searchable in `wiki_fts` in the same pipeline run.
+
+Failure in this hook does not turn the source ingest/rebuild result into `status=error`. The error is reported separately so operators can retry derived wiki generation or FTS indexing without treating the source itself as failed.
 
 ## Derived Wiki FTS Indexing
 
@@ -251,6 +255,7 @@ Local file extraction behavior:
 - `extract_metadata` is preserved in the result JSON for diagnostics and downstream pending-source handling.
 - Extractor metadata is not copied into `notion_update`.
 - `binary_attachment` output is stored as normalized `.md` text in Local Storage and raw snapshots.
+- XLSX extraction is basic table extraction. It reads sheet rows/cells from workbook XML without external dependencies, but advanced Excel behavior such as date formatting, formulas without cached values, merged cells, hidden rows/columns, and inferred headers from non-first rows is not normalized in v0.6/v06.1.
 
 ## URL Source Apply
 

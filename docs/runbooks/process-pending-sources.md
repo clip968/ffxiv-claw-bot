@@ -102,8 +102,9 @@ The queue runner stores `result_json` from `process_source.py`. For source failu
 
 Expected result cases:
 
-- success: queue row `status=derived_wiki_built`
+- success: queue row `status=derived_wiki_built`; generated `wiki/jobs/*.md` pages are indexed into `wiki_fts`
 - derived wiki failure: queue row remains `status=processed`, with `error_stage=derived_wiki_generate`
+- derived wiki generated but FTS indexing failed: source processing remains successful, `result_json.derived_wiki.status=partial`, and `result_json.derived_wiki.fts_index.error_stage=derived_wiki_fts_index`
 - source processing partial/error: derived wiki hook is skipped because the source result is not `status=ok`
 
 The hook is opt-in. Without `--build-derived-wiki`, no `wiki/jobs/*.md` files are generated.
@@ -131,6 +132,15 @@ Derived wiki generation failure:
 status=processed
 error_stage=derived_wiki_generate
 ```
+
+Derived wiki FTS indexing failure:
+
+```text
+result_json.derived_wiki.status=partial
+result_json.derived_wiki.fts_index.error_stage=derived_wiki_fts_index
+```
+
+Queue rows do not have a dedicated `derived_wiki_status` column in v06.1. If operators need clearer queue filtering than `result_json`, add that schema change in a later hardening task.
 
 If no rows are selected, the command returns `status=skipped`, `summary.targeted=0`.
 

@@ -15,6 +15,7 @@ from tools import ingest_local
 from tools import generate_derived_wiki
 from tools import local_rebuild
 from tools import status_notification
+from tools.compile_wiki import index_wiki_documents
 from tools.fetch_url import fetch_single_url
 from tools.sync_storage import DB_PATH, DEFAULT_STORAGE_ROOT
 from src.source_processing import (
@@ -656,6 +657,43 @@ def _attach_derived_wiki(result: dict[str, Any], args: argparse.Namespace) -> No
             "name": "generate_derived_wiki",
             "status": status,
             "summary": derived_result.get("summary", {}),
+        }
+    )
+    if status != "ok":
+        return
+
+    try:
+        index_result = index_wiki_documents(
+            root_path=ROOT,
+            db_path=Path(args.db_path),
+        )
+    except Exception as exc:
+        error_message = str(exc)
+        result["derived_wiki"]["status"] = "partial"
+        result["derived_wiki"]["fts_index"] = {
+            "status": "error",
+            "error_stage": "derived_wiki_fts_index",
+            "error_message": error_message,
+        }
+        result["actions"].append(
+            {
+                "name": "index_wiki_documents",
+                "status": "error",
+                "error_stage": "derived_wiki_fts_index",
+                "error": error_message,
+            }
+        )
+        return
+
+    result["derived_wiki"]["fts_index"] = {
+        "status": "ok",
+        "summary": index_result.get("summary", {}),
+    }
+    result["actions"].append(
+        {
+            "name": "index_wiki_documents",
+            "status": "ok",
+            "summary": index_result.get("summary", {}),
         }
     )
 

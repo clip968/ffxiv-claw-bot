@@ -285,6 +285,35 @@ class V06PendingSourceLoopTests(unittest.TestCase):
         self.assertEqual(source_result["derived_wiki"]["status"], "ok")
         self.assertTrue((self.repo_root / "wiki" / "jobs" / "gunbreaker.md").exists())
 
+    def test_process_pending_sources_build_derived_wiki_indexes_job_wiki_documents(self) -> None:
+        self._insert_queue_source(
+            "pending_build_derived_fts",
+            source_type="text_note",
+            category="patch_notes",
+            title="Patch 7.2 Notes",
+            body="# Patch 7.2 Notes\n\n## Gunbreaker\n\n- Pending FTS hook change.\n",
+        )
+
+        self.run_pending(["--limit", "1", "--build-derived-wiki"])
+
+        row = self._queue_row("pending_build_derived_fts")
+        source_result = json.loads(row["result_json"])
+        conn = sqlite3.connect(str(self.db_path))
+        try:
+            fts_row = conn.execute(
+                "SELECT title, body FROM wiki_fts WHERE page_id = ?",
+                ("job_gunbreaker",),
+            ).fetchone()
+        finally:
+            conn.close()
+
+        self.assertEqual(row["status"], "derived_wiki_built")
+        self.assertEqual(source_result["derived_wiki"]["status"], "ok")
+        self.assertEqual(source_result["derived_wiki"]["fts_index"]["status"], "ok")
+        self.assertIsNotNone(fts_row)
+        self.assertIn("Gunbreaker", fts_row[0])
+        self.assertIn("Pending FTS hook change", fts_row[1])
+
     def test_derived_wiki_failure_records_derived_wiki_stage(self) -> None:
         module = importlib.import_module("tools.process_source")
         self._insert_queue_source(

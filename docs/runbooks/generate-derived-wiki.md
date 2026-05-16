@@ -100,10 +100,30 @@ python tools/process_pending_sources.py --build-derived-wiki --limit 10
 
 Default source processing skips derived wiki generation.
 
+When the hook succeeds, `process_source.py` immediately indexes generated job wiki pages through `tools.compile_wiki.index_wiki_documents(root_path=ROOT, db_path=...)`. The result JSON includes:
+
+```json
+{
+  "derived_wiki": {
+    "status": "ok",
+    "targets": ["wiki/jobs/gunbreaker.md"],
+    "fts_index": {
+      "status": "ok",
+      "summary": {
+        "indexed": 23,
+        "source_summary": 20,
+        "job": 3
+      }
+    }
+  }
+}
+```
+
 Failure policy:
 
 - source result not `status=ok`: derived wiki hook is skipped
 - derived wiki generator failure: source remains successful, and `derived_wiki.error_stage=derived_wiki_generate`
+- derived wiki generated but FTS indexing failed: source remains successful, and `derived_wiki.status=partial` with `derived_wiki.fts_index.error_stage=derived_wiki_fts_index`
 
 ## Troubleshooting
 
@@ -121,8 +141,8 @@ Derived wiki kind 'raids' is not supported in v0.6.
 
 Stale search results:
 
-- Generate the wiki page again.
-- Re-run `index_wiki_documents()`.
+- For manual generator runs, generate the wiki page again and re-run `index_wiki_documents()`.
+- For source-processing hook runs, inspect `derived_wiki.fts_index`. If it is `status=ok`, generated job pages were indexed in the same run.
 
 ## Verification
 

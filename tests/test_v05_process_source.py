@@ -957,6 +957,77 @@ class V05ProcessSourceRebuildIntegrationTests(ProcessSourceTempCase):
         self.assertEqual(result["derived_wiki"]["status"], "skipped")
         self.assertEqual(result["derived_wiki"]["reason"], "upstream_source_not_ok")
 
+    def test_process_build_derived_wiki_indexes_job_wiki_documents(self) -> None:
+        result = self.run_process(
+            [
+                "--apply",
+                "--source-type",
+                "text_note",
+                "--category",
+                "patch_notes",
+                "--title",
+                "Patch 7.2 Notes",
+                "--body",
+                "# Patch 7.2 Notes\n\n## Gunbreaker\n\n- FTS hook cartridge change.\n",
+                "--build-derived-wiki",
+            ],
+        )
+
+        conn = sqlite3.connect(str(self.db_path))
+        try:
+            row = conn.execute(
+                "SELECT title, body FROM wiki_fts WHERE page_id = ?",
+                ("job_gunbreaker",),
+            ).fetchone()
+        finally:
+            conn.close()
+
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["derived_wiki"]["status"], "ok")
+        self.assertEqual(result["derived_wiki"]["fts_index"]["status"], "ok")
+        self.assertTrue(
+            any(action["name"] == "index_wiki_documents" for action in result["actions"])
+        )
+        self.assertIsNotNone(row)
+        self.assertIn("Gunbreaker", row[0])
+        self.assertIn("FTS hook cartridge change", row[1])
+
+    def test_process_build_derived_wiki_fts_failure_returns_partial_derived_wiki(self) -> None:
+        process_source = importlib.import_module("tools.process_source")
+
+        with patch.object(process_source, "index_wiki_documents") as index_wiki:
+            index_wiki.side_effect = RuntimeError("fts boom")
+            result = self.run_process(
+                [
+                    "--apply",
+                    "--source-type",
+                    "text_note",
+                    "--category",
+                    "patch_notes",
+                    "--title",
+                    "Patch 7.2 Notes",
+                    "--body",
+                    "# Patch 7.2 Notes\n\n## Gunbreaker\n\n- FTS failure path.\n",
+                    "--build-derived-wiki",
+                ],
+            )
+
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["derived_wiki"]["status"], "partial")
+        self.assertEqual(result["derived_wiki"]["fts_index"]["status"], "error")
+        self.assertEqual(
+            result["derived_wiki"]["fts_index"]["error_stage"],
+            "derived_wiki_fts_index",
+        )
+        self.assertTrue(
+            any(
+                action["name"] == "index_wiki_documents"
+                and action["status"] == "error"
+                and "fts boom" in action["error"]
+                for action in result["actions"]
+            )
+        )
+
     def test_process_graph_failure_sets_graph_status_failed(self) -> None:
         local_rebuild = importlib.import_module("tools.local_rebuild")
 
