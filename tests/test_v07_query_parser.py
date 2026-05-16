@@ -43,5 +43,32 @@ class V07QueryModelTests(unittest.TestCase):
         self.assertEqual(extract_terms("   "), ())
 
 
+class V07JobDetectorTests(unittest.TestCase):
+    def test_detect_job_korean_full_alias(self) -> None:
+        from src.query import detect_job
+
+        self.assertEqual(detect_job("건브레이커 변경 이력"), "gunbreaker")
+
+    def test_detect_job_korean_short_alias(self) -> None:
+        from src.query import detect_job
+
+        self.assertEqual(detect_job("건브 뭐 바뀜?"), "gunbreaker")
+
+    def test_detect_job_abbreviation_alias(self) -> None:
+        from src.query import detect_job
+
+        self.assertEqual(detect_job("GNB patch history"), "gunbreaker")
+
+    def test_detect_job_english_name(self) -> None:
+        from src.query import detect_job
+
+        self.assertEqual(detect_job("Black Mage changes"), "black_mage")
+
+    def test_detect_no_job_returns_none(self) -> None:
+        from src.query import detect_job
+
+        self.assertIsNone(detect_job("패치노트 요약"))
+
+
 if __name__ == "__main__":
     unittest.main()

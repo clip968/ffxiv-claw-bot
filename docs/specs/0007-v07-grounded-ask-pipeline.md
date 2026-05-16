@@ -721,6 +721,8 @@ Acceptance:
 
 ### v07-02. Job detector
 
+Status: Completed 2026-05-17
+
 Files:
 
 ```text
@@ -736,6 +738,8 @@ Tasks:
 Acceptance:
 
 - `건브`, `건브레이커`, `GNB`, `Gunbreaker` all resolve to `gunbreaker`
+- Jobless questions return `None`
+- Verified by `tests/test_v07_query_parser.py`
 
 ---
 

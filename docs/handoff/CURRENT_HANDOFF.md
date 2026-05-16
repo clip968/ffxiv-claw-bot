@@ -79,6 +79,25 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
+### Current session update: v07-02 job detector implemented -- 2026-05-17
+
+1. **Scope**
+   - Implemented v07-02 only.
+   - Added `src/query/job_detector.py` with `detect_job()` using the existing v06 `JOB_CATALOG`.
+   - Added Korean full alias, Korean short alias, English abbreviation, English display name, and no-match tests.
+   - Did not implement patch parsing, intent detection, parser integration, retrieval, or answer composition.
+
+2. **Red tests first**
+   - Added `V07JobDetectorTests` in `tests/test_v07_query_parser.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v07_query_parser.V07JobDetectorTests -v` failed because `detect_job` was not importable from `src.query`.
+
+3. **Verification**
+   - `python -m unittest tests.test_v07_query_parser -v`: OK, 8 tests.
+   - `python -m py_compile src/query/job_detector.py src/query/__init__.py`: OK.
+
+4. **Next tasks**
+   - v07-03: add numeric patch range parsing.
+
 ### Current session update: v07-01 query model and normalization implemented -- 2026-05-17
 
 1. **Scope**
