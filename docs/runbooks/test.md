@@ -154,6 +154,37 @@ v05-06/v05-07/v05-08 regression tests added:
 
 Full suite target after v05-08: **122 tests, 0 reds**.
 
+## v05.1 Source Processing Hardening Tests
+
+v05.1 Lodestone extractor tests:
+
+```bash
+python -m unittest tests.test_v05_1_lodestone_extractor -v
+```
+
+Current status:
+
+- `V051LodestoneExtractorTests` -> `tools/extractors/lodestone.py` (**Green** 2026-05-16, 5 tests)
+
+Covered contract:
+
+- Official Lodestone regional URLs under `/lodestone/` are detected.
+- `.news__detail__wrapper` is the extraction boundary.
+- Patch title and body are extracted from a local Lodestone-like 7.5 fixture.
+- Navigation, footer, script/style, share UI, and raw HTML tags are excluded.
+- Missing or empty article body raises `LodestoneExtractionError`.
+
+v05.1-02 red result:
+
+- `python -m unittest tests.test_v05_1_lodestone_extractor -v`: expected red confirmed before implementation, 5 failures because `tools.extractors.lodestone` did not exist.
+
+v05.1-04 and v05.1-05 remain pending:
+
+- `fetch_url.py` does not yet route Lodestone URLs through the extractor.
+- `process_source.py` does not yet record extractor metadata in the `fetch_url` action.
+
+Full suite after v05.1-03: **128 tests, 0 reds**.
+
 ## pytest
 
 현재 레포에는 pytest 설정이나 requirements가 없다. 따라서 pytest를 기본 테스트 명령으로 쓰지 않는다.

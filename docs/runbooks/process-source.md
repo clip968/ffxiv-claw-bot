@@ -98,6 +98,7 @@ URL behavior:
 
 - `tools.fetch_url.fetch_single_url()` fetches exactly the provided URL.
 - `text/html` is converted to visible text and title.
+- v05.1 adds `tools.extractors.lodestone.extract_lodestone_article()` for Lodestone article extraction; `fetch_url.py` routing to this extractor is the next hardening slice.
 - `text/plain`, `application/json`, and `+json` content are stored as text.
 - Unsupported content types fail before Local Storage ingest.
 - The fetched body is passed to `tools.ingest_local.ingest_source(source_type="url", ...)`.

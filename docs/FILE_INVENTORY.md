@@ -10,6 +10,7 @@
 | `tools/ingest_url.py` | URL HTML 수집 및 raw 저장 | Legacy v0.1 path |
 | `tools/fetch_url.py` | v0.5 단일 URL fetch helper | Active v0.5 |
 | `tools/process_source.py` | 통합 source processing entrypoint | Active v0.5 |
+| `tools/extractors/lodestone.py` | Lodestone `.news__detail__wrapper` article extractor | Active v05.1 |
 | `tools/compile_wiki.py` | raw content -> wiki markdown 변환 및 FTS 색인 | Active |
 | `tools/search_kb.py` | `wiki_fts` 기반 검색, graph_paths 포함 | Active |
 | `tools/answer.py` | 검색 결과 기반 context pack과 근거 답변 출력 | Active |
@@ -56,6 +57,7 @@
 | `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md` | Active v0.4 master plan |
 | `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md` | Historical legacy v0.4 Drive-era master plan |
 | `docs/specs/0004-v05-source-processing-pipeline.md` | v0.5 source processing pipeline spec |
+| `docs/specs/0004a-v05.1-source-processing-hardening.md` | v05.1 source processing hardening spec |
 | `docs/handoff/CURRENT_HANDOFF.md` | 현재 상태 handoff |
 
 ## v0.5 Plan Files
@@ -71,6 +73,20 @@
 | `docs/plans/v05/2026-05-16-v05-06-rebuild-integration.md` | wiki/FTS/graph rebuild 연결 | **Completed** 2026-05-16 |
 | `docs/plans/v05/2026-05-16-v05-07-notion-payload-integration.md` | Notion payload 생성 연결 | **Completed** 2026-05-16 |
 | `docs/plans/v05/2026-05-16-v05-08-tests-and-runbook.md` | 테스트, runbook, handoff 정리 | **Completed** 2026-05-16 |
+
+## v05.1 Plan Files
+
+| Path | Role | Status |
+|---|---|---|
+| `docs/plans/v05.1/README.md` | v05.1 feature map | Active |
+| `docs/plans/v05.1/2026-05-16-v05.1-01-spec-and-plan.md` | v05.1 scope, spec, task breakdown 고정 | **Completed** 2026-05-16 |
+| `docs/plans/v05.1/2026-05-16-v05.1-02-lodestone-fixture-and-red-tests.md` | Lodestone fixture와 extractor red test 작성 | **Completed** 2026-05-16 |
+| `docs/plans/v05.1/2026-05-16-v05.1-03-lodestone-extractor.md` | Lodestone 전용 article extractor 구현 | **Completed** 2026-05-16 |
+| `docs/plans/v05.1/2026-05-16-v05.1-04-fetch-url-routing.md` | `fetch_url.py`에서 Lodestone URL을 전용 extractor로 라우팅 | Pending |
+| `docs/plans/v05.1/2026-05-16-v05.1-05-process-source-extractor-metadata.md` | `process_source.py` action log에 extractor metadata 포함 | Pending |
+| `docs/plans/v05.1/2026-05-16-v05.1-06-entrypoint-boundary-docs.md` | 공식 entrypoint와 helper boundary 문서화 | Pending |
+| `docs/plans/v05.1/2026-05-16-v05.1-07-runbook-regression-tests.md` | helper misuse/Notion boundary 문서 회귀 테스트 추가 | Pending |
+| `docs/plans/v05.1/2026-05-16-v05.1-08-final-verification-and-handoff.md` | 전체 검증, docs freshness, handoff 마무리 | Pending |
 
 ## v0.4 Plan Files
 

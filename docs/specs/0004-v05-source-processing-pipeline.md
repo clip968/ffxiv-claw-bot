@@ -1201,6 +1201,9 @@ v0.5는 task 단위로 다음처럼 쪼갠다.
 - body 추출
 - Local Storage ingest로 연결
 
+v05.1 hardening adds a domain-specific Lodestone extractor in `tools/extractors/lodestone.py`.
+The extractor owns `.news__detail__wrapper` article title/body extraction only; `fetch_url.py` routing and `process_source.py` extractor metadata are separate v05.1 tasks.
+
 ### v0.5-06: Rebuild Integration
 
 - wiki rebuild

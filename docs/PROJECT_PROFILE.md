@@ -13,7 +13,7 @@
 
 ## Current Phase
 
-v0.4 implementation is complete. v0.5 source processing is implemented through v0.5-08.
+v0.4 implementation is complete. v0.5 source processing is implemented through v0.5-08. v05.1 hardening is in progress; v05.1-02 and v05.1-03 added the Lodestone fixture and article extractor.
 
 2026-05-15 현재 기본 v0.4 운영 경로는 Google Drive write/publish가 아니라 `/mnt/d/ffixiv-bot-storage` 기반 Local Storage + OpenClaw Notion direct control이다.
 
@@ -99,6 +99,7 @@ Active v0.4 feature map:
 ### v0.5 New Tools
 
 - `tools/process_source.py`: source 하나를 처리하는 통합 entrypoint. text/file/url ingest, wiki/FTS/graph rebuild, and safe `notion_update` payload generation are implemented.
+- `tools/extractors/lodestone.py`: v05.1 Lodestone article extractor. It extracts title/body/extractor metadata from `.news__detail__wrapper`; URL routing remains a separate hardening slice.
 
 ## Development Principles
 

@@ -11,6 +11,7 @@
 v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
+v05.1 Source Processing Hardening is in progress. v05.1-02 and v05.1-03 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -23,6 +24,8 @@ v0.5-02 through v0.5-08 are implemented:
 v0.4 planning has been reframed from Google Drive write/publish to Local Storage + OpenClaw Notion direct control.
 
 The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest -> rebuild -> status payload in one call. The current implementation supports validation, dry-run, apply-mode Local Storage ingest for local text source types, single URL fetch into Local Storage, wiki/FTS/graph rebuild, and metadata-only Notion payload generation.
+
+v05.1 currently adds a deterministic Lodestone article extractor for `.news__detail__wrapper`, but `fetch_url.py` routing and `process_source.py` extractor action metadata are still pending v05.1-04 and v05.1-05.
 
 Default source of truth for user-managed source files:
 
@@ -48,23 +51,67 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 4. `docs/FILE_INVENTORY.md`
 5. `docs/specs/0004-v05-source-processing-pipeline.md` (v05 spec — read first before any v05 work)
 6. `docs/plans/v05/README.md` (v05 feature map)
-7. `docs/adrs/0006-local-storage-and-notion-control.md`
-8. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
-9. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
-10. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
-11. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
-12. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
-13. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
-14. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
-15. `docs/runbooks/rebuild-kb.md`
-16. `docs/runbooks/local-storage.md`
-17. `docs/runbooks/openclaw-notion.md`
+7. `docs/specs/0004a-v05.1-source-processing-hardening.md`
+8. `docs/plans/v05.1/README.md`
+9. `docs/adrs/0006-local-storage-and-notion-control.md`
+10. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
+11. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
+12. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
+13. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
+14. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
+15. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
+16. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
+17. `docs/runbooks/rebuild-kb.md`
+18. `docs/runbooks/local-storage.md`
+19. `docs/runbooks/openclaw-notion.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 - `docs/specs/0003-google-drive-sync.md`
 - `docs/runbooks/sync-drive.md`
 - `docs/runbooks/publish-drive.md`
 
 ## This Session
+
+### Current session update: v05.1-02/v05.1-03 Lodestone extractor implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented only v05.1 A: tasks 02 and 03.
+   - Added a local Lodestone-like 7.5 fixture and red tests.
+   - Added a domain-specific Lodestone extractor package.
+   - Did not implement `fetch_url.py` routing, `process_source.py` extractor action metadata, crawler, scheduler, daemon, or Notion API calls.
+
+2. **Red tests first**
+   - Added `tests/test_v05_1_lodestone_extractor.py`.
+   - Added `tests/fixtures/lodestone_patch_7_5.html`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v05_1_lodestone_extractor -v` failed with 5 failures because `tools.extractors.lodestone` did not exist.
+
+3. **Implementation**
+   - `tools/extractors/__init__.py`: exports the Lodestone extractor API.
+   - `tools/extractors/lodestone.py`: adds `LodestoneExtractionError`, `is_lodestone_url()`, and `extract_lodestone_article()`.
+   - The extractor recognizes official `na/eu/jp/de/fr.finalfantasyxiv.com/lodestone/` URLs.
+   - The extractor prefers `.news__detail__wrapper`, removes script/style/nav/footer/header/aside/share UI noise, normalizes text, and returns `title`, `body`, and `extractor=lodestone`.
+
+4. **Docs updated**
+   - `docs/plans/v05.1/README.md`: v05.1-02 and v05.1-03 marked Completed.
+   - `docs/plans/v05.1/2026-05-16-v05.1-02-lodestone-fixture-and-red-tests.md`: checklist and red verification updated.
+   - `docs/plans/v05.1/2026-05-16-v05.1-03-lodestone-extractor.md`: checklist, implementation notes, and verification updated.
+   - `docs/specs/0004a-v05.1-source-processing-hardening.md`: status Active and first Lodestone acceptance criteria marked implemented.
+   - `docs/specs/0004-v05-source-processing-pipeline.md`: v05.1 Lodestone hardening note added.
+   - `docs/runbooks/process-source.md`, `docs/runbooks/test.md`, `docs/PROJECT_PROFILE.md`, `docs/FILE_INVENTORY.md`, and `docs/DOC_OWNERS.yml` updated.
+
+5. **Verification**
+   - `python -m unittest tests.test_v05_fetch_url -v`: OK, 4 tests.
+   - `python -m unittest tests.test_v05_process_source -v`: OK, 21 tests.
+   - `python -m unittest tests.test_v05_1_lodestone_extractor -v`: OK, 5 tests.
+   - `python -m py_compile tools/extractors/__init__.py tools/extractors/lodestone.py`: OK.
+   - Serena diagnostics for `tools/extractors/lodestone.py`: no warnings/errors.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 128 tests.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `git diff --check`: OK.
+   - `python scripts/finish_task.py`: finish_task ok.
+
+6. **Next tasks**
+   - v05.1-04: route Lodestone URLs through the extractor in `tools/fetch_url.py`.
+   - v05.1-05: include extractor metadata in the `process_source.py` `fetch_url` action.
 
 ### Current session update: v05 duplicate canonical source policy locked -- 2026-05-16
 
