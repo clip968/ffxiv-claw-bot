@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-08 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-09 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -240,6 +240,30 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-09: implement job catalog and aliases.
+
+### Current session update: v06-09 job catalog and aliases implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-09 only.
+   - Added `src/derived_wiki/job_catalog.py` with `JobEntry`, `JOB_CATALOG`, `resolve_job()`, and `list_jobs()`.
+   - Added English, abbreviation, and Korean aliases for the v06 combat job list.
+   - Marked Blue Mage as limited and excluded it from `list_jobs()` unless `include_limited=True`.
+   - Did not implement job wiki generation or CLI behavior.
+
+2. **Red tests first**
+   - Added `V06JobCatalogTests` in `tests/test_v06_job_wiki_generator.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v06_job_wiki_generator.V06JobCatalogTests -v` failed with 7 missing `src.derived_wiki.job_catalog` module errors.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_job_wiki_generator.V06JobCatalogTests -v`: OK, 7 tests.
+   - `python -m unittest tests.test_v06_job_wiki_generator -v`: OK, 14 tests.
+   - `python -m unittest tests.test_v06_pending_sources tests.test_v05_process_source tests.test_v06_extractors -v`: OK, 69 tests.
+   - `python -m py_compile src/derived_wiki/job_catalog.py src/derived_wiki/__init__.py`: OK.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 192 tests.
+
+4. **Next tasks**
+   - v06-10: implement deterministic job wiki generator.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

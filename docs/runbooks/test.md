@@ -97,6 +97,7 @@ Current status:
 - `V06ProcessSourceExtractorIntegrationTests` -> `tools/process_source.py`, `tools/ingest_local.py`, `src/source_processing/*` (**Green** 2026-05-16, 4 tests)
 - `V06PendingSourceLoopTests` -> `tools/process_pending_sources.py`, `tools/init_db.py` (**Green** 2026-05-16, 6 tests)
 - `V06DerivedWikiFoundationTests` -> `src/derived_wiki/summary_loader.py`, `writer.py`, `templates.py` (**Green** 2026-05-16, 7 tests)
+- `V06JobCatalogTests` -> `src/derived_wiki/job_catalog.py` (**Green** 2026-05-16, 7 tests)
 
 Red/green notes:
 
@@ -117,6 +118,8 @@ Red/green notes:
 - v06-07 green check: `python -m unittest tests.test_v06_pending_sources -v` passed 6 tests after adding the `source_processing_queue` pending loop.
 - v06-08 red check: `python -m unittest tests.test_v06_job_wiki_generator -v` failed with 7 expected missing `src.derived_wiki` module errors.
 - v06-08 green check: `python -m unittest tests.test_v06_job_wiki_generator -v` passed 7 tests after adding source summary loader, writer, and template helpers.
+- v06-09 red check: `python -m unittest tests.test_v06_job_wiki_generator.V06JobCatalogTests -v` failed with 7 expected missing `src.derived_wiki.job_catalog` module errors.
+- v06-09 green check: `python -m unittest tests.test_v06_job_wiki_generator.V06JobCatalogTests -v` passed 7 tests after adding the job catalog and alias resolver.
 
 v0.5 source processing tests:
 

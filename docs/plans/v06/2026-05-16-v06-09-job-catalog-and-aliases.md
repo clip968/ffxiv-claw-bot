@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -69,25 +69,25 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/derived_wiki/job_catalog.py` 생성
-  - [ ] `JobEntry(slug, display_name, aliases, is_limited)`
-  - [ ] `JOB_CATALOG: list[JobEntry]`
-  - [ ] `resolve_job(query: str) -> JobEntry | None`
-  - [ ] `list_jobs(include_limited: bool = False) -> list[JobEntry]`
-  - [ ] case-insensitive alias matching
-- [ ] 모든 전투 직업 entry 작성 (canonical slug 목록 참고)
-- [ ] alias 한국어/영어/약어 포함
-- [ ] Blue Mage `is_limited=True`
-- [ ] `tests/test_v06_job_wiki_generator.py`에 다음 테스트 추가
-  - [ ] `test_job_catalog_contains_gunbreaker`
-  - [ ] `test_job_catalog_contains_all_combat_jobs`
-  - [ ] `test_job_catalog_resolves_english_alias`
-  - [ ] `test_job_catalog_resolves_abbreviation_alias`
-  - [ ] `test_job_catalog_resolves_korean_alias`
-  - [ ] `test_job_catalog_can_exclude_limited_jobs`
-  - [ ] `test_job_catalog_can_include_limited_jobs`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/derived_wiki/job_catalog.py` 생성
+  - [x] `JobEntry(slug, display_name, aliases, is_limited)`
+  - [x] `JOB_CATALOG: list[JobEntry]`
+  - [x] `resolve_job(query: str) -> JobEntry | None`
+  - [x] `list_jobs(include_limited: bool = False) -> list[JobEntry]`
+  - [x] case-insensitive alias matching
+- [x] 모든 전투 직업 entry 작성 (canonical slug 목록 참고)
+- [x] alias 한국어/영어/약어 포함
+- [x] Blue Mage `is_limited=True`
+- [x] `tests/test_v06_job_wiki_generator.py`에 다음 테스트 추가
+  - [x] `test_job_catalog_contains_gunbreaker`
+  - [x] `test_job_catalog_contains_all_combat_jobs`
+  - [x] `test_job_catalog_resolves_english_alias`
+  - [x] `test_job_catalog_resolves_abbreviation_alias`
+  - [x] `test_job_catalog_resolves_korean_alias`
+  - [x] `test_job_catalog_can_exclude_limited_jobs`
+  - [x] `test_job_catalog_can_include_limited_jobs`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -111,4 +111,10 @@ python -m py_compile src/derived_wiki/job_catalog.py
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_job_wiki_generator.V06JobCatalogTests -v` failed with 7 expected `ModuleNotFoundError: No module named 'src.derived_wiki.job_catalog'` errors.
+- Green: `python -m unittest tests.test_v06_job_wiki_generator.V06JobCatalogTests -v` passed 7 tests after adding `JobEntry`, `JOB_CATALOG`, `resolve_job()`, and `list_jobs()`.
+- Regression: `python -m unittest tests.test_v06_job_wiki_generator -v` passed 14 tests.
+- Regression: `python -m unittest tests.test_v06_pending_sources tests.test_v05_process_source tests.test_v06_extractors -v` passed 69 tests.
+- Regression: `python -m py_compile src/derived_wiki/job_catalog.py src/derived_wiki/__init__.py` passed.
+- Docs: `python scripts/check_docs_freshness.py --all` passed.
+- Full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 192 tests.

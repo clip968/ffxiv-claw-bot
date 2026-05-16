@@ -83,5 +83,80 @@ class V06DerivedWikiFoundationTests(unittest.TestCase):
         )
 
 
+class V06JobCatalogTests(unittest.TestCase):
+    def test_job_catalog_contains_gunbreaker(self) -> None:
+        from src.derived_wiki.job_catalog import resolve_job
+
+        job = resolve_job("gunbreaker")
+
+        self.assertIsNotNone(job)
+        self.assertEqual(job.slug, "gunbreaker")
+        self.assertEqual(job.display_name, "Gunbreaker")
+
+    def test_job_catalog_contains_all_combat_jobs(self) -> None:
+        from src.derived_wiki.job_catalog import list_jobs
+
+        expected_slugs = {
+            "paladin",
+            "warrior",
+            "dark_knight",
+            "gunbreaker",
+            "white_mage",
+            "scholar",
+            "astrologian",
+            "sage",
+            "monk",
+            "dragoon",
+            "ninja",
+            "samurai",
+            "reaper",
+            "viper",
+            "bard",
+            "machinist",
+            "dancer",
+            "black_mage",
+            "summoner",
+            "red_mage",
+            "pictomancer",
+            "blue_mage",
+        }
+
+        self.assertEqual(
+            {job.slug for job in list_jobs(include_limited=True)},
+            expected_slugs,
+        )
+
+    def test_job_catalog_resolves_english_alias(self) -> None:
+        from src.derived_wiki.job_catalog import resolve_job
+
+        self.assertEqual(resolve_job("Gunbreaker").slug, "gunbreaker")
+        self.assertEqual(resolve_job("Black Mage").slug, "black_mage")
+
+    def test_job_catalog_resolves_abbreviation_alias(self) -> None:
+        from src.derived_wiki.job_catalog import resolve_job
+
+        self.assertEqual(resolve_job("GNB").slug, "gunbreaker")
+        self.assertEqual(resolve_job("BLM").slug, "black_mage")
+        self.assertEqual(resolve_job("PLD").slug, "paladin")
+
+    def test_job_catalog_resolves_korean_alias(self) -> None:
+        from src.derived_wiki.job_catalog import resolve_job
+
+        self.assertEqual(resolve_job("건브레이커").slug, "gunbreaker")
+        self.assertEqual(resolve_job("흑마도사").slug, "black_mage")
+        self.assertEqual(resolve_job("나이트").slug, "paladin")
+
+    def test_job_catalog_can_exclude_limited_jobs(self) -> None:
+        from src.derived_wiki.job_catalog import list_jobs
+
+        self.assertNotIn("blue_mage", {job.slug for job in list_jobs()})
+
+    def test_job_catalog_can_include_limited_jobs(self) -> None:
+        from src.derived_wiki.job_catalog import list_jobs, resolve_job
+
+        self.assertIn("blue_mage", {job.slug for job in list_jobs(include_limited=True)})
+        self.assertTrue(resolve_job("BLU").is_limited)
+
+
 if __name__ == "__main__":
     unittest.main()

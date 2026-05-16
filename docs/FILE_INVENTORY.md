@@ -40,6 +40,7 @@
 | Path | Role | Status |
 |---|---|---|
 | `src/derived_wiki/summary_loader.py` | v0.6 source summary filesystem loader and `SourceSummary` model | Active v0.6 |
+| `src/derived_wiki/job_catalog.py` | v0.6 FFXIV job catalog and Korean/English/abbreviation alias resolver | Active v0.6 |
 | `src/derived_wiki/writer.py` | v0.6 derived wiki UTF-8 file writer | Active v0.6 |
 | `src/derived_wiki/templates.py` | v0.6 Markdown heading/section template helpers | Active v0.6 |
 
