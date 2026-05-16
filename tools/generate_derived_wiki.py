@@ -17,10 +17,11 @@ KNOWN_FUTURE_KINDS = {"raids", "items", "systems"}
 
 def main(argv: list[str] | None = None) -> None:
     args = _parse_args(argv)
-    if args.kind not in SUPPORTED_KINDS:
-        _exit_unsupported_kind(args.kind)
-    result = _run_jobs(args)
-    result["kind"] = "jobs"
+    try:
+        result = run(args)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        raise SystemExit(2) from exc
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
@@ -42,6 +43,14 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def run(args: argparse.Namespace) -> dict:
+    if args.kind not in SUPPORTED_KINDS:
+        raise ValueError(_unsupported_kind_message(args.kind))
+    result = _run_jobs(args)
+    result["kind"] = "jobs"
+    return result
+
+
 def _run_jobs(args: argparse.Namespace) -> dict:
     job_args = argparse.Namespace(
         all=args.job is None,
@@ -56,15 +65,14 @@ def _run_jobs(args: argparse.Namespace) -> dict:
 
 
 def _exit_unsupported_kind(kind: str) -> None:
-    if kind in KNOWN_FUTURE_KINDS:
-        message = f"Derived wiki kind '{kind}' is not supported in v0.6."
-    else:
-        message = (
-            f"Unknown derived wiki kind '{kind}'. "
-            "Supported in v0.6: jobs."
-        )
-    print(message, file=sys.stderr)
+    print(_unsupported_kind_message(kind), file=sys.stderr)
     raise SystemExit(2)
+
+
+def _unsupported_kind_message(kind: str) -> str:
+    if kind in KNOWN_FUTURE_KINDS:
+        return f"Derived wiki kind '{kind}' is not supported in v0.6."
+    return f"Unknown derived wiki kind '{kind}'. Supported in v0.6: jobs."
 
 
 if __name__ == "__main__":

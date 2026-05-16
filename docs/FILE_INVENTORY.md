@@ -9,8 +9,8 @@
 | `tools/init_db.py` | SQLite schema 생성 | Active |
 | `tools/ingest_url.py` | URL HTML 수집 및 raw 저장 | Legacy v0.1 path |
 | `tools/fetch_url.py` | v0.5 단일 URL fetch helper | Active v0.5 |
-| `tools/process_source.py` | 통합 source processing entrypoint; v0.6 local file extractor registry integration | Active v0.6 |
-| `tools/process_pending_sources.py` | v0.6 `source_processing_queue` pending source orchestration CLI | Active v0.6 |
+| `tools/process_source.py` | 통합 source processing entrypoint; v0.6 local file extractor registry integration and optional derived wiki hook | Active v0.6 |
+| `tools/process_pending_sources.py` | v0.6 `source_processing_queue` pending source orchestration CLI with optional derived wiki hook | Active v0.6 |
 | `tools/generate_job_wiki.py` | v0.6 deterministic `wiki/jobs/<job>.md` generator CLI | Active v0.6 |
 | `tools/generate_derived_wiki.py` | v0.6 unified derived wiki CLI; supports `--kind jobs` | Active v0.6 |
 | `tools/extractors/lodestone.py` | Lodestone `.news__detail__wrapper` article extractor | Active v05.1 |
@@ -63,6 +63,7 @@
 | `db/ffxiv.sqlite` | sources, wiki_pages, wiki_fts, graph table 저장 | Derived local DB |
 | `source_processing_queue` | v0.6 pending source work item table inside `db/ffxiv.sqlite` | Runtime queue |
 | `wiki/source_summaries/` | source 단위 LLM Wiki markdown | Derived cache |
+| `wiki/jobs/` | v0.6 generated derived wiki pages by FFXIV job | Derived cache |
 | `graph/nodes.json` | graph node export | Derived cache |
 | `graph/edges.json` | graph edge export | Derived cache |
 | `raw/drive/` | Google Drive 문서 local cache | Legacy / Deferred optional integration |

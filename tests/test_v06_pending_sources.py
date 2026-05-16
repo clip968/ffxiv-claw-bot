@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 from tests.test_v05_process_source import ensure_sources_schema
 
@@ -250,6 +251,80 @@ class V06PendingSourceLoopTests(unittest.TestCase):
         blocked = self._queue_row("retry_blocked")
         self.assertEqual(blocked["status"], "error")
         self.assertEqual(blocked["retry_count"], 3)
+
+    def test_process_pending_sources_skips_derived_wiki_by_default(self) -> None:
+        self._insert_queue_source(
+            "pending_default_skip",
+            source_type="text_note",
+            category="patch_notes",
+            title="Patch 7.2 Notes",
+            body="# Patch 7.2 Notes\n\n## Gunbreaker\n\n- Default skip change.\n",
+        )
+
+        self.run_pending(["--limit", "1"])
+
+        row = self._queue_row("pending_default_skip")
+        self.assertEqual(row["status"], "processed")
+        self.assertFalse((self.repo_root / "wiki" / "jobs" / "gunbreaker.md").exists())
+
+    def test_process_pending_sources_can_build_derived_wiki_when_enabled(self) -> None:
+        self._insert_queue_source(
+            "pending_build_derived",
+            source_type="text_note",
+            category="patch_notes",
+            title="Patch 7.2 Notes",
+            body="# Patch 7.2 Notes\n\n## Gunbreaker\n\n- Hooked derived change.\n",
+        )
+
+        result = self.run_pending(["--limit", "1", "--build-derived-wiki"])
+
+        row = self._queue_row("pending_build_derived")
+        source_result = json.loads(row["result_json"])
+        self.assertEqual(result["actions"][0]["status"], "derived_wiki_built")
+        self.assertEqual(row["status"], "derived_wiki_built")
+        self.assertEqual(source_result["derived_wiki"]["status"], "ok")
+        self.assertTrue((self.repo_root / "wiki" / "jobs" / "gunbreaker.md").exists())
+
+    def test_derived_wiki_failure_records_derived_wiki_stage(self) -> None:
+        module = importlib.import_module("tools.process_source")
+        self._insert_queue_source(
+            "pending_derived_error",
+            source_type="text_note",
+            category="patch_notes",
+            title="Patch 7.2 Notes",
+            body="# Patch 7.2 Notes\n\n## Gunbreaker\n\n- Failure path change.\n",
+        )
+
+        with patch.object(module.generate_derived_wiki, "run") as run_derived:
+            run_derived.side_effect = RuntimeError("derived boom")
+            self.run_pending(["--limit", "1", "--build-derived-wiki"])
+
+        row = self._queue_row("pending_derived_error")
+        self.assertEqual(row["status"], "processed")
+        self.assertEqual(row["error_stage"], "derived_wiki_generate")
+        self.assertIn("derived boom", row["error_message"])
+
+    def test_derived_wiki_failure_does_not_mark_source_as_failed(self) -> None:
+        module = importlib.import_module("tools.process_source")
+        self._insert_queue_source(
+            "pending_derived_failure_successful_source",
+            source_type="text_note",
+            category="patch_notes",
+            title="Patch 7.2 Notes",
+            body="# Patch 7.2 Notes\n\n## Gunbreaker\n\n- Failure remains processed.\n",
+        )
+
+        with patch.object(module.generate_derived_wiki, "run") as run_derived:
+            run_derived.side_effect = RuntimeError("derived failed")
+            result = self.run_pending(["--limit", "1", "--build-derived-wiki"])
+
+        row = self._queue_row("pending_derived_failure_successful_source")
+        source_result = json.loads(row["result_json"])
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["actions"][0]["result_status"], "ok")
+        self.assertEqual(row["status"], "processed")
+        self.assertEqual(source_result["status"], "ok")
+        self.assertEqual(source_result["derived_wiki"]["status"], "error")
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -55,27 +55,29 @@ Contracts fixed by the tests:
 - derived wiki 생성 성공 시 source 상태에 `derived_wiki_built`가 기록된다.
 - derived wiki 생성 실패 시 `error_stage=derived_wiki_generate`로 분리되어 기록된다.
 - derived wiki 실패가 source processing 자체의 성공/실패 판정을 바꾸지 않는다.
+- source processing이 `status=ok`가 아니면 derived wiki hook을 실행하지 않는다.
 
 ## Checklist
 
-- [ ] `tools/process_source.py`에 `--build-derived-wiki` / `--skip-derived-wiki` 옵션 추가
-- [ ] `tools/process_pending_sources.py`에 `--build-derived-wiki` 옵션 추가
-- [ ] hook 호출 wiring (v06-10/v06-11 함수 import)
-- [ ] derived wiki 결과를 result JSON에 분리해서 기록
-  - [ ] `derived_wiki` block: `status`, `targets`, `error_stage`, `error_message`
-- [ ] DB status 갱신
-  - [ ] 성공: `derived_wiki_built`
-  - [ ] 실패: `error_stage=derived_wiki_generate`, `error_message`
-- [ ] source processing 성공/실패와 derived wiki 성공/실패 분리
-- [ ] 기존 회귀 보호
-  - [ ] derived wiki 옵션 없으면 기존 process_source.py / pending loop 동작과 동일
-- [ ] `tests/test_v06_pending_sources.py`에 다음 테스트 추가
-  - [ ] `test_process_pending_sources_can_build_derived_wiki_when_enabled`
-  - [ ] `test_process_pending_sources_skips_derived_wiki_by_default`
-  - [ ] `test_derived_wiki_failure_records_derived_wiki_stage`
-  - [ ] `test_derived_wiki_failure_does_not_mark_source_as_failed`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `tools/process_source.py`에 `--build-derived-wiki` / `--skip-derived-wiki` 옵션 추가
+- [x] `tools/process_pending_sources.py`에 `--build-derived-wiki` 옵션 추가
+- [x] hook 호출 wiring (v06-10/v06-11 함수 import)
+- [x] derived wiki 결과를 result JSON에 분리해서 기록
+  - [x] `derived_wiki` block: `status`, `targets`, `error_stage`, `error_message`
+- [x] DB status 갱신
+  - [x] 성공: `derived_wiki_built`
+  - [x] 실패: `error_stage=derived_wiki_generate`, `error_message`
+- [x] source processing 성공/실패와 derived wiki 성공/실패 분리
+- [x] source processing이 `status=ok`가 아닐 때 derived wiki hook skip
+- [x] 기존 회귀 보호
+  - [x] derived wiki 옵션 없으면 기존 process_source.py / pending loop 동작과 동일
+- [x] `tests/test_v06_pending_sources.py`에 다음 테스트 추가
+  - [x] `test_process_pending_sources_can_build_derived_wiki_when_enabled`
+  - [x] `test_process_pending_sources_skips_derived_wiki_by_default`
+  - [x] `test_derived_wiki_failure_records_derived_wiki_stage`
+  - [x] `test_derived_wiki_failure_does_not_mark_source_as_failed`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -107,4 +109,15 @@ python tools/process_pending_sources.py --build-derived-wiki --limit 3 --dry-run
 
 ## Verification Results
 
-- Pending.
+- Red confirmed before implementation:
+  - `python -m unittest tests.test_v06_pending_sources.V06PendingSourceLoopTests.test_process_pending_sources_skips_derived_wiki_by_default tests.test_v06_pending_sources.V06PendingSourceLoopTests.test_process_pending_sources_can_build_derived_wiki_when_enabled tests.test_v06_pending_sources.V06PendingSourceLoopTests.test_derived_wiki_failure_records_derived_wiki_stage tests.test_v06_pending_sources.V06PendingSourceLoopTests.test_derived_wiki_failure_does_not_mark_source_as_failed -v`
+  - Expected red reason: default skip case passed, while opt-in/failure-path cases failed because `--build-derived-wiki` and `tools.process_source.generate_derived_wiki` wiring were not implemented yet.
+- Green focused verification:
+  - `python -m unittest tests.test_v05_process_source.V05ProcessSourceRebuildIntegrationTests.test_process_rebuild_partial_skips_derived_wiki_hook -v`: OK, 1 test.
+  - `python -m unittest tests.test_v06_pending_sources.V06PendingSourceLoopTests.test_process_pending_sources_skips_derived_wiki_by_default tests.test_v06_pending_sources.V06PendingSourceLoopTests.test_process_pending_sources_can_build_derived_wiki_when_enabled tests.test_v06_pending_sources.V06PendingSourceLoopTests.test_derived_wiki_failure_records_derived_wiki_stage tests.test_v06_pending_sources.V06PendingSourceLoopTests.test_derived_wiki_failure_does_not_mark_source_as_failed -v`: OK, 4 tests.
+  - `python -m unittest tests.test_v06_pending_sources -v`: OK, 10 tests.
+  - `python -m unittest tests.test_v05_process_source -v`: OK, 32 tests.
+  - `python -m unittest tests.test_v06_job_wiki_generator -v`: OK, 28 tests.
+  - `python -m py_compile tools/process_source.py tools/process_pending_sources.py tools/generate_derived_wiki.py`: OK.
+  - `python scripts/check_docs_freshness.py --all`: ok.
+  - `python -m unittest discover -s tests -p "test_*.py"`: OK, 218 tests.

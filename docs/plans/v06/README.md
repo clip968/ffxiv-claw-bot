@@ -49,7 +49,7 @@ local source file
 | 10 | 2026-05-16-v06-10-job-wiki-generator.md | `wiki/jobs/<job>.md` deterministic generator 구현 | **Completed** 2026-05-16 |
 | 11 | 2026-05-16-v06-11-generate-derived-wiki-cli.md | `tools/generate_derived_wiki.py` 통합 CLI 구현 | **Completed** 2026-05-16 |
 | 12 | 2026-05-16-v06-12-fts-indexing-extension.md | FTS 인덱싱에 derived wiki 문서 포함 | **Completed** 2026-05-16 |
-| 13 | 2026-05-16-v06-13-derived-wiki-hook.md | source 처리 후 derived wiki 생성 hook 연결 | Pending |
+| 13 | 2026-05-16-v06-13-derived-wiki-hook.md | source 처리 후 derived wiki 생성 hook 연결 | **Completed** 2026-05-16 |
 | 14 | 2026-05-16-v06-14-readme-and-handoff.md | README와 handoff 문서 업데이트 | Pending |
 
 ## Red Test Map
@@ -138,6 +138,7 @@ Allowed:
 python tools/process_source.py --apply --source-type markdown_file --category patch_notes --local-path "/mnt/d/ffixiv-bot-storage/incoming/patch.md"
 python tools/process_source.py --apply --source-type binary_attachment --category sheets --local-path "/mnt/d/ffixiv-bot-storage/incoming/bis.xlsx"
 python tools/process_pending_sources.py --limit 10
+python tools/process_pending_sources.py --build-derived-wiki --limit 10
 python tools/process_pending_sources.py --retry-errors --max-retry 3
 python tools/generate_job_wiki.py --job gunbreaker
 python tools/generate_derived_wiki.py --kind jobs

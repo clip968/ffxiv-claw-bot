@@ -95,7 +95,7 @@ Current status:
 - `V06CsvExtractorTests` -> `src/source_processing/extractors/csv.py` (**Green** 2026-05-16, 5 tests)
 - `V06XlsxExtractorTests` -> `src/source_processing/extractors/xlsx.py` (**Green** 2026-05-16, 6 tests)
 - `V06ProcessSourceExtractorIntegrationTests` -> `tools/process_source.py`, `tools/ingest_local.py`, `src/source_processing/*` (**Green** 2026-05-16, 4 tests)
-- `V06PendingSourceLoopTests` -> `tools/process_pending_sources.py`, `tools/init_db.py` (**Green** 2026-05-16, 6 tests)
+- `V06PendingSourceLoopTests` -> `tools/process_pending_sources.py`, `tools/process_source.py`, `tools/init_db.py` (**Green** 2026-05-16, 10 tests)
 - `V06DerivedWikiFoundationTests` -> `src/derived_wiki/summary_loader.py`, `writer.py`, `templates.py` (**Green** 2026-05-16, 7 tests)
 - `V06JobCatalogTests` -> `src/derived_wiki/job_catalog.py` (**Green** 2026-05-16, 7 tests)
 - `V06JobWikiGeneratorTests` -> `src/derived_wiki/job_wiki_generator.py`, `tools/generate_job_wiki.py` (**Green** 2026-05-16, 9 tests)
@@ -129,6 +129,11 @@ Red/green notes:
 - v06-11 green check: `python -m unittest tests.test_v06_job_wiki_generator.V06GenerateDerivedWikiCliTests -v` passed 5 tests after adding `tools/generate_derived_wiki.py`.
 - v06-12 red check: `python -m unittest tests.test_v06_fts_indexing -v` failed with expected missing wiki indexing scanner and `index_wiki_documents` errors.
 - v06-12 green check: `python -m unittest tests.test_v06_fts_indexing -v` passed 7 tests after adding scanner and derived wiki FTS indexing.
+- v06-13 red check: focused `V06PendingSourceLoopTests` for default skip, opt-in build, and derived wiki failure paths failed as expected because `--build-derived-wiki` and `tools.process_source.generate_derived_wiki` hook wiring were not implemented yet.
+- v06-13 green check: `python -m unittest tests.test_v06_pending_sources -v` passed 10 tests after adding the opt-in derived wiki hook and separated `derived_wiki_generate` failure reporting.
+- v06-13 guard red check: `python -m unittest tests.test_v05_process_source.V05ProcessSourceRebuildIntegrationTests.test_process_rebuild_partial_skips_derived_wiki_hook -v` failed as expected because partial rebuild still attempted the derived wiki hook.
+- v06-13 guard green check: `python -m unittest tests.test_v05_process_source -v` passed 32 tests after skipping the hook when source processing is not `status=ok`.
+- v06-13 full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 218 tests.
 
 v0.5 source processing tests:
 
@@ -202,6 +207,7 @@ Full suite before v05-06: **117 tests, 0 reds** (2026-05-16, +7 v05-05 URL integ
 v05-06/v05-07/v05-08 regression tests added:
 
 - `test_process_rebuild_error_returns_partial`
+- `test_process_rebuild_partial_skips_derived_wiki_hook`
 - `test_process_graph_failure_sets_graph_status_failed`
 - `test_process_notion_payload_excludes_body`
 - `test_process_notion_payload_ok_graph_pending`

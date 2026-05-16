@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tools import ingest_local
+from tools import generate_derived_wiki
 from tools import local_rebuild
 from tools import status_notification
 from tools.fetch_url import fetch_single_url
@@ -97,6 +98,8 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument("--storage-root", default=str(DEFAULT_STORAGE_ROOT))
     parser.add_argument("--db-path", default=str(DB_PATH))
     parser.add_argument("--notion-page-id")
+    parser.add_argument("--build-derived-wiki", action="store_true")
+    parser.add_argument("--skip-derived-wiki", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -105,6 +108,11 @@ def _validation_error(args: argparse.Namespace) -> dict[str, str] | None:
         return {
             "message": "--apply and --dry-run cannot be used together.",
             "next_action": "Choose exactly one mode: --apply or --dry-run.",
+        }
+    if args.build_derived_wiki and args.skip_derived_wiki:
+        return {
+            "message": "--build-derived-wiki and --skip-derived-wiki cannot be used together.",
+            "next_action": "Choose at most one derived wiki option.",
         }
     if not args.apply and not args.dry_run:
         return {
@@ -184,6 +192,7 @@ def _base_result(args: argparse.Namespace) -> dict[str, Any]:
         "last_error": None,
         "next_action": None,
         "extract_metadata": {},
+        "derived_wiki": {"status": "skipped", "reason": "not_requested"},
         "actions": [],
         "notion_update": {},
         "summary": {},
@@ -584,7 +593,71 @@ def _successful_ingest_result(
         }
     )
     _attach_notion_update(result)
+    _attach_derived_wiki(result, args)
     return result
+
+
+def _attach_derived_wiki(result: dict[str, Any], args: argparse.Namespace) -> None:
+    if not args.build_derived_wiki or args.skip_derived_wiki:
+        return
+    if result.get("status") != "ok":
+        result["derived_wiki"] = {
+            "status": "skipped",
+            "reason": "upstream_source_not_ok",
+        }
+        result["actions"].append(
+            {
+                "name": "generate_derived_wiki",
+                "status": "skipped",
+                "reason": "upstream_source_not_ok",
+            }
+        )
+        return
+    derived_args = argparse.Namespace(
+        kind="jobs",
+        job=None,
+        patch_range=None,
+        dry_run=False,
+        summary_root=str(ROOT / "wiki" / "source_summaries"),
+        target_root=str(ROOT / "wiki" / "jobs"),
+        include_limited=False,
+    )
+    try:
+        derived_result = generate_derived_wiki.run(derived_args)
+    except Exception as exc:
+        error_message = str(exc)
+        result["derived_wiki"] = {
+            "status": "error",
+            "error_stage": "derived_wiki_generate",
+            "error_message": error_message,
+        }
+        result["actions"].append(
+            {
+                "name": "generate_derived_wiki",
+                "status": "error",
+                "error_stage": "derived_wiki_generate",
+                "error": error_message,
+            }
+        )
+        return
+
+    status = "ok" if derived_result.get("status") == "ok" else "skipped"
+    result["derived_wiki"] = {
+        "status": status,
+        "targets": [
+            action.get("path")
+            for action in derived_result.get("actions", [])
+            if action.get("status") == "generated"
+        ],
+        "summary": derived_result.get("summary", {}),
+    }
+    result["actions"].append(
+        {
+            "name": "generate_derived_wiki",
+            "status": status,
+            "summary": derived_result.get("summary", {}),
+        }
+    )
 
 
 def _run_rebuild(

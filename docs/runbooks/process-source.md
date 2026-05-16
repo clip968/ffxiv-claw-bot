@@ -24,6 +24,7 @@ Implemented slices:
 - v05.1-05: URL fetch actions include extractor metadata when `fetch_single_url()` returns it.
 - v06-06: local file sources route through the v0.6 extractor registry before Local Storage ingest.
 - v06-07: `tools/process_pending_sources.py` processes queued pending sources through `process_source.py`.
+- v06-13: optional derived wiki generation can run after successful source processing with `--build-derived-wiki`.
 
 Out of scope:
 
@@ -99,6 +100,7 @@ Normal commands:
 ```bash
 python tools/process_pending_sources.py --dry-run --limit 3
 python tools/process_pending_sources.py --limit 10
+python tools/process_pending_sources.py --build-derived-wiki --limit 10
 python tools/process_pending_sources.py --source-type local_file --limit 10
 python tools/process_pending_sources.py --retry-errors --max-retry 3 --limit 10
 ```
@@ -110,6 +112,8 @@ Status behavior:
 - `--retry-errors` also selects `status=error` rows with `retry_count < max_retry`.
 - Each selected row is marked `in_progress` before calling `process_source.py`.
 - `process_source.py` `status=ok` marks the queue row `processed`.
+- With `--build-derived-wiki`, successful derived wiki generation marks the queue row `derived_wiki_built`.
+- Derived wiki generation failure keeps the source-processing result successful, marks the queue row `processed`, and stores `error_stage=derived_wiki_generate` plus `error_message`.
 - Any non-ok result marks the queue row `error`, stores `error_stage` and `error_message`, and increments `retry_count`.
 - `--source-type local_file` filters to `markdown_file`, `plain_text_file`, and `binary_attachment`.
 
@@ -140,6 +144,32 @@ Options:
 The generator is evidence-preserving: generated job wiki entries include patch version sections and `source_id` lines. It does not call an LLM and does not invent summaries beyond matched source summary text.
 
 `tools/generate_derived_wiki.py` is the v0.6 unified derived wiki entrypoint. In v0.6, only `--kind jobs` is supported. `raids`, `items`, and `systems` return an unsupported-kind error until a later spec implements them.
+
+## Derived Wiki Source Hook
+
+Derived wiki generation is opt-in for both normal source processing and the pending-source loop. The default is skip, so existing `process_source.py --apply ...` and `process_pending_sources.py --limit ...` calls do not write `wiki/jobs/*.md`.
+
+Opt-in commands:
+
+```bash
+python tools/process_source.py --apply --source-type text_note --category patch_notes --title "Patch note" --body "..." --build-derived-wiki
+python tools/process_pending_sources.py --build-derived-wiki --limit 10
+```
+
+Explicit skip is also accepted on `process_source.py`:
+
+```bash
+python tools/process_source.py --apply --source-type markdown_file --category patch_notes --local-path /mnt/d/ffixiv-bot-storage/incoming/patch.md --skip-derived-wiki
+```
+
+Result JSON always includes a `derived_wiki` block:
+
+- Default skip: `{"status": "skipped", "reason": "not_requested"}`
+- Upstream source/rebuild not ok: `{"status": "skipped", "reason": "upstream_source_not_ok"}`
+- Success: `{"status": "ok", "targets": [...], "summary": {...}}`
+- Failure: `{"status": "error", "error_stage": "derived_wiki_generate", "error_message": "..."}`
+
+The hook only runs after source processing returns `status=ok`. Failure in this hook does not turn the source ingest/rebuild result into `status=error`. The error is reported separately so operators can retry derived wiki generation without treating the source itself as failed.
 
 ## Derived Wiki FTS Indexing
 

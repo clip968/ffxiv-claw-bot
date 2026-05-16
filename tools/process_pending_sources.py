@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS source_processing_queue (
 
 FILE_SOURCE_TYPES = {"markdown_file", "plain_text_file", "binary_attachment"}
 LOCAL_FILE_FILTER_TYPES = tuple(sorted(FILE_SOURCE_TYPES))
+PROCESSED_STATUSES = {"processed", "derived_wiki_built"}
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -60,6 +61,7 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--retry-errors", action="store_true")
     parser.add_argument("--max-retry", type=int, default=3)
+    parser.add_argument("--build-derived-wiki", action="store_true")
     parser.add_argument("--db-path", default=str(DB_PATH))
     parser.add_argument("--storage-root", default=str(DEFAULT_STORAGE_ROOT))
     return parser.parse_args(argv)
@@ -223,12 +225,14 @@ def _mark_processed(
     source_result: dict[str, Any],
 ) -> dict[str, Any]:
     timestamp = _now_iso()
+    row_status = _processed_row_status(source_result)
+    derived_error = _derived_wiki_error(source_result)
     conn.execute(
         """
         UPDATE source_processing_queue
-           SET status = 'processed',
-               error_stage = NULL,
-               error_message = NULL,
+           SET status = ?,
+               error_stage = ?,
+               error_message = ?,
                processed_source_id = ?,
                graph_status = ?,
                result_json = ?,
@@ -237,6 +241,9 @@ def _mark_processed(
          WHERE id = ?
         """,
         (
+            row_status,
+            derived_error.get("error_stage"),
+            derived_error.get("error_message"),
             source_result.get("source_id"),
             source_result.get("graph_status"),
             json.dumps(source_result, ensure_ascii=False, sort_keys=True),
@@ -246,13 +253,17 @@ def _mark_processed(
         ),
     )
     conn.commit()
-    return {
+    action = {
         "source_id": source_id,
-        "status": "processed",
+        "status": row_status,
         "result_status": source_result.get("status"),
         "processed_source_id": source_result.get("source_id"),
         "graph_status": source_result.get("graph_status"),
     }
+    if derived_error:
+        action["error_stage"] = derived_error["error_stage"]
+        action["error_message"] = derived_error["error_message"]
+    return action
 
 
 def _mark_error(
@@ -330,18 +341,24 @@ def _process_source_argv(row: sqlite3.Row, args: argparse.Namespace) -> list[str
         body = row["body"]
         if not body:
             raise ValueError(f"Queue source {row['id']} is missing body.")
-        return [*argv, "--body", body]
+        return _with_derived_flag([*argv, "--body", body], args)
     if source_type == "url":
         url = row["url"]
         if not url:
             raise ValueError(f"Queue source {row['id']} is missing url.")
-        return [*argv, "--url", url]
+        return _with_derived_flag([*argv, "--url", url], args)
     if source_type in FILE_SOURCE_TYPES:
         local_path = row["local_path"]
         if not local_path:
             raise ValueError(f"Queue source {row['id']} is missing local_path.")
-        return [*argv, "--local-path", local_path]
+        return _with_derived_flag([*argv, "--local-path", local_path], args)
     raise ValueError(f"Unsupported queue source_type: {source_type}")
+
+
+def _with_derived_flag(argv: list[str], args: argparse.Namespace) -> list[str]:
+    if args.build_derived_wiki:
+        return [*argv, "--build-derived-wiki"]
+    return argv
 
 
 def _error_stage(source_result: dict[str, Any]) -> str:
@@ -380,9 +397,28 @@ def _overall_status(actions: list[dict[str, Any]]) -> str:
 def _summary(actions: list[dict[str, Any]], *, targeted: int) -> dict[str, int]:
     return {
         "targeted": targeted,
-        "processed": sum(1 for action in actions if action.get("status") == "processed"),
+        "processed": sum(1 for action in actions if action.get("status") in PROCESSED_STATUSES),
+        "derived_wiki_built": sum(
+            1 for action in actions if action.get("status") == "derived_wiki_built"
+        ),
         "errors": sum(1 for action in actions if action.get("status") == "error"),
         "planned": sum(1 for action in actions if action.get("status") == "planned"),
+    }
+
+
+def _processed_row_status(source_result: dict[str, Any]) -> str:
+    if (source_result.get("derived_wiki") or {}).get("status") == "ok":
+        return "derived_wiki_built"
+    return "processed"
+
+
+def _derived_wiki_error(source_result: dict[str, Any]) -> dict[str, str]:
+    derived = source_result.get("derived_wiki") or {}
+    if derived.get("status") != "error":
+        return {}
+    return {
+        "error_stage": str(derived.get("error_stage") or "derived_wiki_generate"),
+        "error_message": str(derived.get("error_message") or "Derived wiki generation failed."),
     }
 
 

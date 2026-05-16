@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-12 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-13 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -57,16 +57,17 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 9. `docs/adrs/0006-local-storage-and-notion-control.md`
 10. `docs/specs/0005- v06-Multi-format-Source-Processing.md`
 11. `docs/plans/v06/README.md`
-12. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
-13. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
-14. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
-15. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
-16. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
-17. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
-18. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
-19. `docs/runbooks/rebuild-kb.md`
-20. `docs/runbooks/local-storage.md`
-21. `docs/runbooks/openclaw-notion.md`
+12. `docs/plans/v06/2026-05-16-v06-13-derived-wiki-hook.md`
+13. `docs/plans/2026-05-14-v04-openclaw-local-ingest-and-notion-control.md`
+14. `docs/plans/v04/2026-05-14-v04-00-openclaw-ingest-contract.md`
+15. `docs/plans/v04/2026-05-14-v04-01-local-storage-foundation.md`
+16. `docs/plans/v04/2026-05-14-v04-02-openclaw-notion-control-contract.md`
+17. `docs/plans/v04/2026-05-14-v04-03-ingest-local-note-cli.md`
+18. `docs/plans/v04/2026-05-14-v04-04-local-publish-then-rebuild.md`
+19. `docs/plans/v04/2026-05-14-v04-05-status-notification.md`
+20. `docs/runbooks/rebuild-kb.md`
+21. `docs/runbooks/local-storage.md`
+22. `docs/runbooks/openclaw-notion.md`
 - `docs/plans/v04/legacy/2026-05-14-v04-openclaw-drive-ingest.md`
 - `docs/specs/0003-google-drive-sync.md`
 - `docs/runbooks/sync-drive.md`
@@ -335,6 +336,33 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-13: connect optional derived wiki generation after source processing.
+
+### Current session update: v06-13 derived wiki hook implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-13 only.
+   - `tools/process_source.py` now accepts `--build-derived-wiki` and `--skip-derived-wiki`.
+   - Default behavior remains skip; derived wiki generation is opt-in and calls the v06-11 `generate_derived_wiki.run()` path with `kind=jobs`.
+   - `tools/process_pending_sources.py` passes `--build-derived-wiki` through to each source when requested.
+   - Derived wiki success records queue status `derived_wiki_built`; derived wiki failure records `error_stage=derived_wiki_generate` without marking source processing itself as failed.
+   - Derived wiki generation is skipped when source processing does not return `status=ok`, preventing stale derived output after partial rebuilds.
+
+2. **Red tests first**
+   - Added four hook tests to `V06PendingSourceLoopTests`.
+   - Confirmed expected red failure before implementation: default skip passed, while opt-in/failure-path cases failed because `--build-derived-wiki` and `tools.process_source.generate_derived_wiki` hook wiring were missing.
+   - Added a partial-rebuild guard test and confirmed expected red failure because the hook was still attempted after `status=partial`.
+
+3. **Verification before full gate**
+   - Focused v06-13 hook tests: OK, 4 tests.
+   - `python -m unittest tests.test_v06_pending_sources -v`: OK, 10 tests.
+   - `python -m unittest tests.test_v05_process_source -v`: OK, 32 tests.
+   - `python -m unittest tests.test_v06_job_wiki_generator -v`: OK, 28 tests.
+   - `python -m py_compile tools/process_source.py tools/process_pending_sources.py tools/generate_derived_wiki.py`: OK.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 218 tests.
+
+4. **Next tasks**
+   - v06-14: README/handoff/final documentation gate and final verification for the v0.6 slice.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

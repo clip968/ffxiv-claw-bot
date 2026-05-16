@@ -918,6 +918,45 @@ class V05ProcessSourceRebuildIntegrationTests(ProcessSourceTempCase):
         )
         self.assertIn("Source not found", result["last_error"])
 
+    def test_process_rebuild_partial_skips_derived_wiki_hook(self) -> None:
+        local_rebuild = importlib.import_module("tools.local_rebuild")
+        process_source = importlib.import_module("tools.process_source")
+
+        with patch.object(local_rebuild, "rebuild_after_ingest") as rebuild:
+            rebuild.return_value = {
+                "status": "partial",
+                "source_id": "local_placeholder",
+                "wiki_path": None,
+                "actions": [
+                    {
+                        "action": "compile_wiki",
+                        "status": "failed",
+                        "message": "Source summary failed",
+                    },
+                ],
+                "summary": {"total": 1, "ok": 0, "partial": 0, "errors": 1, "skipped": 0},
+            }
+            with patch.object(process_source.generate_derived_wiki, "run") as run_derived:
+                result = self.run_process(
+                    [
+                        "--apply",
+                        "--source-type",
+                        "text_note",
+                        "--category",
+                        "personal_notes",
+                        "--title",
+                        "Partial rebuild hook guard",
+                        "--body",
+                        "Derived wiki should not run after partial rebuild.",
+                        "--build-derived-wiki",
+                    ],
+                )
+
+        run_derived.assert_not_called()
+        self.assertEqual(result["status"], "partial")
+        self.assertEqual(result["derived_wiki"]["status"], "skipped")
+        self.assertEqual(result["derived_wiki"]["reason"], "upstream_source_not_ok")
+
     def test_process_graph_failure_sets_graph_status_failed(self) -> None:
         local_rebuild = importlib.import_module("tools.local_rebuild")
 
