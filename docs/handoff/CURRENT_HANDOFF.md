@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 and v06-02 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-03 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -109,6 +109,26 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-03: replace `.txt`, `.md`, `.html`, and `.htm` stubs with concrete extractors.
+
+### Current session update: v06-03 text/markdown/html extractors implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-03 only.
+   - Added concrete `.txt`, `.md`, `.html`, and `.htm` extraction through `src/source_processing/extractors/text.py`, `markdown.py`, and `html.py`.
+   - CSV and XLSX remain temporary stubs for v06-04 and v06-05.
+
+2. **Red tests first**
+   - Added source file fixtures under `tests/fixtures/source_files/`.
+   - Added `V06TextMarkdownHtmlExtractorTests` in `tests/test_v06_extractors.py`.
+   - Confirmed expected red failure: concrete extractor modules were missing and registry still returned empty stub text.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_extractors -v`: OK, 21 tests.
+   - `python -m py_compile src/source_processing/extractors/text.py src/source_processing/extractors/markdown.py src/source_processing/extractors/html.py src/source_processing/extractors/__init__.py`: OK.
+   - `python -m unittest tests.test_v05_1_lodestone_extractor -v`: OK, 5 tests.
+
+4. **Next tasks**
+   - v06-04: replace `.csv` stub with the concrete CSV extractor.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

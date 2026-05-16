@@ -4,6 +4,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from src.source_processing.models import ExtractedSource
+from src.source_processing.extractors.html import extract_html_file
+from src.source_processing.extractors.markdown import extract_markdown_file
+from src.source_processing.extractors.text import extract_text_file
 
 
 def _stub_extracted_source(path: str | Path, extractor_name: str) -> ExtractedSource:
@@ -18,18 +21,6 @@ def _stub_extracted_source(path: str | Path, extractor_name: str) -> ExtractedSo
             "extractor_name": extractor_name,
         },
     )
-
-
-def extract_text_file(path: str | Path) -> ExtractedSource:
-    return _stub_extracted_source(path, "text")
-
-
-def extract_markdown_file(path: str | Path) -> ExtractedSource:
-    return _stub_extracted_source(path, "markdown")
-
-
-def extract_html_file(path: str | Path) -> ExtractedSource:
-    return _stub_extracted_source(path, "html")
 
 
 def extract_csv_file(path: str | Path) -> ExtractedSource:

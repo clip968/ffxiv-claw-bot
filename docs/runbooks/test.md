@@ -91,6 +91,7 @@ Current status:
 
 - `V06ExtractorModelTests` -> `src/source_processing/models.py`, `src/source_processing/errors.py` (**Green** 2026-05-16, 5 tests)
 - `V06ExtractorRegistryTests` -> `src/source_processing/extractor_registry.py`, `src/source_processing/extractors/__init__.py` (**Green** 2026-05-16, 8 tests)
+- `V06TextMarkdownHtmlExtractorTests` -> `src/source_processing/extractors/text.py`, `markdown.py`, `html.py` (**Green** 2026-05-16, 8 tests)
 
 Red/green notes:
 
@@ -98,6 +99,9 @@ Red/green notes:
 - v06-01 green check: `python -m unittest tests.test_v06_extractors -v` passed 5 tests after adding the shared model and error layer.
 - v06-02 red check: `python -m unittest tests.test_v06_extractors.V06ExtractorRegistryTests -v` failed with 8 expected registry module import errors.
 - v06-02 green check: `python -m unittest tests.test_v06_extractors -v` passed 13 tests after adding registry and stub extractor mapping.
+- v06-03 red check: `python -m unittest tests.test_v06_extractors.V06TextMarkdownHtmlExtractorTests -v` failed with expected missing concrete modules and registry stub content failure.
+- v06-03 green check: `python -m unittest tests.test_v06_extractors -v` passed 21 tests after implementing text, markdown, and generic HTML extractors.
+- v06-03 Lodestone regression: `python -m unittest tests.test_v05_1_lodestone_extractor -v` passed 5 tests.
 
 v0.5 source processing tests:
 

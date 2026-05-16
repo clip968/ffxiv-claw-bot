@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -67,35 +67,35 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tests/fixtures/source_files/sample.txt` 추가
-- [ ] `tests/fixtures/source_files/sample.md` 추가 (heading + frontmatter)
-- [ ] `tests/fixtures/source_files/sample.html` 추가 (script/style/nav/footer + main)
-- [ ] `src/source_processing/extractors/text.py` 구현
-  - [ ] UTF-8 read
-  - [ ] 디코딩 실패 시 `SourceDecodingError`
-  - [ ] `ExtractedSource` 반환, metadata에 `extractor_name=text`
-- [ ] `src/source_processing/extractors/markdown.py` 구현
-  - [ ] heading 보존
-  - [ ] frontmatter 처리 (있으면 metadata로 분리)
-  - [ ] `extractor_name=markdown`
-- [ ] `src/source_processing/extractors/html.py` 구현
-  - [ ] script/style/nav/footer 제거
-  - [ ] title 추출
-  - [ ] heading/paragraph 중심 normalize
-  - [ ] 공백 collapse
-  - [ ] metadata `html_title`, `removed_elements`
-  - [ ] `extractor_name=html`
-- [ ] `extractor_registry.py`의 stub을 실제 함수로 교체 (`.txt`, `.md`, `.html`, `.htm`)
-- [ ] `tests/test_v06_extractors.py`에 다음 테스트 추가
-  - [ ] `test_text_extractor_preserves_plain_text`
-  - [ ] `test_text_extractor_raises_on_invalid_encoding` (optional)
-  - [ ] `test_markdown_extractor_preserves_headings`
-  - [ ] `test_html_extractor_removes_script_and_style`
-  - [ ] `test_html_extractor_removes_nav_and_footer`
-  - [ ] `test_html_extractor_preserves_main_content`
-  - [ ] `test_html_extractor_records_removed_elements_metadata`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `tests/fixtures/source_files/sample.txt` 추가
+- [x] `tests/fixtures/source_files/sample.md` 추가 (heading + frontmatter)
+- [x] `tests/fixtures/source_files/sample.html` 추가 (script/style/nav/footer + main)
+- [x] `src/source_processing/extractors/text.py` 구현
+  - [x] UTF-8 read
+  - [x] 디코딩 실패 시 `SourceDecodingError`
+  - [x] `ExtractedSource` 반환, metadata에 `extractor_name=text`
+- [x] `src/source_processing/extractors/markdown.py` 구현
+  - [x] heading 보존
+  - [x] frontmatter 처리 (있으면 metadata로 분리)
+  - [x] `extractor_name=markdown`
+- [x] `src/source_processing/extractors/html.py` 구현
+  - [x] script/style/nav/footer 제거
+  - [x] title 추출
+  - [x] heading/paragraph 중심 normalize
+  - [x] 공백 collapse
+  - [x] metadata `html_title`, `removed_elements`
+  - [x] `extractor_name=html`
+- [x] `extractor_registry.py`의 stub을 실제 함수로 교체 (`.txt`, `.md`, `.html`, `.htm`)
+- [x] `tests/test_v06_extractors.py`에 다음 테스트 추가
+  - [x] `test_text_extractor_preserves_plain_text`
+  - [x] `test_text_extractor_raises_on_invalid_encoding`
+  - [x] `test_markdown_extractor_preserves_headings`
+  - [x] `test_html_extractor_removes_script_and_style`
+  - [x] `test_html_extractor_removes_nav_and_footer`
+  - [x] `test_html_extractor_preserves_main_content`
+  - [x] `test_html_extractor_records_removed_elements_metadata`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -128,4 +128,7 @@ python -m unittest tests.test_v05_1_lodestone_extractor -v
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_extractors.V06TextMarkdownHtmlExtractorTests -v` failed with 7 expected concrete extractor module import errors and 1 registry stub content failure.
+- Green: `python -m unittest tests.test_v06_extractors -v` passed 21 tests.
+- Compile: `python -m py_compile src/source_processing/extractors/text.py src/source_processing/extractors/markdown.py src/source_processing/extractors/html.py src/source_processing/extractors/__init__.py` passed.
+- Regression: `python -m unittest tests.test_v05_1_lodestone_extractor -v` passed 5 tests.
