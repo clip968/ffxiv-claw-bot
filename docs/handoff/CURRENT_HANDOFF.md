@@ -79,6 +79,24 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
+### Current session update: v07-04 intent detector implemented -- 2026-05-17
+
+1. **Scope**
+   - Implemented v07-04 only.
+   - Added `src/query/intent_detector.py` with deterministic keyword-based `detect_intent()`.
+   - Implemented only `job_change_history` and `generic_search`; no LLM call or extra intent expansion.
+
+2. **Red tests first**
+   - Added `V07IntentDetectorTests` in `tests/test_v07_query_parser.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v07_query_parser.V07IntentDetectorTests -v` failed because `detect_intent` was not importable from `src.query`.
+
+3. **Verification**
+   - `python -m unittest tests.test_v07_query_parser -v`: OK, 17 tests.
+   - `python -m py_compile src/query/intent_detector.py src/query/__init__.py`: OK.
+
+4. **Next tasks**
+   - v07-05: integrate normalization, job detection, patch parsing, and intent detection in `parse_query()`.
+
 ### Current session update: v07-03 patch range parser implemented -- 2026-05-17
 
 1. **Scope**

@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -41,16 +41,16 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/query/intent_detector.py` 생성
-  - [ ] `JOB_CHANGE_KEYWORDS` 상수 정의
-  - [ ] `detect_intent(query: str, *, job: str | None = None) -> str` 구현
-- [ ] `src/query/__init__.py` 갱신 (re-export)
-- [ ] `tests/test_v07_query_parser.py` 갱신
-  - [ ] `test_detect_job_change_history_intent_with_change_history`
-  - [ ] `test_detect_job_change_history_intent_with_what_changed`
-  - [ ] `test_detect_generic_search_without_job`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/query/intent_detector.py` 생성
+  - [x] `JOB_CHANGE_KEYWORDS` 상수 정의
+  - [x] `detect_intent(query: str, *, job: str | None = None) -> str` 구현
+- [x] `src/query/__init__.py` 갱신 (re-export)
+- [x] `tests/test_v07_query_parser.py` 갱신
+  - [x] `test_detect_job_change_history_intent_with_change_history`
+  - [x] `test_detect_job_change_history_intent_with_what_changed`
+  - [x] `test_detect_generic_search_without_job`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -70,6 +70,9 @@ python -m py_compile src/query/intent_detector.py
 - v07-01의 `src/query/` 패키지에 의존한다.
 - v07-02 job detector와 독립적으로 테스트 가능하다 (job 파라미터를 직접 전달).
 - `tools/search_kb.py`나 `tools/answer.py`를 수정하지 않는다.
+- Red verification: `python -m unittest tests.test_v07_query_parser.V07IntentDetectorTests -v` failed because `detect_intent` was not importable from `src.query`.
+- Green verification: `python -m unittest tests.test_v07_query_parser -v` passed 17 tests.
+- Compile verification: `python -m py_compile src/query/intent_detector.py src/query/__init__.py` passed.
 
 ## Agent Prompt
 

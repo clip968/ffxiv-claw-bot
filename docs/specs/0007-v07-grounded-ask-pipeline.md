@@ -771,6 +771,8 @@ Acceptance:
 
 ### v07-04. Intent detector
 
+Status: Completed 2026-05-17
+
 Files:
 
 ```text
@@ -786,6 +788,8 @@ Tasks:
 Acceptance:
 
 - `건브레이커 변경 이력` returns `job_change_history`
+- Questions without job context return `generic_search`
+- Verified by `tests/test_v07_query_parser.py`
 
 ---
 

@@ -102,5 +102,28 @@ class V07PatchRangeParserTests(unittest.TestCase):
         self.assertIsNone(parse_patch_range("건브레이커 변경 이력"))
 
 
+class V07IntentDetectorTests(unittest.TestCase):
+    def test_detect_job_change_history_intent_with_change_history(self) -> None:
+        from src.query import detect_intent
+
+        self.assertEqual(
+            detect_intent("건브레이커 변경 이력", job="gunbreaker"),
+            "job_change_history",
+        )
+
+    def test_detect_job_change_history_intent_with_what_changed(self) -> None:
+        from src.query import detect_intent
+
+        self.assertEqual(
+            detect_intent("흑마 뭐 바뀜?", job="black_mage"),
+            "job_change_history",
+        )
+
+    def test_detect_generic_search_without_job(self) -> None:
+        from src.query import detect_intent
+
+        self.assertEqual(detect_intent("M4S 공략 찾아줘", job=None), "generic_search")
+
+
 if __name__ == "__main__":
     unittest.main()
