@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -45,22 +45,22 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/query/patch_parser.py` 생성
-  - [ ] `parse_patch_range(query: str) -> str | None` 구현
-  - [ ] 한국어 범위 패턴 (`부터...까지`)
-  - [ ] 명시적 범위 패턴 (`~`, `-`, `–`)
-  - [ ] X 범위 패턴 (`N.x`)
-  - [ ] 단일 패치 패턴 (`N.M`)
-- [ ] `src/query/__init__.py` 갱신 (re-export)
-- [ ] `tests/test_v07_query_parser.py` 갱신
-  - [ ] `test_parse_single_patch`
-  - [ ] `test_parse_x_patch_range`
-  - [ ] `test_parse_tilde_patch_range`
-  - [ ] `test_parse_dash_patch_range`
-  - [ ] `test_parse_korean_range`
-  - [ ] `test_parse_no_patch_returns_none`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/query/patch_parser.py` 생성
+  - [x] `parse_patch_range(query: str) -> str | None` 구현
+  - [x] 한국어 범위 패턴 (`부터...까지`)
+  - [x] 명시적 범위 패턴 (`~`, `-`, `–`)
+  - [x] X 범위 패턴 (`N.x`)
+  - [x] 단일 패치 패턴 (`N.M`)
+- [x] `src/query/__init__.py` 갱신 (re-export)
+- [x] `tests/test_v07_query_parser.py` 갱신
+  - [x] `test_parse_single_patch`
+  - [x] `test_parse_x_patch_range`
+  - [x] `test_parse_tilde_patch_range`
+  - [x] `test_parse_dash_patch_range`
+  - [x] `test_parse_korean_range`
+  - [x] `test_parse_no_patch_returns_none`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -80,6 +80,9 @@ python -m py_compile src/query/patch_parser.py
 - v07-01의 `src/query/` 패키지에 의존한다.
 - regex 기반 순수 함수이며 외부 의존성 없다.
 - `tools/search_kb.py`나 `tools/answer.py`를 수정하지 않는다.
+- Red verification: `python -m unittest tests.test_v07_query_parser.V07PatchRangeParserTests -v` failed because `parse_patch_range` was not importable from `src.query`.
+- Green verification: `python -m unittest tests.test_v07_query_parser -v` passed 14 tests.
+- Compile verification: `python -m py_compile src/query/patch_parser.py src/query/__init__.py` passed.
 
 ## Agent Prompt
 

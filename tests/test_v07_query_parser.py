@@ -70,5 +70,37 @@ class V07JobDetectorTests(unittest.TestCase):
         self.assertIsNone(detect_job("패치노트 요약"))
 
 
+class V07PatchRangeParserTests(unittest.TestCase):
+    def test_parse_single_patch(self) -> None:
+        from src.query import parse_patch_range
+
+        self.assertEqual(parse_patch_range("7.2 패치"), "7.2..7.2")
+
+    def test_parse_x_patch_range(self) -> None:
+        from src.query import parse_patch_range
+
+        self.assertEqual(parse_patch_range("7.x 변경점"), "7.0..7.99")
+
+    def test_parse_tilde_patch_range(self) -> None:
+        from src.query import parse_patch_range
+
+        self.assertEqual(parse_patch_range("7.0~7.5 변경 이력"), "7.0..7.5")
+
+    def test_parse_dash_patch_range(self) -> None:
+        from src.query import parse_patch_range
+
+        self.assertEqual(parse_patch_range("7.0-7.5 변경 이력"), "7.0..7.5")
+
+    def test_parse_korean_range(self) -> None:
+        from src.query import parse_patch_range
+
+        self.assertEqual(parse_patch_range("7.0부터 7.5까지"), "7.0..7.5")
+
+    def test_parse_no_patch_returns_none(self) -> None:
+        from src.query import parse_patch_range
+
+        self.assertIsNone(parse_patch_range("건브레이커 변경 이력"))
+
+
 if __name__ == "__main__":
     unittest.main()

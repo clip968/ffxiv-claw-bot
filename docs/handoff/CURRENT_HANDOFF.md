@@ -79,6 +79,24 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
+### Current session update: v07-03 patch range parser implemented -- 2026-05-17
+
+1. **Scope**
+   - Implemented v07-03 only.
+   - Added `src/query/patch_parser.py` with numeric patch parsing for single patches, `N.x` ranges, explicit `~`/`-`/`–` ranges, and Korean `부터...까지` ranges.
+   - Did not implement expansion-name mapping or semantic patch range interpretation.
+
+2. **Red tests first**
+   - Added `V07PatchRangeParserTests` in `tests/test_v07_query_parser.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v07_query_parser.V07PatchRangeParserTests -v` failed because `parse_patch_range` was not importable from `src.query`.
+
+3. **Verification**
+   - `python -m unittest tests.test_v07_query_parser -v`: OK, 14 tests.
+   - `python -m py_compile src/query/patch_parser.py src/query/__init__.py`: OK.
+
+4. **Next tasks**
+   - v07-04: add deterministic intent detection.
+
 ### Current session update: v07-02 job detector implemented -- 2026-05-17
 
 1. **Scope**

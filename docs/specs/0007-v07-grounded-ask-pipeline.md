@@ -745,6 +745,8 @@ Acceptance:
 
 ### v07-03. Patch range parser
 
+Status: Completed 2026-05-17
+
 Files:
 
 ```text
@@ -761,6 +763,9 @@ Acceptance:
 
 - `7.x` returns `7.0..7.99`
 - `7.0~7.5` returns `7.0..7.5`
+- `7.0부터 7.5까지` returns `7.0..7.5`
+- No numeric patch expression returns `None`
+- Verified by `tests/test_v07_query_parser.py`
 
 ---
 
