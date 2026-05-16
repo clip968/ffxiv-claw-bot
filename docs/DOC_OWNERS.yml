@@ -175,3 +175,16 @@ rules:
     procedure_docs:
       - "docs/runbooks/process-source.md"
       - "docs/runbooks/test.md"
+
+  - id: v07-grounded-ask-pipeline
+    paths:
+      - "src/query/**/*.py"
+      - "src/retrieval/**/*.py"
+      - "src/answering/**/*.py"
+      - "tools/ask.py"
+      - "tests/test_v07_*.py"
+    contract_docs:
+      - "docs/specs/0007-v07-grounded-ask-pipeline.md"
+    procedure_docs:
+      - "docs/runbooks/ask.md"
+      - "docs/runbooks/test.md"
