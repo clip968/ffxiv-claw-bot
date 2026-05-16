@@ -165,6 +165,8 @@ python -m unittest tests.test_v05_1_lodestone_extractor -v
 Current status:
 
 - `V051LodestoneExtractorTests` -> `tools/extractors/lodestone.py` (**Green** 2026-05-16, 5 tests)
+- `V05FetchUrlTests` v05.1 routing coverage -> `tools/fetch_url.py` (**Green** 2026-05-16, 6 tests)
+- `V05ProcessSourceUrlIntegrationTests.test_process_lodestone_url_records_lodestone_extractor_action` -> `tools/process_source.py` (**Green** 2026-05-16)
 
 Covered contract:
 
@@ -180,10 +182,28 @@ v05.1-02 red result:
 
 v05.1-04 and v05.1-05 remain pending:
 
-- `fetch_url.py` does not yet route Lodestone URLs through the extractor.
-- `process_source.py` does not yet record extractor metadata in the `fetch_url` action.
+- Completed 2026-05-16.
+- `fetch_url.py` routes Lodestone HTML URLs through the Lodestone extractor before generic HTML extraction.
+- `fetch_single_url()` now returns `extractor=lodestone`, `generic_html`, `text`, or `json`.
+- `process_source.py` records the returned extractor metadata in the `fetch_url` action.
+
+v05.1-04 red result:
+
+- `python -m unittest tests.test_v05_fetch_url -v`: expected red confirmed before implementation; failures were missing `extractor` metadata and Lodestone HTML still using the generic title path.
+
+v05.1-05 red result:
+
+- `python -m unittest tests.test_v05_process_source.V05ProcessSourceUrlIntegrationTests.test_process_lodestone_url_records_lodestone_extractor_action -v`: expected red confirmed before implementation; failure was missing `fetch_url.extractor`.
 
 Full suite after v05.1-03: **128 tests, 0 reds**.
+
+Focused green results after v05.1-04/v05.1-05:
+
+- `python -m unittest tests.test_v05_fetch_url -v`: **6 tests, OK**.
+- `python -m unittest tests.test_v05_process_source -v`: **22 tests, OK**.
+- `python -m unittest tests.test_v05_1_lodestone_extractor -v`: **5 tests, OK**.
+
+Full suite after v05.1-04/v05.1-05: **131 tests, 0 reds**.
 
 ## pytest
 

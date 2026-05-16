@@ -11,7 +11,7 @@
 v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
-v05.1 Source Processing Hardening is in progress. v05.1-02 and v05.1-03 are implemented.
+v05.1 Source Processing Hardening is in progress. v05.1-02 through v05.1-05 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -25,7 +25,7 @@ v0.4 planning has been reframed from Google Drive write/publish to Local Storage
 
 The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest -> rebuild -> status payload in one call. The current implementation supports validation, dry-run, apply-mode Local Storage ingest for local text source types, single URL fetch into Local Storage, wiki/FTS/graph rebuild, and metadata-only Notion payload generation.
 
-v05.1 currently adds a deterministic Lodestone article extractor for `.news__detail__wrapper`, but `fetch_url.py` routing and `process_source.py` extractor action metadata are still pending v05.1-04 and v05.1-05.
+v05.1 currently adds a deterministic Lodestone article extractor for `.news__detail__wrapper`, routes Lodestone HTML URLs through that extractor in `fetch_url.py`, and records extractor metadata in the `process_source.py` `fetch_url` action. Entrypoint boundary docs/regression work remains pending in v05.1-06 and v05.1-07.
 
 Default source of truth for user-managed source files:
 
@@ -70,6 +70,50 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 - `docs/runbooks/publish-drive.md`
 
 ## This Session
+
+### Current session update: v05.1-04/v05.1-05 fetch routing and extractor metadata implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented only v05.1 B: tasks 04 and 05.
+   - Added `fetch_single_url()` extractor metadata for Lodestone, generic HTML, text, and JSON responses.
+   - Added `process_source.py` URL action metadata propagation.
+   - Did not implement v05.1-06/v05.1-07 entrypoint boundary docs regression tasks, crawler, scheduler, daemon, Notion API calls, or Notion polling.
+
+2. **Red tests first**
+   - Updated `tests/test_v05_fetch_url.py`.
+   - Added `test_fetch_url_uses_lodestone_extractor_for_lodestone_url`.
+   - Added JSON extractor metadata coverage and extended existing generic HTML/text tests.
+   - Confirmed expected red failure: `python -m unittest tests.test_v05_fetch_url -v` failed because `extractor` metadata was missing and Lodestone HTML still used the generic title path.
+   - Added `test_process_lodestone_url_records_lodestone_extractor_action` in `tests/test_v05_process_source.py`.
+   - Confirmed expected red failure: focused process-source test failed because `fetch_url.extractor` was missing.
+
+3. **Implementation**
+   - `tools/fetch_url.py`: imports the Lodestone extractor, routes `text/html` Lodestone URLs to `extract_lodestone_article()`, preserves generic HTML extraction for non-Lodestone pages, and returns stable extractor values: `lodestone`, `generic_html`, `text`, and `json`.
+   - `tools/process_source.py`: adds shared fetch action construction and copies `fetch_result["extractor"]` into successful `fetch_url` actions when present.
+   - `notion_update` remains metadata-only and does not include body, raw HTML, attachments, or binary fields.
+
+4. **Docs updated**
+   - `docs/plans/v05.1/README.md`: v05.1-04 and v05.1-05 marked Completed.
+   - `docs/plans/v05.1/2026-05-16-v05.1-04-fetch-url-routing.md`: checklist and verification updated.
+   - `docs/plans/v05.1/2026-05-16-v05.1-05-process-source-extractor-metadata.md`: checklist and verification updated.
+   - `docs/specs/0004a-v05.1-source-processing-hardening.md`: AC-0004A-005 through AC-0004A-009 marked implemented; AC-0004A-021 re-verified.
+   - `docs/runbooks/process-source.md`: URL extractor routing and `fetch_url` action metadata documented.
+   - `docs/runbooks/test.md`: v05.1-04/v05.1-05 red and green results documented.
+   - `docs/handoff/CURRENT_HANDOFF.md`: this update.
+
+5. **Verification**
+   - `python -m unittest tests.test_v05_fetch_url -v`: OK, 6 tests.
+   - `python -m unittest tests.test_v05_process_source.V05ProcessSourceUrlIntegrationTests.test_process_lodestone_url_records_lodestone_extractor_action -v`: OK.
+   - `python -m py_compile tools/fetch_url.py tools/process_source.py`: OK.
+   - `python -m unittest tests.test_v05_process_source -v`: OK, 22 tests.
+   - `python -m unittest tests.test_v05_1_lodestone_extractor -v`: OK, 5 tests.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 131 tests.
+   - `git diff --check`: OK.
+
+6. **Next tasks**
+   - v05.1-06: entrypoint boundary docs.
+   - v05.1-07: runbook regression tests.
+   - v05.1-08: final verification and handoff cleanup for the whole v05.1 slice.
 
 ### Current session update: v05.1-02/v05.1-03 Lodestone extractor implemented -- 2026-05-16
 

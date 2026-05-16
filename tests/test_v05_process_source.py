@@ -593,6 +593,69 @@ class V05ProcessSourceLocalIntegrationTests(unittest.TestCase):
 
 
 class V05ProcessSourceUrlIntegrationTests(unittest.TestCase):
+    def test_process_lodestone_url_records_lodestone_extractor_action(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            storage_root = tmp / "storage"
+            storage_root.mkdir(parents=True)
+            repo_root = tmp / "repo"
+            db_path = tmp / "ffxiv.sqlite"
+            ensure_sources_schema(db_path)
+            url = "https://na.finalfantasyxiv.com/lodestone/topics/detail/patch-7-5"
+            fetched_body = "Patch 7.5 Notes\nNew main scenario quests have been added."
+            module = importlib.import_module("tools.process_source")
+
+            with patch.object(module, "fetch_single_url") as fetch_single_url:
+                fetch_single_url.return_value = {
+                    "url": url,
+                    "content_type": "text/html; charset=utf-8",
+                    "title": "Patch 7.5 Notes",
+                    "body": fetched_body,
+                    "extractor": "lodestone",
+                    "raw_html": "<html>raw source must not enter notion_update</html>",
+                }
+
+                result = run_process_source_with_temp_root(
+                    self,
+                    [
+                        "--apply",
+                        "--source-type",
+                        "url",
+                        "--category",
+                        "patch_notes",
+                        "--url",
+                        url,
+                        "--storage-root",
+                        str(storage_root),
+                        "--db-path",
+                        str(db_path),
+                    ],
+                    repo_root,
+                )
+
+        self.assertEqual(result["status"], "ok")
+        fetch_action = next(
+            action for action in result["actions"] if action["name"] == "fetch_url"
+        )
+        self.assertEqual(fetch_action["status"], "ok")
+        self.assertEqual(fetch_action["url"], url)
+        self.assertEqual(fetch_action["content_type"], "text/html; charset=utf-8")
+        self.assertEqual(fetch_action["extractor"], "lodestone")
+
+        payload = result["notion_update"]
+        payload_text = json.dumps(payload, ensure_ascii=False)
+        for forbidden_field in (
+            "body",
+            "raw_body",
+            "raw_html",
+            "attachments",
+            "binary",
+            "binary_data",
+        ):
+            self.assertNotIn(forbidden_field, payload)
+        self.assertNotIn(fetched_body, payload_text)
+        self.assertNotIn("raw source must not enter notion_update", payload_text)
+
     def test_process_url_ok_fetches_single_url_and_ingests_local_storage(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp = Path(tmp_dir)

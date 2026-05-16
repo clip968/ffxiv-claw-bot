@@ -261,12 +261,7 @@ def _apply_url_source(args: argparse.Namespace) -> dict[str, Any]:
     if ingest_result.get("status") != "ok":
         return _url_ingest_error_result(args, title, fetch_result, ingest_result)
 
-    fetch_action = {
-        "name": "fetch_url",
-        "status": "ok",
-        "url": fetch_result.get("url") or args.url,
-        "content_type": fetch_result.get("content_type"),
-    }
+    fetch_action = _fetch_action_from_result(args, fetch_result)
     return _successful_ingest_result(args, ingest_result, fetch_action=fetch_action, title=title)
 
 
@@ -393,6 +388,7 @@ def _url_ingest_error_result(
                     "status": "ok",
                     "url": fetch_result.get("url") or args.url,
                     "content_type": fetch_result.get("content_type"),
+                    **_fetch_action_metadata(fetch_result),
                 },
                 {
                     "name": "ingest_local",
@@ -418,6 +414,25 @@ def _url_ingest_error_result(
         }
     )
     return result
+
+
+def _fetch_action_from_result(
+    args: argparse.Namespace,
+    fetch_result: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "name": "fetch_url",
+        "status": "ok",
+        "url": fetch_result.get("url") or args.url,
+        "content_type": fetch_result.get("content_type"),
+        **_fetch_action_metadata(fetch_result),
+    }
+
+
+def _fetch_action_metadata(fetch_result: dict[str, Any]) -> dict[str, Any]:
+    if "extractor" not in fetch_result:
+        return {}
+    return {"extractor": fetch_result.get("extractor")}
 
 
 def _successful_ingest_result(

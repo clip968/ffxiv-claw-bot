@@ -34,8 +34,8 @@ v05.1의 목표는 v0.5 Source Processing Pipeline을 실제 Lodestone 7.5 패�
 | 01 | 2026-05-16-v05.1-01-spec-and-plan.md | v05.1 scope, spec, task breakdown 고정 | **Completed** 2026-05-16 |
 | 02 | 2026-05-16-v05.1-02-lodestone-fixture-and-red-tests.md | Lodestone fixture와 extractor red test 작성 | **Completed** 2026-05-16 |
 | 03 | 2026-05-16-v05.1-03-lodestone-extractor.md | Lodestone 전용 article extractor 구현 | **Completed** 2026-05-16 |
-| 04 | 2026-05-16-v05.1-04-fetch-url-routing.md | `fetch_url.py`에서 Lodestone URL을 전용 extractor로 라우팅 | Pending |
-| 05 | 2026-05-16-v05.1-05-process-source-extractor-metadata.md | `process_source.py` action log에 extractor metadata 포함 | Pending |
+| 04 | 2026-05-16-v05.1-04-fetch-url-routing.md | `fetch_url.py`에서 Lodestone URL을 전용 extractor로 라우팅 | **Completed** 2026-05-16 |
+| 05 | 2026-05-16-v05.1-05-process-source-extractor-metadata.md | `process_source.py` action log에 extractor metadata 포함 | **Completed** 2026-05-16 |
 | 06 | 2026-05-16-v05.1-06-entrypoint-boundary-docs.md | 공식 entrypoint와 helper boundary를 문서화 | Pending |
 | 07 | 2026-05-16-v05.1-07-runbook-regression-tests.md | helper misuse/Notion boundary 문서 회귀 테스트 추가 | Pending |
 | 08 | 2026-05-16-v05.1-08-final-verification-and-handoff.md | 전체 검증, docs freshness, handoff 마무리 | Pending |

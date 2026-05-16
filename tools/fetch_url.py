@@ -4,6 +4,11 @@ from http.client import HTTPResponse
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
+from tools.extractors.lodestone import (
+    LodestoneExtractionError,
+    extract_lodestone_article,
+    is_lodestone_url,
+)
 from tools.html_utils import extract_text_from_html, extract_title_from_html
 
 try:
@@ -38,11 +43,22 @@ def fetch_single_url(url: str) -> dict[str, str]:
         raise UrlFetchError("empty response body")
 
     if normalized_type == "text/html":
-        title = extract_title_from_html(raw_body, url)
-        body = extract_text_from_html(raw_body)
+        if is_lodestone_url(url):
+            try:
+                extracted = extract_lodestone_article(raw_body, url)
+            except LodestoneExtractionError as exc:
+                raise UrlFetchError(str(exc)) from exc
+            title = extracted["title"]
+            body = extracted["body"]
+            extractor = extracted.get("extractor", "lodestone")
+        else:
+            title = extract_title_from_html(raw_body, url)
+            body = extract_text_from_html(raw_body)
+            extractor = "generic_html"
     else:
         title = _fallback_title_from_url(url)
         body = raw_body
+        extractor = _extractor_for_content_type(normalized_type)
 
     if not body.strip():
         raise UrlFetchError("empty extracted body")
@@ -52,11 +68,20 @@ def fetch_single_url(url: str) -> dict[str, str]:
         "content_type": content_type,
         "title": title,
         "body": body,
+        "extractor": extractor,
     }
 
 
 def _is_supported_content_type(content_type: str) -> bool:
     return content_type in SUPPORTED_CONTENT_TYPES or content_type.endswith("+json")
+
+
+def _extractor_for_content_type(content_type: str) -> str:
+    if content_type == "text/plain":
+        return "text"
+    if content_type == "application/json" or content_type.endswith("+json"):
+        return "json"
+    return "unknown"
 
 
 def _http_get(url: str, *, headers: dict[str, str], timeout: int) -> object:

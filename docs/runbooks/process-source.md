@@ -20,6 +20,8 @@ Implemented slices:
 - v05-05: exactly one user-provided URL fetch and ingest.
 - v05-06: wiki/FTS/graph rebuild via `tools.local_rebuild.rebuild_after_ingest()`.
 - v05-07: safe `notion_update` payload via `tools.status_notification.build_notion_status_update()`.
+- v05.1-04: Lodestone HTML URLs route through the Lodestone article extractor before generic HTML extraction.
+- v05.1-05: URL fetch actions include extractor metadata when `fetch_single_url()` returns it.
 
 Out of scope:
 
@@ -97,9 +99,10 @@ python tools/process_source.py \
 URL behavior:
 
 - `tools.fetch_url.fetch_single_url()` fetches exactly the provided URL.
-- `text/html` is converted to visible text and title.
-- v05.1 adds `tools.extractors.lodestone.extract_lodestone_article()` for Lodestone article extraction; `fetch_url.py` routing to this extractor is the next hardening slice.
+- `text/html` Lodestone URLs are extracted with `tools.extractors.lodestone.extract_lodestone_article()` and return `extractor=lodestone`.
+- `text/html` non-Lodestone URLs use generic visible text extraction and return `extractor=generic_html`.
 - `text/plain`, `application/json`, and `+json` content are stored as text.
+- `text/plain` returns `extractor=text`; `application/json` and `+json` return `extractor=json`.
 - Unsupported content types fail before Local Storage ingest.
 - The fetched body is passed to `tools.ingest_local.ingest_source(source_type="url", ...)`.
 
@@ -125,17 +128,24 @@ Successful apply returns JSON like:
   "status": "ok",
   "dry_run": false,
   "source_id": "local_...",
-  "source_type": "text_note",
-  "category": "personal_notes",
-  "title": "Raid mitigation note",
-  "canonical_path": "sources/personal_notes/raid_mitigation_note.md",
-  "local_source_path": "sources/personal_notes/raid_mitigation_note.md",
-  "raw_path": "raw/local_storage/personal_notes/raid_mitigation_note__local_....md",
+  "source_type": "url",
+  "category": "patch_notes",
+  "title": "Patch 7.5 Notes",
+  "canonical_path": "sources/patch_notes/patch_7.5_notes.md",
+  "local_source_path": "sources/patch_notes/patch_7.5_notes.md",
+  "raw_path": "raw/local_storage/patch_notes/patch_7.5_notes__local_....md",
   "content_hash": "sha256...",
   "wiki_path": "wiki/source_summaries/local_....md",
   "graph_status": "built",
   "actions": [
     {"name": "validate_request", "status": "ok"},
+    {
+      "name": "fetch_url",
+      "status": "ok",
+      "url": "https://na.finalfantasyxiv.com/lodestone/...",
+      "content_type": "text/html; charset=utf-8",
+      "extractor": "lodestone"
+    },
     {"name": "ingest_local", "status": "ok", "source_id": "local_..."},
     {"name": "compile_wiki", "status": "ok"},
     {"name": "index_fts", "status": "ok"},
@@ -146,7 +156,7 @@ Successful apply returns JSON like:
     "Status": "Graph Built",
     "Graph Status": "Built",
     "Source ID": "local_...",
-    "Local Source Path": "sources/personal_notes/raid_mitigation_note.md",
+    "Local Source Path": "sources/patch_notes/patch_7.5_notes.md",
     "Wiki Path": "wiki/source_summaries/local_....md",
     "Last Processed": "2026-05-16T00:00:00+00:00",
     "Last Error": "",
@@ -190,6 +200,7 @@ Focused tests:
 ```bash
 python -m unittest tests.test_v05_fetch_url -v
 python -m unittest tests.test_v05_process_source -v
+python -m unittest tests.test_v05_1_lodestone_extractor -v
 python -m unittest tests.test_v04_status_notification -v
 ```
 
