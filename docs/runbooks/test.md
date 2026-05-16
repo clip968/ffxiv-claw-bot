@@ -93,6 +93,7 @@ Current status:
 - `V06ExtractorRegistryTests` -> `src/source_processing/extractor_registry.py`, `src/source_processing/extractors/__init__.py` (**Green** 2026-05-16, 8 tests)
 - `V06TextMarkdownHtmlExtractorTests` -> `src/source_processing/extractors/text.py`, `markdown.py`, `html.py` (**Green** 2026-05-16, 8 tests)
 - `V06CsvExtractorTests` -> `src/source_processing/extractors/csv.py` (**Green** 2026-05-16, 5 tests)
+- `V06XlsxExtractorTests` -> `src/source_processing/extractors/xlsx.py` (**Green** 2026-05-16, 6 tests)
 
 Red/green notes:
 
@@ -105,6 +106,8 @@ Red/green notes:
 - v06-03 Lodestone regression: `python -m unittest tests.test_v05_1_lodestone_extractor -v` passed 5 tests.
 - v06-04 red check: `python -m unittest tests.test_v06_extractors.V06CsvExtractorTests -v` failed with expected missing CSV module and registry stub content failure.
 - v06-04 green check: `python -m unittest tests.test_v06_extractors -v` passed 26 tests after implementing CSV extraction.
+- v06-05 red check: `python -m unittest tests.test_v06_extractors.V06XlsxExtractorTests -v` failed with expected missing XLSX module and registry stub content failure.
+- v06-05 green check: `python -m unittest tests.test_v06_extractors -v` passed 32 tests after implementing standard-library XLSX extraction.
 
 v0.5 source processing tests:
 

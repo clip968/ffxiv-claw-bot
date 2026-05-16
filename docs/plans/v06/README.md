@@ -41,7 +41,7 @@ local source file
 | 02 | 2026-05-16-v06-02-extractor-registry.md | 확장자별 extractor를 선택하는 registry 구현 | **Completed** 2026-05-16 |
 | 03 | 2026-05-16-v06-03-text-markdown-html-extractors.md | `.txt`, `.md`, `.html` extractor 구현 | **Completed** 2026-05-16 |
 | 04 | 2026-05-16-v06-04-csv-extractor.md | `.csv` extractor 구현 | **Completed** 2026-05-16 |
-| 05 | 2026-05-16-v06-05-xlsx-extractor.md | `.xlsx` extractor 구현 | Pending |
+| 05 | 2026-05-16-v06-05-xlsx-extractor.md | `.xlsx` extractor 구현 | **Completed** 2026-05-16 |
 | 06 | 2026-05-16-v06-06-process-source-integration.md | `tools/process_source.py`와 extractor layer 연결 | Pending |
 | 07 | 2026-05-16-v06-07-pending-source-loop.md | `tools/process_pending_sources.py` 일괄 처리 CLI 구현 | Pending |
 | 08 | 2026-05-16-v06-08-derived-wiki-foundation.md | source summaries loader/writer/templates foundation 추가 | Pending |

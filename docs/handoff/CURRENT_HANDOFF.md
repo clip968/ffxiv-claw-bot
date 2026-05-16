@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-04 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-05 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -149,6 +149,26 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-05: replace `.xlsx` stub with the concrete XLSX extractor.
+
+### Current session update: v06-05 XLSX extractor implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-05 only.
+   - Added `src/source_processing/extractors/xlsx.py`.
+   - Replaced the `.xlsx` registry stub with the concrete extractor.
+   - Did not add `openpyxl`; the current environment lacks it, so XLSX support uses Python standard library zip/XML parsing.
+
+2. **Red tests first**
+   - Added `V06XlsxExtractorTests` in `tests/test_v06_extractors.py`.
+   - Tests generate a minimal temporary `.xlsx` workbook at runtime instead of committing a binary fixture.
+   - Confirmed expected red failure: `python -m unittest tests.test_v06_extractors.V06XlsxExtractorTests -v` failed with missing XLSX module errors and registry stub content failure.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_extractors -v`: OK, 32 tests.
+   - `python -m py_compile src/source_processing/extractors/xlsx.py src/source_processing/extractors/__init__.py`: OK.
+
+4. **Next tasks**
+   - v06-06: integrate extractor registry into `tools/process_source.py` for local file sources.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

@@ -27,11 +27,12 @@
 | `src/source_processing/models.py` | v0.6 `ExtractedSource` shared model | Active v0.6 |
 | `src/source_processing/errors.py` | v0.6 extractor error hierarchy | Active v0.6 |
 | `src/source_processing/extractor_registry.py` | v0.6 extension-to-extractor registry | Active v0.6 |
-| `src/source_processing/extractors/__init__.py` | v0.6 extractor exports; XLSX remains a temporary stub until v06-05 | Active v0.6 |
+| `src/source_processing/extractors/__init__.py` | v0.6 concrete extractor exports | Active v0.6 |
 | `src/source_processing/extractors/text.py` | v0.6 UTF-8 plain text extractor | Active v0.6 |
 | `src/source_processing/extractors/markdown.py` | v0.6 markdown extractor with lightweight frontmatter metadata | Active v0.6 |
 | `src/source_processing/extractors/html.py` | v0.6 generic HTML extractor that strips script/style/nav/footer noise | Active v0.6 |
 | `src/source_processing/extractors/csv.py` | v0.6 CSV-to-Markdown-table extractor | Active v0.6 |
+| `src/source_processing/extractors/xlsx.py` | v0.6 standard-library XLSX-to-Markdown-table extractor | Active v0.6 |
 
 ## Data / Output
 

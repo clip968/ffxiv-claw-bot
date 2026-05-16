@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+import zipfile
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -253,3 +254,153 @@ class V06CsvExtractorTests(unittest.TestCase):
 
         self.assertIn("Hypostatic Gear", extracted.text)
         self.assertEqual(extracted.metadata["extractor_name"], "csv")
+
+
+class V06XlsxExtractorTests(unittest.TestCase):
+    def test_xlsx_extractor_reads_single_sheet(self) -> None:
+        from src.source_processing.extractors.xlsx import extract_xlsx_file
+
+        with TemporaryDirectory() as tmp_dir:
+            source_path = Path(tmp_dir) / "sample.xlsx"
+            write_sample_xlsx(source_path)
+
+            extracted = extract_xlsx_file(source_path)
+
+        self.assertIn("| The Aetherfont | Lyngbakr | Hypostatic Gear | Unknown |", extracted.text)
+
+    def test_xlsx_extractor_preserves_sheet_name(self) -> None:
+        from src.source_processing.extractors.xlsx import extract_xlsx_file
+
+        with TemporaryDirectory() as tmp_dir:
+            source_path = Path(tmp_dir) / "sample.xlsx"
+            write_sample_xlsx(source_path)
+
+            extracted = extract_xlsx_file(source_path)
+
+        self.assertIn("## Sheet: Dungeon Drops", extracted.text)
+
+    def test_xlsx_extractor_reads_multiple_sheets(self) -> None:
+        from src.source_processing.extractors.xlsx import extract_xlsx_file
+
+        with TemporaryDirectory() as tmp_dir:
+            source_path = Path(tmp_dir) / "sample.xlsx"
+            write_sample_xlsx(source_path)
+
+            extracted = extract_xlsx_file(source_path)
+
+        self.assertIn("## Sheet: Currency", extracted.text)
+        self.assertIn("| Raid | Savage Book | 1 per floor |", extracted.text)
+
+    def test_xlsx_extractor_records_sheet_metadata(self) -> None:
+        from src.source_processing.extractors.xlsx import extract_xlsx_file
+
+        with TemporaryDirectory() as tmp_dir:
+            source_path = Path(tmp_dir) / "sample.xlsx"
+            write_sample_xlsx(source_path)
+
+            extracted = extract_xlsx_file(source_path)
+
+        self.assertEqual(extracted.metadata["sheet_count"], 3)
+        self.assertEqual(
+            extracted.metadata["sheet_names"],
+            ["Dungeon Drops", "Currency", "Empty Sheet"],
+        )
+        self.assertEqual(extracted.metadata["total_row_count"], 4)
+
+    def test_xlsx_extractor_skips_empty_sheets_but_records_them(self) -> None:
+        from src.source_processing.extractors.xlsx import extract_xlsx_file
+
+        with TemporaryDirectory() as tmp_dir:
+            source_path = Path(tmp_dir) / "sample.xlsx"
+            write_sample_xlsx(source_path)
+
+            extracted = extract_xlsx_file(source_path)
+
+        self.assertNotIn("## Sheet: Empty Sheet", extracted.text)
+        self.assertEqual(extracted.metadata["empty_sheets"], ["Empty Sheet"])
+
+    def test_registry_uses_concrete_xlsx_extractor(self) -> None:
+        from src.source_processing.extractor_registry import extract_source_text
+
+        with TemporaryDirectory() as tmp_dir:
+            source_path = Path(tmp_dir) / "sample.xlsx"
+            write_sample_xlsx(source_path)
+
+            extracted = extract_source_text(source_path)
+
+        self.assertIn("Hypostatic Gear", extracted.text)
+        self.assertEqual(extracted.metadata["extractor_name"], "xlsx")
+
+
+def write_sample_xlsx(path: Path) -> None:
+    files = {
+        "[Content_Types].xml": """<?xml version="1.0" encoding="UTF-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+  <Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+  <Override PartName="/xl/worksheets/sheet3.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+</Types>
+""",
+        "_rels/.rels": """<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+</Relationships>
+""",
+        "xl/workbook.xml": """<?xml version="1.0" encoding="UTF-8"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <sheets>
+    <sheet name="Dungeon Drops" sheetId="1" r:id="rId1"/>
+    <sheet name="Currency" sheetId="2" r:id="rId2"/>
+    <sheet name="Empty Sheet" sheetId="3" r:id="rId3"/>
+  </sheets>
+</workbook>
+""",
+        "xl/_rels/workbook.xml.rels": """<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/>
+</Relationships>
+""",
+        "xl/worksheets/sheet1.xml": sheet_xml([
+            ["Dungeon", "Boss", "Item", "Drop Rate"],
+            ["The Aetherfont", "Lyngbakr", "Hypostatic Gear", "Unknown"],
+        ]),
+        "xl/worksheets/sheet2.xml": sheet_xml([
+            ["Content", "Token", "Weekly Limit"],
+            ["Raid", "Savage Book", "1 per floor"],
+        ]),
+        "xl/worksheets/sheet3.xml": sheet_xml([]),
+    }
+    with zipfile.ZipFile(path, "w") as archive:
+        for name, content in files.items():
+            archive.writestr(name, content)
+
+
+def sheet_xml(rows: list[list[str]]) -> str:
+    row_xml = []
+    for row_index, row in enumerate(rows, start=1):
+        cells = []
+        for column_index, value in enumerate(row, start=1):
+            reference = f"{column_name(column_index)}{row_index}"
+            cells.append(
+                f'<c r="{reference}" t="inlineStr"><is><t>{value}</t></is></c>'
+            )
+        row_xml.append(f'<row r="{row_index}">{"".join(cells)}</row>')
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+        f'<sheetData>{"".join(row_xml)}</sheetData>'
+        "</worksheet>"
+    )
+
+
+def column_name(index: int) -> str:
+    name = ""
+    while index:
+        index, remainder = divmod(index - 1, 26)
+        name = chr(65 + remainder) + name
+    return name

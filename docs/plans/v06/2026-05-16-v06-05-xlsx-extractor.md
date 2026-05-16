@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -17,7 +17,7 @@ Excel workbook(`.xlsx`)을 sheet별 Markdown table로 변환하는 extractor를 
 ## Scope
 
 - `src/source_processing/extractors/xlsx.py` 추가
-- `openpyxl` 사용 (필요 시 dependency 명시)
+- 표준 라이브러리 `zipfile` + `xml.etree.ElementTree` 사용
 - workbook의 모든 sheet 순회
 - empty sheet skip하되 metadata에 기록
 - sheet name을 heading으로 보존
@@ -55,7 +55,7 @@ Out of scope:
 ## Red Test
 
 - File: `tests/test_v06_extractors.py`
-- Fixture: `tests/fixtures/source_files/sample.xlsx` (multi-sheet, 빈 sheet 포함)
+- Fixture: 테스트 내부에서 임시 `sample.xlsx` 생성 (multi-sheet, 빈 sheet 포함)
 - Implementation target: `src/source_processing/extractors/xlsx.py`
 - Expected red reason: xlsx extractor module이 아직 stub이거나 multi-sheet 처리/메타데이터 미구현.
 
@@ -69,25 +69,25 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tests/fixtures/source_files/sample.xlsx` 추가 (multi-sheet, 빈 sheet 포함)
-- [ ] `openpyxl` dependency 확인 (requirements.txt에 없으면 spec/plan 갱신 필요)
-- [ ] `src/source_processing/extractors/xlsx.py` 구현
-  - [ ] workbook open (read-only, data_only=True)
-  - [ ] sheet iteration
-  - [ ] empty sheet skip + metadata 기록
-  - [ ] header 추출 (첫 non-empty row 또는 fallback)
-  - [ ] Markdown table 생성
-  - [ ] metadata `sheet_count`, `sheet_names`, `total_row_count`, `empty_sheets`
-  - [ ] `extractor_name=xlsx`
-- [ ] `extractor_registry.py`의 `.xlsx` stub을 실제 함수로 교체
-- [ ] `tests/test_v06_extractors.py`에 다음 테스트 추가
-  - [ ] `test_xlsx_extractor_reads_single_sheet`
-  - [ ] `test_xlsx_extractor_preserves_sheet_name`
-  - [ ] `test_xlsx_extractor_reads_multiple_sheets`
-  - [ ] `test_xlsx_extractor_records_sheet_metadata`
-  - [ ] `test_xlsx_extractor_skips_empty_sheets_but_records_them`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] 테스트 내부에서 임시 `sample.xlsx` 생성 (multi-sheet, 빈 sheet 포함)
+- [x] `openpyxl` dependency 확인 (not installed); 새 dependency 없이 표준 라이브러리 reader로 구현
+- [x] `src/source_processing/extractors/xlsx.py` 구현
+  - [x] workbook zip/XML load
+  - [x] sheet iteration
+  - [x] empty sheet skip + metadata 기록
+  - [x] header 추출 (첫 non-empty row)
+  - [x] Markdown table 생성
+  - [x] metadata `sheet_count`, `sheet_names`, `total_row_count`, `empty_sheets`
+  - [x] `extractor_name=xlsx`
+- [x] `extractor_registry.py`의 `.xlsx` stub을 실제 함수로 교체
+- [x] `tests/test_v06_extractors.py`에 다음 테스트 추가
+  - [x] `test_xlsx_extractor_reads_single_sheet`
+  - [x] `test_xlsx_extractor_preserves_sheet_name`
+  - [x] `test_xlsx_extractor_reads_multiple_sheets`
+  - [x] `test_xlsx_extractor_records_sheet_metadata`
+  - [x] `test_xlsx_extractor_skips_empty_sheets_but_records_them`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -104,10 +104,10 @@ python -m unittest tests.test_v06_extractors -v
 
 ## Key Decisions
 
-- `openpyxl`은 read-only, `data_only=True` 모드로 사용해 formula evaluation을 피하고 저장된 값만 읽는다.
+- `openpyxl`은 현재 환경에 설치되어 있지 않으므로 도입하지 않는다. v06-05는 표준 라이브러리 `zipfile`과 `xml.etree.ElementTree`로 minimal `.xlsx` sheet XML을 읽는다.
 - merged cell은 top-left 셀의 값만 사용하고 별도 처리하지 않는다 (v0.6 단순 범위).
-- 매우 큰 workbook은 stream read로 처리하지만, v0.6에서는 단순 iteration으로 충분하다.
-- fixture는 binary file이므로 직접 작성하거나 작은 generator script로 생성한다. fixture 생성 스크립트가 필요하면 `tests/fixtures/source_files/_build_sample_xlsx.py` 같은 helper를 함께 둔다.
+- 매우 큰 workbook은 후속 최적화 대상이다. v0.6에서는 workbook zip/XML을 단순 순회한다.
+- binary fixture는 repo에 추가하지 않고 `tests/test_v06_extractors.py`의 helper가 임시 `.xlsx` 파일을 생성한다.
 
 ## Implementation Notes
 
@@ -117,4 +117,6 @@ python -m unittest tests.test_v06_extractors -v
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_extractors.V06XlsxExtractorTests -v` failed with 5 expected missing `src.source_processing.extractors.xlsx` import errors and 1 registry stub content failure.
+- Green: `python -m unittest tests.test_v06_extractors -v` passed 32 tests.
+- Compile: `python -m py_compile src/source_processing/extractors/xlsx.py src/source_processing/extractors/__init__.py` passed.

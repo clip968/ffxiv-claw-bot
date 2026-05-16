@@ -361,7 +361,7 @@ Excel workbook을 sheet별 Markdown table로 변환한다.
 
 ### 구현 내용
 
-1. openpyxl 사용
+1. 표준 라이브러리 `zipfile` + `xml.etree.ElementTree` 사용
 2. workbook의 모든 sheet 순회
 3. empty sheet는 skip하되 metadata.empty_sheets에 기록
 4. 각 sheet name을 heading으로 보존
@@ -403,7 +403,7 @@ Excel workbook을 sheet별 Markdown table로 변환한다.
 
 ### Agent prompt
 
-    Implement v06-5 only. Add XLSX extraction with openpyxl. Convert each non-empty sheet to Markdown table text and preserve sheet names. Skip empty sheets but record them in metadata. Write red tests first. Do not implement Excel formula evaluation, chart parsing, or style preservation.
+    Implement v06-5 only. Add XLSX extraction with the Python standard library. Convert each non-empty sheet to Markdown table text and preserve sheet names. Skip empty sheets but record them in metadata. Write red tests first. Do not implement Excel formula evaluation, chart parsing, or style preservation.
 
 ## Task v06-6. process_source.py와 extractor layer 연결
 

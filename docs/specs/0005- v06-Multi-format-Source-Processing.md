@@ -535,7 +535,7 @@ v0.6 완료 조건은 다음과 같다.
 
 ### v06-5. XLSX extractor
 
-- openpyxl 기반 workbook parsing
+- 표준 라이브러리 기반 workbook zip/XML parsing
 - sheet별 heading 생성
 - empty sheet 처리
 - multi sheet 테스트
