@@ -97,6 +97,10 @@ Current status:
 - `V05ProcessSourceNotionPayloadIntegrationTests` -> `tools/process_source.py`, `tools/status_notification.py` (**Green** 2026-05-16)
 - `V05ProcessSourceRunbookTests` -> `docs/runbooks/process-source.md` (**Green** 2026-05-16)
 
+Test maintenance note:
+
+- `tests/test_v05_process_source.py` uses `ProcessSourceTempCase` for integration-style cases that need a temp directory, storage root, repo root, initialized SQLite DB, and `process_source.py` root override. The dry-run side-effect test keeps its own temp paths because it verifies that dry-run does not create those paths.
+
 Covered contract:
 
 - OpenClaw Source Processing Skill document exists and names the required command/source-type/Notion payload rules.

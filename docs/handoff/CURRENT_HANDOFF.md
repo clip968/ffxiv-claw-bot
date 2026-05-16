@@ -71,6 +71,21 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 ## This Session
 
+### Current session update: v05 process-source test fixture refactor -- 2026-05-16
+
+1. **Scope**
+   - Refactored only `tests/test_v05_process_source.py`.
+   - Added `ProcessSourceTempCase` to centralize temp directory, storage root, repo root, SQLite DB path, schema initialization, and `process_source.py` invocation for integration-style tests.
+   - Converted local source, URL source, rebuild, and Notion payload integration tests to use the shared fixture.
+   - Left the dry-run side-effect test's local `TemporaryDirectory` in place because it intentionally asserts that dry-run does not create storage or DB paths.
+
+2. **Verification**
+   - `python -m unittest tests.test_v05_process_source -v`: OK, 27 tests.
+
+3. **Notes**
+   - No production behavior changed.
+   - Keep `AGENTS.md` local change separate unless the maintainer explicitly wants it committed.
+
 ### Current session update: v05.1-06/v05.1-07/v05.1-08 boundary docs, regression tests, and final verification -- 2026-05-16
 
 1. **Scope**
