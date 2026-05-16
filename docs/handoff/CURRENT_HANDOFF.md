@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-11 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-12 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -312,6 +312,29 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-12: extend FTS indexing to include derived wiki pages.
+
+### Current session update: v06-12 FTS indexing extension implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-12 only.
+   - Added `src/wiki_indexing/wiki_document_scanner.py` with `WikiDocument` and filesystem scanning for `wiki/source_summaries/*.md` and `wiki/jobs/*.md`.
+   - Added `tools.compile_wiki.index_wiki_documents()` to upsert scanned wiki pages into `wiki_pages` and `wiki_fts`.
+   - Kept `wiki_fts(page_id, title, body)` unchanged; v0.6 metadata is stored in `wiki_pages.type` and `wiki_pages.job`.
+   - Did not wire this into source processing or pending loop yet.
+
+2. **Red tests first**
+   - Added `tests/test_v06_fts_indexing.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v06_fts_indexing -v` failed because `src.wiki_indexing` and `index_wiki_documents()` did not exist.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_fts_indexing -v`: OK, 7 tests.
+   - `python -m unittest tests.test_compile_wiki -v`: OK, 3 tests.
+   - `python -m py_compile src/wiki_indexing/wiki_document_scanner.py src/wiki_indexing/__init__.py tools/compile_wiki.py`: OK.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 213 tests.
+
+4. **Next tasks**
+   - v06-13: connect optional derived wiki generation after source processing.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 

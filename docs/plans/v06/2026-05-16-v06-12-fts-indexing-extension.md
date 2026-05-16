@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -54,22 +54,22 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/wiki_indexing/__init__.py` 생성
-- [ ] `src/wiki_indexing/wiki_document_scanner.py` 구현
-  - [ ] `scan_wiki_documents(roots: list[Path]) -> Iterable[WikiDoc]`
-  - [ ] entry shape: `path`, `wiki_type`, `topic`, `title`, `text`
-- [ ] 기존 FTS module과 연결 (insert/update path)
-- [ ] FTS schema 확장 (필요 시) - `wiki_type`, `topic` column 추가
-- [ ] 기존 source_summaries 인덱싱 회귀 테스트
-- [ ] `tests/test_v06_fts_indexing.py`에 다음 테스트 추가
-  - [ ] `test_fts_scanner_includes_source_summaries`
-  - [ ] `test_fts_scanner_includes_job_wiki_pages`
-  - [ ] `test_fts_scanner_sets_wiki_type_for_source_summaries`
-  - [ ] `test_fts_scanner_sets_wiki_type_for_job_pages`
-  - [ ] `test_fts_scanner_sets_topic_from_job_filename`
-  - [ ] `test_existing_source_summary_indexing_still_works`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/wiki_indexing/__init__.py` 생성
+- [x] `src/wiki_indexing/wiki_document_scanner.py` 구현
+  - [x] `scan_wiki_documents(root_path: Path) -> list[WikiDocument]`
+  - [x] entry shape: `path`, `wiki_type`, `topic`, `title`, `text`
+- [x] 기존 FTS module과 연결 (insert/update path)
+- [x] FTS schema 확장: `wiki_fts`는 기존 `page_id/title/body`를 유지하고, `wiki_type/topic`은 `wiki_pages.type/job`에 저장
+- [x] 기존 source_summaries 인덱싱 회귀 테스트
+- [x] `tests/test_v06_fts_indexing.py`에 다음 테스트 추가
+  - [x] `test_fts_scanner_includes_source_summaries`
+  - [x] `test_fts_scanner_includes_job_wiki_pages`
+  - [x] `test_fts_scanner_sets_wiki_type_for_source_summaries`
+  - [x] `test_fts_scanner_sets_wiki_type_for_job_pages`
+  - [x] `test_fts_scanner_sets_topic_from_job_filename`
+  - [x] `test_existing_source_summary_indexing_still_works`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -100,4 +100,9 @@ python tools/search_kb.py "gunbreaker"
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_fts_indexing -v` failed with expected missing `src.wiki_indexing` scanner errors and missing `tools.compile_wiki.index_wiki_documents`.
+- Green: `python -m unittest tests.test_v06_fts_indexing -v` passed 7 tests after adding the wiki document scanner and derived wiki indexing path.
+- Regression: `python -m unittest tests.test_compile_wiki -v` passed 3 tests.
+- Regression: `python -m py_compile src/wiki_indexing/wiki_document_scanner.py src/wiki_indexing/__init__.py tools/compile_wiki.py` passed.
+- Docs: `python scripts/check_docs_freshness.py --all` passed.
+- Full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 213 tests.

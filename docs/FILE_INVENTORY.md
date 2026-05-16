@@ -47,6 +47,12 @@
 | `src/derived_wiki/writer.py` | v0.6 derived wiki UTF-8 file writer | Active v0.6 |
 | `src/derived_wiki/templates.py` | v0.6 Markdown heading/section template helpers | Active v0.6 |
 
+## v0.6 Wiki Indexing Packages
+
+| Path | Role | Status |
+|---|---|---|
+| `src/wiki_indexing/wiki_document_scanner.py` | v0.6 filesystem scanner for source summaries and derived job wiki pages | Active v0.6 |
+
 ## Data / Output
 
 | Path | Role | Status |

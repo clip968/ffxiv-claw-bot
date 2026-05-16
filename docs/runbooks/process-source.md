@@ -141,6 +141,17 @@ The generator is evidence-preserving: generated job wiki entries include patch v
 
 `tools/generate_derived_wiki.py` is the v0.6 unified derived wiki entrypoint. In v0.6, only `--kind jobs` is supported. `raids`, `items`, and `systems` return an unsupported-kind error until a later spec implements them.
 
+## Derived Wiki FTS Indexing
+
+`tools.compile_wiki.index_wiki_documents(root_path=..., db_path=...)` scans filesystem wiki documents and indexes both source summaries and job wiki files into `wiki_pages` plus `wiki_fts`.
+
+Indexed paths:
+
+- `wiki/source_summaries/*.md` as `wiki_type=source_summary`
+- `wiki/jobs/*.md` as `wiki_type=job`, with `topic=<filename-stem>`
+
+The `wiki_fts` virtual table keeps the existing `page_id`, `title`, `body` schema for backward compatibility. The v0.6 metadata lives in `wiki_pages.type` and `wiki_pages.job`.
+
 ## Local Source Apply
 
 Text note:

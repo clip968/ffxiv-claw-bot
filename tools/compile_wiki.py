@@ -6,6 +6,7 @@ import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
+from src.wiki_indexing import WikiDocument, scan_wiki_documents
 from tools.html_utils import extract_text_from_html
 
 
@@ -130,6 +131,100 @@ def upsert_wiki_fts(
         conn.commit()
     finally:
         conn.close()
+
+
+def index_wiki_documents(
+    *,
+    root_path: Path | None = None,
+    db_path: Path | None = None,
+) -> dict:
+    resolved_root = root_path or ROOT
+    resolved_db_path = db_path or DB_PATH
+    documents = scan_wiki_documents(resolved_root)
+    for document in documents:
+        _upsert_scanned_wiki_page(document, resolved_root, resolved_db_path)
+        upsert_wiki_fts(document.page_id, document.title, document.text, resolved_db_path)
+    return {
+        "status": "ok",
+        "root_path": str(resolved_root),
+        "actions": [
+            {
+                "name": "index_wiki_document",
+                "status": "ok",
+                "page_id": document.page_id,
+                "wiki_type": document.wiki_type,
+                "topic": document.topic,
+            }
+            for document in documents
+        ],
+        "summary": {
+            "indexed": len(documents),
+            "source_summary": sum(1 for doc in documents if doc.wiki_type == "source_summary"),
+            "job": sum(1 for doc in documents if doc.wiki_type == "job"),
+        },
+    }
+
+
+def _upsert_scanned_wiki_page(
+    document: WikiDocument,
+    root_path: Path,
+    db_path: Path,
+) -> None:
+    timestamp = now_iso()
+    rel_path = _relative_path(document.path, root_path)
+    conn = sqlite3.connect(db_path)
+    try:
+        existing = conn.execute(
+            "SELECT id FROM wiki_pages WHERE id = ?", (document.page_id,)
+        ).fetchone()
+        if existing:
+            conn.execute(
+                """
+                UPDATE wiki_pages
+                   SET type = ?, title = ?, path = ?, job = ?,
+                       updated_at = ?
+                 WHERE id = ?
+                """,
+                (
+                    document.wiki_type,
+                    document.title,
+                    rel_path,
+                    document.topic if document.wiki_type == "job" else None,
+                    timestamp,
+                    document.page_id,
+                ),
+            )
+        else:
+            conn.execute(
+                """
+                INSERT INTO wiki_pages (
+                    id, type, title, path, job, source_ids, confidence,
+                    created_at, updated_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    document.page_id,
+                    document.wiki_type,
+                    document.title,
+                    rel_path,
+                    document.topic if document.wiki_type == "job" else None,
+                    json.dumps([], ensure_ascii=False),
+                    "high",
+                    timestamp,
+                    timestamp,
+                ),
+            )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def _relative_path(path: Path, root_path: Path) -> str:
+    try:
+        return path.relative_to(root_path).as_posix()
+    except ValueError:
+        return path.as_posix()
 
 
 def compile_for_source(

@@ -100,6 +100,7 @@ Current status:
 - `V06JobCatalogTests` -> `src/derived_wiki/job_catalog.py` (**Green** 2026-05-16, 7 tests)
 - `V06JobWikiGeneratorTests` -> `src/derived_wiki/job_wiki_generator.py`, `tools/generate_job_wiki.py` (**Green** 2026-05-16, 9 tests)
 - `V06GenerateDerivedWikiCliTests` -> `tools/generate_derived_wiki.py` (**Green** 2026-05-16, 5 tests)
+- `V06WikiDocumentScannerTests`, `V06WikiFtsIndexingTests` -> `src/wiki_indexing/wiki_document_scanner.py`, `tools/compile_wiki.py` (**Green** 2026-05-16, 7 tests)
 
 Red/green notes:
 
@@ -126,6 +127,8 @@ Red/green notes:
 - v06-10 green check: `python -m unittest tests.test_v06_job_wiki_generator.V06JobWikiGeneratorTests -v` passed 9 tests after adding deterministic job wiki generation and `tools/generate_job_wiki.py`.
 - v06-11 red check: `python -m unittest tests.test_v06_job_wiki_generator.V06GenerateDerivedWikiCliTests -v` failed with expected missing unified CLI errors.
 - v06-11 green check: `python -m unittest tests.test_v06_job_wiki_generator.V06GenerateDerivedWikiCliTests -v` passed 5 tests after adding `tools/generate_derived_wiki.py`.
+- v06-12 red check: `python -m unittest tests.test_v06_fts_indexing -v` failed with expected missing wiki indexing scanner and `index_wiki_documents` errors.
+- v06-12 green check: `python -m unittest tests.test_v06_fts_indexing -v` passed 7 tests after adding scanner and derived wiki FTS indexing.
 
 v0.5 source processing tests:
 
