@@ -1072,8 +1072,11 @@ class V05ProcessSourceNotionPayloadIntegrationTests(unittest.TestCase):
 
 
 class V05ProcessSourceRunbookTests(unittest.TestCase):
+    def _process_source_runbook(self) -> str:
+        return Path("docs/runbooks/process-source.md").read_text(encoding="utf-8")
+
     def test_process_source_runbook_documents_completed_v05_workflow(self) -> None:
-        runbook = Path("docs/runbooks/process-source.md").read_text(encoding="utf-8")
+        runbook = self._process_source_runbook()
 
         required_fragments = [
             "wiki/FTS/graph rebuild",
@@ -1091,3 +1094,43 @@ class V05ProcessSourceRunbookTests(unittest.TestCase):
 
         self.assertNotIn("v05-06 rebuild execution is not implemented", runbook)
         self.assertNotIn("v05-07 Notion success payload generation is not implemented", runbook)
+
+    def test_process_source_runbook_names_process_source_as_official_entrypoint(self) -> None:
+        runbook = self._process_source_runbook()
+
+        self.assertIn("official source processing entrypoint", runbook)
+        self.assertIn("tools/process_source.py", runbook)
+        self.assertIn("normal OpenClaw source processing", runbook)
+
+    def test_process_source_runbook_warns_against_ingest_local_body_path_misuse(self) -> None:
+        runbook = self._process_source_runbook()
+
+        self.assertIn('python tools/ingest_local.py', runbook)
+        self.assertIn('--body "/mnt/d/ffixiv-bot-storage/incoming/patch-7-5.md"', runbook)
+        self.assertIn("stores the path string itself", runbook)
+        self.assertIn("not the file contents", runbook)
+        self.assertIn("already-read body text", runbook)
+
+    def test_process_source_runbook_documents_local_rebuild_library_only(self) -> None:
+        runbook = self._process_source_runbook()
+
+        self.assertIn("tools/local_rebuild.py", runbook)
+        self.assertIn("library-only", runbook)
+        self.assertIn("Do not run `python tools/local_rebuild.py`", runbook)
+        self.assertIn("local_rebuild.rebuild_after_ingest()", runbook)
+
+    def test_process_source_runbook_documents_status_notification_payload_only(self) -> None:
+        runbook = self._process_source_runbook()
+
+        self.assertIn("tools/status_notification.py", runbook)
+        self.assertIn("payload-builder-only", runbook)
+        self.assertIn("not a Notion write CLI", runbook)
+        self.assertIn("status_notification.build_notion_status_update()", runbook)
+
+    def test_process_source_runbook_documents_notion_update_not_auto_applied(self) -> None:
+        runbook = self._process_source_runbook()
+
+        self.assertIn('result["notion_update"]', runbook)
+        self.assertIn("process_source.py itself does not call the Notion API", runbook)
+        self.assertIn("OpenClaw may apply it", runbook)
+        self.assertIn("not already applied", runbook)

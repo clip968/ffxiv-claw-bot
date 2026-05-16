@@ -11,7 +11,7 @@
 v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
-v05.1 Source Processing Hardening is in progress. v05.1-02 through v05.1-05 are implemented.
+v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -25,7 +25,7 @@ v0.4 planning has been reframed from Google Drive write/publish to Local Storage
 
 The v05 phase transitions from multi-tool manual wiring to a unified `process_source.py` entrypoint that takes a single source through ingest -> rebuild -> status payload in one call. The current implementation supports validation, dry-run, apply-mode Local Storage ingest for local text source types, single URL fetch into Local Storage, wiki/FTS/graph rebuild, and metadata-only Notion payload generation.
 
-v05.1 currently adds a deterministic Lodestone article extractor for `.news__detail__wrapper`, routes Lodestone HTML URLs through that extractor in `fetch_url.py`, and records extractor metadata in the `process_source.py` `fetch_url` action. Entrypoint boundary docs/regression work remains pending in v05.1-06 and v05.1-07.
+v05.1 adds a deterministic Lodestone article extractor for `.news__detail__wrapper`, routes Lodestone HTML URLs through that extractor in `fetch_url.py`, records extractor metadata in the `process_source.py` `fetch_url` action, and locks the official `process_source.py` entrypoint/helper/Notion payload boundaries through runbook regression tests.
 
 Default source of truth for user-managed source files:
 
@@ -70,6 +70,46 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 - `docs/runbooks/publish-drive.md`
 
 ## This Session
+
+### Current session update: v05.1-06/v05.1-07/v05.1-08 boundary docs, regression tests, and final verification -- 2026-05-16
+
+1. **Scope**
+   - Implemented v05.1-06 entrypoint boundary documentation.
+   - Implemented v05.1-07 runbook regression tests.
+   - Completed v05.1-08 final verification and handoff cleanup.
+   - Did not implement optional debug CLIs, crawler, scheduler, daemon, Notion API calls, Notion polling, or v0.6 automation behavior.
+
+2. **Red tests first**
+   - Added boundary regression tests under `V05ProcessSourceRunbookTests` in `tests/test_v05_process_source.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v05_process_source.V05ProcessSourceRunbookTests -v` failed 5 boundary tests because `docs/runbooks/process-source.md` did not yet include official entrypoint, helper misuse, library-only, payload-builder-only, and Notion auto-apply wording.
+
+3. **Implementation**
+   - `docs/runbooks/process-source.md` now names `tools/process_source.py` as the official source processing entrypoint for normal OpenClaw source processing.
+   - The runbook documents the correct `markdown_file --local-path` path and the bad `ingest_local.py --body "/path/file.md"` pattern that stores the path string itself, not file contents.
+   - The runbook documents `tools/ingest_local.py` as a low-level helper, `tools/local_rebuild.py` as library-only for normal workflow, and `tools/status_notification.py` as payload-builder-only and not a Notion write CLI.
+   - The runbook states `result["notion_update"]` is a payload only, is not already applied, and `process_source.py` itself does not call the Notion API.
+
+4. **Docs updated**
+   - `docs/plans/v05.1/README.md`: v05.1-06 and v05.1-07 marked Completed; v05.1-08 final status recorded in this session.
+   - `docs/plans/v05.1/2026-05-16-v05.1-06-entrypoint-boundary-docs.md`: checklist and verification updated.
+   - `docs/plans/v05.1/2026-05-16-v05.1-07-runbook-regression-tests.md`: checklist, red result, and verification updated.
+   - `docs/plans/v05.1/2026-05-16-v05.1-08-final-verification-and-handoff.md`: final verification checklist and results updated.
+   - `docs/specs/0004a-v05.1-source-processing-hardening.md`: AC-0004A-010 through AC-0004A-020 marked implemented or re-verified.
+   - `docs/runbooks/test.md`: v05.1 boundary regression tests and results documented.
+   - `docs/handoff/CURRENT_HANDOFF.md`: this update.
+
+5. **Verification before final gate**
+   - `python -m unittest tests.test_v05_1_lodestone_extractor -v`: OK, 5 tests.
+   - `python -m unittest tests.test_v05_fetch_url -v`: OK, 6 tests.
+   - `python -m unittest tests.test_v05_process_source -v`: OK, 27 tests.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 136 tests.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `git diff --check`: OK.
+   - `python scripts/finish_task.py`: finish_task ok.
+
+6. **Next tasks**
+   - v05.1 is complete. Future work should stay outside this scope unless a new v0.6 plan/spec is created.
+   - Keep `AGENTS.md` local change separate unless the maintainer explicitly wants it committed.
 
 ### Current session update: v05.1-04/v05.1-05 fetch routing and extractor metadata implemented -- 2026-05-16
 

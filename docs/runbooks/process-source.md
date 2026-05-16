@@ -1,6 +1,6 @@
 # Process Source Runbook
 
-`tools/process_source.py` is the v0.5 repo execution entrypoint for OpenClaw source processing.
+`tools/process_source.py` is the v0.5 official source processing entrypoint for normal OpenClaw source processing.
 
 Completed v0.5 workflow:
 
@@ -29,6 +29,47 @@ Out of scope:
 - No scheduler, daemon, queue polling, or Notion polling.
 - No direct Notion API call. OpenClaw consumes `notion_update` and performs any Notion write separately.
 - No raw body, raw HTML, attachment bytes, or binary data in `notion_update`.
+
+## Entrypoint Boundary
+
+Normal user/OpenClaw source processing must start with `tools/process_source.py`.
+
+Allowed normal commands:
+
+```bash
+python tools/process_source.py --apply --source-type text_note --category personal_notes --title "..." --body "..."
+python tools/process_source.py --apply --source-type markdown_file --category patch_notes --local-path "/mnt/d/ffixiv-bot-storage/incoming/patch-7-5.md"
+python tools/process_source.py --apply --source-type plain_text_file --category personal_notes --local-path "/mnt/d/ffixiv-bot-storage/incoming/note.txt"
+python tools/process_source.py --apply --source-type url --category patch_notes --url "https://na.finalfantasyxiv.com/lodestone/..."
+```
+
+`markdown_file` and `plain_text_file` processing must use `process_source.py --local-path`. Do not read the file path into a helper command by hand.
+
+Bad normal-workflow example:
+
+```bash
+python tools/ingest_local.py \
+  --apply \
+  --source-type markdown_file \
+  --category patch_notes \
+  --title "Patch 7.5 Notes" \
+  --body "/mnt/d/ffixiv-bot-storage/incoming/patch-7-5.md"
+```
+
+This stores the path string itself, not the file contents. `ingest_local.py --body` expects already-read body text.
+
+Helper boundaries:
+
+- `tools/ingest_local.py` is a low-level helper and not the OpenClaw-facing source processing interface.
+- `tools/local_rebuild.py` is library-only for normal workflow. Do not run `python tools/local_rebuild.py` expecting source rebuild execution; normal rebuild is performed through `tools/process_source.py`, which calls `local_rebuild.rebuild_after_ingest()` internally.
+- `tools/status_notification.py` is payload-builder-only for normal workflow. It builds metadata payloads through `status_notification.build_notion_status_update()` and is not a Notion write CLI.
+
+Notion boundary:
+
+- `process_source.py` returns `result["notion_update"]` as a payload only.
+- `process_source.py itself does not call the Notion API`.
+- If `result["notion_update"]` is present, OpenClaw may apply it to the Notion control/status database.
+- A generated `notion_update` payload is not already applied to Notion DB state.
 
 ## Local Source Apply
 

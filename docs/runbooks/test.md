@@ -167,6 +167,7 @@ Current status:
 - `V051LodestoneExtractorTests` -> `tools/extractors/lodestone.py` (**Green** 2026-05-16, 5 tests)
 - `V05FetchUrlTests` v05.1 routing coverage -> `tools/fetch_url.py` (**Green** 2026-05-16, 6 tests)
 - `V05ProcessSourceUrlIntegrationTests.test_process_lodestone_url_records_lodestone_extractor_action` -> `tools/process_source.py` (**Green** 2026-05-16)
+- `V05ProcessSourceRunbookTests` v05.1 boundary coverage -> `docs/runbooks/process-source.md` (**Green** 2026-05-16, 6 tests)
 
 Covered contract:
 
@@ -186,6 +187,11 @@ v05.1-04 and v05.1-05 remain pending:
 - `fetch_url.py` routes Lodestone HTML URLs through the Lodestone extractor before generic HTML extraction.
 - `fetch_single_url()` now returns `extractor=lodestone`, `generic_html`, `text`, or `json`.
 - `process_source.py` records the returned extractor metadata in the `fetch_url` action.
+- `process-source.md` names `tools/process_source.py` as the official source processing entrypoint.
+- `process-source.md` warns that `ingest_local.py --body "/path/file.md"` stores the path string itself, not the file contents.
+- `process-source.md` documents `tools/local_rebuild.py` as library-only for normal workflow.
+- `process-source.md` documents `tools/status_notification.py` as payload-builder-only and not a Notion write CLI.
+- `process-source.md` states `result["notion_update"]` is not already applied and `process_source.py` itself does not call the Notion API.
 
 v05.1-04 red result:
 
@@ -195,6 +201,10 @@ v05.1-05 red result:
 
 - `python -m unittest tests.test_v05_process_source.V05ProcessSourceUrlIntegrationTests.test_process_lodestone_url_records_lodestone_extractor_action -v`: expected red confirmed before implementation; failure was missing `fetch_url.extractor`.
 
+v05.1-07 red result:
+
+- `python -m unittest tests.test_v05_process_source.V05ProcessSourceRunbookTests -v`: expected red confirmed before runbook update; 5 boundary tests failed because official entrypoint, helper misuse, library-only, payload-builder-only, and Notion auto-apply wording was missing.
+
 Full suite after v05.1-03: **128 tests, 0 reds**.
 
 Focused green results after v05.1-04/v05.1-05:
@@ -202,8 +212,11 @@ Focused green results after v05.1-04/v05.1-05:
 - `python -m unittest tests.test_v05_fetch_url -v`: **6 tests, OK**.
 - `python -m unittest tests.test_v05_process_source -v`: **22 tests, OK**.
 - `python -m unittest tests.test_v05_1_lodestone_extractor -v`: **5 tests, OK**.
+- `python -m unittest tests.test_v05_process_source.V05ProcessSourceRunbookTests -v`: **6 tests, OK**.
 
 Full suite after v05.1-04/v05.1-05: **131 tests, 0 reds**.
+
+Full suite after v05.1-06/v05.1-07/v05.1-08: **136 tests, 0 reds**.
 
 ## pytest
 
