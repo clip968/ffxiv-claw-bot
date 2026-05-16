@@ -26,6 +26,8 @@
 |---|---|---|
 | `src/source_processing/models.py` | v0.6 `ExtractedSource` shared model | Active v0.6 |
 | `src/source_processing/errors.py` | v0.6 extractor error hierarchy | Active v0.6 |
+| `src/source_processing/extractor_registry.py` | v0.6 extension-to-extractor registry | Active v0.6 |
+| `src/source_processing/extractors/__init__.py` | temporary v0.6 stub extractor exports before concrete extractor tasks | Active v0.6 |
 
 ## Data / Output
 

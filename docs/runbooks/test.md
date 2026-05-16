@@ -90,11 +90,14 @@ python -m unittest tests.test_v06_extractors -v
 Current status:
 
 - `V06ExtractorModelTests` -> `src/source_processing/models.py`, `src/source_processing/errors.py` (**Green** 2026-05-16, 5 tests)
+- `V06ExtractorRegistryTests` -> `src/source_processing/extractor_registry.py`, `src/source_processing/extractors/__init__.py` (**Green** 2026-05-16, 8 tests)
 
 Red/green notes:
 
 - v06-01 red check: `python -m unittest tests.test_v06_extractors -v` failed with 5 expected `ModuleNotFoundError: No module named 'src'` errors.
 - v06-01 green check: `python -m unittest tests.test_v06_extractors -v` passed 5 tests after adding the shared model and error layer.
+- v06-02 red check: `python -m unittest tests.test_v06_extractors.V06ExtractorRegistryTests -v` failed with 8 expected registry module import errors.
+- v06-02 green check: `python -m unittest tests.test_v06_extractors -v` passed 13 tests after adding registry and stub extractor mapping.
 
 v0.5 source processing tests:
 

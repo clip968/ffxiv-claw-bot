@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -60,25 +60,25 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/source_processing/extractors/__init__.py` 생성
-- [ ] `src/source_processing/extractor_registry.py` 생성
-  - [ ] `EXTRACTORS: dict[str, Callable[[str], ExtractedSource]]`
-  - [ ] `get_extractor_for_path(path: str | Path)`
-  - [ ] `extract_source_text(path: str | Path) -> ExtractedSource`
-  - [ ] case-insensitive suffix 처리
-  - [ ] 미지원 확장자에서 `UnsupportedSourceExtensionError`
-- [ ] 확장자별 stub 함수 임시 연결 (v06-03~v06-05에서 교체)
-- [ ] `tests/test_v06_extractors.py`에 다음 테스트 추가
-  - [ ] `test_registry_selects_text_extractor_for_txt`
-  - [ ] `test_registry_selects_markdown_extractor_for_md`
-  - [ ] `test_registry_selects_html_extractor_for_html_and_htm`
-  - [ ] `test_registry_selects_csv_extractor_for_csv`
-  - [ ] `test_registry_selects_xlsx_extractor_for_xlsx`
-  - [ ] `test_registry_is_case_insensitive`
-  - [ ] `test_registry_raises_for_unsupported_extension`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
-- [ ] README feature map status 갱신
+- [x] `src/source_processing/extractors/__init__.py` 생성
+- [x] `src/source_processing/extractor_registry.py` 생성
+  - [x] `EXTRACTORS: dict[str, Callable[[str], ExtractedSource]]`
+  - [x] `get_extractor_for_path(path: str | Path)`
+  - [x] `extract_source_text(path: str | Path) -> ExtractedSource`
+  - [x] case-insensitive suffix 처리
+  - [x] 미지원 확장자에서 `UnsupportedSourceExtensionError`
+- [x] 확장자별 stub 함수 임시 연결 (v06-03~v06-05에서 교체)
+- [x] `tests/test_v06_extractors.py`에 다음 테스트 추가
+  - [x] `test_registry_selects_text_extractor_for_txt`
+  - [x] `test_registry_selects_markdown_extractor_for_md`
+  - [x] `test_registry_selects_html_extractor_for_html_and_htm`
+  - [x] `test_registry_selects_csv_extractor_for_csv`
+  - [x] `test_registry_selects_xlsx_extractor_for_xlsx`
+  - [x] `test_registry_is_case_insensitive`
+  - [x] `test_registry_raises_for_unsupported_extension`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
+- [x] README feature map status 갱신
 
 ## Verification
 
@@ -102,4 +102,6 @@ python -m py_compile src/source_processing/extractor_registry.py src/source_proc
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v06_extractors.V06ExtractorRegistryTests -v` failed with 8 expected `ModuleNotFoundError: No module named 'src.source_processing.extractor_registry'` errors before implementation.
+- Green: `python -m unittest tests.test_v06_extractors -v` passed 13 tests.
+- Compile: `python -m py_compile src/source_processing/extractor_registry.py src/source_processing/extractors/__init__.py src/source_processing/__init__.py` passed.

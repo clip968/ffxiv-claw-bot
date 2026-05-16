@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 is implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 and v06-02 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -91,6 +91,24 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-02: extractor registry and stub mapping.
+
+### Current session update: v06-02 extractor registry implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-02 only.
+   - Added `src/source_processing/extractor_registry.py` with `EXTRACTORS`, `get_extractor_for_path()`, and `extract_source_text()`.
+   - Added temporary stub extractor functions for `.txt`, `.md`, `.html`, `.htm`, `.csv`, and `.xlsx`; concrete extraction remains v06-03 through v06-05.
+
+2. **Red tests first**
+   - Added `V06ExtractorRegistryTests` in `tests/test_v06_extractors.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v06_extractors.V06ExtractorRegistryTests -v` failed with 8 registry module import errors.
+
+3. **Verification**
+   - `python -m unittest tests.test_v06_extractors -v`: OK, 13 tests.
+   - `python -m py_compile src/source_processing/extractor_registry.py src/source_processing/extractors/__init__.py src/source_processing/__init__.py`: OK.
+
+4. **Next tasks**
+   - v06-03: replace `.txt`, `.md`, `.html`, and `.htm` stubs with concrete extractors.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 
