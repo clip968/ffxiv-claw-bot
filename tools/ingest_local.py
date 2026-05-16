@@ -22,7 +22,7 @@ SOURCE_TYPE_EXTENSIONS: dict[str, str] = {
     "markdown_file": "md",
     "plain_text_file": "md",
     "url": "md",
-    "binary_attachment": "bin",
+    "binary_attachment": "md",
 }
 
 

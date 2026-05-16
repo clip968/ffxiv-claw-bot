@@ -10,7 +10,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-16
 
 ## Goal
 
@@ -53,24 +53,24 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tools/process_source.py` `--local-path` 분기 식별
-- [ ] extractor registry import (`from src.source_processing import extract_source_text`)
-- [ ] file source 처리 시 `extract_source_text(path)` 호출
-- [ ] 반환된 `text`를 ingest body로 사용
-- [ ] 반환된 metadata를 result JSON 또는 source record에 저장
-- [ ] extractor exception을 `stage=extract` error로 변환
-  - [ ] `UnsupportedSourceExtensionError` → `error_message: Unsupported source extension: ...`
-  - [ ] `SourceDecodingError` → `error_message: Decoding failed: ...`
-  - [ ] `SourceParseError` → `error_message: Parse failed: ...`
-- [ ] `--body` 기반 text_note 경로 회귀 보호
-- [ ] URL 경로 회귀 보호 (Lodestone 포함)
-- [ ] 테스트 추가
-  - [ ] `test_process_source_uses_extractor_for_local_file_source`
-  - [ ] `test_process_source_records_extract_error_for_unsupported_file`
-  - [ ] `test_process_source_preserves_extracted_metadata`
-  - [ ] `test_process_source_text_note_body_path_unchanged`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `tools/process_source.py` `--local-path` 분기 식별
+- [x] extractor registry import (`from src.source_processing import extract_source_text`)
+- [x] file source 처리 시 `extract_source_text(path)` 호출
+- [x] 반환된 `text`를 ingest body로 사용
+- [x] 반환된 metadata를 result JSON 또는 source record에 저장
+- [x] extractor exception을 `stage=extract` error로 변환
+  - [x] `UnsupportedSourceExtensionError` → `error_message: Unsupported source extension: ...`
+  - [x] `SourceDecodingError` → `error_message: Decoding failed: ...`
+  - [x] `SourceParseError` → `error_message: Parse failed: ...`
+- [x] `--body` 기반 text_note 경로 회귀 보호
+- [x] URL 경로 회귀 보호 (Lodestone 포함)
+- [x] 테스트 추가
+  - [x] `test_process_source_uses_extractor_for_local_file_source`
+  - [x] `test_process_source_records_extract_error_for_unsupported_file`
+  - [x] `test_process_source_preserves_extracted_metadata`
+  - [x] `test_process_source_text_note_body_path_unchanged`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
@@ -104,4 +104,11 @@ python tools/process_source.py --dry-run \
 
 ## Verification Results
 
-- Pending.
+- Red: `python -m unittest tests.test_v05_process_source.V06ProcessSourceExtractorIntegrationTests -v` failed as expected because file-source `extract` actions, `extract_metadata`, extract-stage errors, and `binary_attachment` apply support were not implemented yet.
+- Green: `python -m unittest tests.test_v05_process_source.V06ProcessSourceExtractorIntegrationTests -v` passed 4 tests after wiring local file sources through the extractor registry.
+- Regression: `python -m unittest tests.test_v05_process_source -v` passed 31 tests.
+- Regression: `python -m unittest tests.test_v06_extractors -v` passed 32 tests.
+- Regression: `python -m unittest tests.test_v05_1_lodestone_extractor -v` passed 5 tests.
+- Regression: `python -m py_compile tools/process_source.py tools/ingest_local.py` passed.
+- Docs: `python scripts/check_docs_freshness.py --all` passed.
+- Full suite: `python -m unittest discover -s tests -p "test_*.py"` passed 172 tests.

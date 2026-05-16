@@ -9,7 +9,7 @@
 | `tools/init_db.py` | SQLite schema 생성 | Active |
 | `tools/ingest_url.py` | URL HTML 수집 및 raw 저장 | Legacy v0.1 path |
 | `tools/fetch_url.py` | v0.5 단일 URL fetch helper | Active v0.5 |
-| `tools/process_source.py` | 통합 source processing entrypoint | Active v0.5 |
+| `tools/process_source.py` | 통합 source processing entrypoint; v0.6 local file extractor registry integration | Active v0.6 |
 | `tools/extractors/lodestone.py` | Lodestone `.news__detail__wrapper` article extractor | Active v05.1 |
 | `tools/compile_wiki.py` | raw content -> wiki markdown 변환 및 FTS 색인 | Active |
 | `tools/search_kb.py` | `wiki_fts` 기반 검색, graph_paths 포함 | Active |

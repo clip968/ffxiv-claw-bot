@@ -22,6 +22,7 @@ Implemented slices:
 - v05-07: safe `notion_update` payload via `tools.status_notification.build_notion_status_update()`.
 - v05.1-04: Lodestone HTML URLs route through the Lodestone article extractor before generic HTML extraction.
 - v05.1-05: URL fetch actions include extractor metadata when `fetch_single_url()` returns it.
+- v06-06: local file sources route through the v0.6 extractor registry before Local Storage ingest.
 
 Out of scope:
 
@@ -40,10 +41,11 @@ Allowed normal commands:
 python tools/process_source.py --apply --source-type text_note --category personal_notes --title "..." --body "..."
 python tools/process_source.py --apply --source-type markdown_file --category patch_notes --local-path "/mnt/d/ffixiv-bot-storage/incoming/patch-7-5.md"
 python tools/process_source.py --apply --source-type plain_text_file --category personal_notes --local-path "/mnt/d/ffixiv-bot-storage/incoming/note.txt"
+python tools/process_source.py --apply --source-type binary_attachment --category bis_sheets --local-path "/mnt/d/ffixiv-bot-storage/incoming/bis.xlsx"
 python tools/process_source.py --apply --source-type url --category patch_notes --url "https://na.finalfantasyxiv.com/lodestone/..."
 ```
 
-`markdown_file` and `plain_text_file` processing must use `process_source.py --local-path`. Do not read the file path into a helper command by hand.
+`markdown_file`, `plain_text_file`, and `binary_attachment` processing must use `process_source.py --local-path`. Do not read the file path into a helper command by hand.
 
 Bad normal-workflow example:
 
@@ -112,7 +114,30 @@ python tools/process_source.py \
   --db-path db/ffxiv.sqlite
 ```
 
+Binary/table file:
+
+```bash
+python tools/process_source.py \
+  --apply \
+  --source-type binary_attachment \
+  --category bis_sheets \
+  --title "BiS Sheet" \
+  --local-path /mnt/d/ffixiv-bot-storage/incoming/bis.xlsx \
+  --storage-root /mnt/d/ffixiv-bot-storage \
+  --db-path db/ffxiv.sqlite
+```
+
 `--storage-root` must already exist. Missing storage roots fail with `status=error` and `graph_status=skipped`.
+
+Local file extraction behavior:
+
+- `text_note` still passes `--body` directly to Local Storage and does not run an extractor.
+- `markdown_file`, `plain_text_file`, and `binary_attachment` call `src.source_processing.extract_source_text(path)` before ingest.
+- Supported extensions are `.txt`, `.md`, `.html`, `.htm`, `.csv`, and `.xlsx`.
+- The extracted normalized text is passed to `tools.ingest_local.ingest_source()`.
+- `extract_metadata` is preserved in the result JSON for diagnostics and downstream pending-source handling.
+- Extractor metadata is not copied into `notion_update`.
+- `binary_attachment` output is stored as normalized `.md` text in Local Storage and raw snapshots.
 
 ## URL Source Apply
 
@@ -210,11 +235,46 @@ Partial rebuild failure returns `status=partial`, keeps the saved source metadat
 
 Fetch or ingest failure returns `status=error`, `graph_status=skipped`, and skips downstream rebuild.
 
+Local extractor failure returns `status=error`, `error_stage=extract`, `graph_status=skipped`, and skips Local Storage ingest plus rebuild. Examples:
+
+```json
+{
+  "status": "error",
+  "error_stage": "extract",
+  "graph_status": "skipped",
+  "last_error": "Unsupported source extension: .png",
+  "actions": [
+    {"name": "validate_request", "status": "ok"},
+    {"name": "extract", "status": "error", "error_stage": "extract"},
+    {"name": "ingest_local", "status": "skipped", "reason": "upstream_extract_error"},
+    {"name": "rebuild", "status": "skipped", "reason": "upstream_extract_error"}
+  ]
+}
+```
+
+Successful local file extraction adds an `extract` action before `ingest_local`:
+
+```json
+{
+  "extract_metadata": {
+    "extractor_name": "xlsx",
+    "sheet_count": 3
+  },
+  "actions": [
+    {"name": "validate_request", "status": "ok"},
+    {"name": "extract", "status": "ok", "extractor": "xlsx"},
+    {"name": "ingest_local", "status": "ok"}
+  ]
+}
+```
+
 ## Duplicate Policy
 
 `process_source.py` uses the Local Storage canonical source policy from `ingest_local.py`.
 
-For local source types, the canonical path is derived from `category`, normalized `title`, and source extension. That canonical path determines the `local_source_id`. Running the same source again with new body content reuses the same `source_id`, updates the Local Storage file, overwrites the raw snapshot, updates the `sources` row, and then rebuilds wiki/FTS/graph from the latest content.
+For local source types, the canonical path is derived from `category`, normalized `title`, and stored source extension. That canonical path determines the `local_source_id`. Running the same source again with new body content reuses the same `source_id`, updates the Local Storage file, overwrites the raw snapshot, updates the `sources` row, and then rebuilds wiki/FTS/graph from the latest content.
+
+In v06-06, file-source input extensions do not necessarily become stored extensions. `binary_attachment` inputs such as `.xlsx` and `.csv` are extracted to normalized text and stored as `.md`.
 
 Duplicate canonical sources are not returned as `status=skipped` in v0.5. A successful reprocess returns `status=ok` or `status=partial` with the existing `source_id`.
 

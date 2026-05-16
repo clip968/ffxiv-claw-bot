@@ -14,6 +14,8 @@ from pathlib import Path
 from typing import Any, Callable
 from unittest.mock import patch
 
+from tests.test_v06_extractors import write_sample_xlsx
+
 
 def require_process_source_main(test: unittest.TestCase) -> Callable[[list[str]], None]:
     try:
@@ -554,6 +556,114 @@ class V05ProcessSourceLocalIntegrationTests(ProcessSourceTempCase):
         )
         self.assertIn("Storage root", result["actions"][1]["error"])
         self.assertEqual(result["actions"][2]["reason"], "upstream_ingest_error")
+
+
+class V06ProcessSourceExtractorIntegrationTests(ProcessSourceTempCase):
+    def test_process_source_uses_extractor_for_local_file_source(self) -> None:
+        source_file = self.tmp / "guide.md"
+        source_file.write_text("# Patch Notes\n\n## Gunbreaker\n- Continuation adjusted.\n", encoding="utf-8")
+
+        result = self.run_process(
+            [
+                "--apply",
+                "--source-type",
+                "markdown_file",
+                "--category",
+                "patch_notes",
+                "--title",
+                "Patch Notes",
+                "--local-path",
+                str(source_file),
+            ],
+        )
+
+        self.assertEqual(result["status"], "ok")
+        extract_action = next(action for action in result["actions"] if action["name"] == "extract")
+        self.assertEqual(extract_action["status"], "ok")
+        self.assertEqual(extract_action["extractor"], "markdown")
+        self.assertEqual(result["extract_metadata"]["extractor_name"], "markdown")
+        self.assertIn(
+            "Continuation adjusted",
+            (self.repo_root / result["wiki_path"]).read_text(encoding="utf-8"),
+        )
+
+    def test_process_source_preserves_extracted_metadata(self) -> None:
+        source_file = self.tmp / "drops.xlsx"
+        write_sample_xlsx(source_file)
+
+        result = self.run_process(
+            [
+                "--apply",
+                "--source-type",
+                "binary_attachment",
+                "--category",
+                "bis_sheets",
+                "--title",
+                "Drop Table",
+                "--local-path",
+                str(source_file),
+            ],
+        )
+
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["extract_metadata"]["extractor_name"], "xlsx")
+        self.assertEqual(result["extract_metadata"]["sheet_count"], 3)
+        self.assertEqual(result["extract_metadata"]["empty_sheets"], ["Empty Sheet"])
+        self.assertIn(
+            "Hypostatic Gear",
+            (self.storage_root / result["local_source_path"]).read_text(encoding="utf-8"),
+        )
+
+    def test_process_source_records_extract_error_for_unsupported_file(self) -> None:
+        source_file = self.tmp / "image.png"
+        source_file.write_bytes(b"not really an image")
+
+        result = self.run_process(
+            [
+                "--apply",
+                "--source-type",
+                "binary_attachment",
+                "--category",
+                "bis_sheets",
+                "--title",
+                "Image Source",
+                "--local-path",
+                str(source_file),
+            ],
+        )
+
+        self.assertEqual(result["status"], "error")
+        self.assertEqual(result["error_stage"], "extract")
+        self.assertEqual(result["graph_status"], "skipped")
+        self.assertIn("Unsupported source extension: .png", result["last_error"])
+        self.assertEqual(
+            [(action["name"], action["status"]) for action in result["actions"]],
+            [
+                ("validate_request", "ok"),
+                ("extract", "error"),
+                ("ingest_local", "skipped"),
+                ("rebuild", "skipped"),
+            ],
+        )
+
+    def test_process_source_text_note_body_path_unchanged(self) -> None:
+        result = self.run_process(
+            [
+                "--apply",
+                "--source-type",
+                "text_note",
+                "--category",
+                "personal_notes",
+                "--title",
+                "Body Only",
+                "--body",
+                "No extractor should run.",
+            ],
+        )
+
+        self.assertEqual(result["status"], "ok")
+        self.assertNotIn("extract", [action["name"] for action in result["actions"]])
+        self.assertEqual(result["extract_metadata"], {})
 
 
 class V05ProcessSourceUrlIntegrationTests(ProcessSourceTempCase):

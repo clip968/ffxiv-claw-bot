@@ -169,19 +169,20 @@ Result JSON follows v04-00 contract format with `actions`, `summary`, `status`, 
 
 `tools/ingest_local.py` also exposes `ingest_source(...)` for `tools/process_source.py`.
 
-`process_source.py` uses this function in v05-04 for:
+`process_source.py` uses this function for:
 
 - `text_note`: pass `--body` directly as ingest body.
-- `markdown_file`: read `--local-path` as UTF-8 text and ingest the content.
-- `plain_text_file`: read `--local-path` as UTF-8 text and ingest the content.
+- `markdown_file`: extract `--local-path` through the v0.6 extractor registry and ingest normalized text.
+- `plain_text_file`: extract `--local-path` through the v0.6 extractor registry and ingest normalized text.
+- `binary_attachment`: extract supported document/table files through the v0.6 extractor registry and ingest normalized Markdown text.
 
-For v05 local source processing, all three local text source types are stored under:
+For current local source processing, text/file request source types are stored under:
 
 ```text
 {storage_root}/sources/{category}/{title_slug}.md
 ```
 
-That means `plain_text_file` input is copied into a canonical `.md` Local Storage path and a `.md` raw snapshot. The body is not otherwise transformed in v05-04.
+That means `plain_text_file` and `binary_attachment` input are copied into canonical `.md` Local Storage paths and `.md` raw snapshots after any v0.6 extraction/normalization. `text_note` remains body-only and does not run an extractor.
 
 `ingest_source()` accepts a `root_path` argument so tests can create raw snapshots under a temporary repo root instead of writing to the checkout's real `raw/local_storage/` directory.
 

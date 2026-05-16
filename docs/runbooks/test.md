@@ -94,6 +94,7 @@ Current status:
 - `V06TextMarkdownHtmlExtractorTests` -> `src/source_processing/extractors/text.py`, `markdown.py`, `html.py` (**Green** 2026-05-16, 8 tests)
 - `V06CsvExtractorTests` -> `src/source_processing/extractors/csv.py` (**Green** 2026-05-16, 5 tests)
 - `V06XlsxExtractorTests` -> `src/source_processing/extractors/xlsx.py` (**Green** 2026-05-16, 6 tests)
+- `V06ProcessSourceExtractorIntegrationTests` -> `tools/process_source.py`, `tools/ingest_local.py`, `src/source_processing/*` (**Green** 2026-05-16, 4 tests)
 
 Red/green notes:
 
@@ -108,6 +109,8 @@ Red/green notes:
 - v06-04 green check: `python -m unittest tests.test_v06_extractors -v` passed 26 tests after implementing CSV extraction.
 - v06-05 red check: `python -m unittest tests.test_v06_extractors.V06XlsxExtractorTests -v` failed with expected missing XLSX module and registry stub content failure.
 - v06-05 green check: `python -m unittest tests.test_v06_extractors -v` passed 32 tests after implementing standard-library XLSX extraction.
+- v06-06 red check: `python -m unittest tests.test_v05_process_source.V06ProcessSourceExtractorIntegrationTests -v` failed with expected missing `extract` actions, missing `extract_metadata`, missing extract-stage errors, and unimplemented `binary_attachment` apply behavior.
+- v06-06 green check: `python -m unittest tests.test_v05_process_source.V06ProcessSourceExtractorIntegrationTests -v` passed 4 tests after routing local file sources through the extractor registry.
 
 v0.5 source processing tests:
 

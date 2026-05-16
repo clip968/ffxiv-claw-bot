@@ -16,6 +16,12 @@ from tools import local_rebuild
 from tools import status_notification
 from tools.fetch_url import fetch_single_url
 from tools.sync_storage import DB_PATH, DEFAULT_STORAGE_ROOT
+from src.source_processing import (
+    SourceDecodingError,
+    SourceParseError,
+    UnsupportedSourceExtensionError,
+    extract_source_text,
+)
 
 
 SUPPORTED_SOURCE_TYPES = {
@@ -51,7 +57,7 @@ def main(argv: list[str] | None = None) -> None:
         _print_json(_dry_run_result(args))
         return
 
-    if args.source_type in {"text_note", "markdown_file", "plain_text_file"}:
+    if args.source_type in {"text_note", *FILE_SOURCE_TYPES}:
         _print_json(_apply_local_source(args))
         return
 
@@ -174,8 +180,10 @@ def _base_result(args: argparse.Namespace) -> dict[str, Any]:
         "content_hash": None,
         "wiki_path": None,
         "graph_status": "skipped",
+        "error_stage": None,
         "last_error": None,
         "next_action": None,
+        "extract_metadata": {},
         "actions": [],
         "notion_update": {},
         "summary": {},
@@ -222,11 +230,32 @@ def _dry_run_result(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def _apply_local_source(args: argparse.Namespace) -> dict[str, Any]:
-    body = _local_source_body(args)
+    extract_action: dict[str, Any] | None = None
+    extract_metadata: dict[str, Any] = {}
+    title = args.title or "untitled"
+
+    if args.source_type == "text_note":
+        body = args.body or ""
+    else:
+        try:
+            extracted = extract_source_text(Path(args.local_path))
+        except (UnsupportedSourceExtensionError, SourceDecodingError, SourceParseError) as exc:
+            return _local_extract_error_result(args, exc)
+        body = extracted.text
+        title = args.title or extracted.title or "untitled"
+        extract_metadata = extracted.metadata
+        extract_action = {
+            "name": "extract",
+            "status": "ok",
+            "source_path": extract_metadata.get("source_path") or args.local_path,
+            "extension": extract_metadata.get("extension"),
+            "extractor": extract_metadata.get("extractor_name"),
+        }
+
     ingest_result = ingest_local.ingest_source(
         source_type=args.source_type,
         category=args.category,
-        title=args.title or "untitled",
+        title=title,
         body=body,
         storage_root=Path(args.storage_root),
         db_path=Path(args.db_path),
@@ -237,7 +266,14 @@ def _apply_local_source(args: argparse.Namespace) -> dict[str, Any]:
     if ingest_result.get("status") != "ok":
         return _local_ingest_error_result(args, ingest_result)
 
-    return _successful_ingest_result(args, ingest_result, fetch_action=None)
+    return _successful_ingest_result(
+        args,
+        ingest_result,
+        fetch_action=None,
+        extract_action=extract_action,
+        extract_metadata=extract_metadata,
+        title=title,
+    )
 
 
 def _apply_url_source(args: argparse.Namespace) -> dict[str, Any]:
@@ -263,12 +299,6 @@ def _apply_url_source(args: argparse.Namespace) -> dict[str, Any]:
 
     fetch_action = _fetch_action_from_result(args, fetch_result)
     return _successful_ingest_result(args, ingest_result, fetch_action=fetch_action, title=title)
-
-
-def _local_source_body(args: argparse.Namespace) -> str:
-    if args.source_type == "text_note":
-        return args.body or ""
-    return Path(args.local_path).read_text(encoding="utf-8")
 
 
 def _local_ingest_error_result(
@@ -313,6 +343,66 @@ def _local_ingest_error_result(
         }
     )
     return result
+
+
+def _local_extract_error_result(
+    args: argparse.Namespace,
+    error: UnsupportedSourceExtensionError | SourceDecodingError | SourceParseError,
+) -> dict[str, Any]:
+    error_message = _extract_error_message(error)
+    result = _base_result(args)
+    result.update(
+        {
+            "status": "error",
+            "graph_status": "skipped",
+            "error_stage": "extract",
+            "last_error": error_message,
+            "next_action": "Fix the source file or source type, then rerun process_source.py.",
+            "actions": [
+                {"name": "validate_request", "status": "ok"},
+                {
+                    "name": "extract",
+                    "status": "error",
+                    "source_path": args.local_path,
+                    "error_stage": "extract",
+                    "error": error_message,
+                },
+                {
+                    "name": "ingest_local",
+                    "status": "skipped",
+                    "reason": "upstream_extract_error",
+                },
+                {
+                    "name": "rebuild",
+                    "status": "skipped",
+                    "reason": "upstream_extract_error",
+                },
+            ],
+            "notion_update": {
+                "Status": "Error",
+                "Graph Status": "Skipped",
+                "Last Error": error_message,
+                "Next Action": "Fix the source file or source type, then rerun process_source.py.",
+            },
+            "summary": {
+                "message": "Source extraction failed. Local ingest and rebuild were skipped.",
+                "next_action": "Fix the source file or source type, then rerun process_source.py.",
+            },
+        }
+    )
+    return result
+
+
+def _extract_error_message(
+    error: UnsupportedSourceExtensionError | SourceDecodingError | SourceParseError,
+) -> str:
+    if isinstance(error, UnsupportedSourceExtensionError):
+        return str(error)
+    if isinstance(error, SourceDecodingError):
+        return f"Decoding failed: {error}"
+    if isinstance(error, SourceParseError):
+        return f"Parse failed: {error}"
+    return str(error)
 
 
 def _ingest_error_message(ingest_result: dict[str, Any]) -> str:
@@ -440,11 +530,15 @@ def _successful_ingest_result(
     ingest_result: dict[str, Any],
     *,
     fetch_action: dict[str, Any] | None,
+    extract_action: dict[str, Any] | None = None,
+    extract_metadata: dict[str, Any] | None = None,
     title: str | None = None,
 ) -> dict[str, Any]:
     result = _base_result(args)
     canonical_path = ingest_result.get("canonical_path")
     base_actions = [{"name": "validate_request", "status": "ok"}]
+    if extract_action:
+        base_actions.append(extract_action)
     if fetch_action:
         base_actions.append(fetch_action)
     base_actions.append(
@@ -477,6 +571,7 @@ def _successful_ingest_result(
             "graph_status": _graph_status_from_rebuild(rebuild_actions),
             "last_error": last_error,
             "next_action": next_action,
+            "extract_metadata": extract_metadata or {},
             "actions": base_actions + rebuild_actions,
             "summary": {
                 "message": (

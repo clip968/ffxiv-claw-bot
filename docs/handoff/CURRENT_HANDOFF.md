@@ -12,7 +12,7 @@ v0.4 implementation is complete. All five v04 feature plans are Implemented.
 
 v0.5 planning is complete. The v05 Source Processing Pipeline spec and all 8 task plans are documented.
 v05.1 Source Processing Hardening is complete. v05.1-02 through v05.1-08 are implemented.
-v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-05 are implemented.
+v0.6 Multi-format Source Processing and Derived Wiki Generation is in progress. v06-01 through v06-06 are implemented.
 
 v0.5-02 through v0.5-08 are implemented:
 
@@ -169,6 +169,30 @@ Google Drive sync/write remains implemented but is Legacy / Deferred / Optional 
 
 4. **Next tasks**
    - v06-06: integrate extractor registry into `tools/process_source.py` for local file sources.
+
+### Current session update: v06-06 process_source extractor integration implemented -- 2026-05-16
+
+1. **Scope**
+   - Implemented v06-06 only.
+   - `tools/process_source.py` now routes `markdown_file`, `plain_text_file`, and `binary_attachment` local file sources through `src.source_processing.extract_source_text()`.
+   - `text_note` still uses the direct `--body` path, and `url` still uses the existing v05.1 fetch/Lodestone route.
+   - `binary_attachment` normalized output is stored as `.md` through `tools.ingest_local.ingest_source()`.
+
+2. **Red tests first**
+   - Added `V06ProcessSourceExtractorIntegrationTests` in `tests/test_v05_process_source.py`.
+   - Confirmed expected red failure: `python -m unittest tests.test_v05_process_source.V06ProcessSourceExtractorIntegrationTests -v` failed because local file `extract` actions, `extract_metadata`, extract-stage errors, and `binary_attachment` apply support were missing.
+
+3. **Verification**
+   - `python -m unittest tests.test_v05_process_source.V06ProcessSourceExtractorIntegrationTests -v`: OK, 4 tests.
+   - `python -m unittest tests.test_v05_process_source -v`: OK, 31 tests.
+   - `python -m unittest tests.test_v06_extractors -v`: OK, 32 tests.
+   - `python -m unittest tests.test_v05_1_lodestone_extractor -v`: OK, 5 tests.
+   - `python -m py_compile tools/process_source.py tools/ingest_local.py`: OK.
+   - `python scripts/check_docs_freshness.py --all`: ok.
+   - `python -m unittest discover -s tests -p "test_*.py"`: OK, 172 tests.
+
+4. **Next tasks**
+   - v06-07: implement `tools/process_pending_sources.py` pending source loop.
 
 ### Current session update: v05 process-source test fixture refactor -- 2026-05-16
 
