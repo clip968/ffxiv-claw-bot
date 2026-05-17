@@ -8,7 +8,7 @@
 
 ## Status
 
-In Progress
+Completed 2026-05-17
 
 ## Goal
 
@@ -31,13 +31,13 @@ No new product red test required if Tasks 01-08 already cover behavior. Docs fre
 
 ## Checklist
 
-- [ ] runbook 작성
-- [ ] manual/network-approved smoke section 작성
-- [ ] rollback/cleanup notes 작성
-- [ ] all v09 focused tests 실행
-- [ ] docs freshness 실행
-- [ ] `scripts/finish_task.py` 실행
-- [ ] handoff 갱신
+- [x] runbook 작성
+- [x] manual/network-approved smoke section 작성
+- [x] rollback/cleanup notes 작성
+- [x] all v09 focused tests 실행
+- [x] docs freshness 실행
+- [x] `scripts/finish_task.py` 실행
+- [x] handoff 갱신
 
 ## Verification
 
@@ -53,6 +53,12 @@ python -m unittest tests.test_guide_ff14_item_retrieval -v
 python scripts/check_docs_freshness.py --all
 python scripts/finish_task.py
 ```
+
+## Implementation Notes
+
+- Added `docs/runbooks/guide-ff14-crawler.md` with robots/access check, category-map dry run, item-pilot dry run/apply, item wiki generation, FTS re-index, graph refresh/report, ask smoke, rollback/cleanup, and completion checklist sections.
+- Added final quality gate report `docs/reports/2026-05-17-v09-task-09-quality-gate.md`.
+- Live network smoke was documented but skipped because no maintainer-approved live crawl scope was provided.
 
 ## Agent Prompt
 

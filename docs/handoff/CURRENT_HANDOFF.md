@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v09 guide.ff14.co.kr official DB crawler in progress
-- Last completed task: v09 Task 08 item-aware retrieval and ask smoke behavior
-- Next task: v09 Task 09 runbook, quality gate, and final finish workflow
+- Last completed task: v09 Task 09 runbook, quality gate, and final finish workflow
+- Next task: v09 Task 10 expansion-gate documentation only
 - Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
@@ -31,7 +31,9 @@
 14. `docs/plans/2026-05-17-v09-implementation-guide-ff14-crawler.md`
 15. `docs/reports/2026-05-17-v09-task-00-baseline.md`
 16. `docs/plans/v09/README.md`
-17. `docs/plans/v09/2026-05-17-v09-08-item-retrieval.md`
+17. `docs/plans/v09/2026-05-17-v09-09-runbook-quality-gate.md`
+18. `docs/runbooks/guide-ff14-crawler.md`
+19. `docs/reports/2026-05-17-v09-task-09-quality-gate.md`
 
 ## v09 guide.ff14.co.kr official DB crawler
 
@@ -90,6 +92,10 @@
   - Added `tests/test_guide_ff14_item_retrieval.py` with temp DB/FTS coverage for item-first retrieval plans, item context precedence over unrelated job pages, official URL answer evidence, explicit missing acquisition wording, and non-item job query compatibility.
   - Updated `src/retrieval/planner.py` so item-like questions search `wiki_pages.type = item` before general FTS fallback.
   - Updated `src/answering/composer.py` so item contexts are labeled and official guide URL / missing acquisition lines can appear in grounded evidence.
+- Task 09 runbook, quality gate, and final finish workflow completed:
+  - Added `docs/runbooks/guide-ff14-crawler.md` with robots/access check, category-map dry run, item-pilot dry run/apply, item wiki generation, FTS re-index, graph refresh/report, ask smoke, rollback/cleanup, and completion checklist sections.
+  - Added final quality gate report `docs/reports/2026-05-17-v09-task-09-quality-gate.md`.
+  - Manual live network smoke was documented but skipped because no maintainer-approved crawl scope was provided.
 
 검증:
 
@@ -134,10 +140,14 @@
 - Task 08 `git diff --check`: OK.
 - Task 08 docs freshness: OK.
 - Task 08 finish gate: `python scripts/finish_task.py` -> 417 tests OK, docs freshness OK, Notion handoff dry-run OK.
+- Task 09 cumulative v09 focused tests: `python -m unittest tests.test_guide_ff14_storage tests.test_guide_ff14_category_map tests.test_guide_ff14_fetcher tests.test_guide_ff14_item_extractor tests.test_guide_ff14_crawler tests.test_guide_ff14_item_wiki tests.test_guide_ff14_item_graph tests.test_guide_ff14_item_retrieval -v` -> 50 tests OK.
+- Task 09 `git diff --check`: OK.
+- Task 09 docs freshness: OK.
+- Task 09 finish gate: `python scripts/finish_task.py` -> 417 tests OK, docs freshness OK, Notion handoff dry-run OK.
 
 다음 작업:
 
-- Task 09: write the guide.ff14 crawler runbook and run the final v09 quality gate.
+- Task 10: verify and document the quest/recipe/gathering expansion gate only. Do not implement expansion code.
 
 아직 하지 말 것:
 

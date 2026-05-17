@@ -573,6 +573,8 @@ Required sections:
 - ask smoke
 - rollback/cleanup notes
 
+Current runbook: `docs/runbooks/guide-ff14-crawler.md`.
+
 ## Quality Gates
 
 Before marking this spec complete:
