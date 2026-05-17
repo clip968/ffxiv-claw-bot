@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -43,21 +43,28 @@ Contracts (optional):
 
 ## Checklist
 
-- [ ] graph report 생성
-  - [ ] `python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph`
-- [ ] `graph/GRAPH_REPORT.md` 확인
-  - [ ] Summary 존재
-  - [ ] total nodes
-  - [ ] total edges
-  - [ ] node type counts
-  - [ ] edge type counts
-  - [ ] top mentioned jobs 또는 top mentioned entities
-  - [ ] quality warnings
-- [ ] Job/Patch/Skill/Fact count가 모두 0이 아닌지 확인
-- [ ] warning 원인 및 처리 여부 문서화
-- [ ] 필요 시 `docs/reports/2026-05-17-v08_5-graph-report-review.md` 작성
-- [ ] graph가 비어 있으면 다음 task로 넘어가지 않음
-- [ ] handoff/README feature map status 갱신
+- [x] graph report 생성
+  - [x] `python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph`
+- [x] `graph/GRAPH_REPORT.md` 확인
+  - [x] Summary 존재
+  - [x] total nodes
+  - [x] total edges
+  - [x] node type counts
+  - [x] edge type counts
+  - [x] top mentioned jobs 또는 top mentioned entities
+  - [x] quality warnings
+- [x] Job/Patch/Skill/Fact count가 모두 0이 아닌지 확인
+- [x] warning 원인 및 처리 여부 문서화
+- [x] 필요 시 `docs/reports/2026-05-17-v08_5-graph-report-review.md` 작성
+- [x] graph가 비어 있으면 다음 task로 넘어가지 않음
+- [x] handoff/README feature map status 갱신
+
+검증 결과:
+
+- `GRAPH_REPORT.md`: local generated output, ignored by Git.
+- Node counts: `Job=5`, `Patch=3`, `Skill=4`, `Fact=14`.
+- Edge counts: `MENTIONS=198`, `SUPPORTS=14`, `VALID_IN_PATCH=14`, `AFFECTS_JOB=59`, `AFFECTS_SKILL=4`.
+- Warning: `entities without mentions: 2` (`No Mercy`, `Fight or Flight`). source coverage warning이며 v08.5-04 진행 blocker는 아니다.
 
 ## Verification
 

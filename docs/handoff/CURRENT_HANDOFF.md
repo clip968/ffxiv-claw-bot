@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v0.8.5 Managed Wiki Knowledge Base Activation in progress
-- Last completed task: v08.5-02 actual domain graph rebuild
-- Next task: v08.5-03 graph report validation
+- Last completed task: v08.5-03 graph report validation
+- Next task: v08.5-04 graph-derived wiki generation
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
@@ -32,10 +32,11 @@
 - v08.5-00: baseline verification
 - v08.5-01: `docs/reports/2026-05-17-v08_5-source-audit.md` source summary audit
 - v08.5-02: real source summary domain graph rebuild, `tests/test_v08_5_real_graph_population.py`; `graph/domain_graph.json` and `graph/entity_index.json` are verified local generated outputs and are ignored by Git
+- v08.5-03: `docs/reports/2026-05-17-v08_5-graph-report-review.md` graph report validation
 
 다음 작업:
 
-- v08.5-03: graph report validation
+- v08.5-04: graph-derived wiki generation
 
 아직 하지 말 것:
 
