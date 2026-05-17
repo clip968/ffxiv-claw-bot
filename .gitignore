@@ -15,6 +15,9 @@ USER.md
 # Generated local database
 db/ffxiv.sqlite
 wiki/source_summaries/
+wiki/jobs/
+wiki/patches/
+wiki/skills/
 graph/nodes.json
 graph/edges.json
 graph/domain_graph.json

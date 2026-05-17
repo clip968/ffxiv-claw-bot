@@ -384,6 +384,7 @@ python tools/generate_derived_wiki.py --verbose
 - `wiki/skills`에 최소 1개 이상 생성
 - 각 generated page에 source link가 포함
 - `wiki/index.md`가 generated pages를 링크
+- Generated wiki pages under `wiki/jobs`, `wiki/patches`, and `wiki/skills` are local derived outputs and are not committed to Git.
 
 ---
 

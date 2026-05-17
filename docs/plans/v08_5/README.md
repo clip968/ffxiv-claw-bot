@@ -33,7 +33,7 @@ wiki/source_summaries/
 | 01 | 2026-05-17-v08_5-01-source-summary-audit.md | source summary audit 및 문서화 | Completed 2026-05-17 |
 | 02 | 2026-05-17-v08_5-02-domain-graph-rebuild.md | 실제 source summary 기반 domain graph rebuild | Completed 2026-05-17 |
 | 03 | 2026-05-17-v08_5-03-graph-report-validation.md | GRAPH_REPORT.md 생성 및 검증 | Completed 2026-05-17 |
-| 04 | 2026-05-17-v08_5-04-derived-wiki-generation.md | graph-derived wiki 실제 생성 | Pending |
+| 04 | 2026-05-17-v08_5-04-derived-wiki-generation.md | graph-derived wiki 실제 생성 | Completed 2026-05-17 |
 | 05 | 2026-05-17-v08_5-05-fts-reindexing.md | derived wiki SQLite FTS 재색인 | Pending |
 | 06 | 2026-05-17-v08_5-06-answer-quality.md | ask 답변 품질 개선 (source dump → 구조화 요약) | Pending |
 | 07 | 2026-05-17-v08_5-07-v08_5-tests.md | v08.5 regression tests 추가 | Pending |

@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -45,39 +45,47 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] red test 작성: `tests/test_v08_5_real_derived_wiki.py`
-  - [ ] `test_generates_job_wiki`
-  - [ ] `test_generates_patch_wiki`
-  - [ ] `test_generates_skill_wiki`
-  - [ ] `test_generated_page_includes_source`
-  - [ ] `test_index_links_generated_pages`
-  - [ ] `test_idempotent_generation`
-- [ ] red 상태 확인
-- [ ] dry-run 실행
-  - [ ] `python tools/generate_derived_wiki.py --dry-run --verbose`
-- [ ] 실제 생성
-  - [ ] `python tools/generate_derived_wiki.py --verbose`
-- [ ] 생성 결과 확인
-  - [ ] `wiki/jobs/*.md` 최소 1개
-  - [ ] `wiki/patches/*.md` 최소 1개
-  - [ ] `wiki/skills/*.md` 최소 1개
-- [ ] generated page 내용 확인
-  - [ ] canonical entity name
-  - [ ] entity type
-  - [ ] related facts
-  - [ ] related jobs / patches / skills
-  - [ ] related sources
-  - [ ] source summary path 또는 source id
-  - [ ] generated marker 또는 provenance
-- [ ] `wiki/index.md` 갱신 확인
-- [ ] idempotency 확인: 재실행 후 파일 내용 비교
-- [ ] 실패 시 원인 진단
-  - [ ] graph에 Job/Patch/Skill node가 없는가?
-  - [ ] graph relation이 source와 entity를 연결하지 못했는가?
-  - [ ] derived wiki generator가 특정 edge type만 기대하는가?
-  - [ ] `wiki_root` 또는 `graph_dir` 경로가 잘못되었는가?
-- [ ] 최소 코드 수정으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] red test 작성: `tests/test_v08_5_real_derived_wiki.py`
+  - [x] `test_generates_job_wiki`
+  - [x] `test_generates_patch_wiki`
+  - [x] `test_generates_skill_wiki`
+  - [x] `test_generated_page_includes_source`
+  - [x] `test_index_links_generated_pages`
+  - [x] `test_idempotent_generation`
+- [x] red 상태 확인
+- [x] dry-run 실행
+  - [x] `python tools/generate_derived_wiki.py --dry-run --verbose`
+- [x] 실제 생성
+  - [x] `python tools/generate_derived_wiki.py --verbose`
+- [x] 생성 결과 확인
+  - [x] `wiki/jobs/*.md` 최소 1개
+  - [x] `wiki/patches/*.md` 최소 1개
+  - [x] `wiki/skills/*.md` 최소 1개
+- [x] generated page 내용 확인
+  - [x] canonical entity name
+  - [x] entity type
+  - [x] related facts
+  - [x] related jobs / patches / skills
+  - [x] related sources
+  - [x] source summary path 또는 source id
+  - [x] generated marker 또는 provenance
+- [x] `wiki/index.md` 갱신 확인
+- [x] idempotency 확인: 재실행 후 파일 내용 비교
+- [x] 실패 시 원인 진단
+  - [x] graph에 Job/Patch/Skill node가 없는가?
+  - [x] graph relation이 source와 entity를 연결하지 못했는가?
+  - [x] derived wiki generator가 특정 edge type만 기대하는가?
+  - [x] `wiki_root` 또는 `graph_dir` 경로가 잘못되었는가?
+- [x] 최소 코드 수정으로 green 전환
+- [x] handoff/README feature map status 갱신
+
+결과:
+
+- Red 확인: `tests.test_v08_5_real_derived_wiki` import error.
+- Actual generation: jobs `5`, patches `3`, skills `4`.
+- Generated pages are local derived outputs and are ignored by Git.
+- `wiki/index.md` links generated jobs/patches/skills.
+- Idempotency: repeated generation kept identical sha256 hashes for generated pages and `wiki/index.md`.
 
 ## Verification
 
