@@ -188,3 +188,23 @@ rules:
     procedure_docs:
       - "docs/runbooks/ask.md"
       - "docs/runbooks/test.md"
+
+  - id: v08-domain-graphify-layer
+    paths:
+      - "src/domain_graph/**/*.py"
+      - "src/retrieval/hybrid.py"
+      - "tools/rebuild_domain_graph.py"
+      - "tools/generate_graph_report.py"
+      - "tools/generate_derived_wiki.py"
+      - "tools/ask.py"
+      - "tests/test_entity_extractor.py"
+      - "tests/test_relation_extractor.py"
+      - "tests/test_domain_graph_rebuild.py"
+      - "tests/test_graph_report.py"
+      - "tests/test_derived_wiki.py"
+      - "tests/test_hybrid_retrieval.py"
+      - "tests/test_v08_e2e.py"
+    contract_docs:
+      - "docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md"
+    procedure_docs:
+      - "docs/runbooks/test.md"

@@ -8,25 +8,38 @@
 - Local path: `/mnt/d/programming/ffxiv-claw-bot`
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
-- Current phase: v0.7 Grounded Ask Pipeline completed
-- Last completed task: v07-17 full regression verification
-- Next task: v08 planning, if maintainer chooses to start Discord adapter work
+- Current phase: v0.8 Domain Graphify Layer in progress
+- Last completed task: v08-01 entity registry
+- Next task: v08-02 entity extractor
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
 
 1. `docs/WORKFLOW.md`
-2. `docs/specs/0007-v07-grounded-ask-pipeline.md`
-3. `docs/plans/v07/README.md`
-4. `docs/runbooks/ask.md`
-5. `docs/plans/v07/2026-05-17-v07-17-full-regression-verification.md`
-6. `tools/ask.py`
-7. `docs/runbooks/process-source.md`
-8. `docs/runbooks/generate-derived-wiki.md`
+2. `docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md`
+3. `docs/plans/2026-05-17-v08-implementation.md`
+4. `docs/plans/v08/README.md`
+5. `docs/plans/v08/2026-05-17-v08-01-entity-registry.md`
+6. `src/domain_graph/entity_registry.py`
+7. `tests/test_entity_extractor.py`
 
 필요할 때만 과거 상세 로그를 읽는다.
 
 - `docs/handoff/history/2026-05-17-current-handoff.md`
+
+## v08 진행 상황
+
+완료:
+
+- v08-01: `data/ffxiv_entities/` registry JSON and `src/domain_graph/entity_registry.py`
+
+다음 작업:
+
+- v08-02: rule-based entity extractor
+
+아직 하지 말 것:
+
+- v08-03 이후 relation/fact/storage/rebuild/retrieval 구현을 v08-02 완료 전 앞당기지 않는다.
 
 ## v07 진행 상황
 
@@ -65,22 +78,17 @@
 
 ## 현재 검증 스냅샷
 
-CI dependency fix 확인:
+v08-01 완료 시점 검증:
 
 ```bash
-/tmp/ffxiv-claw-bot-ci-repro/bin/python -m unittest tests.test_v06_extractors.V06TextMarkdownHtmlExtractorTests -v
-/tmp/ffxiv-claw-bot-ci-repro/bin/python -m unittest discover -s tests -p "test_*.py"
+python -m unittest tests.test_entity_extractor -v
 ```
 
-수정 전 결과:
+결과:
 
-- clean venv에서 `ModuleNotFoundError: No module named 'bs4'` 재현
-- 원인: `requirements.txt` 부재 및 GitHub Actions dependency install step 부재
+- 4 tests OK
 
-수정 후 결과:
-
-- clean venv에서 `python -m pip install -r requirements.txt` 성공
-- clean venv에서 `python -m unittest discover -s tests -p "test_*.py"` 238 tests OK
+이전 v07-17 완료 시점 검증:
 
 v07-17 완료 시점 검증:
 
@@ -110,13 +118,20 @@ python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json
 
 ## 현재 작업트리 주의사항
 
-v07-17 완료 시점에는 커밋 전 문서 변경만 남아 있다. 커밋/푸시 후 작업 트리는 clean이어야 한다.
+v08-01 완료 커밋 전에는 다음 변경이 포함되어야 한다.
 
 ```text
+data/ffxiv_entities/jobs.json
+data/ffxiv_entities/skills.json
+data/ffxiv_entities/patches.json
+src/domain_graph/__init__.py
+src/domain_graph/entity_registry.py
+tests/test_entity_extractor.py
+docs/DOC_OWNERS.yml
 docs/handoff/CURRENT_HANDOFF.md
-docs/plans/v07/2026-05-17-v07-17-full-regression-verification.md
-docs/plans/v07/README.md
-docs/specs/0007-v07-grounded-ask-pipeline.md
+docs/plans/v08/2026-05-17-v08-01-entity-registry.md
+docs/plans/v08/README.md
+docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md
 ```
 
 ## 운영 원칙
@@ -129,4 +144,4 @@ docs/specs/0007-v07-grounded-ask-pipeline.md
 
 ## 다음 agent에게
 
-v07은 완료됐다. 다음 작업은 maintainer가 v08 범위를 열 때까지 시작하지 않는다.
+v08 scope is open by maintainer request. Continue with v08-02 after v08-01 is committed and pushed.

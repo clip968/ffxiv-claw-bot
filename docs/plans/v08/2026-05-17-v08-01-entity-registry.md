@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -48,25 +48,25 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `data/ffxiv_entities/jobs.json` 생성
-- [ ] `data/ffxiv_entities/skills.json` 생성
-- [ ] `data/ffxiv_entities/patches.json` 생성
-- [ ] entity registry loader 구현
-  - [ ] 모든 registry JSON 로드
-  - [ ] alias → canonical entity 매핑
-  - [ ] canonical entity → node id 변환
-  - [ ] node id → entity metadata 조회
-  - [ ] 긴 alias 우선 정렬
-  - [ ] 중복 alias 감지
-  - [ ] ambiguity warning 생성
-- [ ] `tests/test_entity_extractor.py` 생성 (registry 관련 red tests)
-  - [ ] `test_job_alias_to_canonical_node_id`
-  - [ ] `test_skill_alias_to_canonical_node_id`
-  - [ ] `test_patch_alias_to_canonical_node_id`
-  - [ ] `test_duplicate_alias_warning`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] `data/ffxiv_entities/jobs.json` 생성
+- [x] `data/ffxiv_entities/skills.json` 생성
+- [x] `data/ffxiv_entities/patches.json` 생성
+- [x] entity registry loader 구현
+  - [x] 모든 registry JSON 로드
+  - [x] alias → canonical entity 매핑
+  - [x] canonical entity → node id 변환
+  - [x] node id → entity metadata 조회
+  - [x] 긴 alias 우선 정렬
+  - [x] 중복 alias 감지
+  - [x] ambiguity warning 생성
+- [x] `tests/test_entity_extractor.py` 생성 (registry 관련 red tests)
+  - [x] `test_job_alias_to_canonical_node_id`
+  - [x] `test_skill_alias_to_canonical_node_id`
+  - [x] `test_patch_alias_to_canonical_node_id`
+  - [x] `test_duplicate_alias_warning`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
+- [x] handoff/README feature map status 갱신
 
 ## Verification
 

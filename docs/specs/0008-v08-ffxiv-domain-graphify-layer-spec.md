@@ -4,7 +4,7 @@
 
 - 문서명: v08 Spec — FFXIV Domain Graphify Layer + Derived Wiki + Hybrid Retrieval
 - 대상 프로젝트: ffxiv-claw-bot / FFXIV OpenClaw Bot
-- 상태: Draft
+- 상태: In Progress (v08-01 completed)
 - 목적: 현재 FTS 기반 RAG + provenance graph 구조를 FFXIV 도메인 entity graph 기반 RAG로 확장한다.
 - 전제: Lost Ark 등 비-FFXIV 오염 데이터 정리는 이미 완료되었다고 가정한다.
 
@@ -1057,6 +1057,10 @@ v08은 다음 조건을 만족하면 완료로 본다.
 - hybrid retrieval 테스트 통과
 - 기존 FTS 관련 테스트가 깨지지 않음
 
+### 17.6 Implementation progress
+
+- v08-01 completed on 2026-05-17: `data/ffxiv_entities/jobs.json`, `skills.json`, `patches.json` and `src/domain_graph/entity_registry.py` provide the initial Job/Patch/Skill registry and alias normalization contract.
+
 ---
 
 ## 18. 작업 분해
@@ -1450,4 +1454,3 @@ v08의 가장 중요한 성공 기준은 이것이다.
     Gunbreaker와 Patch 7.5를 entity로 인식하고,
     graph neighborhood와 FTS 결과를 병합하여
     source-grounded answer context를 만들 수 있어야 한다.
-

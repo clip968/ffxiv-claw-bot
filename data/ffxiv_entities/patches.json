@@ -1,0 +1,20 @@
+[
+  {
+    "type": "Patch",
+    "canonical": "Patch 7.0",
+    "slug": "7_0",
+    "aliases": ["7.0", "Patch 7.0", "패치 7.0"]
+  },
+  {
+    "type": "Patch",
+    "canonical": "Patch 7.1",
+    "slug": "7_1",
+    "aliases": ["7.1", "Patch 7.1", "패치 7.1"]
+  },
+  {
+    "type": "Patch",
+    "canonical": "Patch 7.5",
+    "slug": "7_5",
+    "aliases": ["7.5", "Patch 7.5", "패치 7.5"]
+  }
+]

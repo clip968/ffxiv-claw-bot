@@ -1,0 +1,37 @@
+[
+  {
+    "type": "Job",
+    "canonical": "Gunbreaker",
+    "slug": "gunbreaker",
+    "aliases": ["Gunbreaker", "GNB", "건브", "건브레이커"],
+    "role": "Tank"
+  },
+  {
+    "type": "Job",
+    "canonical": "Paladin",
+    "slug": "paladin",
+    "aliases": ["Paladin", "PLD", "나이트", "팔라딘"],
+    "role": "Tank"
+  },
+  {
+    "type": "Job",
+    "canonical": "Dark Knight",
+    "slug": "dark_knight",
+    "aliases": ["Dark Knight", "DRK", "암기", "암흑기사"],
+    "role": "Tank"
+  },
+  {
+    "type": "Job",
+    "canonical": "Warrior",
+    "slug": "warrior",
+    "aliases": ["Warrior", "WAR", "전사"],
+    "role": "Tank"
+  },
+  {
+    "type": "Job",
+    "canonical": "Black Mage",
+    "slug": "black_mage",
+    "aliases": ["Black Mage", "BLM", "흑마", "흑마도사"],
+    "role": "DPS"
+  }
+]

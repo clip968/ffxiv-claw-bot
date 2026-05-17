@@ -1,0 +1,30 @@
+[
+  {
+    "type": "Skill",
+    "canonical": "No Mercy",
+    "slug": "no_mercy",
+    "aliases": ["No Mercy", "노 머시", "노머시"],
+    "job": "Gunbreaker"
+  },
+  {
+    "type": "Skill",
+    "canonical": "Continuation",
+    "slug": "continuation",
+    "aliases": ["Continuation", "컨티뉴에이션"],
+    "job": "Gunbreaker"
+  },
+  {
+    "type": "Skill",
+    "canonical": "Fight or Flight",
+    "slug": "fight_or_flight",
+    "aliases": ["Fight or Flight", "파이트 오어 플라이트"],
+    "job": "Paladin"
+  },
+  {
+    "type": "Skill",
+    "canonical": "Ley Lines",
+    "slug": "ley_lines",
+    "aliases": ["Ley Lines", "흑마문"],
+    "job": "Black Mage"
+  }
+]
