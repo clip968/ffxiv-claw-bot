@@ -24,6 +24,7 @@ spec은 과거 계획이 아니라 현재 유효한 기준이다. 큰 구현 변
 - `0008-v08-ffxiv-domain-graphify-layer-spec.md`: v0.8 FFXIV domain graphify layer
 - `0009-v08_5_managed_wiki_kb_activation_spec.md`: v0.8.5 managed wiki KB activation
 - `0010-openclaw-usecase-skill-routing.md`: OpenClaw use-case skill routing
+- `0011-v09-guide-ff14-official-db-crawler.md`: v09 guide.ff14.co.kr official DB crawler and item pilot
 
 ## 기존 참고 문서
 

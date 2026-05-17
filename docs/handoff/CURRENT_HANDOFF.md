@@ -8,10 +8,10 @@
 - Local path: `/mnt/d/programming/ffxiv-claw-bot`
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
-- Current phase: v0.8.5 precision hardening completed
-- Last completed task: v08.5 job-specific retrieval precision and answer-noise hardening
-- Next task: wait for maintainer scope; v09 is `SPEC 0011 / v09 - guide.ff14.co.kr Official DB Crawler`, and log/notebook namespace expansion is v10 future work
-- Current maintenance task: v08.5 precision hardening
+- Current phase: v09 guide.ff14.co.kr official DB crawler in progress
+- Last completed task: v09 Task 00 baseline inspection and generated-artifact guardrails
+- Next task: v09 Task 01 SQLite schema and storage layer
+- Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
 
@@ -27,6 +27,43 @@
 10. `tests/test_v08_e2e.py`
 11. `src/retrieval/hybrid.py`
 12. `tools/ask.py`
+13. `docs/specs/0011-v09-guide-ff14-official-db-crawler.md`
+14. `docs/plans/2026-05-17-v09-implementation-guide-ff14-crawler.md`
+15. `docs/reports/2026-05-17-v09-task-00-baseline.md`
+
+## v09 guide.ff14.co.kr official DB crawler
+
+진행:
+
+- Task 00 baseline inspection completed.
+- Confirmed existing patterns:
+  - SQLite schema/init uses `CREATE TABLE IF NOT EXISTS` and idempotent `ensure_*_schema(conn)` helpers.
+  - Wiki indexing goes through `tools.compile_wiki.index_wiki_documents()`.
+  - Graph report generation uses `tools/generate_graph_report.py`.
+  - Ask retrieval remains `tools/ask.py` JSON/text CLI over graph-aware FTS context.
+  - Tests use standard `unittest`, temp SQLite DBs, local fixtures, and no network dependency.
+- Added generated-artifact ignore guards for `data/raw/guide_ff14/` and `wiki/items/`.
+- Added baseline report `docs/reports/2026-05-17-v09-task-00-baseline.md`.
+
+검증:
+
+- `git status --short`: inspected before and after preflight cleanup.
+- `find docs -maxdepth 3 -type f | sort`: inspected.
+- `find tools -maxdepth 2 -type f | sort`: inspected.
+- `find tests -maxdepth 2 -type f | sort`: inspected.
+- `git diff --check`: OK for Task 00 changes.
+- `python scripts/check_docs_freshness.py --all`: OK for Task 00 changes.
+
+다음 작업:
+
+- Task 01: add v09 SQLite schema/storage with red-first temp DB tests.
+- Add a v09 DOC_OWNERS rule before committing v09 code files.
+
+아직 하지 말 것:
+
+- Live guide.ff14.co.kr network smoke without maintainer-approved crawl scope.
+- Quest/recipe/gathering expansion before item pilot quality gates pass.
+- Scheduler, Discord runtime, vector DB, external graph DB, broad crawl, or LLM extraction.
 
 ## OpenClaw use-case skill routing
 

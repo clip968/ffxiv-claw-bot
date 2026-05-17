@@ -5,6 +5,7 @@ __pycache__/
 config/google_drive_client_secret.json
 config/google_drive_token.json
 raw/local_storage/
+data/raw/guide_ff14/
 # OpenClaw local agent files
 HEARTBEAT.md
 IDENTITY.md
@@ -18,6 +19,7 @@ wiki/source_summaries/
 wiki/jobs/
 wiki/patches/
 wiki/skills/
+wiki/items/
 graph/nodes.json
 graph/edges.json
 graph/domain_graph.json
