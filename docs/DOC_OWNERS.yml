@@ -223,10 +223,13 @@ rules:
     paths:
       - "src/guide_ff14/**/*.py"
       - "src/derived_wiki/item_wiki_generator.py"
+      - "src/domain_graph/report.py"
+      - "src/domain_graph/storage.py"
       - "src/wiki_indexing/wiki_document_scanner.py"
       - "tools/crawl_guide_ff14.py"
       - "tools/generate_item_wiki.py"
       - "tools/compile_wiki.py"
+      - "tools/rebuild_domain_graph.py"
       - "tools/init_db.py"
       - "tests/test_guide_ff14_*.py"
     contract_docs:

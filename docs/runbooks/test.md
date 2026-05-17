@@ -205,6 +205,14 @@ python -m unittest tests.test_guide_ff14_item_wiki -v
 
 This verifies dry-run non-mutation, generated item index/category/item pages, official URL and level facts, explicit missing acquisition wording, `wiki_pages.type = item`, `wiki_fts` indexing, idempotent re-run, `wiki/index.md` item link, `index_wiki_documents()` item scanner support, and CLI JSON output.
 
+Task 07 item graph coverage:
+
+```bash
+python -m unittest tests.test_guide_ff14_item_graph -v
+```
+
+This verifies that stored `guide_items` rows become `Item`, `ItemCategory`, `EquipmentJob`, and `ItemSource` graph nodes, emit category/job/source/level/provenance edges, appear in graph reports, and rebuild idempotently without live crawl input.
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:

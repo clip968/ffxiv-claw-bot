@@ -17,11 +17,13 @@ from src.domain_graph.entity_registry import Entity, load_entity_registry
 from src.domain_graph.relation_extractor import ExtractedFact, ExtractedRelation, extract_relations
 from src.domain_graph.storage import (
     ensure_graph_schema,
+    make_edge_id,
     reset_domain_graph as reset_domain_graph_storage,
     upsert_edge,
     upsert_fact,
     upsert_node,
 )
+from src.guide_ff14.storage import ensure_guide_ff14_schema
 from src.source_processing.job_guide import (
     clean_official_job_guide_text,
     detect_official_job_slug,
@@ -44,6 +46,20 @@ class SourceSummary:
     body: str
     job: str | None = None
     source_kind: str | None = None
+
+
+@dataclass(frozen=True)
+class GuideItemGraphRecord:
+    id: str
+    name: str
+    url: str
+    category: str | None
+    subcategory: str | None
+    item_level: int | None
+    equip_level: int | None
+    jobs: tuple[str, ...]
+    source: dict[str, Any]
+    raw_path: str
 
 
 def rebuild_domain_graph(
@@ -81,6 +97,7 @@ def rebuild_domain_graph(
         source_count = 0
         fact_count = 0
         edge_count = 0
+        item_count = 0
 
         for summary in summaries:
             source_count += 1
@@ -100,6 +117,10 @@ def rebuild_domain_graph(
                 upsert_edge(conn, _edge_to_dict(edge))
                 edge_count += 1
 
+        for item in _load_guide_items(conn):
+            _upsert_guide_item_graph(conn, item)
+            item_count += 1
+
         export_result = _maybe_export(conn, graph_dir)
         report_result = _maybe_report(conn, graph_dir)
     finally:
@@ -111,6 +132,7 @@ def rebuild_domain_graph(
         "sources": source_count,
         "facts": fact_count,
         "edges": edge_count,
+        "items": item_count,
         "source_id": source_id,
         "export": export_result,
         "report": report_result,
@@ -244,6 +266,156 @@ def _upsert_source_summary_nodes(conn: sqlite3.Connection, summary: SourceSummar
     )
 
 
+def _load_guide_items(conn: sqlite3.Connection) -> list[GuideItemGraphRecord]:
+    ensure_guide_ff14_schema(conn)
+    rows = conn.execute(
+        """
+        SELECT id, name, url, category, subcategory, item_level, equip_level,
+               jobs_json, source_json, raw_path
+          FROM guide_items
+         ORDER BY id
+        """
+    ).fetchall()
+    return [
+        GuideItemGraphRecord(
+            id=row[0],
+            name=row[1],
+            url=row[2],
+            category=row[3],
+            subcategory=row[4],
+            item_level=row[5],
+            equip_level=row[6],
+            jobs=tuple(_json_loads(row[7], [])),
+            source=dict(_json_loads(row[8], {})),
+            raw_path=row[9],
+        )
+        for row in rows
+    ]
+
+
+def _upsert_guide_item_graph(conn: sqlite3.Connection, item: GuideItemGraphRecord) -> None:
+    item_node_id = f"item:{item.id}"
+    source_node_id = f"src:guide_ff14:{item.id}"
+    upsert_node(
+        conn,
+        {
+            "id": item_node_id,
+            "type": "Item",
+            "name": item.name,
+            "canonical_name": item.name,
+            "properties": {
+                "official_url": item.url,
+                "category": item.category,
+                "subcategory": item.subcategory,
+                "item_level": item.item_level,
+                "equip_level": item.equip_level,
+                "raw_path": item.raw_path,
+            },
+        },
+    )
+    upsert_node(
+        conn,
+        {
+            "id": source_node_id,
+            "type": "SourceDocument",
+            "name": item.url,
+            "canonical_name": item.url,
+            "properties": {
+                "source_kind": "guide_ff14_item_detail",
+                "url": item.url,
+                "path": item.raw_path,
+            },
+        },
+    )
+    _upsert_item_edge(
+        conn,
+        item_node_id,
+        "DERIVED_FROM",
+        source_node_id,
+        item.id,
+        {"official_url": item.url},
+    )
+    category_name = item.subcategory or item.category
+    if category_name:
+        category_node_id = f"item_category:{_slug(category_name)}"
+        upsert_node(
+            conn,
+            {
+                "id": category_node_id,
+                "type": "ItemCategory",
+                "name": category_name,
+                "canonical_name": category_name,
+            },
+        )
+        _upsert_item_edge(conn, item_node_id, "ITEM_IN_CATEGORY", category_node_id, item.id)
+    for job in item.jobs:
+        job_node_id = f"equipment_job:{_slug(job)}"
+        upsert_node(
+            conn,
+            {
+                "id": job_node_id,
+                "type": "EquipmentJob",
+                "name": job,
+                "canonical_name": job,
+            },
+        )
+        _upsert_item_edge(conn, item_node_id, "EQUIPPABLE_BY_JOB", job_node_id, item.id)
+    if item.item_level is not None:
+        _upsert_item_edge(
+            conn,
+            item_node_id,
+            "HAS_ITEM_LEVEL",
+            item_node_id,
+            item.id,
+            {"value": item.item_level},
+        )
+    if item.equip_level is not None:
+        _upsert_item_edge(
+            conn,
+            item_node_id,
+            "HAS_EQUIP_LEVEL",
+            item_node_id,
+            item.id,
+            {"value": item.equip_level},
+        )
+    source_text = str(item.source.get("text") or "").strip()
+    if source_text:
+        item_source_node_id = f"item_source:{item.id}:{_slug(source_text)[:24]}"
+        upsert_node(
+            conn,
+            {
+                "id": item_source_node_id,
+                "type": "ItemSource",
+                "name": source_text,
+                "canonical_name": source_text,
+                "properties": item.source,
+            },
+        )
+        _upsert_item_edge(conn, item_node_id, "OBTAINED_FROM", item_source_node_id, item.id)
+
+
+def _upsert_item_edge(
+    conn: sqlite3.Connection,
+    source_node_id: str,
+    relation_type: str,
+    target_node_id: str,
+    source_id: str,
+    properties: dict[str, Any] | None = None,
+) -> None:
+    upsert_edge(
+        conn,
+        {
+            "id": make_edge_id(source_node_id, relation_type, target_node_id, source_id),
+            "source_node_id": source_node_id,
+            "relation_type": relation_type,
+            "target_node_id": target_node_id,
+            "source_id": source_id,
+            "confidence": 1.0,
+            "properties": properties or {},
+        },
+    )
+
+
 def _edge_to_dict(edge: ExtractedRelation) -> dict[str, Any]:
     return {
         "id": edge.edge_id,
@@ -306,6 +478,20 @@ def _relative_path(path: Path, root: Path) -> str:
         return path.relative_to(root).as_posix()
     except ValueError:
         return path.as_posix()
+
+
+def _json_loads(value: str | None, default: Any) -> Any:
+    if not value:
+        return default
+    try:
+        return json.loads(value)
+    except json.JSONDecodeError:
+        return default
+
+
+def _slug(value: str) -> str:
+    normalized = re.sub(r"[^0-9a-zA-Z가-힣]+", "_", value.strip()).strip("_")
+    return normalized.casefold() if normalized else "unknown"
 
 
 if __name__ == "__main__":

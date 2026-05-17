@@ -9,10 +9,26 @@ from datetime import datetime, timezone
 from typing import Any
 
 
-DOMAIN_NODE_TYPES = ("Job", "Patch", "Skill", "Item", "Encounter", "GearSet", "Fact")
+DOMAIN_NODE_TYPES = (
+    "Job",
+    "Patch",
+    "Skill",
+    "Item",
+    "ItemCategory",
+    "EquipmentJob",
+    "ItemSource",
+    "Encounter",
+    "GearSet",
+    "Fact",
+)
 DOMAIN_EDGE_TYPES = (
     "MENTIONS",
     "HAS_SKILL",
+    "ITEM_IN_CATEGORY",
+    "EQUIPPABLE_BY_JOB",
+    "HAS_ITEM_LEVEL",
+    "HAS_EQUIP_LEVEL",
+    "OBTAINED_FROM",
     "SUPPORTS",
     "VALID_IN_PATCH",
     "AFFECTS_JOB",

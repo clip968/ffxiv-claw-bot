@@ -12,7 +12,8 @@ Current status:
 - Task 04: completed on 2026-05-17; added item detail fixture, extractor, and tests.
 - Task 05: completed on 2026-05-17; added item pilot crawler, JSON CLI, and fake-fetcher tests.
 - Task 06: completed on 2026-05-17; added item wiki generator, CLI, scanner support, and tests.
-- Task 07: next.
+- Task 07: completed on 2026-05-17; added item graph nodes/edges/report coverage through the existing domain graph rebuild path.
+- Task 08: next.
 
 This document splits v09 into task-sized implementation units. Each task is intended to be handed to an agent as a bounded unit of work. Do not collapse the tasks into one broad implementation pass. The intended workflow is:
 
@@ -652,9 +653,10 @@ Required red tests:
 Run the new/updated graph tests. Then run existing graph tests if available. Example:
 
     python -m unittest tests.test_guide_ff14_item_graph -v
-    python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph
+    python -m unittest tests.test_domain_graph_rebuild tests.test_graph_report tests.test_v08_e2e -v
+    python -m py_compile tools/rebuild_domain_graph.py src/domain_graph/storage.py src/domain_graph/report.py
 
-The second command may be manual/local if it writes generated graph files.
+`tools/generate_graph_report.py` can also be run manually against a local DB/graph directory when generated graph files are acceptable in the local workspace.
 
 ## Done criteria
 

@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v09 guide.ff14.co.kr official DB crawler in progress
-- Last completed task: v09 Task 06 item wiki generator and FTS integration
-- Next task: v09 Task 07 domain graph item extension
+- Last completed task: v09 Task 07 domain graph item extension
+- Next task: v09 Task 08 item-aware retrieval and ask smoke behavior
 - Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
@@ -31,7 +31,7 @@
 14. `docs/plans/2026-05-17-v09-implementation-guide-ff14-crawler.md`
 15. `docs/reports/2026-05-17-v09-task-00-baseline.md`
 16. `docs/plans/v09/README.md`
-17. `docs/plans/v09/2026-05-17-v09-06-item-wiki-generator.md`
+17. `docs/plans/v09/2026-05-17-v09-07-item-graph.md`
 
 ## v09 guide.ff14.co.kr official DB crawler
 
@@ -82,6 +82,10 @@
   - Added `tests/test_guide_ff14_item_wiki.py`.
   - Updated `src/wiki_indexing/wiki_document_scanner.py` and `tools/compile_wiki.py` so generated `wiki/items/*.md` pages scan as `item` wiki documents.
   - Generator writes `wiki/items/index.md`, category pages, item pages, updates `wiki/index.md`, and indexes item pages into `wiki_pages`/`wiki_fts`.
+- Task 07 domain graph item extension completed:
+  - Added `tests/test_guide_ff14_item_graph.py` with temp DB coverage for item nodes, category/job/source/level/provenance edges, report counts, and idempotent rebuilds.
+  - Updated `tools/rebuild_domain_graph.py` so existing graph rebuilds load `guide_items` and emit item graph data through `graph_nodes`/`graph_edges`.
+  - Updated `src/domain_graph/storage.py` and `src/domain_graph/report.py` so item node/edge types are accepted and reported.
 
 검증:
 
@@ -112,10 +116,16 @@
 - Task 06 py_compile for item wiki/scanner/CLI files: OK.
 - Task 06 `git diff --check`: OK.
 - Task 06 docs freshness: OK.
+- Red check before Task 07 implementation: `python -m unittest tests.test_guide_ff14_item_graph -v` failed with missing item graph/report behavior.
+- Task 07 focused green: `python -m unittest tests.test_guide_ff14_item_graph -v` -> 4 tests OK.
+- Task 07 graph regressions: `python -m unittest tests.test_domain_graph_rebuild tests.test_graph_report tests.test_v08_e2e -v` -> OK.
+- Task 07 py_compile for graph files: OK.
+- Task 07 `git diff --check`: OK.
+- Task 07 docs freshness: OK.
 
 다음 작업:
 
-- Task 07: add item nodes/edges/report support in existing domain graph path.
+- Task 08: add item-aware retrieval and ask smoke behavior.
 
 아직 하지 말 것:
 

@@ -427,6 +427,7 @@ Acceptance criteria:
 - graph report shows non-zero `Item` count after pilot apply.
 - item nodes link to source/detail page provenance.
 - item wiki pages link back to official guide URL/source id.
+- current implementation emits item graph data through existing `graph_nodes`/`graph_edges`, including `Item`, `ItemCategory`, `EquipmentJob`, `ItemSource`, and item provenance/level edges.
 
 ## Derived Wiki: wiki/items
 
@@ -541,6 +542,7 @@ Required tests:
 - `tests/test_guide_ff14_item_extractor.py`
 - `tests/test_guide_ff14_crawler.py`
 - `tests/test_guide_ff14_item_wiki.py`
+- `tests/test_guide_ff14_item_graph.py`
 - `tests/test_guide_ff14_item_retrieval.py`
 
 Test expectations:
@@ -581,6 +583,7 @@ python -m unittest tests.test_guide_ff14_fetcher -v
 python -m unittest tests.test_guide_ff14_item_extractor -v
 python -m unittest tests.test_guide_ff14_crawler -v
 python -m unittest tests.test_guide_ff14_item_wiki -v
+python -m unittest tests.test_guide_ff14_item_graph -v
 python -m unittest tests.test_guide_ff14_item_retrieval -v
 python scripts/check_docs_freshness.py --all
 python scripts/finish_task.py

@@ -7,11 +7,27 @@ from typing import Any
 from src.domain_graph.storage import ensure_graph_schema
 
 
-NODE_TYPES = ("SourceDocument", "WikiPage", "Job", "Patch", "Skill", "Fact")
+NODE_TYPES = (
+    "SourceDocument",
+    "WikiPage",
+    "Job",
+    "Patch",
+    "Skill",
+    "Item",
+    "ItemCategory",
+    "EquipmentJob",
+    "ItemSource",
+    "Fact",
+)
 EDGE_TYPES = (
     "SOURCE_OF",
     "MENTIONS",
     "HAS_SKILL",
+    "ITEM_IN_CATEGORY",
+    "EQUIPPABLE_BY_JOB",
+    "HAS_ITEM_LEVEL",
+    "HAS_EQUIP_LEVEL",
+    "OBTAINED_FROM",
     "SUPPORTS",
     "VALID_IN_PATCH",
     "AFFECTS_JOB",
