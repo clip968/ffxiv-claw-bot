@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+import json
 import sqlite3
 import tempfile
 import unittest
-import json
 from pathlib import Path
 
 from tests.test_compile_wiki import ensure_wiki_tables

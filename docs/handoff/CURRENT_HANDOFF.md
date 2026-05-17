@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v0.8.5 Managed Wiki Knowledge Base Activation in progress
-- Last completed task: v08.5-06 answer quality
-- Next task: v08.5-07 v08.5 regression tests consolidation
+- Last completed task: v08.5-07 v08.5 regression tests consolidation
+- Next task: v08.5-08 documentation and runbook update
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
@@ -36,10 +36,11 @@
 - v08.5-04: graph-derived wiki generation, `tests/test_v08_5_real_derived_wiki.py`; `wiki/jobs`, `wiki/patches`, and `wiki/skills` are verified local generated outputs and are ignored by Git
 - v08.5-05: FTS reindexing, `tests/test_v08_5_fts_visibility.py`; `index_wiki_documents()` indexed 38 pages (`source_summary=26`, `job=5`, `patch=3`, `skill=4`) and ask smoke returned generated wiki contexts for `job_gunbreaker`, `patch_7_5`, and `skill_no_mercy`
 - v08.5-06: answer quality, `tests/test_v08_5_answer_quality.py`; `compose_answer()` now returns structured `요약`, `관련 항목`, `확인된 내용`, `근거 문서`, `확실도`, `주의` sections instead of raw source dumps
+- v08.5-07: v08.5 regression tests consolidation; focused v08.5 tests are `real_graph_population` 5 OK, `real_derived_wiki` 6 OK, `fts_visibility` 6 OK, and `answer_quality` 6 OK
 
 다음 작업:
 
-- v08.5-07: v08.5 regression tests consolidation
+- v08.5-08: documentation and runbook update
 
 아직 하지 말 것:
 

@@ -117,6 +117,13 @@ python -m unittest tests.test_v07_ask_cli -v
 python -m unittest tests.test_v08_e2e -v
 ```
 
+Task v08.5-07 focused regression snapshot:
+
+- `tests.test_v08_5_real_graph_population`: 5 tests OK
+- `tests.test_v08_5_real_derived_wiki`: 6 tests OK
+- `tests.test_v08_5_fts_visibility`: 6 tests OK
+- `tests.test_v08_5_answer_quality`: 6 tests OK
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:

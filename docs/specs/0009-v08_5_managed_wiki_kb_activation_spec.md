@@ -496,6 +496,7 @@ v08.5에서 추가된 실제 graph population, derived wiki activation, answer q
 
 - `tests/test_v08_5_real_graph_population.py`
 - `tests/test_v08_5_real_derived_wiki.py`
+- `tests/test_v08_5_fts_visibility.py`
 - `tests/test_v08_5_answer_quality.py`
 
 ### 테스트 항목
@@ -515,6 +516,13 @@ v08.5에서 추가된 실제 graph population, derived wiki activation, answer q
 3. generated page에 related source 포함 확인
 4. `wiki/index.md` 링크 확인
 5. idempotency 확인
+
+#### test_v08_5_fts_visibility.py
+
+1. generated job/patch/skill wiki가 `wiki_pages`에 색인되는지 확인
+2. generated patch/skill wiki가 FTS 검색되는지 확인
+3. source summary fallback 유지 확인
+4. graph entity match가 generated entity page context를 반환하는지 확인
 
 #### test_v08_5_answer_quality.py
 
