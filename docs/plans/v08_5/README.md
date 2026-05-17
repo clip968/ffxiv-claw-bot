@@ -30,7 +30,7 @@ wiki/source_summaries/
 | # | Plan | Purpose | Status |
 |---|---|---|---|
 | 00 | 2026-05-17-v08_5-00-baseline-verification.md | v08 baseline 테스트 통과 확인 | Completed 2026-05-17 |
-| 01 | 2026-05-17-v08_5-01-source-summary-audit.md | source summary audit 및 문서화 | Pending |
+| 01 | 2026-05-17-v08_5-01-source-summary-audit.md | source summary audit 및 문서화 | Completed 2026-05-17 |
 | 02 | 2026-05-17-v08_5-02-domain-graph-rebuild.md | 실제 source summary 기반 domain graph rebuild | Pending |
 | 03 | 2026-05-17-v08_5-03-graph-report-validation.md | GRAPH_REPORT.md 생성 및 검증 | Pending |
 | 04 | 2026-05-17-v08_5-04-derived-wiki-generation.md | graph-derived wiki 실제 생성 | Pending |

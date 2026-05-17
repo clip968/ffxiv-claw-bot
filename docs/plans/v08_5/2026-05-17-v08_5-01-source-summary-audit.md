@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -35,30 +35,32 @@ Out of scope:
 
 ## Checklist
 
-- [ ] `wiki/source_summaries/*.md` 파일 수 확인
-- [ ] 각 source summary 점검
-  - [ ] 파일명
-  - [ ] source id 존재 여부
-  - [ ] title 존재 여부
-  - [ ] body length
-  - [ ] FFXIV 관련성
-  - [ ] 비-FFXIV 오염 데이터 여부
-  - [ ] 빈 summary 여부
-  - [ ] 중복 source 가능성
-  - [ ] Job/Patch/Skill alias 포함 가능성
-- [ ] SQLite 현재 상태 확인
-  - [ ] `sources` table count
-  - [ ] `wiki_pages` table count
-  - [ ] `graph_nodes` table count
-  - [ ] `graph_edges` table count
-- [ ] audit 문서 작성: `docs/reports/2026-05-17-v08_5-source-audit.md`
-  - [ ] Summary 섹션
-  - [ ] Method 섹션
-  - [ ] Findings 테이블
-  - [ ] Exclusions or Fixes Needed 섹션
-  - [ ] Decision 섹션
-- [ ] graph rebuild 진행 가능 여부 결정
-- [ ] handoff/README feature map status 갱신
+- [x] `wiki/source_summaries/*.md` 파일 수 확인
+- [x] 각 source summary 점검
+  - [x] 파일명
+  - [x] source id 존재 여부
+  - [x] title 존재 여부
+  - [x] body length
+  - [x] FFXIV 관련성
+  - [x] 비-FFXIV 오염 데이터 여부
+  - [x] 빈 summary 여부
+  - [x] 중복 source 가능성
+  - [x] Job/Patch/Skill alias 포함 가능성
+- [x] SQLite 현재 상태 확인
+  - [x] `sources` table count
+  - [x] `wiki_pages` table count
+  - [x] `graph_nodes` table count
+  - [x] `graph_edges` table count
+- [x] audit 문서 작성: `docs/reports/2026-05-17-v08_5-source-audit.md`
+  - [x] Summary 섹션
+  - [x] Method 섹션
+  - [x] Findings 테이블
+  - [x] Exclusions or Fixes Needed 섹션
+  - [x] Decision 섹션
+- [x] graph rebuild 진행 가능 여부 결정
+- [x] handoff/README feature map status 갱신
+
+Audit 결과: source summary 26개 중 20개는 graph rebuild에 바로 사용할 수 있는 FFXIV 문서다. 너무 짧거나 운영성 note인 6개는 review 대상으로 기록했지만 rebuild blocker는 아니다.
 
 ## Verification
 

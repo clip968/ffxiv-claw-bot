@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v0.8.5 Managed Wiki Knowledge Base Activation in progress
-- Last completed task: v08.5-00 baseline verification
-- Next task: v08.5-01 source summary audit
+- Last completed task: v08.5-01 source summary audit
+- Next task: v08.5-02 actual domain graph rebuild
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
@@ -30,10 +30,11 @@
 완료:
 
 - v08.5-00: baseline verification
+- v08.5-01: `docs/reports/2026-05-17-v08_5-source-audit.md` source summary audit
 
 다음 작업:
 
-- v08.5-01: source summary audit
+- v08.5-02: actual domain graph rebuild
 
 아직 하지 말 것:
 
