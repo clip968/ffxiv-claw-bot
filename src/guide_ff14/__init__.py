@@ -8,6 +8,7 @@ from src.guide_ff14.models import (
 )
 from src.guide_ff14.category_map import parse_category_map
 from src.guide_ff14.fetcher import FetchResult, GuideFetcher
+from src.guide_ff14.item_extractor import ItemExtractionResult, extract_item_detail
 from src.guide_ff14.storage import (
     ensure_guide_ff14_schema,
     upsert_category,
@@ -23,6 +24,8 @@ __all__ = [
     "GuideItemSource",
     "FetchResult",
     "GuideFetcher",
+    "ItemExtractionResult",
+    "extract_item_detail",
     "parse_category_map",
     "ensure_guide_ff14_schema",
     "upsert_category",

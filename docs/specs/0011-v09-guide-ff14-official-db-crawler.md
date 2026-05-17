@@ -393,6 +393,8 @@ Acceptance criteria:
 - Parser strips nav/menu/search/footer noise.
 - Parser preserves Korean item text.
 - Parser does not execute scripts.
+- Extraction returns missing optional-field coverage metadata so later crawler
+  output can report sparse official DB pages without inventing facts.
 
 ## Domain Graph Extension
 

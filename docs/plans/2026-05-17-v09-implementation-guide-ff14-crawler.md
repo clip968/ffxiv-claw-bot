@@ -8,7 +8,8 @@ Current status:
 - Task 01: completed on 2026-05-17; added `src/guide_ff14` schema/storage and `tests/test_guide_ff14_storage.py`.
 - Task 02: completed on 2026-05-17; added category-map fixture, parser, and tests.
 - Task 03: completed on 2026-05-17; added safe fetcher and fake-client tests.
-- Task 04: next.
+- Task 04: completed on 2026-05-17; added item detail fixture, extractor, and tests.
+- Task 05: next.
 
 This document splits v09 into task-sized implementation units. Each task is intended to be handed to an agent as a bounded unit of work. Do not collapse the tasks into one broad implementation pass. The intended workflow is:
 

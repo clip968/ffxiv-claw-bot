@@ -181,6 +181,14 @@ python -m unittest tests.test_guide_ff14_fetcher -v
 
 This verifies that only `guide.ff14.co.kr` URLs are allowed, rejected hosts do not call HTTP, GET is used instead of HEAD, HTML responses include content hashes, GET exceptions return structured errors, robots snapshot fetch uses GET, and request delay is injectable for tests.
 
+Task 04 item extractor coverage:
+
+```bash
+python -m unittest tests.test_guide_ff14_item_extractor -v
+```
+
+This verifies that a local official item fixture extracts the detail id, Korean item name, category/subcategory, item/equip levels, jobs, stats, description/source text, content hash, and raw path while tolerating absent optional fields and stripping nav/footer/script noise.
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:

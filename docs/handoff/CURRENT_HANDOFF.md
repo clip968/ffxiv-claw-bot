@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v09 guide.ff14.co.kr official DB crawler in progress
-- Last completed task: v09 Task 03 polite fetcher and robots snapshot handling
-- Next task: v09 Task 04 item detail extractor
+- Last completed task: v09 Task 04 item detail extractor
+- Next task: v09 Task 05 item pilot crawler and CLI
 - Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
@@ -59,6 +59,11 @@
   - Added `src/guide_ff14/fetcher.py`.
   - Added `tests/test_guide_ff14_fetcher.py`.
   - Fetcher allows only `guide.ff14.co.kr`, uses GET only, supports injectable session/sleep/timeout/delay, returns structured `FetchResult`, hashes successful bodies, and fetches robots through GET.
+- Task 04 item detail extractor completed:
+  - Added fixture `tests/fixtures/guide_ff14/item_detail_gunblade.html`.
+  - Added `src/guide_ff14/item_extractor.py`.
+  - Added `tests/test_guide_ff14_item_extractor.py`.
+  - Extractor parses detail id, Korean name, category/subcategory, item/equip levels, jobs, stats, description/source text, hash, raw path, and missing optional-field coverage without network or LLM calls.
 
 검증:
 
@@ -77,10 +82,12 @@
 - Task 02 focused green: `python -m unittest tests.test_guide_ff14_category_map -v` -> 6 tests OK.
 - Red check before Task 03 implementation: `python -m unittest tests.test_guide_ff14_fetcher -v` failed with missing `src.guide_ff14.fetcher`.
 - Task 03 focused green: `python -m unittest tests.test_guide_ff14_fetcher -v` -> 6 tests OK.
+- Red check before Task 04 implementation: `python -m unittest tests.test_guide_ff14_item_extractor -v` failed with missing `src.guide_ff14.item_extractor`.
+- Task 04 focused green: `python -m unittest tests.test_guide_ff14_item_extractor -v` -> 8 tests OK.
 
 다음 작업:
 
-- Task 04: add fixture-driven item detail extractor; no live network or LLM extraction.
+- Task 05: add item pilot crawler and `tools/crawl_guide_ff14.py` CLI using fake-client/storage tests first.
 
 아직 하지 말 것:
 
