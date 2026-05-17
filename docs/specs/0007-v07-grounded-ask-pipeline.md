@@ -816,6 +816,8 @@ Acceptance:
 
 ### v07-06. Retrieval models and planner
 
+Status: Completed 2026-05-17
+
 Files:
 
 ```text

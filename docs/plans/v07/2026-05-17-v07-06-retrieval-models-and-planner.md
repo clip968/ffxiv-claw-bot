@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -43,19 +43,19 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/retrieval/__init__.py` 생성
-- [ ] `src/retrieval/models.py` 생성
-  - [ ] `RetrievalTarget` frozen dataclass
-  - [ ] `RetrievalPlan` frozen dataclass
-- [ ] `src/retrieval/planner.py` 생성
-  - [ ] `build_retrieval_plan()` 구현
-  - [ ] `_job_query()` helper (job slug → alias-expanded query)
-- [ ] `tests/test_v07_retrieval.py` 생성
-  - [ ] `test_job_change_history_plan_prefers_job_wiki`
-  - [ ] `test_generic_search_plan_has_no_topic_filter`
-  - [ ] `test_job_change_history_plan_has_source_summary_fallback`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/retrieval/__init__.py` 생성
+- [x] `src/retrieval/models.py` 생성
+  - [x] `RetrievalTarget` frozen dataclass
+  - [x] `RetrievalPlan` frozen dataclass
+- [x] `src/retrieval/planner.py` 생성
+  - [x] `build_retrieval_plan()` 구현
+  - [x] `_job_query()` helper (job slug → alias-expanded query)
+- [x] `tests/test_v07_retrieval.py` 생성
+  - [x] `test_job_change_history_plan_prefers_job_wiki`
+  - [x] `test_generic_search_plan_has_no_topic_filter`
+  - [x] `test_job_change_history_plan_has_source_summary_fallback`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
