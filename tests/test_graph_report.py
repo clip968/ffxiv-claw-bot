@@ -92,5 +92,90 @@ class GraphExportTests(unittest.TestCase):
             json.loads((self.graph_dir / filename).read_text(encoding="utf-8"))
 
 
+class GraphReportTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmp_dir = tempfile.TemporaryDirectory()
+        self.graph_dir = Path(self._tmp_dir.name) / "graph"
+        self.conn = sqlite3.connect(":memory:")
+        from src.domain_graph.storage import ensure_graph_schema, upsert_edge, upsert_node
+
+        ensure_graph_schema(self.conn)
+        upsert_node(self.conn, {"id": "src:local_v08", "type": "SourceDocument", "name": "local_v08"})
+        upsert_node(self.conn, {"id": "job:gunbreaker", "type": "Job", "name": "Gunbreaker"})
+        upsert_node(self.conn, {"id": "patch:7_5", "type": "Patch", "name": "Patch 7.5"})
+        upsert_node(self.conn, {"id": "skill:no_mercy", "type": "Skill", "name": "No Mercy"})
+        upsert_node(
+            self.conn,
+            {
+                "id": "fact:test",
+                "type": "Fact",
+                "name": "No Mercy duration was changed.",
+                "properties": {"text": "No Mercy duration was changed."},
+            },
+        )
+        upsert_edge(
+            self.conn,
+            {
+                "source_node_id": "src:local_v08",
+                "target_node_id": "job:gunbreaker",
+                "relation_type": "MENTIONS",
+                "source_id": "local_v08",
+                "confidence": 0.9,
+            },
+        )
+        upsert_edge(
+            self.conn,
+            {
+                "source_node_id": "fact:test",
+                "target_node_id": "patch:7_5",
+                "relation_type": "VALID_IN_PATCH",
+                "source_id": "local_v08",
+                "confidence": 0.85,
+            },
+        )
+
+    def tearDown(self) -> None:
+        self.conn.close()
+        self._tmp_dir.cleanup()
+
+    def _report_text(self) -> str:
+        from src.domain_graph.report import generate_graph_report
+
+        generate_graph_report(self.conn, self.graph_dir)
+        return (self.graph_dir / "GRAPH_REPORT.md").read_text(encoding="utf-8")
+
+    def test_report_file_created(self) -> None:
+        from src.domain_graph.report import generate_graph_report
+
+        result = generate_graph_report(self.conn, self.graph_dir)
+
+        self.assertEqual(result["status"], "ok")
+        self.assertTrue((self.graph_dir / "GRAPH_REPORT.md").exists())
+
+    def test_report_has_summary_section(self) -> None:
+        self.assertIn("## Summary", self._report_text())
+
+    def test_report_has_node_counts(self) -> None:
+        text = self._report_text()
+
+        self.assertIn("## Node Counts", text)
+        self.assertIn("- Job: 1", text)
+
+    def test_report_has_edge_counts(self) -> None:
+        text = self._report_text()
+
+        self.assertIn("## Edge Counts", text)
+        self.assertIn("- MENTIONS: 1", text)
+
+    def test_report_has_top_mentioned_jobs(self) -> None:
+        text = self._report_text()
+
+        self.assertIn("## Top Mentioned Jobs", text)
+        self.assertIn("Gunbreaker", text)
+
+    def test_report_has_quality_warnings(self) -> None:
+        self.assertIn("## Quality Warnings", self._report_text())
+
+
 if __name__ == "__main__":
     unittest.main()

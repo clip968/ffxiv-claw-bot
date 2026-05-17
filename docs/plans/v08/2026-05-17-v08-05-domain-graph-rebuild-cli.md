@@ -65,7 +65,7 @@ Contracts fixed by the tests:
   - [x] Fact node upsert
   - [x] Fact 관련 edge upsert
   - [x] graph export 호출 (v08-06에서 실제 구현)
-  - [ ] graph report 호출 (v08-07에서 실제 구현)
+  - [x] graph report 호출 (v08-07에서 실제 구현)
   - [x] `--dry-run` 지원
   - [x] `--source-id` 필터 지원
   - [x] `--reset-domain-graph` 지원
