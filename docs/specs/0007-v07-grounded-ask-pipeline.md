@@ -516,6 +516,8 @@ Required behavior:
 
 Citation and confidence helpers status: Completed 2026-05-17
 
+Composer status: Completed 2026-05-17
+
 Suggested file:
 
 ```text

@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -46,21 +46,21 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/answering/composer.py` 생성
-  - [ ] `Answer` frozen dataclass (body, confidence, sources)
-  - [ ] `compose_answer(context_pack: AskContextPack) -> Answer` 구현
-  - [ ] no-context answer 로직
-  - [ ] job wiki excerpt 포함 로직
-  - [ ] sources section 생성
-  - [ ] confidence 결정
-- [ ] `tests/test_v07_answer_composer.py` 갱신
-  - [ ] `test_answer_includes_source_path`
-  - [ ] `test_answer_includes_source_id`
-  - [ ] `test_answer_no_context_no_hallucination`
-  - [ ] `test_answer_uses_source_grounded_confidence`
-  - [ ] `test_answer_text_format_contains_required_sections`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/answering/composer.py` 생성
+  - [x] `Answer` frozen dataclass (body, confidence, sources)
+  - [x] `compose_answer(context_pack: AskContextPack) -> Answer` 구현
+  - [x] no-context answer 로직
+  - [x] job wiki excerpt 포함 로직
+  - [x] sources section 생성
+  - [x] confidence 결정
+- [x] `tests/test_v07_answer_composer.py` 갱신
+  - [x] `test_answer_includes_source_path`
+  - [x] `test_answer_includes_source_id`
+  - [x] `test_answer_no_context_no_hallucination`
+  - [x] `test_answer_uses_source_grounded_confidence`
+  - [x] `test_answer_text_format_contains_required_sections`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
