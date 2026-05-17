@@ -145,6 +145,7 @@ v08 구현 후 권장 구조:
       test_derived_wiki.py
       test_graph_report.py
       test_hybrid_retrieval.py
+      test_v08_e2e.py
 
 실제 repo 구조가 `src/` 패키지 중심이면 `tools/`는 얇은 CLI wrapper로 두고, 핵심 로직은 `src/...` 하위 모듈로 둔다.
 

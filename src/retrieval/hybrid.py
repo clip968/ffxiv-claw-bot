@@ -270,9 +270,14 @@ def _overlaps(span: tuple[int, int], occupied: list[tuple[int, int]]) -> bool:
 
 
 def _source_id_from_search_result(result: SearchResult) -> str | None:
+    if result.wiki_type != "source_summary":
+        return None
     match = SOURCE_ID_PATTERN.search(result.snippet or "")
     if match:
         return match.group(1)
+    path = Path(result.path)
+    if path.parent.as_posix().endswith("wiki/source_summaries"):
+        return path.stem
     return None
 
 

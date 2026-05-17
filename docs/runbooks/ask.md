@@ -167,8 +167,10 @@ Merge behavior:
 - FTS results keep their original order and score.
 - Fact-backed graph results use a stronger score than mention-only graph
   results.
-- Results are deduplicated by `page_id` and by `source_id` when source metadata
-  is available.
+- Results are deduplicated by `page_id`, and direct source summary results are
+  deduplicated by `source_id`.
+- Derived job pages may mention source ids, but those references do not hide the
+  original graph source summary context.
 - Final context candidates are capped at the graph-aware retrieval limit.
 
 ## Job Wiki First
@@ -223,6 +225,7 @@ Focused v0.8 hybrid retrieval tests:
 
 ```bash
 python -m unittest tests.test_hybrid_retrieval -v
+python -m unittest tests.test_v08_e2e -v
 ```
 
 Full completion gate:

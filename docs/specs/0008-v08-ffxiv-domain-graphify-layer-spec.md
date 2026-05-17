@@ -4,7 +4,7 @@
 
 - 문서명: v08 Spec — FFXIV Domain Graphify Layer + Derived Wiki + Hybrid Retrieval
 - 대상 프로젝트: ffxiv-claw-bot / FFXIV OpenClaw Bot
-- 상태: In Progress (v08-09 completed)
+- 상태: Completed (v08-10 completed)
 - 목적: 현재 FTS 기반 RAG + provenance graph 구조를 FFXIV 도메인 entity graph 기반 RAG로 확장한다.
 - 전제: Lost Ark 등 비-FFXIV 오염 데이터 정리는 이미 완료되었다고 가정한다.
 
@@ -1055,6 +1055,7 @@ v08은 다음 조건을 만족하면 완료로 본다.
 - derived wiki 테스트 통과
 - graph report 테스트 통과
 - hybrid retrieval 테스트 통과
+- v08 end-to-end smoke 테스트 통과
 - 기존 FTS 관련 테스트가 깨지지 않음
 
 ### 17.6 Implementation progress
@@ -1068,6 +1069,7 @@ v08은 다음 조건을 만족하면 완료로 본다.
 - v08-07 completed on 2026-05-17: `src/domain_graph/report.py` and `tools/generate_graph_report.py` generate `graph/GRAPH_REPORT.md` with summary counts, node counts, edge counts, top mentioned entities, and quality warnings.
 - v08-08 completed on 2026-05-17: `src/domain_graph/derived_wiki.py` generates graph-derived `wiki/jobs`, `wiki/patches`, `wiki/skills` pages, updates `wiki/index.md`, and preserves source links and DERIVED_FROM graph edges while keeping legacy v0.6 `--kind jobs` CLI behavior.
 - v08-09 completed on 2026-05-17: `src/retrieval/hybrid.py` adds entity-index query matching, graph neighborhood retrieval, FTS/graph merge and fallback helpers, and `tools/ask.py` now uses graph-aware retrieval only when `graph/entity_index.json` is available.
+- v08-10 completed on 2026-05-17: `tests/test_v08_e2e.py` verifies one fixture source summary through entity extraction, graph rebuild/export/report, derived wiki generation, graph neighborhood retrieval, and ask CLI FTS+graph context assembly.
 
 ---
 

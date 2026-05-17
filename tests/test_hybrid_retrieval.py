@@ -119,6 +119,34 @@ class HybridRetrievalTests(unittest.TestCase):
 
         self.assertEqual([result.page_id for result in merged], ["wiki_local_v08"])
 
+    def test_derived_job_page_does_not_hide_graph_source(self) -> None:
+        from src.retrieval.hybrid import GraphRetrievalResult, merge_retrieval_results
+
+        merged = merge_retrieval_results(
+            [
+                _fts(
+                    "job_gunbreaker",
+                    wiki_type="job",
+                    path="wiki/jobs/gunbreaker.md",
+                    source_id="local_v08",
+                )
+            ],
+            [
+                GraphRetrievalResult(
+                    page_id="wiki_local_v08",
+                    title="Patch 7.5 Fixture",
+                    wiki_type="source_summary",
+                    path="wiki/source_summaries/local_v08.md",
+                    snippet="No Mercy duration was changed.",
+                    source_id="local_v08",
+                    node_id="fact:no_mercy_7_5",
+                    score=1.4,
+                )
+            ],
+        )
+
+        self.assertEqual([result.page_id for result in merged], ["job_gunbreaker", "wiki_local_v08"])
+
     def test_fts_only_fallback(self) -> None:
         from src.retrieval.hybrid import merge_retrieval_results
 
@@ -136,12 +164,18 @@ class HybridRetrievalTests(unittest.TestCase):
         self.assertEqual(contexts[0]["source_id"], "local_v08")
 
 
-def _fts(page_id: str, *, source_id: str = "source") -> SearchResult:
+def _fts(
+    page_id: str,
+    *,
+    source_id: str = "source",
+    wiki_type: str = "source_summary",
+    path: str | None = None,
+) -> SearchResult:
     return SearchResult(
         page_id=page_id,
         title=page_id,
-        wiki_type="source_summary",
-        path=f"wiki/source_summaries/{source_id}.md",
+        wiki_type=wiki_type,
+        path=path or f"wiki/source_summaries/{source_id}.md",
         score=0.2,
         snippet=f"source_id: {source_id}\nGunbreaker changed.",
         topic=None,

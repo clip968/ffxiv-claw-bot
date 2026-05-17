@@ -32,6 +32,26 @@ Drive sync dry-run 테스트:
 python -m unittest tests.test_sync_drive
 ```
 
+## v0.8 Domain Graphify Tests
+
+Focused v0.8 graph/retrieval tests:
+
+```bash
+python -m unittest tests.test_entity_extractor -v
+python -m unittest tests.test_relation_extractor -v
+python -m unittest tests.test_domain_graph_rebuild -v
+python -m unittest tests.test_graph_report -v
+python -m unittest tests.test_derived_wiki -v
+python -m unittest tests.test_hybrid_retrieval -v
+python -m unittest tests.test_v08_e2e -v
+```
+
+Current status:
+
+- v08-01 through v08-10 are **Green** as of 2026-05-17.
+- `tests/test_v08_e2e.py` verifies the fixture source summary path through entity extraction, graph rebuild/export/report, derived wiki generation, graph neighborhood retrieval, and ask CLI FTS+graph context assembly.
+- Hybrid retrieval source dedupe applies to direct source summary results; derived job wiki pages do not hide the original graph source summary context.
+
 ## v0.4 Red Tests
 
 The active v0.4 plan files name their red tests. These tests are expected to fail until the matching implementation slice is written.

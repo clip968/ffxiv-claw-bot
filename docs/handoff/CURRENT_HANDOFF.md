@@ -8,9 +8,9 @@
 - Local path: `/mnt/d/programming/ffxiv-claw-bot`
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
-- Current phase: v0.8 Domain Graphify Layer in progress
-- Last completed task: v08-09 graph-aware hybrid retrieval
-- Next task: v08-10 end-to-end smoke test
+- Current phase: v0.8 Domain Graphify Layer completed
+- Last completed task: v08-10 end-to-end smoke test
+- Next task: none; wait for maintainer scope
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
@@ -19,10 +19,10 @@
 2. `docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md`
 3. `docs/plans/2026-05-17-v08-implementation.md`
 4. `docs/plans/v08/README.md`
-5. `docs/plans/v08/2026-05-17-v08-09-hybrid-retrieval.md`
-6. `src/retrieval/hybrid.py`
-7. `tools/ask.py`
-8. `tests/test_hybrid_retrieval.py`
+5. `docs/plans/v08/2026-05-17-v08-10-e2e-smoke-test.md`
+6. `tests/test_v08_e2e.py`
+7. `src/retrieval/hybrid.py`
+8. `tools/ask.py`
 
 필요할 때만 과거 상세 로그를 읽는다.
 
@@ -41,14 +41,15 @@
 - v08-07: `src/domain_graph/report.py` graph report
 - v08-08: `src/domain_graph/derived_wiki.py` graph-derived wiki generator
 - v08-09: `src/retrieval/hybrid.py` graph-aware hybrid retrieval
+- v08-10: `tests/test_v08_e2e.py` end-to-end smoke test
 
 다음 작업:
 
-- v08-10: end-to-end smoke test
+- none; wait for maintainer scope
 
 아직 하지 말 것:
 
-- v08-10 완료 전에는 v09 이후 기능을 앞당기지 않는다.
+- v09 이후 기능을 maintainer 요청 없이 앞당기지 않는다.
 
 ## v07 진행 상황
 
@@ -87,7 +88,7 @@
 
 ## 현재 검증 스냅샷
 
-v08-09 완료 시점 검증:
+v08-10 완료 시점 검증:
 
 ```bash
 python -m unittest tests.test_entity_extractor -v
@@ -96,6 +97,7 @@ python -m unittest tests.test_domain_graph_rebuild -v
 python -m unittest tests.test_graph_report -v
 python -m unittest tests.test_derived_wiki -v
 python -m unittest tests.test_hybrid_retrieval -v
+python -m unittest tests.test_v08_e2e -v
 python -m unittest tests.test_v07_ask_cli tests.test_v07_retrieval -v
 python -m unittest tests.test_v06_job_wiki_generator -v
 python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph
@@ -110,7 +112,8 @@ python tools/rebuild_domain_graph.py --dry-run --verbose
 - 11 tests OK
 - graph export/report 11 tests OK
 - derived wiki 8 tests OK
-- hybrid retrieval 6 tests OK
+- hybrid retrieval 7 tests OK
+- v08 E2E smoke 6 tests OK
 - v07 ask/retrieval regression 17 tests OK
 - v06 derived wiki regression 28 tests OK
 - graph report CLI returned JSON `status=ok`
@@ -147,16 +150,16 @@ python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json
 
 ## 현재 작업트리 주의사항
 
-v08-09 완료 커밋 전에는 다음 변경이 포함되어야 한다.
+v08-10 완료 커밋 전에는 다음 변경이 포함되어야 한다.
 
 ```text
 src/retrieval/hybrid.py
-src/retrieval/__init__.py
-tools/ask.py
 tests/test_hybrid_retrieval.py
+tests/test_v08_e2e.py
 docs/runbooks/ask.md
 docs/handoff/CURRENT_HANDOFF.md
-docs/plans/v08/2026-05-17-v08-09-hybrid-retrieval.md
+docs/plans/2026-05-17-v08-implementation.md
+docs/plans/v08/2026-05-17-v08-10-e2e-smoke-test.md
 docs/plans/v08/README.md
 docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md
 ```
@@ -171,4 +174,4 @@ docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md
 
 ## 다음 agent에게
 
-v08 scope is open by maintainer request. Continue with v08-10 after v08-09 is committed and pushed.
+v08 is complete through task 10. Start new work only from explicit maintainer scope.
