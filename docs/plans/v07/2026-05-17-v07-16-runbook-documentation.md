@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -41,18 +41,18 @@ Out of scope:
 
 ## Checklist
 
-- [ ] `docs/runbooks/ask.md` 생성
-  - [ ] Purpose
-  - [ ] CLI examples
-  - [ ] JSON output example
-  - [ ] Text output example
-  - [ ] Debug mode
-  - [ ] Job wiki first policy
-  - [ ] Source summary fallback policy
-  - [ ] No-context behavior
-  - [ ] Known limitations
-- [ ] `docs/plans/v07/README.md` feature map status 갱신
-- [ ] `docs/handoff/CURRENT_HANDOFF.md` v07 반영
+- [x] `docs/runbooks/ask.md` 생성
+  - [x] Purpose
+  - [x] CLI examples
+  - [x] JSON output example
+  - [x] Text output example
+  - [x] Debug mode
+  - [x] Job wiki first policy
+  - [x] Source summary fallback policy
+  - [x] No-context behavior
+  - [x] Known limitations
+- [x] `docs/plans/v07/README.md` feature map status 갱신
+- [x] `docs/handoff/CURRENT_HANDOFF.md` v07 반영
 
 ## Verification
 
