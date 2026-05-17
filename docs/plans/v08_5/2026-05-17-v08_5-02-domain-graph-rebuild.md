@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -62,34 +62,44 @@ Expected entities:
 
 ## Checklist
 
-- [ ] red test 작성: `tests/test_v08_5_real_graph_population.py`
-  - [ ] `test_rebuild_creates_job_patch_skill_fact_nodes`
-  - [ ] `test_rebuild_creates_required_edge_types`
-  - [ ] `test_rebuild_creates_graph_export_files`
-  - [ ] `test_rebuild_idempotent`
-- [ ] red 상태 확인
-- [ ] dry-run 실행
-  - [ ] `python tools/rebuild_domain_graph.py --dry-run --verbose`
-- [ ] 실제 rebuild 실행
-  - [ ] `python tools/rebuild_domain_graph.py --reset-domain-graph --verbose`
-- [ ] DB 확인
-  - [ ] node type count 확인 (Job, Patch, Skill, Fact)
-  - [ ] edge type count 확인 (MENTIONS, SUPPORTS, VALID_IN_PATCH)
-  - [ ] AFFECTS_JOB, AFFECTS_SKILL이 0이면 사유 문서화
-- [ ] graph export 파일 확인
-  - [ ] `graph/nodes.json`
-  - [ ] `graph/edges.json`
-  - [ ] `graph/domain_graph.json`
-  - [ ] `graph/entity_index.json`
-- [ ] idempotency 확인: 반복 실행 후 count 비교
-- [ ] 실패 시 원인 진단
-  - [ ] source summary parser가 실제 포맷을 못 읽는가?
-  - [ ] `> Source: ...` 포맷이 문서마다 다른가?
-  - [ ] registry alias가 부족한가?
-  - [ ] relation trigger가 너무 보수적인가?
-  - [ ] graph reset이 provenance node까지 잘못 지우는가?
-- [ ] 최소 코드 수정으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] red test 작성: `tests/test_v08_5_real_graph_population.py`
+  - [x] `test_rebuild_creates_job_patch_skill_fact_nodes`
+  - [x] `test_rebuild_creates_required_edge_types`
+  - [x] `test_rebuild_creates_graph_export_files`
+  - [x] `test_rebuild_idempotent`
+- [x] red 상태 확인
+- [x] dry-run 실행
+  - [x] `python tools/rebuild_domain_graph.py --dry-run --verbose`
+- [x] 실제 rebuild 실행
+  - [x] `python tools/rebuild_domain_graph.py --reset-domain-graph --verbose`
+- [x] DB 확인
+  - [x] node type count 확인 (Job, Patch, Skill, Fact)
+  - [x] edge type count 확인 (MENTIONS, SUPPORTS, VALID_IN_PATCH)
+  - [x] AFFECTS_JOB, AFFECTS_SKILL이 0이면 사유 문서화
+- [x] graph export 파일 확인
+  - [x] `graph/nodes.json`
+  - [x] `graph/edges.json`
+  - [x] `graph/domain_graph.json`
+  - [x] `graph/entity_index.json`
+- [x] idempotency 확인: 반복 실행 후 count 비교
+- [x] 실패 시 원인 진단
+  - [x] source summary parser가 실제 포맷을 못 읽는가?
+  - [x] `> Source: ...` 포맷이 문서마다 다른가?
+  - [x] registry alias가 부족한가?
+  - [x] relation trigger가 너무 보수적인가?
+  - [x] graph reset이 provenance node까지 잘못 지우는가?
+- [x] 최소 코드 수정으로 green 전환
+- [x] handoff/README feature map status 갱신
+
+결과:
+
+- Red 확인: `tests.test_v08_5_real_graph_population` import error.
+- 추가 regression: legacy `SOURCE_OF` confidence `EXTRACTED`가 export를 막지 않도록 고정.
+- 실제 rebuild: `sources=26`, `facts=14`, DB nodes `78`, DB edges `339`.
+- Required node types: `Job=5`, `Patch=3`, `Skill=4`, `Fact=14`.
+- Required edge types: `MENTIONS=198`, `SUPPORTS=14`, `VALID_IN_PATCH=14`, `AFFECTS_JOB=59`, `AFFECTS_SKILL=4`.
+- Idempotency: reset rebuild 반복 후 nodes `78`, edges `339` 유지.
+- Generated graph JSON files are verified local outputs and remain ignored by Git because they are derived from local source summaries.
 
 ## Verification
 

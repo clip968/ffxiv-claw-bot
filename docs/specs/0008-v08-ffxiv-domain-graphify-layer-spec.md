@@ -1070,6 +1070,7 @@ v08은 다음 조건을 만족하면 완료로 본다.
 - v08-08 completed on 2026-05-17: `src/domain_graph/derived_wiki.py` generates graph-derived `wiki/jobs`, `wiki/patches`, `wiki/skills` pages, updates `wiki/index.md`, and preserves source links and DERIVED_FROM graph edges while keeping legacy v0.6 `--kind jobs` CLI behavior.
 - v08-09 completed on 2026-05-17: `src/retrieval/hybrid.py` adds entity-index query matching, graph neighborhood retrieval, FTS/graph merge and fallback helpers, and `tools/ask.py` now uses graph-aware retrieval only when `graph/entity_index.json` is available.
 - v08-10 completed on 2026-05-17: `tests/test_v08_e2e.py` verifies one fixture source summary through entity extraction, graph rebuild/export/report, derived wiki generation, graph neighborhood retrieval, and ask CLI FTS+graph context assembly.
+- v08.5-02 compatibility note on 2026-05-17: graph export and storage row conversion tolerate legacy non-numeric graph edge confidence values such as `EXTRACTED` by exporting/querying them as unknown confidence instead of failing the domain graph rebuild.
 
 ---
 

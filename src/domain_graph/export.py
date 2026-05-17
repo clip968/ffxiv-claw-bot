@@ -67,7 +67,7 @@ def export_edges(conn: sqlite3.Connection, output_path: Path) -> list[dict[str, 
             "target": row[2],
             "relation": row[3],
             "source_id": _first_or_none(_json_loads(row[5], [])),
-            "confidence": float(row[4]) if row[4] is not None else None,
+            "confidence": _optional_float(row[4]),
             "properties": _json_loads(row[6], _json_loads(row[7], {})),
         }
         for row in rows
@@ -135,3 +135,12 @@ def _normalize_alias(value: str) -> str:
 
 def _first_or_none(values: list[Any]) -> Any | None:
     return values[0] if values else None
+
+
+def _optional_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None

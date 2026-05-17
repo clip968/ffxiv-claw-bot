@@ -17,5 +17,8 @@ db/ffxiv.sqlite
 wiki/source_summaries/
 graph/nodes.json
 graph/edges.json
+graph/domain_graph.json
+graph/entity_index.json
+graph/GRAPH_REPORT.md
 /raw/urls
 .trash

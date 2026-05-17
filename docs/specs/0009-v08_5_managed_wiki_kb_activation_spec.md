@@ -303,6 +303,7 @@ python tools/rebuild_domain_graph.py --reset-domain-graph --verbose
 - `AFFECTS_JOB` count > 0 또는 실제 source 부족 사유 문서화
 - `AFFECTS_SKILL` count > 0 또는 실제 source 부족 사유 문서화
 - `VALID_IN_PATCH` count > 0 또는 실제 source 부족 사유 문서화
+- Legacy `SOURCE_OF` edge confidence values such as `EXTRACTED` do not block graph export; they are treated as unknown confidence in exported JSON.
 
 ---
 

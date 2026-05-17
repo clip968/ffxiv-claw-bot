@@ -204,7 +204,9 @@ rules:
       - "tests/test_derived_wiki.py"
       - "tests/test_hybrid_retrieval.py"
       - "tests/test_v08_e2e.py"
+      - "tests/test_v08_5_*.py"
     contract_docs:
       - "docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md"
+      - "docs/specs/0009-v08_5_managed_wiki_kb_activation_spec.md"
     procedure_docs:
       - "docs/runbooks/test.md"

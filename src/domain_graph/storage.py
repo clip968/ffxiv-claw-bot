@@ -321,7 +321,7 @@ def _edge_row_to_dict(row: sqlite3.Row | tuple[Any, ...]) -> dict[str, Any]:
         "source": row[1],
         "target": row[2],
         "relation": row[3],
-        "confidence": float(row[4]) if row[4] is not None else None,
+        "confidence": _optional_float(row[4]),
         "source_ids": _json_loads(row[5], default=[]),
         "properties": _json_loads(row[6], default={}),
     }
@@ -346,3 +346,12 @@ def _now_iso() -> str:
 
 def _hash_parts(*parts: str) -> str:
     return hashlib.sha1("\x1f".join(parts).encode("utf-8")).hexdigest()[:12]
+
+
+def _optional_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
