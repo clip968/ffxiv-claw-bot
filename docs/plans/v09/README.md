@@ -37,7 +37,7 @@ guide.ff14.co.kr category/detail pages
 | 07 | 2026-05-17-v09-07-item-graph.md | domain graph item nodes/edges/report | Completed 2026-05-17 |
 | 08 | 2026-05-17-v09-08-item-retrieval.md | item-aware ask retrieval behavior | Completed 2026-05-17 |
 | 09 | 2026-05-17-v09-09-runbook-quality-gate.md | runbook and final quality gate | Completed 2026-05-17 |
-| 10 | 2026-05-17-v09-10-expansion-gate.md | quest/recipe/gathering expansion gate docs only | In Progress |
+| 10 | 2026-05-17-v09-10-expansion-gate.md | quest/recipe/gathering expansion gate docs only | Completed 2026-05-17 |
 
 ## Red Test Map
 

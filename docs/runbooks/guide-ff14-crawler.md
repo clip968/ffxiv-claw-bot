@@ -212,6 +212,33 @@ If a manual smoke run produces bad local state:
 Do not delete tracked docs or source files as cleanup for generated crawler
 state.
 
+## Future Expansion Gate
+
+Quest, recipe, and gathering support are future work only. Do not add crawler
+modes, schemas, extractors, wiki generators, graph emitters, retrieval behavior,
+or ask policy for those domains until the item pilot gates below have passed
+and the maintainer explicitly approves the next expansion scope.
+
+Required item pilot gates before expansion:
+
+- category map tests pass
+- item detail extractor tests pass
+- item pilot dry-run/apply smoke is reviewed
+- item derived wiki is generated and FTS-indexed
+- graph report shows item nodes/edges
+- representative item ask smoke passes
+- no broad raw HTML dump appears in answers
+- docs/runbook remains current
+
+Future outline only:
+
+- Quest expansion may add `guide_quests`, `Quest`, `QuestIssuer`,
+  `QuestLocation`, `QuestReward`, `REQUIRES_QUEST`, and `UNLOCKS_CONTENT`.
+- Recipe expansion may add `guide_recipes`, `Recipe`, `CraftingJob`,
+  `Ingredient`, `PRODUCES_ITEM`, and `REQUIRES_INGREDIENT`.
+- Gathering expansion may add `guide_gathering_entries`, `GatheringEntry`,
+  `GatheringNode`, `GatheringJob`, `Zone`, `FOUND_AT_NODE`, and `GATHERED_BY`.
+
 ## Completion Checklist
 
 - [ ] maintainer-approved live scope confirmed or manual network smoke skipped

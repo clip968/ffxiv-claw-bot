@@ -8,7 +8,7 @@
 
 ## Status
 
-In Progress
+Completed 2026-05-17
 
 ## Goal
 
@@ -33,11 +33,11 @@ No red test required. Documentation-only task.
 
 ## Checklist
 
-- [ ] expansion gate docs 확인/보강
-- [ ] future entities/edges outline 유지
-- [ ] no new quest/recipe/gathering code 확인
-- [ ] docs freshness 실행
-- [ ] handoff 갱신
+- [x] expansion gate docs 확인/보강
+- [x] future entities/edges outline 유지
+- [x] no new quest/recipe/gathering code 확인
+- [x] docs freshness 실행
+- [x] handoff 갱신
 
 ## Verification
 
@@ -45,6 +45,12 @@ No red test required. Documentation-only task.
 git diff -- docs
 python scripts/check_docs_freshness.py --all
 ```
+
+## Implementation Notes
+
+- Added `docs/runbooks/guide-ff14-crawler.md` future expansion gate section.
+- Added `docs/reports/2026-05-17-v09-task-10-expansion-gate.md`.
+- Confirmed this task is documentation-only and does not add quest/recipe/gathering implementation.
 
 ## Agent Prompt
 
