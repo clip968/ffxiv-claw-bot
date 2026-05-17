@@ -38,7 +38,7 @@ wiki/source_summaries/
 | 06 | 2026-05-17-v08_5-06-answer-quality.md | ask 답변 품질 개선 (source dump → 구조화 요약) | Completed 2026-05-17 |
 | 07 | 2026-05-17-v08_5-07-v08_5-tests.md | v08.5 regression tests 추가 | Completed 2026-05-17 |
 | 08 | 2026-05-17-v08_5-08-documentation-runbook.md | documentation 및 runbook 갱신 | Completed 2026-05-17 |
-| 09 | 2026-05-17-v08_5-09-final-verification.md | 최종 regression 및 handoff 갱신 | Pending |
+| 09 | 2026-05-17-v08_5-09-final-verification.md | 최종 regression 및 handoff 갱신 | Completed 2026-05-17 |
 
 ## Red Test Map
 

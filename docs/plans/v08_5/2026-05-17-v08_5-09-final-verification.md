@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -33,30 +33,43 @@ Out of scope:
 
 ## Checklist
 
-- [ ] pipeline smoke test
-  - [ ] `python tools/rebuild_domain_graph.py --dry-run --verbose`
-  - [ ] `python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph`
-  - [ ] `python tools/generate_derived_wiki.py --dry-run --verbose`
-- [ ] ask smoke query
-  - [ ] `python tools/ask.py "건브 7.5 변경점 알려줘" --format json`
-  - [ ] `python tools/ask.py "No Mercy 관련 변경 있어?" --format json`
-  - [ ] `python tools/ask.py "7.5에서 어떤 직업이 언급됐어?" --format json`
-  - [ ] `python tools/ask.py "건브 관련 source 보여줘" --format json`
-  - [ ] 각 결과 확인: status=ok, contexts 비어 있지 않음, source dump 아님
-- [ ] 실제 graph count 확인
-- [ ] full unittest 실행
-  - [ ] `python -m unittest discover -s tests -p "test_*.py"`
-- [ ] docs freshness 확인
-  - [ ] `python scripts/check_docs_freshness.py --all`
-- [ ] finish_task 실행
-  - [ ] `python scripts/finish_task.py`
-- [ ] CURRENT_HANDOFF.md 최종 기록
-  - [ ] Current phase: v08.5 Managed Wiki Knowledge Base Activation completed
-  - [ ] Last completed task: final regression / handoff update
-  - [ ] Next task: wait for maintainer scope, then consider v09 namespace expansion
-  - [ ] 검증 명령과 결과
-  - [ ] 아직 하지 말 것
-- [ ] handoff/README feature map status 갱신
+- [x] pipeline smoke test
+  - [x] `python tools/rebuild_domain_graph.py --dry-run --verbose`
+  - [x] `python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph`
+  - [x] `python tools/generate_derived_wiki.py --dry-run --verbose`
+- [x] ask smoke query
+  - [x] `python tools/ask.py "건브 7.5 변경점 알려줘" --format json`
+  - [x] `python tools/ask.py "No Mercy 관련 변경 있어?" --format json`
+  - [x] `python tools/ask.py "7.5에서 어떤 직업이 언급됐어?" --format json`
+  - [x] `python tools/ask.py "건브 관련 source 보여줘" --format json`
+  - [x] 각 결과 확인: status=ok, contexts 비어 있지 않음, source dump 아님
+- [x] 실제 graph count 확인
+- [x] full unittest 실행
+  - [x] `python -m unittest discover -s tests -p "test_*.py"`
+- [x] docs freshness 확인
+  - [x] `python scripts/check_docs_freshness.py --all`
+- [x] finish_task 실행
+  - [x] `python scripts/finish_task.py`
+- [x] CURRENT_HANDOFF.md 최종 기록
+  - [x] Current phase: v08.5 Managed Wiki Knowledge Base Activation completed
+  - [x] Last completed task: final verification and handoff update
+  - [x] Next task: wait for maintainer scope
+  - [x] 검증 명령과 결과
+  - [x] 아직 하지 말 것
+- [x] handoff/README feature map status 갱신
+
+## Results
+
+- `python tools/rebuild_domain_graph.py --dry-run --verbose`: `status=ok`, `planned_sources=26`, `planned_registry_nodes=12`.
+- `python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph`: `status=ok`, `warnings=1`.
+- `python tools/generate_derived_wiki.py --dry-run --verbose`: `status=ok`, `written=12` generated pages (`jobs=5`, `patches=3`, `skills=4`).
+- graph count: nodes `Fact=14`, `Job=5`, `Patch=3`, `Skill=4`, `SourceDocument=26`, `WikiPage=38`.
+- edge count: `AFFECTS_JOB=59`, `AFFECTS_SKILL=4`, `DERIVED_FROM=77`, `HAS_SKILL=4`, `MENTIONS=198`, `SOURCE_OF=46`, `SUPPORTS=14`, `VALID_IN_PATCH=14`.
+- wiki_pages count: `source_summary=26`, `job=5`, `patch=3`, `skill=4`.
+- ask smoke: 4 queries returned `status=ok`, non-empty contexts, required answer sections, and `raw_dump=False`.
+- `python -m unittest discover -s tests -p "test_*.py"`: 355 tests OK.
+- `python scripts/check_docs_freshness.py --all`: OK.
+- `python scripts/finish_task.py`: 355 tests OK, docs freshness OK, Notion handoff dry-run OK.
 
 ## Verification
 

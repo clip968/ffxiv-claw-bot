@@ -8,9 +8,9 @@
 - Local path: `/mnt/d/programming/ffxiv-claw-bot`
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
-- Current phase: v0.8.5 Managed Wiki Knowledge Base Activation in progress
-- Last completed task: v08.5-08 documentation and runbook update
-- Next task: v08.5-09 final verification
+- Current phase: v0.8.5 Managed Wiki Knowledge Base Activation completed
+- Last completed task: v08.5-09 final verification and handoff update
+- Next task: wait for maintainer scope; v09 namespace expansion is only future work
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
@@ -38,14 +38,16 @@
 - v08.5-06: answer quality, `tests/test_v08_5_answer_quality.py`; `compose_answer()` now returns structured `요약`, `관련 항목`, `확인된 내용`, `근거 문서`, `확실도`, `주의` sections instead of raw source dumps
 - v08.5-07: v08.5 regression tests consolidation; focused v08.5 tests are `real_graph_population` 5 OK, `real_derived_wiki` 6 OK, `fts_visibility` 6 OK, and `answer_quality` 6 OK
 - v08.5-08: documentation/runbook update; added `docs/runbooks/domain-graph-refresh.md` and refreshed README/specs/runbooks/handoff for the v08.5 graph/wiki/FTS/ask workflow
+- v08.5-09: final verification; pipeline smoke, ask smoke, graph/wiki counts, full unittest, docs freshness, and finish_task all passed
 
 다음 작업:
 
-- v08.5-09: final verification and final handoff update
+- wait for maintainer scope
 
 아직 하지 말 것:
 
 - v09 이후 기능을 maintainer 요청 없이 앞당기지 않는다.
+- BIS/raid/item namespace expansion, crawling/polling, vector DB, graph DB, and LLM API integration remain out of scope until explicitly requested.
 
 필요할 때만 과거 상세 로그를 읽는다.
 
@@ -111,17 +113,31 @@
 
 ## 현재 검증 스냅샷
 
-v08.5-08 완료 시점 검증:
+v08.5 완료 시점 검증:
 
 ```bash
-python -m unittest tests.test_v08_5_real_graph_population tests.test_v08_5_real_derived_wiki tests.test_v08_5_fts_visibility tests.test_v08_5_answer_quality -v
+python tools/rebuild_domain_graph.py --dry-run --verbose
+python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph
+python tools/generate_derived_wiki.py --dry-run --verbose
+python tools/ask.py "건브 7.5 변경점 알려줘" --format json
+python tools/ask.py "No Mercy 관련 변경 있어?" --format json
+python tools/ask.py "7.5에서 어떤 직업이 언급됐어?" --format json
+python tools/ask.py "건브 관련 source 보여줘" --format json
+python -m unittest discover -s tests -p "test_*.py"
 python scripts/check_docs_freshness.py --all
 python scripts/finish_task.py
 ```
 
 결과:
 
-- focused v08.5 tests: 23 tests OK
+- domain graph dry-run: `status=ok`, `planned_sources=26`, `planned_registry_nodes=12`
+- graph report: `status=ok`, `warnings=1`
+- graph-derived wiki dry-run: `status=ok`, 12 pages planned (`jobs=5`, `patches=3`, `skills=4`)
+- graph nodes: `Fact=14`, `Job=5`, `Patch=3`, `Skill=4`, `SourceDocument=26`, `WikiPage=38`
+- graph edges: `AFFECTS_JOB=59`, `AFFECTS_SKILL=4`, `DERIVED_FROM=77`, `HAS_SKILL=4`, `MENTIONS=198`, `SOURCE_OF=46`, `SUPPORTS=14`, `VALID_IN_PATCH=14`
+- wiki pages: `source_summary=26`, `job=5`, `patch=3`, `skill=4`
+- ask smoke: 4 representative queries returned `status=ok`, non-empty contexts, structured answer sections, and no raw source dump marker
+- full unittest discovery: 355 tests OK
 - docs freshness: OK
 - `finish_task.py`: 355 tests OK, docs freshness OK, Notion handoff dry-run OK
 
@@ -155,7 +171,7 @@ python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json
 
 ## 현재 작업트리 주의사항
 
-- v08.5-09 final verification remains.
+- v08.5 is complete.
 - Generated local outputs under `db/`, `graph/`, `wiki/jobs/`, `wiki/patches/`, and `wiki/skills/` should stay uncommitted unless a future maintainer scope explicitly changes that policy.
 - Push after each completed task per maintainer instruction.
 
@@ -169,4 +185,4 @@ python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json
 
 ## 다음 agent에게
 
-Continue with v08.5-09 final verification, then update this handoff to the final completed state.
+v08.5 is complete. Start new work only from explicit maintainer scope.
