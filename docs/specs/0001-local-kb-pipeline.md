@@ -132,6 +132,8 @@ FTS5 query syntax error도 `status: error`로 반환한다.
 
 `search_kb.py`는 사용자 입력을 `sanitize_fts_query()`로 전처리한 뒤 MATCH에 전달한다.
 FTS5 특수 문자 (`@`, `/`, `"`, `(`, `)`, `-`, `+`, `*`, `^`, `:`)를 제거한다.
+패치 버전 검색어의 decimal separator는 `7.5` -> `7 5`처럼 공백으로 바꿔
+generated patch wiki 제목과 FTS token이 맞도록 한다.
 
 Defense-in-depth: `search_fts()`와 `answer.py/build_contexts()` 모두
 `sqlite3.OperationalError`를 catch하여 crash 대신 empty results를 반환한다.

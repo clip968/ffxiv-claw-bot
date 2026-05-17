@@ -150,15 +150,55 @@ def execute_graph_aware_retrieval(
     entity_ids = match_query_entities(question, entity_index)
     if not entity_ids:
         return tuple(fts_results)
+    entity_page_results: tuple[SearchResult, ...] = ()
     try:
         conn = sqlite3.connect(db_path)
         try:
+            entity_page_results = retrieve_entity_page_results(conn, entity_ids)
             graph_results = retrieve_graph_neighborhood(conn, entity_ids)
         finally:
             conn.close()
     except sqlite3.Error:
-        return tuple(fts_results)
-    return merge_retrieval_results(fts_results, graph_results, limit=limit)
+        return _dedupe_search_results((*fts_results, *entity_page_results))[:limit]
+    fts_and_entity_results = _dedupe_search_results((*fts_results, *entity_page_results))
+    return merge_retrieval_results(fts_and_entity_results, graph_results, limit=limit)
+
+
+def retrieve_entity_page_results(
+    conn: sqlite3.Connection,
+    entity_ids: Sequence[str],
+) -> tuple[SearchResult, ...]:
+    page_ids = [_entity_page_id(entity_id) for entity_id in entity_ids]
+    page_ids = [page_id for page_id in page_ids if page_id]
+    if not page_ids:
+        return ()
+    placeholders = ",".join("?" for _ in page_ids)
+    rows = conn.execute(
+        f"""
+        SELECT id, title, type, path, job
+          FROM wiki_pages
+         WHERE id IN ({placeholders})
+        """,
+        page_ids,
+    ).fetchall()
+    by_page_id = {row[0]: row for row in rows}
+    results: list[SearchResult] = []
+    for page_id in page_ids:
+        row = by_page_id.get(page_id)
+        if row is None:
+            continue
+        results.append(
+            SearchResult(
+                page_id=row[0],
+                title=row[1],
+                wiki_type=row[2],
+                path=row[3],
+                score=-2.0,
+                snippet=f"Matched entity page: {row[1]}",
+                topic=row[4],
+            )
+        )
+    return tuple(results)
 
 
 def _load_nodes(conn: sqlite3.Connection) -> dict[str, dict[str, object]]:
@@ -279,6 +319,26 @@ def _source_id_from_search_result(result: SearchResult) -> str | None:
     if path.parent.as_posix().endswith("wiki/source_summaries"):
         return path.stem
     return None
+
+
+def _entity_page_id(entity_id: str) -> str | None:
+    if ":" not in entity_id:
+        return None
+    entity_type, slug = entity_id.split(":", 1)
+    if entity_type not in {"job", "patch", "skill"}:
+        return None
+    return f"{entity_type}_{slug}"
+
+
+def _dedupe_search_results(results: Sequence[SearchResult]) -> tuple[SearchResult, ...]:
+    seen: set[str] = set()
+    deduped: list[SearchResult] = []
+    for result in results:
+        if result.page_id in seen:
+            continue
+        seen.add(result.page_id)
+        deduped.append(result)
+    return tuple(deduped)
 
 
 def _seen(

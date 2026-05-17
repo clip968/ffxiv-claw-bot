@@ -80,6 +80,11 @@ class SanitizeFtsQueryTests(unittest.TestCase):
         sanitized = sanitize_fts_query("foo/bar baz")
         self.assertEqual(sanitized, "foo bar baz")
 
+    def test_decimal_patch_query_separator_removed(self) -> None:
+        """Patch versions like 7.5 must be safe for FTS5 MATCH."""
+        sanitized = sanitize_fts_query("Patch 7.5")
+        self.assertEqual(sanitized, "Patch 7 5")
+
 
 class FormatQueryTests(unittest.TestCase):
     """format_query must apply sanitisation and reject empty input."""

@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v0.8.5 Managed Wiki Knowledge Base Activation in progress
-- Last completed task: v08.5-04 graph-derived wiki generation
-- Next task: v08.5-05 FTS reindexing
+- Last completed task: v08.5-05 FTS reindexing
+- Next task: v08.5-06 answer quality
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
@@ -34,10 +34,11 @@
 - v08.5-02: real source summary domain graph rebuild, `tests/test_v08_5_real_graph_population.py`; `graph/domain_graph.json` and `graph/entity_index.json` are verified local generated outputs and are ignored by Git
 - v08.5-03: `docs/reports/2026-05-17-v08_5-graph-report-review.md` graph report validation
 - v08.5-04: graph-derived wiki generation, `tests/test_v08_5_real_derived_wiki.py`; `wiki/jobs`, `wiki/patches`, and `wiki/skills` are verified local generated outputs and are ignored by Git
+- v08.5-05: FTS reindexing, `tests/test_v08_5_fts_visibility.py`; `index_wiki_documents()` indexed 38 pages (`source_summary=26`, `job=5`, `patch=3`, `skill=4`) and ask smoke returned generated wiki contexts for `job_gunbreaker`, `patch_7_5`, and `skill_no_mercy`
 
 다음 작업:
 
-- v08.5-05: FTS reindexing
+- v08.5-06: answer quality; current ask contexts are populated, but answer bodies still need structured summary cleanup
 
 아직 하지 말 것:
 

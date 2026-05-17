@@ -63,6 +63,7 @@ def search_fts(query: str) -> list[dict]:
 
 
 FTS5_SPECIAL_CHARS = re.compile(r'[@()"\-:+*^/]')
+FTS5_DECIMAL_SEPARATOR = re.compile(r"(?<=\d)\.(?=\d)")
 
 
 def sanitize_fts_query(raw: str) -> str:
@@ -78,7 +79,8 @@ def sanitize_fts_query(raw: str) -> str:
     collapses whitespace, preserving only alphanumeric tokens
     that FTS5 can safely match.
     """
-    sanitized = FTS5_SPECIAL_CHARS.sub(" ", raw)
+    sanitized = FTS5_DECIMAL_SEPARATOR.sub(" ", raw)
+    sanitized = FTS5_SPECIAL_CHARS.sub(" ", sanitized)
     sanitized = re.sub(r"\s+", " ", sanitized).strip()
     return sanitized
 

@@ -199,10 +199,12 @@ v08.5는 다음 조건을 만족하면 완료로 본다.
 
 ### 5.5 FTS criteria
 
-- generated derived wiki가 `wiki_pages`에 색인된다.
-- generated derived wiki가 `wiki_fts`에 색인된다.
+- generated derived wiki (`job`, `patch`, `skill`)가 `wiki_pages`에 색인된다.
+- generated derived wiki (`job`, `patch`, `skill`)가 `wiki_fts`에 색인된다.
 - ask 결과 contexts에 `job`, `patch`, `skill`, `source_summary` 중 관련 context가 포함된다.
 - source summary fallback은 유지된다.
+- patch decimal query (`7.5`)는 FTS query에서 `7 5`로 토큰화되어 generated patch page를 찾을 수 있다.
+- graph-aware retrieval은 matched `job:*`, `patch:*`, `skill:*` entity에 대응하는 generated wiki page가 있으면 graph edge가 부족해도 context 후보로 포함한다.
 
 ### 5.6 Answer quality criteria
 
@@ -413,6 +415,7 @@ python -c "from tools.compile_wiki import index_wiki_documents; import json; pri
 - generated patch wiki가 FTS 대상에 포함된다.
 - generated skill wiki가 FTS 대상에 포함된다.
 - source summary 검색이 깨지지 않는다.
+- ask smoke에서 `job_gunbreaker`, `patch_7_5`, `skill_no_mercy` 같은 generated context가 반환된다.
 
 ---
 

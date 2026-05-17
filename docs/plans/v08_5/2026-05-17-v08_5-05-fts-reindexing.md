@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -43,32 +43,48 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] red test 작성: `tests/test_v08_5_fts_visibility.py`
-  - [ ] `test_generated_job_wiki_in_wiki_pages`
-  - [ ] `test_generated_patch_wiki_in_wiki_pages`
-  - [ ] `test_generated_skill_wiki_in_wiki_pages`
-  - [ ] `test_generated_wiki_searchable`
-  - [ ] `test_source_summary_fallback_preserved`
-- [ ] red 상태 확인
-- [ ] FTS 재색인 실행
-- [ ] DB 확인
-  - [ ] `wiki_pages` wiki_type 분포 확인
-  - [ ] generated wiki (job, patch, skill) page 포함 확인
-  - [ ] source_summary page 유지 확인
-- [ ] ask smoke 확인
-  - [ ] `python tools/ask.py "건브 7.5 변경점 알려줘" --format json`
-  - [ ] `python tools/ask.py "No Mercy 관련 변경 있어?" --format json`
-  - [ ] `status`가 `ok`인지 확인
-  - [ ] `contexts`가 비어 있지 않은지 확인
-  - [ ] contexts에 job/patch/skill/source_summary 중 관련 context 포함 확인
-- [ ] 최소 코드 수정으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] red test 작성: `tests/test_v08_5_fts_visibility.py`
+  - [x] `test_generated_job_wiki_in_wiki_pages`
+  - [x] `test_generated_patch_wiki_in_wiki_pages`
+  - [x] `test_generated_skill_wiki_in_wiki_pages`
+  - [x] `test_generated_wiki_searchable`
+  - [x] `test_source_summary_fallback_preserved`
+  - [x] `test_entity_match_falls_back_to_generated_skill_page`
+- [x] red 상태 확인
+- [x] FTS 재색인 실행
+- [x] DB 확인
+  - [x] `wiki_pages` wiki_type 분포 확인
+  - [x] generated wiki (job, patch, skill) page 포함 확인
+  - [x] source_summary page 유지 확인
+- [x] ask smoke 확인
+  - [x] `python tools/ask.py "건브 7.5 변경점 알려줘" --format json`
+  - [x] `python tools/ask.py "No Mercy 관련 변경 있어?" --format json`
+  - [x] `status`가 `ok`인지 확인
+  - [x] `contexts`가 비어 있지 않은지 확인
+  - [x] contexts에 job/patch/skill/source_summary 중 관련 context 포함 확인
+- [x] 최소 코드 수정으로 green 전환
+- [x] handoff/README feature map status 갱신
+
+## Results
+
+- 최초 red 상태: `tests/test_v08_5_fts_visibility.py`가 존재하지 않아 import 실패.
+- 두 번째 red 상태: `scan_wiki_documents()`가 `wiki/jobs`만 색인하고 `wiki/patches`, `wiki/skills`를 누락.
+- 세 번째 red 상태: `Patch 7.5` 검색어의 decimal separator가 FTS 토큰과 맞지 않아 patch page 검색 실패.
+- 네 번째 red 상태: `No Mercy 관련 변경 있어?`가 FTS generic query에서 비어 있고 graph entity match만으로는 generated skill page를 context에 넣지 못함.
+- 구현 결과: wiki scanner가 `job`, `patch`, `skill`, `source_summary`를 색인하고, `sanitize_fts_query()`가 `7.5`를 `7 5`로 토큰화하며, graph-aware retrieval이 matched entity의 generated wiki page를 fallback context로 반환한다.
+- 실제 re-index summary: `indexed=38`, `source_summary=26`, `job=5`, `patch=3`, `skill=4`.
+- 실제 DB sample: `job_gunbreaker`, `patch_7_5`, `skill_no_mercy`가 `wiki_pages`에 포함되고 source summaries 26개가 유지됨.
+- ask smoke: `건브 7.5 변경점 알려줘`는 `job_gunbreaker`, `patch_7_5`, source summaries를 context로 반환했고, `No Mercy 관련 변경 있어?`는 `skill_no_mercy`를 context로 반환했다.
+- 답변 본문은 아직 source dump에 가깝다. 구조화 요약 품질 개선은 v08.5-06 범위다.
 
 ## Verification
 
 ```bash
 python -c "from tools.compile_wiki import index_wiki_documents; import json; print(json.dumps(index_wiki_documents(), ensure_ascii=False, indent=2))"
 python -m unittest tests.test_v08_5_fts_visibility -v
+python -m unittest tests.test_search_kb -v
+python -m unittest tests.test_hybrid_retrieval -v
+python -m unittest tests.test_v07_ask_cli -v
 ```
 
 DB 확인:
@@ -99,6 +115,8 @@ python tools/ask.py "No Mercy 관련 변경 있어?" --format json
 - FTS 재색인은 기존 `tools/compile_wiki.py`의 `index_wiki_documents()`를 사용한다.
 - source summary fallback은 반드시 유지한다.
 - graph-aware retrieval이 additive하게 동작해야 한다.
+- generated entity page fallback은 graph neighborhood edge가 부족할 때만이 아니라 matched entity 자체가 generated wiki page로 존재할 때도 유효한 context로 취급한다.
+- FTS5 decimal patch query는 `7.5`를 `7 5`로 변환해 generated `Patch 7.5` 문서와 매칭한다.
 
 ## Implementation Notes
 

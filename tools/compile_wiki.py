@@ -161,6 +161,8 @@ def index_wiki_documents(
             "indexed": len(documents),
             "source_summary": sum(1 for doc in documents if doc.wiki_type == "source_summary"),
             "job": sum(1 for doc in documents if doc.wiki_type == "job"),
+            "patch": sum(1 for doc in documents if doc.wiki_type == "patch"),
+            "skill": sum(1 for doc in documents if doc.wiki_type == "skill"),
         },
     }
 

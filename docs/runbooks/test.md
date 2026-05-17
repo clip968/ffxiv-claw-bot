@@ -86,13 +86,21 @@ These tests prevent the `Status=Indexed` + `Graph Status=Built` contradiction fr
 
 New in `tests/test_search_kb.py`:
 
-- **SanitizeFtsQueryTests** (13 tests): Each FTS5-special character (`@`, `/`, `"`, `(`, `)`, `-`, `+`, `*`, `^`, `:`) is removed by `sanitize_fts_query()`. Korean text, underscores, and whitespace are preserved.
+- **SanitizeFtsQueryTests** (14 tests): Each FTS5-special character (`@`, `/`, `"`, `(`, `)`, `-`, `+`, `*`, `^`, `:`) is removed by `sanitize_fts_query()`. Korean text, underscores, and whitespace are preserved. Decimal patch queries such as `Patch 7.5` are normalized to `Patch 7 5` so generated patch wiki pages remain searchable.
 - **FormatQueryTests** (2 tests): Empty query is rejected, input is sanitized before FTS5 MATCH.
 - **AnswerBuildContextsNoCrashTests** (7 tests): Real paths (`tools/ingest_local.py`, `foo/bar baz`), special chars (`@`, `"`), OpenClaw/Discord input, `discord_agent_smoke_test` — all return results or `"찾을 수 없습니다"` without crashing.
 
 These tests prevent the `sqlite3.OperationalError: FTS5 syntax error near "@[/]"` bug from recurring (see answer.py E2E smoke test findings).
 
 **한국어 검색 한계**: FTS5 `unicode61` tokenizer는 CJK unigram 분할을 지원하지 않으므로, 한국어 검색어가 의도대로 매칭되지 않을 수 있습니다. 이는 tokenizer의 근본적인 한계이며 버그가 아닙니다.
+
+### v08.5 FTS Visibility Tests
+
+New in `tests/test_v08_5_fts_visibility.py`:
+
+- **V085FtsVisibilityTests** (6 tests): verifies `index_wiki_documents()` indexes generated `job`, `patch`, and `skill` wiki pages, preserves `source_summary` fallback, searches `Patch 7.5` and `No Mercy`, and returns a matched generated skill page when graph entity matching succeeds but graph neighborhood edges are insufficient.
+
+Task v08.5-05 real reindex check produced `indexed=38`, with `source_summary=26`, `job=5`, `patch=3`, and `skill=4`.
 
 ### content_hash Regression Tests
 
