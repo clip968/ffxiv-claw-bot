@@ -64,6 +64,7 @@ NOISE_LINES = {
     "type",
 }
 ENTITY_LABELS = {
+    "item": "Item",
     "job": "Job",
     "patch": "Patch",
     "skill": "Skill",
@@ -152,6 +153,8 @@ def _extract_evidence(context_pack: AskContextPack) -> tuple[str, ...]:
         content = context.content_excerpt or context.snippet
         for line in _candidate_lines(content):
             score = _score_line(line, query_terms)
+            if context.wiki_type == "item":
+                score += _item_evidence_bonus(line)
             if score > 0 and context.wiki_type != "source_summary":
                 score += 1
             if score <= 0:
@@ -215,6 +218,15 @@ def _score_line(line: str, query_terms: tuple[str, ...]) -> int:
     if any(term in lower for term in query_terms):
         score += 2
     return score
+
+
+def _item_evidence_bonus(line: str) -> int:
+    lower = line.lower()
+    if lower.startswith("url: ") and "guide.ff14.co.kr" in lower:
+        return 5
+    if "no acquisition data" in lower:
+        return 5
+    return 0
 
 
 def _is_noise_line(lower_line: str) -> bool:

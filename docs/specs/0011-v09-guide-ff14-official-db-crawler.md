@@ -479,6 +479,7 @@ Acceptance criteria:
 - job + item category queries do not return unrelated job guide pages first.
 - item answers include official guide source URL.
 - if acquisition is absent, answer says the current KB has no acquisition data.
+- current implementation routes item-like questions to `wiki_pages.type = item` first, then falls back to general FTS, while preserving existing job-change retrieval behavior.
 
 ## Expansion Gate
 

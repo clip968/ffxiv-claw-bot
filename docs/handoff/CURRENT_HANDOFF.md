@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v09 guide.ff14.co.kr official DB crawler in progress
-- Last completed task: v09 Task 07 domain graph item extension
-- Next task: v09 Task 08 item-aware retrieval and ask smoke behavior
+- Last completed task: v09 Task 08 item-aware retrieval and ask smoke behavior
+- Next task: v09 Task 09 runbook, quality gate, and final finish workflow
 - Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
@@ -31,7 +31,7 @@
 14. `docs/plans/2026-05-17-v09-implementation-guide-ff14-crawler.md`
 15. `docs/reports/2026-05-17-v09-task-00-baseline.md`
 16. `docs/plans/v09/README.md`
-17. `docs/plans/v09/2026-05-17-v09-07-item-graph.md`
+17. `docs/plans/v09/2026-05-17-v09-08-item-retrieval.md`
 
 ## v09 guide.ff14.co.kr official DB crawler
 
@@ -86,6 +86,10 @@
   - Added `tests/test_guide_ff14_item_graph.py` with temp DB coverage for item nodes, category/job/source/level/provenance edges, report counts, and idempotent rebuilds.
   - Updated `tools/rebuild_domain_graph.py` so existing graph rebuilds load `guide_items` and emit item graph data through `graph_nodes`/`graph_edges`.
   - Updated `src/domain_graph/storage.py` and `src/domain_graph/report.py` so item node/edge types are accepted and reported.
+- Task 08 item-aware retrieval and ask smoke behavior completed:
+  - Added `tests/test_guide_ff14_item_retrieval.py` with temp DB/FTS coverage for item-first retrieval plans, item context precedence over unrelated job pages, official URL answer evidence, explicit missing acquisition wording, and non-item job query compatibility.
+  - Updated `src/retrieval/planner.py` so item-like questions search `wiki_pages.type = item` before general FTS fallback.
+  - Updated `src/answering/composer.py` so item contexts are labeled and official guide URL / missing acquisition lines can appear in grounded evidence.
 
 검증:
 
@@ -122,10 +126,18 @@
 - Task 07 py_compile for graph files: OK.
 - Task 07 `git diff --check`: OK.
 - Task 07 docs freshness: OK.
+- Red check before Task 08 implementation: `python -m unittest tests.test_guide_ff14_item_retrieval -v` failed with three expected item retrieval/provenance failures.
+- Task 08 focused green: `python -m unittest tests.test_guide_ff14_item_retrieval -v` -> 4 tests OK.
+- Task 08 ask/retrieval regressions: `python -m unittest tests.test_guide_ff14_item_retrieval tests.test_v07_retrieval tests.test_v07_context_builder tests.test_v07_answer_composer tests.test_v07_ask_cli tests.test_v08_5_precision_regression -v` -> 42 tests OK.
+- Task 08 cumulative v09 focused tests: `python -m unittest tests.test_guide_ff14_storage tests.test_guide_ff14_category_map tests.test_guide_ff14_fetcher tests.test_guide_ff14_item_extractor tests.test_guide_ff14_crawler tests.test_guide_ff14_item_wiki tests.test_guide_ff14_item_graph tests.test_guide_ff14_item_retrieval -v` -> 50 tests OK.
+- Task 08 py_compile for planner/composer files: OK.
+- Task 08 `git diff --check`: OK.
+- Task 08 docs freshness: OK.
+- Task 08 finish gate: `python scripts/finish_task.py` -> 417 tests OK, docs freshness OK, Notion handoff dry-run OK.
 
 다음 작업:
 
-- Task 08: add item-aware retrieval and ask smoke behavior.
+- Task 09: write the guide.ff14 crawler runbook and run the final v09 quality gate.
 
 아직 하지 말 것:
 

@@ -155,6 +155,18 @@ If a primary target returns results, fallback targets are skipped. If primary
 returns no results, fallback targets run in priority order. Results are
 deduplicated by `page_id` and limited by `--limit`.
 
+Item-like questions, such as weapon, gear, acquisition, or category lookups,
+search generated item wiki pages before general FTS:
+
+```text
+wiki_type=item
+wiki_type=None
+```
+
+This keeps item pages ahead of broad source summaries or unrelated job pages
+when `wiki/items/*.md` has been generated and indexed. Non-item job change
+queries still use the job-first plan above.
+
 ## Graph-Aware Retrieval
 
 When `graph/entity_index.json` exists, the ask pipeline adds graph-aware
@@ -249,8 +261,8 @@ no-context message and `confidence=N/A`.
 ## Answer Composition
 
 `compose_answer()` is deterministic and does not call an LLM. It uses the
-retrieved context metadata to classify related `Job`, `Patch`, and `Skill`
-pages, extracts a small set of evidence lines from context excerpts, and then
+retrieved context metadata to classify related `Item`, `Job`, `Patch`, and
+`Skill` pages, extracts a small set of evidence lines from context excerpts, and then
 renders these sections:
 
 - `요약`
@@ -263,6 +275,10 @@ renders these sections:
 The answer body must not append full source bodies or whole generated wiki
 documents. Source paths and source ids belong in `근거 문서`; uncertainty about
 sparse context belongs in `주의`.
+
+For item contexts, the composer can promote official guide URLs and explicit
+missing acquisition lines into `확인된 내용`, so item answers preserve source
+provenance and do not infer acquisition data.
 
 Evidence extraction also drops structural noise such as `title:`, `Job Actions`,
 `Cast`, `Recast`, `Range`, `Radius`, graph links, source metadata lines, and
@@ -299,6 +315,12 @@ Focused v0.8.5 answer quality tests:
 ```bash
 python -m unittest tests.test_v08_5_answer_quality -v
 python -m unittest tests.test_v08_5_precision_regression -v
+```
+
+Focused v09 item retrieval tests:
+
+```bash
+python -m unittest tests.test_guide_ff14_item_retrieval -v
 ```
 
 Full completion gate:

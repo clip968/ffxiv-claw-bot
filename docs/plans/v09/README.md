@@ -35,8 +35,8 @@ guide.ff14.co.kr category/detail pages
 | 05 | 2026-05-17-v09-05-item-pilot-crawler.md | bounded item pilot crawler and CLI | Completed 2026-05-17 |
 | 06 | 2026-05-17-v09-06-item-wiki-generator.md | `wiki/items` derived wiki and FTS indexing | Completed 2026-05-17 |
 | 07 | 2026-05-17-v09-07-item-graph.md | domain graph item nodes/edges/report | Completed 2026-05-17 |
-| 08 | 2026-05-17-v09-08-item-retrieval.md | item-aware ask retrieval behavior | In Progress |
-| 09 | 2026-05-17-v09-09-runbook-quality-gate.md | runbook and final quality gate | Pending |
+| 08 | 2026-05-17-v09-08-item-retrieval.md | item-aware ask retrieval behavior | Completed 2026-05-17 |
+| 09 | 2026-05-17-v09-09-runbook-quality-gate.md | runbook and final quality gate | In Progress |
 | 10 | 2026-05-17-v09-10-expansion-gate.md | quest/recipe/gathering expansion gate docs only | Pending |
 
 ## Red Test Map

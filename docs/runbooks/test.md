@@ -213,6 +213,14 @@ python -m unittest tests.test_guide_ff14_item_graph -v
 
 This verifies that stored `guide_items` rows become `Item`, `ItemCategory`, `EquipmentJob`, and `ItemSource` graph nodes, emit category/job/source/level/provenance edges, appear in graph reports, and rebuild idempotently without live crawl input.
 
+Task 08 item retrieval and ask coverage:
+
+```bash
+python -m unittest tests.test_guide_ff14_item_retrieval -v
+```
+
+This verifies that item-like questions search item wiki pages before general FTS, item contexts outrank unrelated job pages for weapon/category queries, official guide URLs and missing acquisition notes appear in grounded answers, non-item job change queries keep their job-first plan, and JSON output remains backward-compatible through `tools.ask.run_ask()`.
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:

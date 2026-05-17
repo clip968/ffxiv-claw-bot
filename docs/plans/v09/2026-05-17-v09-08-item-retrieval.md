@@ -8,7 +8,7 @@
 
 ## Status
 
-In Progress
+Completed 2026-05-17
 
 ## Goal
 
@@ -41,11 +41,11 @@ Contracts to fix:
 
 ## Checklist
 
-- [ ] temp wiki/FTS red tests 작성
-- [ ] red 상태 확인
-- [ ] ranking/policy 최소 조정
-- [ ] existing ask/retrieval regressions 실행
-- [ ] docs/handoff 갱신
+- [x] temp wiki/FTS red tests 작성
+- [x] red 상태 확인
+- [x] ranking/policy 최소 조정
+- [x] existing ask/retrieval regressions 실행
+- [x] docs/handoff 갱신
 
 ## Verification
 
@@ -55,6 +55,13 @@ python -m unittest tests.test_v07_retrieval tests.test_v07_context_builder tests
 git diff --check
 python scripts/check_docs_freshness.py --all
 ```
+
+## Implementation Notes
+
+- Added `tests/test_guide_ff14_item_retrieval.py` temp DB/FTS coverage for item-first plans, item context ranking over unrelated job pages, official URL evidence, missing acquisition wording, and non-item job query compatibility.
+- Updated `src/retrieval/planner.py` so item-like questions search `wiki_pages.type = item` before falling back to the general FTS search.
+- Updated `src/answering/composer.py` so item contexts are labeled as `Item` and official guide URL / missing acquisition lines can be promoted into grounded answer evidence.
+- Verified the original red state first: `python -m unittest tests.test_guide_ff14_item_retrieval -v` failed with three expected item retrieval/provenance failures.
 
 ## Agent Prompt
 

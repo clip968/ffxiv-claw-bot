@@ -13,7 +13,8 @@ Current status:
 - Task 05: completed on 2026-05-17; added item pilot crawler, JSON CLI, and fake-fetcher tests.
 - Task 06: completed on 2026-05-17; added item wiki generator, CLI, scanner support, and tests.
 - Task 07: completed on 2026-05-17; added item graph nodes/edges/report coverage through the existing domain graph rebuild path.
-- Task 08: next.
+- Task 08: completed on 2026-05-17; added item-aware ask retrieval tests and item provenance answer evidence.
+- Task 09: next.
 
 This document splits v09 into task-sized implementation units. Each task is intended to be handed to an agent as a bounded unit of work. Do not collapse the tasks into one broad implementation pass. The intended workflow is:
 
