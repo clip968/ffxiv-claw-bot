@@ -100,7 +100,17 @@ Grounded context output contains:
 
 ```text
 핵심 답변
-...
+
+요약
+- ...
+
+관련 항목
+- Job: ...
+- Patch: ...
+- Skill: ...
+
+확인된 내용
+- ...
 
 근거 문서
 - wiki/jobs/gunbreaker.md
@@ -110,7 +120,7 @@ Grounded context output contains:
 source_grounded
 
 주의
-context에 없는 내용은 추정하지 않았습니다.
+- context에 없는 내용은 추정하지 않았습니다.
 ```
 
 ## Debug Mode
@@ -204,13 +214,32 @@ return them, but newly indexed source summary pages use `source_summary`.
 If no relevant context is found, the answer must not invent facts. It returns a
 no-context message and `confidence=N/A`.
 
+## Answer Composition
+
+`compose_answer()` is deterministic and does not call an LLM. It uses the
+retrieved context metadata to classify related `Job`, `Patch`, and `Skill`
+pages, extracts a small set of evidence lines from context excerpts, and then
+renders these sections:
+
+- `요약`
+- `관련 항목`
+- `확인된 내용`
+- `근거 문서`
+- `확실도`
+- `주의`
+
+The answer body must not append full source bodies or whole generated wiki
+documents. Source paths and source ids belong in `근거 문서`; uncertainty about
+sparse context belongs in `주의`.
+
 ## Known Limitations
 
 - No crawling, polling, official patchnote watcher, scheduler, or Discord command.
 - No LLM generation and no vector/embedding search.
 - Numeric patch range parsing only. Expansion names are not mapped in v0.7.
-- Deterministic answer composition includes context excerpts directly; it does
-  not summarize or rewrite them.
+- Deterministic answer composition extracts short evidence lines only; answer
+  quality still depends on the quality of generated wiki pages and source
+  summaries.
 - Graph-aware retrieval is additive and depends on generated v0.8 graph exports.
 
 ## Verification
@@ -226,6 +255,12 @@ Focused v0.8 hybrid retrieval tests:
 ```bash
 python -m unittest tests.test_hybrid_retrieval -v
 python -m unittest tests.test_v08_e2e -v
+```
+
+Focused v0.8.5 answer quality tests:
+
+```bash
+python -m unittest tests.test_v08_5_answer_quality -v
 ```
 
 Full completion gate:

@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -48,50 +48,56 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] red test 작성: `tests/test_v08_5_answer_quality.py`
-  - [ ] `test_answer_not_raw_source_dump`
-  - [ ] `test_answer_has_summary_section`
-  - [ ] `test_answer_has_related_entities`
-  - [ ] `test_answer_has_sources_section`
-  - [ ] `test_answer_has_uncertainty_when_sparse`
-  - [ ] `test_format_text_outputs_body_only`
-  - [ ] `test_existing_v07_v08_tests_pass`
-- [ ] red 상태 확인
-- [ ] Step 1: Context classification
-  - [ ] context를 wiki_type별로 분류 (job, patch, skill, source_summary, 기타)
-  - [ ] 이미 있는 page metadata를 활용
-- [ ] Step 2: Evidence extraction
-  - [ ] 질문 term 또는 matched entity alias 포함 문장 우선
-  - [ ] trigger keyword 포함 문장 우선 (changed, adjusted, duration, potency, cooldown, 변경, 조정, 상향, 하향)
-  - [ ] evidence 문장 최대 N개, 각 최대 M자 제한
-- [ ] Step 3: Answer sections 조립
-  - [ ] 요약 (1~3문장)
-  - [ ] 관련 항목 (Job/Patch/Skill)
-  - [ ] 확인된 내용 (evidence bullet)
-  - [ ] 근거 (source path/source id bullet)
-  - [ ] 주의 (context 부족, source 제한 등)
-- [ ] Step 4: No source dump guard
-  - [ ] context body 전체를 그대로 append하지 않음
-  - [ ] source 경로는 근거 섹션에만 표시
-- [ ] Step 5: Confidence 유지
-  - [ ] context 0개: low
-  - [ ] source summary 1개 이상: medium
-  - [ ] derived wiki + source summary: medium/high
-  - [ ] 자동 high 남발 금지
-- [ ] 수정 대상 파일
-  - [ ] `src/answering.py` (우선)
-  - [ ] 필요 시 `src/retrieval/context_builder.py`
-  - [ ] 필요 시 `tools/ask.py`
-- [ ] JSON output schema 유지 확인
-- [ ] `--format text` 동작 확인
-- [ ] 기존 v07/v08 ask tests 통과 확인
-- [ ] 최소 코드 수정으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] red test 작성: `tests/test_v08_5_answer_quality.py`
+  - [x] `test_answer_not_raw_source_dump`
+  - [x] `test_answer_has_summary_section`
+  - [x] `test_answer_has_related_entities`
+  - [x] `test_answer_has_confirmed_content_and_sources_sections`
+  - [x] `test_answer_has_uncertainty_when_sparse`
+  - [x] `test_format_text_outputs_body_only`
+- [x] red 상태 확인
+- [x] Step 1: Context classification
+  - [x] context를 wiki_type별로 분류 (job, patch, skill, source_summary, 기타)
+  - [x] 이미 있는 page metadata를 활용
+- [x] Step 2: Evidence extraction
+  - [x] 질문 term 또는 matched entity alias 포함 문장 우선
+  - [x] trigger keyword 포함 문장 우선 (changed, adjusted, duration, potency, cooldown, 변경, 조정, 상향, 하향)
+  - [x] evidence 문장 최대 N개, 각 최대 M자 제한
+- [x] Step 3: Answer sections 조립
+  - [x] 요약 (1~3문장)
+  - [x] 관련 항목 (Job/Patch/Skill)
+  - [x] 확인된 내용 (evidence bullet)
+  - [x] 근거 (source path/source id bullet)
+  - [x] 주의 (context 부족, source 제한 등)
+- [x] Step 4: No source dump guard
+  - [x] context body 전체를 그대로 append하지 않음
+  - [x] source 경로는 근거 섹션에만 표시
+- [x] Step 5: Confidence 유지
+  - [x] context 0개: `N/A`
+  - [x] context 1개 이상: `source_grounded`
+  - [x] 자동 high 남발 금지
+- [x] 수정 대상 파일
+  - [x] `src/answering/composer.py`
+- [x] JSON output schema 유지 확인
+- [x] `--format text` 동작 확인
+- [x] 기존 v07/v08 ask tests 통과 확인
+- [x] 최소 코드 수정으로 green 전환
+- [x] handoff/README feature map status 갱신
+
+## Results
+
+- 최초 red 상태: `tests/test_v08_5_answer_quality.py` 6개 중 5개 실패. 현재 composer가 raw context body를 그대로 붙이고 `요약`, `관련 항목`, `확인된 내용` 섹션을 만들지 않는 것이 원인.
+- 구현 결과: `compose_answer()`가 `요약`, `관련 항목`, `확인된 내용`, `근거 문서`, `확실도`, `주의` 섹션을 조립한다.
+- evidence extraction: question term과 trigger keyword를 우선하며, generated boilerplate와 source marker는 제외한다.
+- no source dump guard: `# Gunbreaker` 같은 원문 heading이나 unrelated TOC line을 answer body에 직접 덤프하지 않는다.
+- sparse context: evidence가 없거나 source summary/source id가 없으면 `근거가 제한적입니다` 주의 문구를 추가한다.
+- `--format text`는 계속 answer body만 출력한다.
 
 ## Verification
 
 ```bash
 python -m unittest tests.test_v08_5_answer_quality -v
+python -m unittest tests.test_v07_answer_composer -v
 python -m unittest tests.test_v07_ask_cli -v
 python -m unittest tests.test_v08_e2e -v
 ```
@@ -107,10 +113,11 @@ python tools/ask.py "건브 관련 source 보여줘" --format json
 
 ## Key Decisions
 
-- 수정 우선순위는 `src/answering.py`다.
+- 실제 수정 파일은 패키지 구조상 `src/answering/composer.py`다.
 - JSON 출력 schema를 변경하지 않는다.
 - 한국어 질문에 대해 한국어 구조화 답변을 기본으로 한다.
 - retrieval이 아니라 answer composition을 개선한다.
+- confidence model은 이번 task에서 확장하지 않고 기존 `source_grounded`/`N/A` 계약을 유지한다.
 
 ## Implementation Notes
 

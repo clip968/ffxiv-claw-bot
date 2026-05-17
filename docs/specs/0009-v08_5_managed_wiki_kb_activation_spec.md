@@ -211,6 +211,7 @@ v08.5는 다음 조건을 만족하면 완료로 본다.
 - `ask.py` 답변은 source body 전체를 단순 덤프하지 않는다.
 - 답변에는 요약이 있다.
 - 답변에는 관련 엔티티가 있다.
+- 답변에는 확인된 내용이 있다.
 - 답변에는 근거 source가 있다.
 - context가 부족하면 부족하다고 말한다.
 - graph-derived wiki context와 source summary context를 구분해 사용할 수 있다.
@@ -431,7 +432,7 @@ v08의 retrieval path는 graph-aware로 연결되었지만, 답변 품질이 낮
 
 ### 목표 답변 구조
 
-`compose_answer()` 또는 context builder 단계에서 답변을 다음 구조로 정리한다.
+`src/answering/composer.py`의 `compose_answer()` 단계에서 답변을 다음 구조로 정리한다.
 
 ```text
 요약:
@@ -459,7 +460,7 @@ v08의 retrieval path는 graph-aware로 연결되었지만, 답변 품질이 낮
 
 ### 수정 대상 후보
 
-- `src/answering.py`
+- `src/answering/composer.py`
 - `src/retrieval/context_builder.py`
 - `tools/ask.py`
 
@@ -477,6 +478,7 @@ v08의 retrieval path는 graph-aware로 연결되었지만, 답변 품질이 낮
 - answer body가 raw source dump가 아니다.
 - answer body에 `요약` 또는 이에 준하는 section이 포함된다.
 - answer body에 related entity가 포함된다.
+- answer body에 확인된 내용 section이 포함된다.
 - answer body에 source path 또는 source id가 포함된다.
 - context 부족 시 부족하다고 명시한다.
 - `--format text` 동작이 유지된다.

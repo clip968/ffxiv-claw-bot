@@ -102,6 +102,21 @@ New in `tests/test_v08_5_fts_visibility.py`:
 
 Task v08.5-05 real reindex check produced `indexed=38`, with `source_summary=26`, `job=5`, `patch=3`, and `skill=4`.
 
+### v08.5 Answer Quality Tests
+
+New in `tests/test_v08_5_answer_quality.py`:
+
+- **V085AnswerQualityTests** (6 tests): verifies `compose_answer()` does not dump raw source bodies, renders `요약`, `관련 항목`, `확인된 내용`, `근거`, and `주의` sections, reports limited evidence for sparse contexts, and keeps `tools/ask.py --format text` body-only output.
+
+Task v08.5-06 regression commands:
+
+```bash
+python -m unittest tests.test_v08_5_answer_quality -v
+python -m unittest tests.test_v07_answer_composer -v
+python -m unittest tests.test_v07_ask_cli -v
+python -m unittest tests.test_v08_e2e -v
+```
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:
