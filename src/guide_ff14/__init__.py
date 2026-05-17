@@ -7,6 +7,7 @@ from src.guide_ff14.models import (
     GuideItemSource,
 )
 from src.guide_ff14.category_map import parse_category_map
+from src.guide_ff14.fetcher import FetchResult, GuideFetcher
 from src.guide_ff14.storage import (
     ensure_guide_ff14_schema,
     upsert_category,
@@ -20,6 +21,8 @@ __all__ = [
     "GuideCrawlPage",
     "GuideItem",
     "GuideItemSource",
+    "FetchResult",
+    "GuideFetcher",
     "parse_category_map",
     "ensure_guide_ff14_schema",
     "upsert_category",

@@ -99,6 +99,8 @@ Requirements:
 - Do not push generated raw/db/wiki outputs unless a later spec changes policy.
 - Stop and report if response status, encoding, or HTML structure changes
   enough to break extractors.
+- Fetcher unit tests use injected fake clients; normal unittest must not make
+  live network requests.
 
 ## Architecture
 
@@ -527,6 +529,7 @@ Required tests:
 
 - `tests/test_guide_ff14_storage.py`
 - `tests/test_guide_ff14_category_map.py`
+- `tests/test_guide_ff14_fetcher.py`
 - `tests/test_guide_ff14_item_extractor.py`
 - `tests/test_guide_ff14_crawler.py`
 - `tests/test_guide_ff14_item_wiki.py`
@@ -566,6 +569,7 @@ Before marking this spec complete:
 ```bash
 python -m unittest tests.test_guide_ff14_category_map -v
 python -m unittest tests.test_guide_ff14_storage -v
+python -m unittest tests.test_guide_ff14_fetcher -v
 python -m unittest tests.test_guide_ff14_item_extractor -v
 python -m unittest tests.test_guide_ff14_crawler -v
 python -m unittest tests.test_guide_ff14_item_wiki -v

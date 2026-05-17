@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v09 guide.ff14.co.kr official DB crawler in progress
-- Last completed task: v09 Task 02 category map extractor
-- Next task: v09 Task 03 polite fetcher and robots snapshot handling
+- Last completed task: v09 Task 03 polite fetcher and robots snapshot handling
+- Next task: v09 Task 04 item detail extractor
 - Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
@@ -55,6 +55,10 @@
   - Added `src/guide_ff14/category_map.py`.
   - Added `tests/test_guide_ff14_category_map.py`.
   - Parser extracts `fnOpenLeftMenu` guide DB URLs, normalizes to `https://guide.ff14.co.kr`, preserves Korean labels, excludes `javascript:` pseudo-URLs, and splits category/filter query params.
+- Task 03 polite fetcher completed:
+  - Added `src/guide_ff14/fetcher.py`.
+  - Added `tests/test_guide_ff14_fetcher.py`.
+  - Fetcher allows only `guide.ff14.co.kr`, uses GET only, supports injectable session/sleep/timeout/delay, returns structured `FetchResult`, hashes successful bodies, and fetches robots through GET.
 
 검증:
 
@@ -71,10 +75,12 @@
 - Task 01 docs freshness: OK.
 - Red check before Task 02 implementation: `python -m unittest tests.test_guide_ff14_category_map -v` failed with missing `src.guide_ff14.category_map`.
 - Task 02 focused green: `python -m unittest tests.test_guide_ff14_category_map -v` -> 6 tests OK.
+- Red check before Task 03 implementation: `python -m unittest tests.test_guide_ff14_fetcher -v` failed with missing `src.guide_ff14.fetcher`.
+- Task 03 focused green: `python -m unittest tests.test_guide_ff14_fetcher -v` -> 6 tests OK.
 
 다음 작업:
 
-- Task 03: add safe fetcher with fake-client tests; no live network calls.
+- Task 04: add fixture-driven item detail extractor; no live network or LLM extraction.
 
 아직 하지 말 것:
 

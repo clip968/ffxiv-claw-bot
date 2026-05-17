@@ -173,6 +173,14 @@ python -m unittest tests.test_guide_ff14_category_map -v
 
 This verifies that `fnOpenLeftMenu` category URLs are extracted from local fixtures, top-level DB roots are recognized, `category2/category3` and filter query params are split, JavaScript pseudo-URLs are excluded, and Korean labels are preserved.
 
+Task 03 fetcher coverage:
+
+```bash
+python -m unittest tests.test_guide_ff14_fetcher -v
+```
+
+This verifies that only `guide.ff14.co.kr` URLs are allowed, rejected hosts do not call HTTP, GET is used instead of HEAD, HTML responses include content hashes, GET exceptions return structured errors, robots snapshot fetch uses GET, and request delay is injectable for tests.
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:
