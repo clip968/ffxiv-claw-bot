@@ -29,7 +29,7 @@ user question
 | 02 | 2026-05-17-v08-02-entity-extractor.md | source summary에서 entity 추출 | Completed 2026-05-17 |
 | 03 | 2026-05-17-v08-03-relation-fact-extractor.md | entity 기반 relation/fact 생성 | Completed 2026-05-17 |
 | 04 | 2026-05-17-v08-04-graph-storage-upsert.md | graph node/edge/fact DB upsert helper | Completed 2026-05-17 |
-| 05 | 2026-05-17-v08-05-domain-graph-rebuild-cli.md | domain graph rebuild CLI | Pending |
+| 05 | 2026-05-17-v08-05-domain-graph-rebuild-cli.md | domain graph rebuild CLI | Completed 2026-05-17 |
 | 06 | 2026-05-17-v08-06-graph-export.md | graph export (JSON 산출물) | Pending |
 | 07 | 2026-05-17-v08-07-graph-report.md | GRAPH_REPORT.md 생성 | Pending |
 | 08 | 2026-05-17-v08-08-derived-wiki-generator.md | graph 기반 derived wiki 생성 | Pending |

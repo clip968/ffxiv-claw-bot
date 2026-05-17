@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -49,38 +49,38 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tools/rebuild_domain_graph.py` 생성
-  - [ ] argparse CLI 설정
-  - [ ] DB 연결
-  - [ ] graph schema/migration 확인
-  - [ ] entity registry 로드
-  - [ ] source summaries 로드
-  - [ ] SourceDocument node upsert
-  - [ ] WikiPage node upsert
-  - [ ] Job/Patch/Skill node upsert (registry 기반)
-  - [ ] source summary별 entity extraction
-  - [ ] MENTIONS edge 생성
-  - [ ] registry 기반 HAS_SKILL edge 생성
-  - [ ] relation/fact extraction
-  - [ ] Fact node upsert
-  - [ ] Fact 관련 edge upsert
-  - [ ] graph export 호출
-  - [ ] graph report 호출
-  - [ ] `--dry-run` 지원
-  - [ ] `--source-id` 필터 지원
-  - [ ] `--reset-domain-graph` 지원
-  - [ ] `--verbose` 지원
-- [ ] `tests/test_domain_graph_rebuild.py` 갱신
-  - [ ] `test_rebuild_creates_domain_nodes`
-  - [ ] `test_rebuild_creates_mentions_edges`
-  - [ ] `test_rebuild_creates_fact_with_trigger`
-  - [ ] `test_rebuild_idempotent`
-  - [ ] `test_dry_run_no_db_change`
-  - [ ] `test_source_id_filter`
-  - [ ] `test_reset_preserves_provenance`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] `tools/rebuild_domain_graph.py` 생성
+  - [x] argparse CLI 설정
+  - [x] DB 연결
+  - [x] graph schema/migration 확인
+  - [x] entity registry 로드
+  - [x] source summaries 로드
+  - [x] SourceDocument node upsert
+  - [x] WikiPage node upsert
+  - [x] Job/Patch/Skill node upsert (registry 기반)
+  - [x] source summary별 entity extraction
+  - [x] MENTIONS edge 생성
+  - [x] registry 기반 HAS_SKILL edge 생성
+  - [x] relation/fact extraction
+  - [x] Fact node upsert
+  - [x] Fact 관련 edge upsert
+  - [ ] graph export 호출 (v08-06에서 실제 구현)
+  - [ ] graph report 호출 (v08-07에서 실제 구현)
+  - [x] `--dry-run` 지원
+  - [x] `--source-id` 필터 지원
+  - [x] `--reset-domain-graph` 지원
+  - [x] `--verbose` 지원
+- [x] `tests/test_domain_graph_rebuild.py` 갱신
+  - [x] `test_rebuild_creates_domain_nodes`
+  - [x] `test_rebuild_creates_mentions_edges`
+  - [x] `test_rebuild_creates_fact_with_trigger`
+  - [x] `test_rebuild_idempotent`
+  - [x] `test_dry_run_no_db_change`
+  - [x] `test_source_id_filter`
+  - [x] `test_reset_preserves_provenance`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
+- [x] handoff/README feature map status 갱신
 
 ## Verification
 
