@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -44,26 +44,26 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] 기존 DB schema 확인
-  - [ ] `sqlite3 db/ffxiv.sqlite ".schema graph_nodes"`
-  - [ ] `sqlite3 db/ffxiv.sqlite ".schema graph_edges"`
-- [ ] graph storage helper 모듈 생성
-  - [ ] additive migration 함수 (필요한 컬럼만 추가)
-  - [ ] index 생성 함수
-  - [ ] `upsert_node(conn, node)` 구현
-  - [ ] `upsert_edge(conn, edge)` 구현
-  - [ ] `upsert_fact(conn, fact)` 구현
-  - [ ] `get_neighbors(conn, node_id, depth=1)` 구현
-  - [ ] `get_nodes_by_type(conn, node_type)` 구현
-  - [ ] `get_edges_by_relation(conn, relation_type)` 구현
-- [ ] `tests/test_domain_graph_rebuild.py` 생성 (storage 중심 red tests)
-  - [ ] `test_upsert_node_idempotent`
-  - [ ] `test_upsert_edge_idempotent`
-  - [ ] `test_fact_id_deterministic`
-  - [ ] `test_provenance_graph_preserved`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] 기존 DB schema 확인
+  - [x] `sqlite3 db/ffxiv.sqlite ".schema graph_nodes"`
+  - [x] `sqlite3 db/ffxiv.sqlite ".schema graph_edges"`
+- [x] graph storage helper 모듈 생성
+  - [x] additive migration 함수 (필요한 컬럼만 추가)
+  - [x] index 생성 함수
+  - [x] `upsert_node(conn, node)` 구현
+  - [x] `upsert_edge(conn, edge)` 구현
+  - [x] `upsert_fact(conn, fact)` 구현
+  - [x] `get_neighbors(conn, node_id, depth=1)` 구현
+  - [x] `get_nodes_by_type(conn, node_type)` 구현
+  - [x] `get_edges_by_relation(conn, relation_type)` 구현
+- [x] `tests/test_domain_graph_rebuild.py` 생성 (storage 중심 red tests)
+  - [x] `test_upsert_node_idempotent`
+  - [x] `test_upsert_edge_idempotent`
+  - [x] `test_fact_id_deterministic`
+  - [x] `test_provenance_graph_preserved`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
+- [x] handoff/README feature map status 갱신
 
 ## Verification
 

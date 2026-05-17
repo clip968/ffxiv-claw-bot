@@ -4,7 +4,7 @@
 
 - 문서명: v08 Spec — FFXIV Domain Graphify Layer + Derived Wiki + Hybrid Retrieval
 - 대상 프로젝트: ffxiv-claw-bot / FFXIV OpenClaw Bot
-- 상태: In Progress (v08-03 completed)
+- 상태: In Progress (v08-04 completed)
 - 목적: 현재 FTS 기반 RAG + provenance graph 구조를 FFXIV 도메인 entity graph 기반 RAG로 확장한다.
 - 전제: Lost Ark 등 비-FFXIV 오염 데이터 정리는 이미 완료되었다고 가정한다.
 
@@ -1062,6 +1062,7 @@ v08은 다음 조건을 만족하면 완료로 본다.
 - v08-01 completed on 2026-05-17: `data/ffxiv_entities/jobs.json`, `skills.json`, `patches.json` and `src/domain_graph/entity_registry.py` provide the initial Job/Patch/Skill registry and alias normalization contract.
 - v08-02 completed on 2026-05-17: `src/domain_graph/entity_extractor.py` extracts registry-backed entities with long-alias-first matching, Korean substring matching, ASCII word boundaries, deduplication, spans, aliases, and confidence.
 - v08-03 completed on 2026-05-17: `src/domain_graph/relation_extractor.py` creates MENTIONS, HAS_SKILL, SUPPORTS, VALID_IN_PATCH, AFFECTS_JOB, AFFECTS_SKILL relations and conservative rule-based Fact nodes.
+- v08-04 completed on 2026-05-17: `src/domain_graph/storage.py` provides additive graph schema migration, idempotent node/edge/fact upsert helpers, deterministic ids, neighbor/type/relation queries, and provenance-preserving domain reset.
 
 ---
 
