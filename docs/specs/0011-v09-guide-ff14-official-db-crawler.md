@@ -319,6 +319,8 @@ Acceptance criteria:
 - Normalizes relative URLs to absolute guide URLs.
 - Does not include JavaScript pseudo-URLs as final URLs.
 - Unit tests cover representative `fnOpenLeftMenu` snippets.
+- Implemented parser is deterministic, standard-library based, and operates on
+  raw HTML strings without network access.
 
 ## Item Pilot Crawl
 

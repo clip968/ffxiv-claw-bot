@@ -165,6 +165,14 @@ python -m unittest tests.test_guide_ff14_storage -v
 
 This verifies that v09 schema creation is idempotent, crawl pages/categories/items/item sources upsert without duplicates, JSON fields remain valid, and `created_at` is preserved while `updated_at` changes.
 
+Task 02 category-map coverage:
+
+```bash
+python -m unittest tests.test_guide_ff14_category_map -v
+```
+
+This verifies that `fnOpenLeftMenu` category URLs are extracted from local fixtures, top-level DB roots are recognized, `category2/category3` and filter query params are split, JavaScript pseudo-URLs are excluded, and Korean labels are preserved.
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:

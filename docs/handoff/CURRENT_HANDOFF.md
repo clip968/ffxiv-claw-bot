@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v09 guide.ff14.co.kr official DB crawler in progress
-- Last completed task: v09 Task 01 SQLite schema and storage layer
-- Next task: v09 Task 02 category map extractor
+- Last completed task: v09 Task 02 category map extractor
+- Next task: v09 Task 03 polite fetcher and robots snapshot handling
 - Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
@@ -50,6 +50,11 @@
   - Wired `tools/init_db.py` to call `ensure_guide_ff14_schema(conn)`.
   - Added `docs/DOC_OWNERS.yml` rule `v09-guide-ff14-crawler`.
   - Added `tests/test_guide_ff14_storage.py`.
+- Task 02 category map extractor completed:
+  - Added fixture `tests/fixtures/guide_ff14/category_map_item_nav.html`.
+  - Added `src/guide_ff14/category_map.py`.
+  - Added `tests/test_guide_ff14_category_map.py`.
+  - Parser extracts `fnOpenLeftMenu` guide DB URLs, normalizes to `https://guide.ff14.co.kr`, preserves Korean labels, excludes `javascript:` pseudo-URLs, and splits category/filter query params.
 
 검증:
 
@@ -64,10 +69,12 @@
 - `python tools/init_db.py`: OK; initialized `db/ffxiv.sqlite` with v09 tables.
 - Task 01 `git diff --check`: OK.
 - Task 01 docs freshness: OK.
+- Red check before Task 02 implementation: `python -m unittest tests.test_guide_ff14_category_map -v` failed with missing `src.guide_ff14.category_map`.
+- Task 02 focused green: `python -m unittest tests.test_guide_ff14_category_map -v` -> 6 tests OK.
 
 다음 작업:
 
-- Task 02: add fixture-driven category map parser tests and parser.
+- Task 03: add safe fetcher with fake-client tests; no live network calls.
 
 아직 하지 말 것:
 
