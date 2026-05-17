@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v09 guide.ff14.co.kr official DB crawler in progress
-- Last completed task: v09 Task 04 item detail extractor
-- Next task: v09 Task 05 item pilot crawler and CLI
+- Last completed task: v09 Task 05 item pilot crawler and CLI
+- Next task: v09 Task 06 item wiki generator and FTS integration
 - Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
@@ -64,6 +64,13 @@
   - Added `src/guide_ff14/item_extractor.py`.
   - Added `tests/test_guide_ff14_item_extractor.py`.
   - Extractor parses detail id, Korean name, category/subcategory, item/equip levels, jobs, stats, description/source text, hash, raw path, and missing optional-field coverage without network or LLM calls.
+- Task 05 item pilot crawler and CLI completed:
+  - Added fixture `tests/fixtures/guide_ff14/item_category_gunblade.html`.
+  - Added `src/guide_ff14/crawler.py`.
+  - Added `tools/crawl_guide_ff14.py`.
+  - Added `tests/test_guide_ff14_crawler.py`.
+  - `item-pilot --dry-run` fetches the category page through an injected fetcher, discovers bounded detail URLs, and does not create DB/raw outputs.
+  - `item-pilot --apply` stores crawl state and item rows idempotently, saves raw snapshots, records detail failures as partial errors, and emits required JSON keys.
 
 검증:
 
@@ -84,10 +91,12 @@
 - Task 03 focused green: `python -m unittest tests.test_guide_ff14_fetcher -v` -> 6 tests OK.
 - Red check before Task 04 implementation: `python -m unittest tests.test_guide_ff14_item_extractor -v` failed with missing `src.guide_ff14.item_extractor`.
 - Task 04 focused green: `python -m unittest tests.test_guide_ff14_item_extractor -v` -> 8 tests OK.
+- Red check before Task 05 implementation: `python -m unittest tests.test_guide_ff14_crawler -v` failed with missing `src.guide_ff14.crawler` and `tools.crawl_guide_ff14`.
+- Task 05 focused green: `python -m unittest tests.test_guide_ff14_crawler -v` -> 8 tests OK.
 
 다음 작업:
 
-- Task 05: add item pilot crawler and `tools/crawl_guide_ff14.py` CLI using fake-client/storage tests first.
+- Task 06: add `wiki/items` generator and FTS indexing with temp DB/wiki tests.
 
 아직 하지 말 것:
 

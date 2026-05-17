@@ -142,6 +142,8 @@ Responsibilities:
 - discover category/detail URLs
 - update crawl state
 - emit JSON result
+- support dependency injection in tests so normal unit tests never call the
+  live guide site
 
 ### tools/generate_item_wiki.py
 
@@ -363,6 +365,8 @@ Acceptance criteria:
   - `skipped`
   - `errors`
   - `next_action`
+- Detail page failures are recorded as partial errors and do not abort
+  remaining detail pages.
 
 ## Item Detail Extractor
 

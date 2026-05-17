@@ -189,6 +189,14 @@ python -m unittest tests.test_guide_ff14_item_extractor -v
 
 This verifies that a local official item fixture extracts the detail id, Korean item name, category/subcategory, item/equip levels, jobs, stats, description/source text, content hash, and raw path while tolerating absent optional fields and stripping nav/footer/script noise.
 
+Task 05 item pilot crawler/CLI coverage:
+
+```bash
+python -m unittest tests.test_guide_ff14_crawler -v
+```
+
+This verifies dry-run non-mutation, apply with `--limit 1`, idempotent re-run, category failure handling, detail failure partial success, detail URL normalization/limit, required JSON keys, and CLI JSON output using fake fetchers only.
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:
