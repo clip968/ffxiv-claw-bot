@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -46,22 +46,22 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/retrieval/models.py` 갱신
-  - [ ] `ContextDocument` frozen dataclass 추가
-  - [ ] `AskContextPack` frozen dataclass 추가
-- [ ] `src/retrieval/context_builder.py` 갱신
-  - [ ] `build_context_pack()` 함수 구현
-  - [ ] 파일 본문 읽기 로직
-  - [ ] source_id 추출 regex
-  - [ ] excerpt 길이 제한
-  - [ ] 파일 미존재 시 safe fallback
-- [ ] `tests/test_v07_context_builder.py` 생성
-  - [ ] `test_context_pack_includes_job_wiki_path`
-  - [ ] `test_context_pack_includes_source_ids_from_content`
-  - [ ] `test_context_pack_limits_excerpt_length`
-  - [ ] `test_context_pack_empty_when_no_results`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/retrieval/models.py` 갱신
+  - [x] `ContextDocument` frozen dataclass 추가
+  - [x] `AskContextPack` frozen dataclass 추가
+- [x] `src/retrieval/context_builder.py` 갱신
+  - [x] `build_context_pack()` 함수 구현
+  - [x] 파일 본문 읽기 로직
+  - [x] source_id 추출 regex
+  - [x] excerpt 길이 제한
+  - [x] 파일 미존재 시 safe fallback
+- [x] `tests/test_v07_context_builder.py` 생성
+  - [x] `test_context_pack_includes_job_wiki_path`
+  - [x] `test_context_pack_includes_source_ids_from_content`
+  - [x] `test_context_pack_limits_excerpt_length`
+  - [x] `test_context_pack_empty_when_no_results`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 

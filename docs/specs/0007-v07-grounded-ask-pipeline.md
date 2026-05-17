@@ -467,6 +467,8 @@ Results are deduplicated by `page_id` and truncated to `RetrievalPlan.limit`.
 
 ## 12. Context Pack Builder
 
+Status: Completed 2026-05-17
+
 Suggested file:
 
 ```text
