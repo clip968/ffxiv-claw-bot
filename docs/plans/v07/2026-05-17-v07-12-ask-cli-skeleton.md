@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -62,18 +62,18 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tools/ask.py` 생성
-  - [ ] argparse 설정 (question, --format, --debug, --limit, --db-path, --root-path)
-  - [ ] 파이프라인 연결
-  - [ ] JSON output 구현
-  - [ ] 빈 question 검증
-  - [ ] debug mode
-- [ ] `tests/test_v07_ask_cli.py` 생성
-  - [ ] `test_ask_cli_json_contract_no_context`
-  - [ ] `test_ask_cli_rejects_empty_question`
-  - [ ] `test_ask_cli_debug_includes_parsed_query_and_retrieval_plan`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `tools/ask.py` 생성
+  - [x] argparse 설정 (question, --format, --debug, --limit, --db-path, --root-path)
+  - [x] 파이프라인 연결
+  - [x] JSON output 구현
+  - [x] 빈 question 검증
+  - [x] debug mode
+- [x] `tests/test_v07_ask_cli.py` 생성
+  - [x] `test_ask_cli_json_contract_no_context`
+  - [x] `test_ask_cli_rejects_empty_question`
+  - [x] `test_ask_cli_debug_includes_parsed_query_and_retrieval_plan`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 
