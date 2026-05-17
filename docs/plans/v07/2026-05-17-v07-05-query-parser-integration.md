@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -40,16 +40,16 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/query/parser.py` 생성
-  - [ ] `parse_query(query: str) -> ParsedQuery` 구현
-  - [ ] 내부 호출: normalize_query, extract_terms, detect_job, parse_patch_range, detect_intent
-  - [ ] topic 결정 로직
-- [ ] `src/query/__init__.py` 갱신 (re-export `parse_query`)
-- [ ] `tests/test_v07_query_parser.py` 갱신
-  - [ ] `test_parse_query_job_change_history`
-  - [ ] `test_parse_query_generic_search`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/query/parser.py` 생성
+  - [x] `parse_query(query: str) -> ParsedQuery` 구현
+  - [x] 내부 호출: normalize_query, extract_terms, detect_job, parse_patch_range, detect_intent
+  - [x] topic 결정 로직
+- [x] `src/query/__init__.py` 갱신 (re-export `parse_query`)
+- [x] `tests/test_v07_query_parser.py` 갱신
+  - [x] `test_parse_query_job_change_history`
+  - [x] `test_parse_query_generic_search`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 

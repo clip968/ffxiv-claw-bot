@@ -125,5 +125,33 @@ class V07IntentDetectorTests(unittest.TestCase):
         self.assertEqual(detect_intent("M4S 공략 찾아줘", job=None), "generic_search")
 
 
+class V07QueryParserIntegrationTests(unittest.TestCase):
+    def test_parse_query_job_change_history(self) -> None:
+        from src.query import parse_query
+
+        parsed = parse_query("7.x 건브레이커 변경 이력 알려줘")
+
+        self.assertEqual(parsed.raw_query, "7.x 건브레이커 변경 이력 알려줘")
+        self.assertEqual(parsed.normalized_query, "7.x 건브레이커 변경 이력 알려줘")
+        self.assertEqual(parsed.intent, "job_change_history")
+        self.assertEqual(parsed.job, "gunbreaker")
+        self.assertEqual(parsed.patch_range, "7.0..7.99")
+        self.assertEqual(parsed.topic, "job")
+        self.assertEqual(
+            parsed.terms,
+            ("7.x", "건브레이커", "변경", "이력", "알려줘"),
+        )
+
+    def test_parse_query_generic_search(self) -> None:
+        from src.query import parse_query
+
+        parsed = parse_query("M4S 공략 찾아줘")
+
+        self.assertEqual(parsed.intent, "generic_search")
+        self.assertIsNone(parsed.job)
+        self.assertIsNone(parsed.patch_range)
+        self.assertIsNone(parsed.topic)
+
+
 if __name__ == "__main__":
     unittest.main()

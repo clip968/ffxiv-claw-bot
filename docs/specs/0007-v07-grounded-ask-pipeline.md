@@ -795,6 +795,8 @@ Acceptance:
 
 ### v07-05. Query parser integration
 
+Status: Completed 2026-05-17
+
 Files:
 
 ```text

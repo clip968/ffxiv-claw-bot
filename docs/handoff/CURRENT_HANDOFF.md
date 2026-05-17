@@ -7,10 +7,10 @@
 - Repository: `https://github.com/clip968/ffxiv-claw-bot`
 - Local path: `/mnt/d/programming/ffxiv-claw-bot`
 - Branch: `main`
-- Last pushed commit: `d1cd69a` (`what: v07-04 intent detector 추가`)
+- Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v0.7 Grounded Ask Pipeline 진행 중
-- Last completed task: v07-04 intent detector
-- Next task: v07-05 query parser integration
+- Last completed task: v07-05 query parser integration
+- Next task: v07-06 retrieval models and planner
 - Current maintenance task: GitHub Actions dependency install fix for `bs4`
 
 ## 먼저 읽을 문서
@@ -18,7 +18,7 @@
 1. `docs/WORKFLOW.md`
 2. `docs/specs/0007-v07-grounded-ask-pipeline.md`
 3. `docs/plans/v07/README.md`
-4. `docs/plans/v07/2026-05-17-v07-05-query-parser-integration.md`
+4. `docs/plans/v07/2026-05-17-v07-06-retrieval-models-and-planner.md`
 5. `docs/runbooks/process-source.md`
 6. `docs/runbooks/generate-derived-wiki.md`
 
@@ -34,10 +34,11 @@
 - v07-02: `detect_job()` job detector
 - v07-03: `parse_patch_range()` numeric patch range parser
 - v07-04: `detect_intent()` deterministic intent detector
+- v07-05: `parse_query()` integration
 
 다음 작업:
 
-- v07-05: `parse_query()`에서 normalization, job detection, patch parsing, intent detection을 통합한다.
+- v07-06: `ParsedQuery`에서 retrieval plan을 생성한다.
 
 아직 하지 말 것:
 
@@ -67,19 +68,18 @@ CI dependency fix 확인:
 - clean venv에서 `python -m pip install -r requirements.txt` 성공
 - clean venv에서 `python -m unittest discover -s tests -p "test_*.py"` 238 tests OK
 
-v07-04 완료 시점 검증:
+v07-05 완료 시점 검증:
 
 ```bash
 python -m unittest tests.test_v07_query_parser -v
-python -m py_compile src/query/intent_detector.py src/query/__init__.py
-python scripts/finish_task.py
+python -m py_compile src/query/parser.py
 ```
 
 결과:
 
-- `tests.test_v07_query_parser`: 17 tests OK
+- `tests.test_v07_query_parser`: 19 tests OK
 - `py_compile`: OK
-- `finish_task.py`: 238 tests OK, docs freshness OK, Notion handoff dry-run OK
+- `finish_task.py`: 240 tests OK, docs freshness OK, Notion handoff dry-run OK
 
 ## 현재 작업트리 주의사항
 
@@ -108,4 +108,4 @@ docs/handoff/history/2026-05-17-current-handoff.md
 
 ## 다음 agent에게
 
-v07을 계속한다면 v07-05부터 시작한다. 먼저 v07-05 plan을 읽고, red test를 작성한 뒤 구현한다. 작업 범위가 handoff 구조 자체라면 `docs/handoff/README.md`의 규칙을 우선 따른다.
+v07을 계속한다면 v07-06부터 시작한다. 먼저 v07-06 plan을 읽고, red test를 작성한 뒤 구현한다. 작업 범위가 handoff 구조 자체라면 `docs/handoff/README.md`의 규칙을 우선 따른다.

@@ -32,7 +32,7 @@ user question
 | 02 | 2026-05-17-v07-02-job-detector.md | 사용자 질문에서 FFXIV 직업 감지 | Completed 2026-05-17 |
 | 03 | 2026-05-17-v07-03-patch-range-parser.md | 패치 버전 범위 파싱 | Completed 2026-05-17 |
 | 04 | 2026-05-17-v07-04-intent-detector.md | 결정론적 intent 분류 | Completed 2026-05-17 |
-| 05 | 2026-05-17-v07-05-query-parser-integration.md | query parser 통합 | Pending |
+| 05 | 2026-05-17-v07-05-query-parser-integration.md | query parser 통합 | Completed 2026-05-17 |
 | 06 | 2026-05-17-v07-06-retrieval-models-and-planner.md | retrieval plan 모델과 planner 구현 | Pending |
 | 07 | 2026-05-17-v07-07-filtered-fts-search.md | wiki_type/topic 필터링 FTS 검색 | Pending |
 | 08 | 2026-05-17-v07-08-execute-retrieval-plan.md | retrieval plan 실행 (primary/fallback) | Pending |
