@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -43,20 +43,20 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/answering/__init__.py` 생성
-- [ ] `src/answering/citations.py` 생성
-  - [ ] `collect_sources(contexts: tuple[ContextDocument, ...]) -> tuple[str, ...]`
-  - [ ] 중복 제거 (순서 보존)
-  - [ ] path + source_ids 포함
-- [ ] `src/answering/confidence.py` 생성
-  - [ ] `confidence_for_context_count(count: int) -> str`
-- [ ] `tests/test_v07_answer_composer.py` 생성
-  - [ ] `test_collect_sources_includes_paths`
-  - [ ] `test_collect_sources_includes_source_ids`
-  - [ ] `test_confidence_no_context_returns_na`
-  - [ ] `test_confidence_with_context_returns_source_grounded`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/answering/__init__.py` 생성
+- [x] `src/answering/citations.py` 생성
+  - [x] `collect_sources(contexts: tuple[ContextDocument, ...]) -> tuple[str, ...]`
+  - [x] 중복 제거 (순서 보존)
+  - [x] path + source_ids 포함
+- [x] `src/answering/confidence.py` 생성
+  - [x] `confidence_for_context_count(count: int) -> str`
+- [x] `tests/test_v07_answer_composer.py` 생성
+  - [x] `test_collect_sources_includes_paths`
+  - [x] `test_collect_sources_includes_source_ids`
+  - [x] `test_confidence_no_context_returns_na`
+  - [x] `test_confidence_with_context_returns_source_grounded`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 

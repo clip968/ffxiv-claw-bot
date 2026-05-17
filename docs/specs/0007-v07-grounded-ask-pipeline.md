@@ -514,6 +514,8 @@ Required behavior:
 
 ## 13. Grounded Answer Composer
 
+Citation and confidence helpers status: Completed 2026-05-17
+
 Suggested file:
 
 ```text

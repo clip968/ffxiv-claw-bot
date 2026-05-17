@@ -37,7 +37,7 @@ user question
 | 07 | 2026-05-17-v07-07-filtered-fts-search.md | wiki_type/topic 필터링 FTS 검색 | Completed 2026-05-17 |
 | 08 | 2026-05-17-v07-08-execute-retrieval-plan.md | retrieval plan 실행 (primary/fallback) | Completed 2026-05-17 |
 | 09 | 2026-05-17-v07-09-context-pack-builder.md | 검색 결과를 AskContextPack으로 변환 | Completed 2026-05-17 |
-| 10 | 2026-05-17-v07-10-citation-and-confidence.md | citation/confidence helper 구현 | Pending |
+| 10 | 2026-05-17-v07-10-citation-and-confidence.md | citation/confidence helper 구현 | Completed 2026-05-17 |
 | 11 | 2026-05-17-v07-11-grounded-answer-composer.md | 결정론적 grounded answer 작성기 | Pending |
 | 12 | 2026-05-17-v07-12-ask-cli-skeleton.md | tools/ask.py CLI skeleton과 JSON contract | Pending |
 | 13 | 2026-05-17-v07-13-text-output-mode.md | tools/ask.py text 출력 모드 | Pending |
