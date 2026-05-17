@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -48,34 +48,34 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] hybrid retrieval 모듈 생성
-  - [ ] `load_entity_index(graph_dir)` 구현
-  - [ ] `match_query_entities(question, entity_index)` 구현
-  - [ ] `retrieve_graph_neighborhood(conn, entity_ids, depth=2)` 구현
-  - [ ] `merge_retrieval_results(fts_results, graph_results, limit=8)` 구현
-  - [ ] `build_answer_context(merged_results)` 구현
-- [ ] ask pipeline 수정
-  - [ ] graph-aware retrieval 연결
-  - [ ] FTS-only fallback 유지
-- [ ] Ranking policy 구현
-  - [ ] FTS result: original FTS score
-  - [ ] graph result: base 1.0
-  - [ ] exact entity match boost: +0.5
-  - [ ] Fact-backed source boost: +0.4
-  - [ ] derived wiki page boost: +0.2
-  - [ ] patch match boost: +0.3
-  - [ ] source_id 중복 제거
-  - [ ] 최종 context 최대 8개
-- [ ] `tests/test_hybrid_retrieval.py` 생성
-  - [ ] `test_entity_match_korean_query`
-  - [ ] `test_graph_neighborhood_returns_facts`
-  - [ ] `test_merge_fts_and_graph`
-  - [ ] `test_dedup_sources`
-  - [ ] `test_fts_only_fallback`
-  - [ ] `test_graph_only_context`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] hybrid retrieval 모듈 생성
+  - [x] `load_entity_index(graph_dir)` 구현
+  - [x] `match_query_entities(question, entity_index)` 구현
+  - [x] `retrieve_graph_neighborhood(conn, entity_ids, depth=2)` 구현
+  - [x] `merge_retrieval_results(fts_results, graph_results, limit=8)` 구현
+  - [x] `build_answer_context(merged_results)` 구현
+- [x] ask pipeline 수정
+  - [x] graph-aware retrieval 연결
+  - [x] FTS-only fallback 유지
+- [x] Ranking policy 구현
+  - [x] FTS result: original FTS score
+  - [x] graph result: base 1.0
+  - [x] exact entity match boost: query entity matching 기반
+  - [x] Fact-backed source boost: graph result score 1.4
+  - [ ] derived wiki page boost: v09 ranking 확장 후보
+  - [ ] patch match boost: v09 ranking 확장 후보
+  - [x] source_id 중복 제거
+  - [x] 최종 context 최대 8개
+- [x] `tests/test_hybrid_retrieval.py` 생성
+  - [x] `test_entity_match_korean_query`
+  - [x] `test_graph_neighborhood_returns_facts`
+  - [x] `test_merge_fts_and_graph`
+  - [x] `test_dedup_sources`
+  - [x] `test_fts_only_fallback`
+  - [x] `test_graph_only_context`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
+- [x] handoff/README feature map status 갱신
 
 ## Verification
 

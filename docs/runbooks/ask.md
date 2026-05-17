@@ -1,7 +1,8 @@
 # Ask Pipeline Runbook
 
-`tools/ask.py` is the v0.7 grounded ask entrypoint. It connects the v0.6
-knowledge base outputs to a deterministic question-answering path.
+`tools/ask.py` is the grounded ask entrypoint. It connects the knowledge base
+outputs to a deterministic question-answering path, and uses the v0.8 domain
+graph when generated graph exports are available.
 
 Flow:
 
@@ -10,6 +11,7 @@ question
 -> parse_query()
 -> build_retrieval_plan()
 -> execute_retrieval_plan()
+-> execute_graph_aware_retrieval() when graph/entity_index.json exists
 -> build_context_pack()
 -> compose_answer()
 -> JSON or text stdout
@@ -40,7 +42,7 @@ python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --debug
 Custom DB/root:
 
 ```bash
-python tools/ask.py "GNB change history" --db-path db/ffxiv.sqlite --root-path .
+python tools/ask.py "GNB change history" --db-path db/ffxiv.sqlite --root-path . --graph-dir graph
 ```
 
 Limit context count:
@@ -143,6 +145,32 @@ If a primary target returns results, fallback targets are skipped. If primary
 returns no results, fallback targets run in priority order. Results are
 deduplicated by `page_id` and limited by `--limit`.
 
+## Graph-Aware Retrieval
+
+When `graph/entity_index.json` exists, the ask pipeline adds graph-aware
+retrieval after the FTS retrieval plan:
+
+```text
+question
+-> entity_index alias match
+-> graph neighborhood retrieval
+-> FTS and graph result merge
+-> context pack
+```
+
+Graph retrieval is additive. If the graph index is missing, no entity alias
+matches the question, or SQLite graph access fails, the pipeline returns the
+original FTS results unchanged.
+
+Merge behavior:
+
+- FTS results keep their original order and score.
+- Fact-backed graph results use a stronger score than mention-only graph
+  results.
+- Results are deduplicated by `page_id` and by `source_id` when source metadata
+  is available.
+- Final context candidates are capped at the graph-aware retrieval limit.
+
 ## Job Wiki First
 
 When `wiki/jobs/<job>.md` exists and is indexed, job change history questions
@@ -181,7 +209,7 @@ no-context message and `confidence=N/A`.
 - Numeric patch range parsing only. Expansion names are not mapped in v0.7.
 - Deterministic answer composition includes context excerpts directly; it does
   not summarize or rewrite them.
-- v0.7 derived wiki priority is implemented for job wiki pages only.
+- Graph-aware retrieval is additive and depends on generated v0.8 graph exports.
 
 ## Verification
 
@@ -189,6 +217,12 @@ Focused v0.7 CLI tests:
 
 ```bash
 python -m unittest tests.test_v07_ask_cli -v
+```
+
+Focused v0.8 hybrid retrieval tests:
+
+```bash
+python -m unittest tests.test_hybrid_retrieval -v
 ```
 
 Full completion gate:

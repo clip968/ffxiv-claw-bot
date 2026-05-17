@@ -15,6 +15,7 @@ from src.query import parse_query
 from src.retrieval import (
     build_context_pack,
     build_retrieval_plan,
+    execute_graph_aware_retrieval,
     execute_retrieval_plan,
 )
 
@@ -27,6 +28,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--limit", type=int, default=5)
     parser.add_argument("--db-path", type=Path, default=ROOT / "db" / "ffxiv.sqlite")
     parser.add_argument("--root-path", type=Path, default=ROOT)
+    parser.add_argument("--graph-dir", type=Path, default=ROOT / "graph")
     return parser
 
 
@@ -44,6 +46,13 @@ def run_ask(args: argparse.Namespace) -> dict[str, Any]:
     parsed = parse_query(question)
     plan = build_retrieval_plan(parsed, limit=args.limit)
     results = execute_retrieval_plan(plan, db_path=args.db_path)
+    results = execute_graph_aware_retrieval(
+        question,
+        results,
+        db_path=args.db_path,
+        graph_dir=args.graph_dir,
+        limit=max(args.limit, 8),
+    )
     context_pack = build_context_pack(
         question,
         parsed,
