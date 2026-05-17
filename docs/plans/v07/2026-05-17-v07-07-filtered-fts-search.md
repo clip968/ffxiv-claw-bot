@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -44,22 +44,22 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `src/retrieval/fts_search.py` 생성
-  - [ ] `search_wiki()` 함수 구현
-  - [ ] FTS query sanitization
-  - [ ] wiki_pages JOIN
-  - [ ] wiki_type filter
-  - [ ] topic/job filter
-- [ ] `src/retrieval/models.py` 갱신
-  - [ ] `SearchResult` frozen dataclass 추가
-- [ ] `tests/test_v07_retrieval.py` 갱신
-  - [ ] `test_search_wiki_filters_by_wiki_type_job`
-  - [ ] `test_search_wiki_filters_by_topic`
-  - [ ] `test_search_wiki_returns_source_summary_fallback`
-  - [ ] `test_search_wiki_sanitizes_fts_query`
-- [ ] temporary SQLite DB를 사용하는 test fixture 구성
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `src/retrieval/fts_search.py` 생성
+  - [x] `search_wiki()` 함수 구현
+  - [x] FTS query sanitization
+  - [x] wiki_pages JOIN
+  - [x] wiki_type filter
+  - [x] topic/job filter
+- [x] `src/retrieval/models.py` 갱신
+  - [x] `SearchResult` frozen dataclass 추가
+- [x] `tests/test_v07_retrieval.py` 갱신
+  - [x] `test_search_wiki_filters_by_wiki_type_job`
+  - [x] `test_search_wiki_filters_by_topic`
+  - [x] `test_search_wiki_returns_source_summary_fallback`
+  - [x] `test_search_wiki_sanitizes_fts_query`
+- [x] temporary SQLite DB를 사용하는 test fixture 구성
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 

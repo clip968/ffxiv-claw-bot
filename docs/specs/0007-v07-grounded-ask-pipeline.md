@@ -839,6 +839,8 @@ Acceptance:
 
 ### v07-07. Filtered FTS search
 
+Status: Completed 2026-05-17
+
 Files:
 
 ```text
