@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -43,18 +43,18 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `execute_retrieval_plan()` 함수 구현
-  - [ ] primary targets priority 순 실행
-  - [ ] primary 결과 확인
-  - [ ] 조건부 fallback 실행
-  - [ ] page_id 기준 deduplication
-  - [ ] limit 적용
-- [ ] `tests/test_v07_retrieval.py` 갱신
-  - [ ] `test_execute_retrieval_plan_uses_primary_first`
-  - [ ] `test_execute_retrieval_plan_uses_fallback_when_primary_empty`
-  - [ ] `test_execute_retrieval_plan_deduplicates_page_ids`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `execute_retrieval_plan()` 함수 구현
+  - [x] primary targets priority 순 실행
+  - [x] primary 결과 확인
+  - [x] 조건부 fallback 실행
+  - [x] page_id 기준 deduplication
+  - [x] limit 적용
+- [x] `tests/test_v07_retrieval.py` 갱신
+  - [x] `test_execute_retrieval_plan_uses_primary_first`
+  - [x] `test_execute_retrieval_plan_uses_fallback_when_primary_empty`
+  - [x] `test_execute_retrieval_plan_deduplicates_page_ids`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 

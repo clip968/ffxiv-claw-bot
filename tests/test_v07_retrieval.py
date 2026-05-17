@@ -145,5 +145,81 @@ class V07FilteredFtsSearchTests(unittest.TestCase):
         self.assertTrue(any(result.page_id == "job_gunbreaker" for result in results))
 
 
+def _search_result(page_id: str, *, wiki_type: str = "job") -> object:
+    from src.retrieval import SearchResult
+
+    return SearchResult(
+        page_id=page_id,
+        title=page_id,
+        wiki_type=wiki_type,
+        path=f"wiki/{page_id}.md",
+        score=1.0,
+        snippet=f"{page_id} snippet",
+        topic="gunbreaker" if wiki_type == "job" else None,
+    )
+
+
+class V07ExecuteRetrievalPlanTests(unittest.TestCase):
+    def _plan(self) -> object:
+        from src.retrieval import RetrievalPlan, RetrievalTarget
+
+        return RetrievalPlan(
+            primary=(
+                RetrievalTarget("job", "gunbreaker", "gunbreaker", 0),
+            ),
+            fallback=(
+                RetrievalTarget("source_summary", None, "gunbreaker", 10),
+            ),
+            limit=2,
+        )
+
+    def test_execute_retrieval_plan_uses_primary_first(self) -> None:
+        from src.retrieval.context_builder import execute_retrieval_plan
+
+        calls: list[str | None] = []
+
+        def fake_search(query: str, **kwargs: object) -> list[object]:
+            calls.append(kwargs["wiki_type"])
+            if kwargs["wiki_type"] == "job":
+                return [_search_result("job_gunbreaker")]
+            raise AssertionError("fallback should not run when primary returns results")
+
+        results = execute_retrieval_plan(self._plan(), search_fn=fake_search)
+
+        self.assertEqual([result.page_id for result in results], ["job_gunbreaker"])
+        self.assertEqual(calls, ["job"])
+
+    def test_execute_retrieval_plan_uses_fallback_when_primary_empty(self) -> None:
+        from src.retrieval.context_builder import execute_retrieval_plan
+
+        def fake_search(query: str, **kwargs: object) -> list[object]:
+            if kwargs["wiki_type"] == "job":
+                return []
+            return [_search_result("wiki_patch_7_0", wiki_type="source_summary")]
+
+        results = execute_retrieval_plan(self._plan(), search_fn=fake_search)
+
+        self.assertEqual([result.page_id for result in results], ["wiki_patch_7_0"])
+        self.assertEqual(results[0].wiki_type, "source_summary")
+
+    def test_execute_retrieval_plan_deduplicates_page_ids(self) -> None:
+        from src.retrieval.context_builder import execute_retrieval_plan
+
+        def fake_search(query: str, **kwargs: object) -> list[object]:
+            return [
+                _search_result("job_gunbreaker"),
+                _search_result("job_gunbreaker"),
+                _search_result("job_black_mage"),
+            ]
+
+        results = execute_retrieval_plan(self._plan(), search_fn=fake_search)
+
+        self.assertEqual(
+            [result.page_id for result in results],
+            ["job_gunbreaker", "job_black_mage"],
+        )
+        self.assertLessEqual(len(results), self._plan().limit)
+
+
 if __name__ == "__main__":
     unittest.main()

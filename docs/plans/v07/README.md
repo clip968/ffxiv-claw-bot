@@ -35,7 +35,7 @@ user question
 | 05 | 2026-05-17-v07-05-query-parser-integration.md | query parser 통합 | Completed 2026-05-17 |
 | 06 | 2026-05-17-v07-06-retrieval-models-and-planner.md | retrieval plan 모델과 planner 구현 | Completed 2026-05-17 |
 | 07 | 2026-05-17-v07-07-filtered-fts-search.md | wiki_type/topic 필터링 FTS 검색 | Completed 2026-05-17 |
-| 08 | 2026-05-17-v07-08-execute-retrieval-plan.md | retrieval plan 실행 (primary/fallback) | Pending |
+| 08 | 2026-05-17-v07-08-execute-retrieval-plan.md | retrieval plan 실행 (primary/fallback) | Completed 2026-05-17 |
 | 09 | 2026-05-17-v07-09-context-pack-builder.md | 검색 결과를 AskContextPack으로 변환 | Pending |
 | 10 | 2026-05-17-v07-10-citation-and-confidence.md | citation/confidence helper 구현 | Pending |
 | 11 | 2026-05-17-v07-11-grounded-answer-composer.md | 결정론적 grounded answer 작성기 | Pending |

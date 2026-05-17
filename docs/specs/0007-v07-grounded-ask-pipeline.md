@@ -454,6 +454,15 @@ Expected behavior:
 - Existing `tools/search_kb.py` should remain compatible
 - FTS query should still sanitize unsafe FTS5 syntax
 
+### 11.1 Retrieval Plan Execution
+
+Status: Completed 2026-05-17
+
+`execute_retrieval_plan()` executes primary targets in priority order. If a
+primary target returns results, fallback targets are skipped. If all primary
+targets return no results, fallback targets are executed in priority order.
+Results are deduplicated by `page_id` and truncated to `RetrievalPlan.limit`.
+
 ---
 
 ## 12. Context Pack Builder
