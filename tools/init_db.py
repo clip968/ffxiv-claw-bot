@@ -1,8 +1,12 @@
 from pathlib import Path
 import sqlite3
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 DB_PATH = ROOT / "db" / "ffxiv.sqlite"
+sys.path.insert(0, str(ROOT))
+
+from src.guide_ff14.storage import ensure_guide_ff14_schema
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS sources (
@@ -98,6 +102,7 @@ def main() -> None:
 
     with sqlite3.connect(DB_PATH) as conn:
         conn.executescript(SCHEMA)
+        ensure_guide_ff14_schema(conn)
         conn.commit()
 
     print(f"initialized database: {DB_PATH}")

@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v09 guide.ff14.co.kr official DB crawler in progress
-- Last completed task: v09 Task 00 baseline inspection and generated-artifact guardrails
-- Next task: v09 Task 01 SQLite schema and storage layer
+- Last completed task: v09 Task 01 SQLite schema and storage layer
+- Next task: v09 Task 02 category map extractor
 - Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
@@ -44,6 +44,12 @@
   - Tests use standard `unittest`, temp SQLite DBs, local fixtures, and no network dependency.
 - Added generated-artifact ignore guards for `data/raw/guide_ff14/` and `wiki/items/`.
 - Added baseline report `docs/reports/2026-05-17-v09-task-00-baseline.md`.
+- Task 01 SQLite schema/storage completed:
+  - Added `src/guide_ff14/__init__.py`, `src/guide_ff14/models.py`, and `src/guide_ff14/storage.py`.
+  - Added idempotent tables `guide_crawl_pages`, `guide_categories`, `guide_items`, and `guide_item_sources`.
+  - Wired `tools/init_db.py` to call `ensure_guide_ff14_schema(conn)`.
+  - Added `docs/DOC_OWNERS.yml` rule `v09-guide-ff14-crawler`.
+  - Added `tests/test_guide_ff14_storage.py`.
 
 검증:
 
@@ -53,11 +59,15 @@
 - `find tests -maxdepth 2 -type f | sort`: inspected.
 - `git diff --check`: OK for Task 00 changes.
 - `python scripts/check_docs_freshness.py --all`: OK for Task 00 changes.
+- Red check before Task 01 implementation: `python -m unittest tests.test_guide_ff14_storage -v` failed with missing `src.guide_ff14` module.
+- Task 01 focused green: `python -m unittest tests.test_guide_ff14_storage -v` -> 5 tests OK.
+- `python tools/init_db.py`: OK; initialized `db/ffxiv.sqlite` with v09 tables.
+- Task 01 `git diff --check`: OK.
+- Task 01 docs freshness: OK.
 
 다음 작업:
 
-- Task 01: add v09 SQLite schema/storage with red-first temp DB tests.
-- Add a v09 DOC_OWNERS rule before committing v09 code files.
+- Task 02: add fixture-driven category map parser tests and parser.
 
 아직 하지 말 것:
 

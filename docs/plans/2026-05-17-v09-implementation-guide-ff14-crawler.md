@@ -5,7 +5,8 @@ Source spec: `docs/specs/0011-v09-guide-ff14-official-db-crawler.md`
 Current status:
 
 - Task 00: completed on 2026-05-17; see `docs/reports/2026-05-17-v09-task-00-baseline.md`.
-- Task 01: next.
+- Task 01: completed on 2026-05-17; added `src/guide_ff14` schema/storage and `tests/test_guide_ff14_storage.py`.
+- Task 02: next.
 
 This document splits v09 into task-sized implementation units. Each task is intended to be handed to an agent as a bounded unit of work. Do not collapse the tasks into one broad implementation pass. The intended workflow is:
 

@@ -155,6 +155,16 @@ New in `tests/test_v08_5_precision_regression.py`:
 - Composer evidence extraction drops structural noise such as `title:`, `Job Actions`, `Recast`, `Cast`, `Range`, and `Radius`.
 - Continuation regression prevents unrelated Solution Nine coordinate and leve client changes from being promoted as evidence.
 
+### v09 guide.ff14.co.kr Crawler Tests
+
+Task 01 storage coverage:
+
+```bash
+python -m unittest tests.test_guide_ff14_storage -v
+```
+
+This verifies that v09 schema creation is idempotent, crawl pages/categories/items/item sources upsert without duplicates, JSON fields remain valid, and `created_at` is preserved while `updated_at` changes.
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:

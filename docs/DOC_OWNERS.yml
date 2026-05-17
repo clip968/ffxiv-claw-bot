@@ -218,3 +218,17 @@ rules:
       - "docs/specs/0009-v08_5_managed_wiki_kb_activation_spec.md"
     procedure_docs:
       - "docs/runbooks/test.md"
+
+  - id: v09-guide-ff14-crawler
+    paths:
+      - "src/guide_ff14/**/*.py"
+      - "src/derived_wiki/item_wiki_generator.py"
+      - "tools/crawl_guide_ff14.py"
+      - "tools/generate_item_wiki.py"
+      - "tools/init_db.py"
+      - "tests/test_guide_ff14_*.py"
+    contract_docs:
+      - "docs/specs/0011-v09-guide-ff14-official-db-crawler.md"
+    procedure_docs:
+      - "docs/runbooks/guide-ff14-crawler.md"
+      - "docs/runbooks/test.md"

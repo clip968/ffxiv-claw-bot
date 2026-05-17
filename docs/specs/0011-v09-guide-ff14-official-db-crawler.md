@@ -523,6 +523,7 @@ Add:
 
 Required tests:
 
+- `tests/test_guide_ff14_storage.py`
 - `tests/test_guide_ff14_category_map.py`
 - `tests/test_guide_ff14_item_extractor.py`
 - `tests/test_guide_ff14_crawler.py`
@@ -562,6 +563,7 @@ Before marking this spec complete:
 
 ```bash
 python -m unittest tests.test_guide_ff14_category_map -v
+python -m unittest tests.test_guide_ff14_storage -v
 python -m unittest tests.test_guide_ff14_item_extractor -v
 python -m unittest tests.test_guide_ff14_crawler -v
 python -m unittest tests.test_guide_ff14_item_wiki -v
