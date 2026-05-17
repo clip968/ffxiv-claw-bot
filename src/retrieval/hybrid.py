@@ -23,6 +23,7 @@ class GraphRetrievalResult:
     source_id: str | None
     node_id: str
     score: float
+    topic: str | None = None
 
     def to_search_result(self) -> SearchResult:
         return SearchResult(
@@ -32,7 +33,7 @@ class GraphRetrievalResult:
             path=self.path,
             score=self.score,
             snippet=self.snippet,
-            topic=None,
+            topic=self.topic,
         )
 
 
@@ -277,6 +278,7 @@ def _graph_result_for_source(
     title = str(properties.get("title") or source.get("name") or source_id)
     path = str(properties.get("path") or f"wiki/source_summaries/{source_id}.md")
     snippet = str(node_properties.get("text") or node.get("name") or title)
+    topic = str(properties.get("job") or "") or None
     return GraphRetrievalResult(
         page_id=f"wiki_{source_id.removeprefix('src_')}",
         title=title,
@@ -286,6 +288,7 @@ def _graph_result_for_source(
         source_id=source_id,
         node_id=node_id,
         score=score,
+        topic=topic,
     )
 
 

@@ -187,6 +187,19 @@ If `graph/entity_index.json` is absent, ask still works as an FTS-only grounded
 answer path. In that mode, entity-page fallback and graph neighborhood facts are
 not available.
 
+## Precision Policy
+
+Job-specific questions with `parsed.job` apply an additional source-summary
+precision filter after FTS/graph merge:
+
+- Official job guide source summaries for other jobs are removed from context.
+- Patch/fact source summaries remain eligible; generic patch notes are not
+  filtered only because they mention multiple jobs.
+- Job change-history questions prioritize patch and fact context ahead of
+  official job guide source summaries.
+- Official job guide source summaries carry `wiki_pages.job` metadata when they
+  are indexed.
+
 v08.5 smoke queries:
 
 ```bash
@@ -251,6 +264,11 @@ The answer body must not append full source bodies or whole generated wiki
 documents. Source paths and source ids belong in `근거 문서`; uncertainty about
 sparse context belongs in `주의`.
 
+Evidence extraction also drops structural noise such as `title:`, `Job Actions`,
+`Cast`, `Recast`, `Range`, `Radius`, graph links, source metadata lines, and
+unrelated patch menu/location lines such as Solution Nine or leve client changes
+when they are not the queried topic.
+
 ## Known Limitations
 
 - No crawling, polling, official patchnote watcher, scheduler, or Discord command.
@@ -280,6 +298,7 @@ Focused v0.8.5 answer quality tests:
 
 ```bash
 python -m unittest tests.test_v08_5_answer_quality -v
+python -m unittest tests.test_v08_5_precision_regression -v
 ```
 
 Full completion gate:

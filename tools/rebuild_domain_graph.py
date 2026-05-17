@@ -22,6 +22,10 @@ from src.domain_graph.storage import (
     upsert_fact,
     upsert_node,
 )
+from src.source_processing.job_guide import (
+    clean_official_job_guide_text,
+    detect_official_job_slug,
+)
 
 
 DB_PATH = ROOT / "db" / "ffxiv.sqlite"
@@ -38,6 +42,8 @@ class SourceSummary:
     path: Path
     relative_path: str
     body: str
+    job: str | None = None
+    source_kind: str | None = None
 
 
 def rebuild_domain_graph(
@@ -160,6 +166,9 @@ def _load_source_summaries(
             continue
         title = _parse_title(text) or path.stem
         body = _strip_summary_header(text)
+        official_job = detect_official_job_slug(title, body)
+        if official_job:
+            body = clean_official_job_guide_text(body, official_job)
         page_id = f"wiki_{resolved_source_id.removeprefix('src_')}"
         summaries.append(
             SourceSummary(
@@ -169,6 +178,8 @@ def _load_source_summaries(
                 path=path,
                 relative_path=_relative_path(path, wiki_root.parent),
                 body=body,
+                job=official_job,
+                source_kind="official_job_guide" if official_job else None,
             )
         )
     return summaries
@@ -192,6 +203,14 @@ def _upsert_registry_nodes(conn: sqlite3.Connection, entities: tuple[Entity, ...
 def _upsert_source_summary_nodes(conn: sqlite3.Connection, summary: SourceSummary) -> None:
     source_node_id = f"src:{summary.source_id}"
     page_node_id = f"page:{summary.page_id}"
+    source_properties = {"path": summary.relative_path, "title": summary.title}
+    page_properties = {"path": summary.relative_path, "source_id": summary.source_id}
+    if summary.job:
+        source_properties["job"] = summary.job
+        page_properties["job"] = summary.job
+    if summary.source_kind:
+        source_properties["source_kind"] = summary.source_kind
+        page_properties["source_kind"] = summary.source_kind
     upsert_node(
         conn,
         {
@@ -199,7 +218,7 @@ def _upsert_source_summary_nodes(conn: sqlite3.Connection, summary: SourceSummar
             "type": "SourceDocument",
             "name": summary.source_id,
             "canonical_name": summary.source_id,
-            "properties": {"path": summary.relative_path, "title": summary.title},
+            "properties": source_properties,
         },
     )
     upsert_node(
@@ -209,7 +228,7 @@ def _upsert_source_summary_nodes(conn: sqlite3.Connection, summary: SourceSummar
             "type": "WikiPage",
             "name": summary.title,
             "canonical_name": summary.title,
-            "properties": {"path": summary.relative_path, "source_id": summary.source_id},
+            "properties": page_properties,
         },
     )
     upsert_edge(

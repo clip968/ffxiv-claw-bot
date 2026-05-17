@@ -4,6 +4,11 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+from src.source_processing.job_guide import (
+    clean_official_job_guide_text,
+    detect_official_job_slug,
+)
+
 
 @dataclass(frozen=True)
 class WikiDocument:
@@ -30,7 +35,7 @@ def _scan_source_summaries(root: Path) -> list[WikiDocument]:
         _build_document(
             path,
             wiki_type="source_summary",
-            topic=path.stem,
+            topic=None,
             page_id=f"wiki_{path.stem}",
         )
         for path in sorted((root / "wiki" / "source_summaries").glob("*.md"))
@@ -75,12 +80,17 @@ def _build_document(
     page_id: str,
 ) -> WikiDocument:
     text = path.read_text(encoding="utf-8")
+    title = _extract_title(text) or path.stem
+    official_job = detect_official_job_slug(title, text)
+    if wiki_type == "source_summary" and official_job:
+        topic = official_job
+        text = clean_official_job_guide_text(text, official_job)
     return WikiDocument(
         page_id=page_id,
         path=path,
         wiki_type=wiki_type,
         topic=topic,
-        title=_extract_title(text) or path.stem,
+        title=title,
         text=text,
     )
 

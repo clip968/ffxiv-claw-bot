@@ -8,10 +8,10 @@
 - Local path: `/mnt/d/programming/ffxiv-claw-bot`
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
-- Current phase: v0.8.5 Managed Wiki Knowledge Base Activation completed
-- Last completed task: OpenClaw use-case skill routing and skill-set tests
-- Next task: wait for maintainer scope; v09 namespace expansion is only future work
-- Current maintenance task: none
+- Current phase: v0.8.5 precision hardening completed
+- Last completed task: v08.5 job-specific retrieval precision and answer-noise hardening
+- Next task: wait for maintainer scope; v09 is `SPEC 0011 / v09 - guide.ff14.co.kr Official DB Crawler`, and log/notebook namespace expansion is v10 future work
+- Current maintenance task: v08.5 precision hardening
 
 ## 먼저 읽을 문서
 
@@ -57,6 +57,41 @@
 - `python scripts/check_docs_freshness.py --all`: OK
 - `python scripts/finish_task.py`: 361 tests OK, docs freshness OK, Notion handoff dry-run OK
 
+## v08.5 precision hardening
+
+완료:
+
+- Added `tests/test_v08_5_precision_regression.py` with red-first coverage for:
+  - official job guide cross-job nav/menu removal
+  - official job guide source_summary job metadata
+  - Gunbreaker/Paladin job-specific context filtering
+  - `title:`, `Job Actions`, `Recast`, `Cast`, `Range`, `Radius` structural evidence noise
+  - Continuation answer filtering for unrelated Solution Nine and leve client lines
+- Added `src/source_processing/job_guide.py` helper for official job guide detection and cleanup.
+- Updated HTML extraction, source summary scanning, graph rebuild, FTS indexing, graph retrieval, ask result policy, and answer composition.
+- Rebuilt local graph/wiki/FTS outputs without crawling new sources.
+- Added `QUALITY_REPORT.md` with red test, rebuild counts, ask checks, and focused/full test results.
+
+검증:
+
+- Red check before implementation: `python -m unittest tests.test_v08_5_precision_regression -v` failed as expected with 5 failures and 1 error.
+- `python tools/rebuild_domain_graph.py --reset-domain-graph --verbose`: `status=ok`, `sources=31`, `facts=19`, export `nodes=105`, export `edges=396`, report `warnings=1`.
+- `python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph`: `status=ok`, `warnings=1`.
+- `python tools/generate_derived_wiki.py --verbose`: `status=ok`, generated 5 job pages, 3 patch pages, and 4 skill pages.
+- `index_wiki_documents()`: `status=ok`, `indexed=43` (`source_summary=31`, `job=5`, `patch=3`, `skill=4`).
+- SQLite counts: `sources=29`, `wiki_pages=43`, `wiki_fts=43`, `graph_nodes=105`, `graph_edges=487`.
+- Actual ask 8 checks: all `status=ok`; Gunbreaker/Paladin cross-job job guide contamination removed; Gunbreaker 7.5 answer has no Black Mage title evidence; Continuation answer has no Solution Nine or leve client evidence.
+- Focused v08.5 tests: `python -m unittest tests.test_v08_5_precision_regression tests.test_v08_5_real_graph_population tests.test_v08_5_real_derived_wiki tests.test_v08_5_fts_visibility tests.test_v08_5_answer_quality -v` -> 29 tests OK.
+- v06 focused regression: `python -m unittest tests.test_v06_extractors tests.test_v06_fts_indexing -v` -> 39 tests OK.
+- v07 focused regression: `python -m unittest tests.test_v07_query_parser tests.test_v07_retrieval tests.test_v07_context_builder tests.test_v07_answer_composer tests.test_v07_ask_cli -v` -> 51 tests OK.
+- v08 focused regression: `python -m unittest tests.test_v08_e2e tests.test_hybrid_retrieval tests.test_domain_graph_rebuild tests.test_graph_report tests.test_derived_wiki -v` -> 43 tests OK.
+- Full unittest discovery: `python -m unittest discover -s tests -p "test_*.py"` -> 367 tests OK.
+
+최종 gate:
+
+- `python scripts/check_docs_freshness.py --all`: OK (`changed files=18`, `code files=11`, `docs files=6`, `doc owner rules=15`).
+- `python scripts/finish_task.py`: OK (`367 tests OK`, docs freshness OK, Notion handoff dry-run OK).
+
 ## v08.5 진행 상황
 
 완료:
@@ -74,12 +109,13 @@
 
 다음 작업:
 
-- wait for maintainer scope
+- wait for maintainer scope; next candidate is v09 official guide DB crawler
 
 아직 하지 말 것:
 
-- v09 이후 기능을 maintainer 요청 없이 앞당기지 않는다.
-- BIS/raid/item namespace expansion, crawling/polling, vector DB, graph DB, and LLM API integration remain out of scope until explicitly requested.
+- v09 구현과 v10 이후 기능을 maintainer 요청 없이 앞당기지 않는다.
+- v09 official guide DB crawler is specified in `docs/specs/0011-guide-ff14-official-db-crawler.md`; v10 log/notebook namespace expansion remains future work.
+- BIS/raid namespace expansion, broad crawling/polling, vector DB, graph DB, and LLM API integration remain out of scope until explicitly requested.
 
 필요할 때만 과거 상세 로그를 읽는다.
 
@@ -106,7 +142,7 @@
 
 아직 하지 말 것:
 
-- v09 이후 기능을 maintainer 요청 없이 앞당기지 않는다.
+- v09 구현과 v10 이후 기능을 maintainer 요청 없이 앞당기지 않는다.
 
 ## v07 진행 상황
 

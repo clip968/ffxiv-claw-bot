@@ -145,6 +145,16 @@ Task v08.5-07 focused regression snapshot:
 - `tests.test_v08_5_fts_visibility`: 6 tests OK
 - `tests.test_v08_5_answer_quality`: 6 tests OK
 
+### v08.5 Precision Regression Tests
+
+New in `tests/test_v08_5_precision_regression.py`:
+
+- Official job guide HTML extraction removes cross-job nav/menu lines and records `official_job` metadata.
+- Official job guide source summaries index `wiki_pages.job` with the matching job slug.
+- `parsed.job` retrieval filters other official job guide source summaries from context.
+- Composer evidence extraction drops structural noise such as `title:`, `Job Actions`, `Recast`, `Cast`, `Range`, and `Radius`.
+- Continuation regression prevents unrelated Solution Nine coordinate and leve client changes from being promoted as evidence.
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:

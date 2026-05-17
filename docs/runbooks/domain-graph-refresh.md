@@ -67,14 +67,16 @@ Rebuild the graph tables and exports from source summaries:
 python tools/rebuild_domain_graph.py --reset-domain-graph --verbose
 ```
 
-v08.5 activation snapshot:
+v08.5 precision-hardening snapshot (2026-05-17):
 
-- sources: 26
-- facts: 14
-- graph nodes: 78
-- graph edges: 339
+- sources: 31
+- facts: 19
+- graph nodes: 105
+- graph edges: 487
 - node types include `Job`, `Patch`, `Skill`, `Fact`, `SourceDocument`, `WikiPage`
 - edge types include `MENTIONS`, `SUPPORTS`, `VALID_IN_PATCH`, `AFFECTS_JOB`, `AFFECTS_SKILL`
+- official job guide source nodes record job metadata and cross-job nav/menu
+  text is removed before relation extraction.
 
 Run the rebuild twice when checking idempotency. Node and edge counts should
 remain stable.
@@ -128,13 +130,15 @@ Index source summaries and generated wiki pages into SQLite FTS:
 python -c "from tools.compile_wiki import index_wiki_documents; import json; print(json.dumps(index_wiki_documents(), ensure_ascii=False, indent=2))"
 ```
 
-v08.5 activation snapshot:
+v08.5 precision-hardening snapshot (2026-05-17):
 
-- indexed: 38
-- source summaries: 26
+- indexed: 43
+- source summaries: 31
 - jobs: 5
 - patches: 3
 - skills: 4
+- official job guide source summaries have `wiki_pages.job` set to the matching
+  job slug; generic source summaries keep `job=NULL`.
 
 ## Step 7. Ask Smoke Tests
 
@@ -145,6 +149,10 @@ python tools/ask.py "건브 7.5 변경점 알려줘" --format json
 python tools/ask.py "No Mercy 관련 변경 있어?" --format json
 python tools/ask.py "7.5에서 어떤 직업이 언급됐어?" --format json
 python tools/ask.py "건브 관련 source 보여줘" --format json
+python tools/ask.py "Gunbreaker 스킬 알려줘" --format json
+python tools/ask.py "Paladin 스킬 알려줘" --format json
+python tools/ask.py "건브 7.5 변경점" --format json
+python tools/ask.py "Continuation 관련 변경 있어?" --format json
 ```
 
 Expected shape:
@@ -153,6 +161,9 @@ Expected shape:
 - `contexts` is non-empty for known entities
 - `answer.body` starts with structured sections such as `요약`, `관련 항목`,
   `확인된 내용`, `근거 문서`, and `주의`
+- job-specific skill queries do not include other official job guide contexts
+- Continuation answers do not promote unrelated Solution Nine or leve client
+  lines as evidence
 
 ## Step 8. Regression
 
@@ -163,6 +174,7 @@ python -m unittest tests.test_v08_5_real_graph_population -v
 python -m unittest tests.test_v08_5_real_derived_wiki -v
 python -m unittest tests.test_v08_5_fts_visibility -v
 python -m unittest tests.test_v08_5_answer_quality -v
+python -m unittest tests.test_v08_5_precision_regression -v
 ```
 
 Full completion gate:

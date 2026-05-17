@@ -7,6 +7,10 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 from src.source_processing.errors import SourceDecodingError
+from src.source_processing.job_guide import (
+    clean_official_job_guide_text,
+    detect_official_job_slug,
+)
 from src.source_processing.models import ExtractedSource
 
 NOISE_TAGS = ("script", "style", "nav", "footer")
@@ -27,20 +31,24 @@ def extract_html_file(path: str | Path) -> ExtractedSource:
     html_title = _html_title(soup)
     text_root = soup.find("main") or soup.find("article") or soup.body or soup
     text = _normalize_text(text_root.get_text("\n", strip=True))
+    official_job = detect_official_job_slug(html_title, text)
+    if official_job:
+        text = clean_official_job_guide_text(text, official_job)
 
-    return ExtractedSource(
-        title=html_title or source_path.stem,
-        text=text,
-        metadata={
-            "source_path": str(source_path),
-            "extension": source_path.suffix.lower(),
-            "extracted_at": datetime.now(timezone.utc).isoformat(),
-            "extractor_name": "html",
-            "html_title": html_title,
-            "removed_elements": removed_elements,
-            "empty": text == "",
-        },
-    )
+    metadata = {
+        "source_path": str(source_path),
+        "extension": source_path.suffix.lower(),
+        "extracted_at": datetime.now(timezone.utc).isoformat(),
+        "extractor_name": "html",
+        "html_title": html_title,
+        "removed_elements": removed_elements,
+        "empty": text == "",
+    }
+    if official_job:
+        metadata["official_job"] = official_job
+        metadata["source_kind"] = "official_job_guide"
+
+    return ExtractedSource(title=html_title or source_path.stem, text=text, metadata=metadata)
 
 
 def _remove_noise(soup: BeautifulSoup) -> list[str]:

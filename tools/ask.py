@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 from src.answering import compose_answer
 from src.query import parse_query
 from src.retrieval import (
+    apply_query_result_policy,
     build_context_pack,
     build_retrieval_plan,
     execute_graph_aware_retrieval,
@@ -53,6 +54,7 @@ def run_ask(args: argparse.Namespace) -> dict[str, Any]:
         graph_dir=args.graph_dir,
         limit=max(args.limit, 8),
     )
+    results = apply_query_result_policy(results, parsed)
     context_pack = build_context_pack(
         question,
         parsed,

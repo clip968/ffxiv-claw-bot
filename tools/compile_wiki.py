@@ -174,6 +174,7 @@ def _upsert_scanned_wiki_page(
 ) -> None:
     timestamp = now_iso()
     rel_path = _relative_path(document.path, root_path)
+    job_value = document.topic if document.wiki_type in {"job", "source_summary"} else None
     conn = sqlite3.connect(db_path)
     try:
         existing = conn.execute(
@@ -191,7 +192,7 @@ def _upsert_scanned_wiki_page(
                     document.wiki_type,
                     document.title,
                     rel_path,
-                    document.topic if document.wiki_type == "job" else None,
+                    job_value,
                     timestamp,
                     document.page_id,
                 ),
@@ -210,7 +211,7 @@ def _upsert_scanned_wiki_page(
                     document.wiki_type,
                     document.title,
                     rel_path,
-                    document.topic if document.wiki_type == "job" else None,
+                    job_value,
                     json.dumps([], ensure_ascii=False),
                     "high",
                     timestamp,

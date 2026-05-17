@@ -36,9 +36,33 @@ NOISE_PHRASES = (
     "these additions and adjustments require",
     "these additions and adjustments contain elements",
     "final fantasy xiv patch",
+    "for further details on changes to actions and traits",
     "playable content",
+    "solution nine",
     "the manderville gold saucer",
+    "the name of the client for the",
 )
+NOISE_PREFIXES = (
+    "fact:",
+    "path:",
+    "source_id:",
+    "title:",
+)
+NOISE_LINES = {
+    "action name",
+    "actions & traits",
+    "acquired",
+    "cast",
+    "effect",
+    "graph links",
+    "job actions",
+    "mp cost",
+    "radius",
+    "range",
+    "recast",
+    "related sources",
+    "type",
+}
 ENTITY_LABELS = {
     "job": "Job",
     "patch": "Patch",
@@ -183,7 +207,7 @@ def _candidate_lines(content: str) -> tuple[str, ...]:
 
 def _score_line(line: str, query_terms: tuple[str, ...]) -> int:
     lower = line.lower()
-    if any(phrase in lower for phrase in NOISE_PHRASES):
+    if _is_noise_line(lower):
         return 0
     score = 0
     if any(keyword in lower for keyword in TRIGGER_KEYWORDS):
@@ -191,6 +215,19 @@ def _score_line(line: str, query_terms: tuple[str, ...]) -> int:
     if any(term in lower for term in query_terms):
         score += 2
     return score
+
+
+def _is_noise_line(lower_line: str) -> bool:
+    stripped = lower_line.strip()
+    if stripped in NOISE_LINES:
+        return True
+    if any(stripped.startswith(prefix) for prefix in NOISE_PREFIXES):
+        return True
+    if any(phrase in stripped for phrase in NOISE_PHRASES):
+        return True
+    if "leve" in stripped and "changed" in stripped:
+        return True
+    return False
 
 
 def _truncate(value: str, max_chars: int) -> str:

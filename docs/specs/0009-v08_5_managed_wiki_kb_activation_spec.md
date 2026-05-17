@@ -201,10 +201,14 @@ v08.5는 다음 조건을 만족하면 완료로 본다.
 
 - generated derived wiki (`job`, `patch`, `skill`)가 `wiki_pages`에 색인된다.
 - generated derived wiki (`job`, `patch`, `skill`)가 `wiki_fts`에 색인된다.
+- official job guide source_summary는 `wiki_pages.job`에 해당 job slug를 가진다.
+- official job guide source_summary는 cross-job nav/menu 텍스트를 FTS 본문으로 승격하지 않는다.
 - ask 결과 contexts에 `job`, `patch`, `skill`, `source_summary` 중 관련 context가 포함된다.
 - source summary fallback은 유지된다.
 - patch decimal query (`7.5`)는 FTS query에서 `7 5`로 토큰화되어 generated patch page를 찾을 수 있다.
 - graph-aware retrieval은 matched `job:*`, `patch:*`, `skill:*` entity에 대응하는 generated wiki page가 있으면 graph edge가 부족해도 context 후보로 포함한다.
+- `parsed.job`이 있는 질문에서는 다른 job의 official job guide source_summary를 hard-filter한다.
+- job 변경점 질문은 job guide source_summary보다 patch/fact context를 우선한다.
 
 ### 5.6 Answer quality criteria
 
@@ -215,6 +219,8 @@ v08.5는 다음 조건을 만족하면 완료로 본다.
 - 답변에는 근거 source가 있다.
 - context가 부족하면 부족하다고 말한다.
 - graph-derived wiki context와 source summary context를 구분해 사용할 수 있다.
+- evidence 후보에서 `title:`, `Job Actions`, `Cast`, `Recast`, `Range`, `Radius`, graph link, source metadata line 같은 구조 잡음을 제거한다.
+- skill/job 변경 질문 evidence에서 unrelated location/leve menu 문장을 승격하지 않는다.
 - 기존 v06/v07/v08 regression이 깨지지 않는다.
 
 ### 5.7 Documentation criteria
@@ -498,6 +504,7 @@ v08.5에서 추가된 실제 graph population, derived wiki activation, answer q
 - `tests/test_v08_5_real_derived_wiki.py`
 - `tests/test_v08_5_fts_visibility.py`
 - `tests/test_v08_5_answer_quality.py`
+- `tests/test_v08_5_precision_regression.py`
 
 ### 테스트 항목
 
@@ -531,6 +538,13 @@ v08.5에서 추가된 실제 graph population, derived wiki activation, answer q
 3. related entity 포함 확인
 4. sources 포함 확인
 5. 부족한 context일 때 uncertainty note 확인
+
+#### test_v08_5_precision_regression.py
+
+1. official job guide HTML extractor가 cross-job nav/menu를 제거하는지 확인
+2. official job guide source_summary가 job metadata로 색인되는지 확인
+3. `parsed.job` query에서 다른 job guide source_summary가 context에서 제외되는지 확인
+4. composer가 `title:`, `Job Actions`, `Recast`, `Solution Nine`, leve client 같은 구조/비관련 잡음을 evidence로 승격하지 않는지 확인
 
 ### Acceptance criteria
 

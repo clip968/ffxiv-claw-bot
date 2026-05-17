@@ -892,7 +892,7 @@ Common Commands에 다음을 추가한다.
 
 - Current phase: v08.5 Managed Wiki Knowledge Base Activation completed
 - Last completed task: final regression / handoff update
-- Next task: wait for maintainer scope, then consider v09 namespace expansion
+- Next task: wait for maintainer scope; v09 is the official guide DB crawler/item pilot, and log/notebook namespace expansion is v10 future work
 - 검증 명령과 결과
 - 아직 하지 말 것
 

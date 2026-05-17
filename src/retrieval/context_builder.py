@@ -4,6 +4,10 @@ import re
 from pathlib import Path
 from typing import Callable, Sequence
 
+from src.source_processing.job_guide import (
+    clean_official_job_guide_text,
+    detect_official_job_slug,
+)
 from src.retrieval.fts_search import search_wiki
 from src.query.models import ParsedQuery
 from src.retrieval.models import (
@@ -65,6 +69,16 @@ def build_context_pack(
     )
 
 
+def apply_query_result_policy(
+    results: Sequence[SearchResult],
+    parsed_query: ParsedQuery,
+) -> tuple[SearchResult, ...]:
+    filtered = _filter_other_job_guides(results, parsed_query.job)
+    if parsed_query.intent != "job_change_history":
+        return filtered
+    return tuple(sorted(filtered, key=_change_history_priority))
+
+
 def _run_targets(
     targets: tuple[RetrievalTarget, ...],
     *,
@@ -93,6 +107,7 @@ def _context_from_result(
     max_chars: int,
 ) -> ContextDocument:
     content = _read_content(result.path, root_path)
+    content = _clean_context_content(content, result)
     return ContextDocument(
         page_id=result.page_id,
         wiki_type=result.wiki_type,
@@ -115,6 +130,15 @@ def _read_content(path_value: str, root_path: Path) -> str:
         return ""
 
 
+def _clean_context_content(content: str, result: SearchResult) -> str:
+    if result.wiki_type != "source_summary":
+        return content
+    official_job = detect_official_job_slug(result.title, content)
+    if not official_job:
+        return content
+    return clean_official_job_guide_text(content, official_job)
+
+
 def _extract_source_ids(content: str) -> tuple[str, ...]:
     return tuple(dict.fromkeys(SOURCE_ID_PATTERN.findall(content)))
 
@@ -128,3 +152,40 @@ def _dedupe_results(results: Sequence[SearchResult]) -> tuple[SearchResult, ...]
         seen.add(result.page_id)
         deduped.append(result)
     return tuple(deduped)
+
+
+def _filter_other_job_guides(
+    results: Sequence[SearchResult],
+    parsed_job: str | None,
+) -> tuple[SearchResult, ...]:
+    if not parsed_job:
+        return tuple(results)
+    return tuple(
+        result
+        for result in results
+        if not _is_other_job_guide_source(result, parsed_job)
+    )
+
+
+def _is_other_job_guide_source(result: SearchResult, parsed_job: str) -> bool:
+    if result.wiki_type != "source_summary":
+        return False
+    official_job = detect_official_job_slug(result.title, result.snippet)
+    return official_job is not None and official_job != parsed_job
+
+
+def _change_history_priority(result: SearchResult) -> tuple[int, float, str]:
+    if result.wiki_type == "patch":
+        bucket = 0
+    elif result.wiki_type == "source_summary" and not detect_official_job_slug(result.title, result.snippet):
+        bucket = 1
+    elif result.wiki_type == "skill":
+        bucket = 2
+    elif result.wiki_type == "job":
+        bucket = 3
+    elif result.wiki_type == "source_summary":
+        bucket = 4
+    else:
+        bucket = 5
+    score = result.score if result.score is not None else 0.0
+    return (bucket, score, result.page_id)

@@ -229,6 +229,7 @@ metadata: dict
 - CSV: `row_count`, `column_count`, `columns`
 - XLSX: `sheet_count`, `sheet_names`, `total_row_count`
 - HTML: `title`, `removed_elements`
+- Official FFXIV job guide HTML: `official_job`, `source_kind=official_job_guide`
 
 ## 8. 형식별 처리 규칙
 
@@ -250,6 +251,8 @@ metadata: dict
 - 본문 텍스트 중심 추출
 - 제목이 있으면 title metadata에 저장
 - 링크 텍스트는 가능하면 보존
+- Official FFXIV job guide로 감지되면 cross-job menu/nav 텍스트를 본문에서 제거한다.
+- Official FFXIV job guide는 현재 job slug를 `official_job` metadata로 기록한다.
 
 ### CSV
 
@@ -571,6 +574,8 @@ v0.6 완료 조건은 다음과 같다.
 
 - source_summaries 외에 jobs wiki도 인덱싱
 - wiki_type/topic metadata 추가
+- Official FFXIV job guide source_summary는 `job` metadata를 해당 job slug로 저장한다.
+- 일반 source_summary는 파일 stem을 job metadata로 오인하지 않는다.
 
 ### v06-11. Regression tests
 

@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from src.retrieval.context_builder import build_context_pack, execute_retrieval_plan
+from src.retrieval.context_builder import (
+    apply_query_result_policy,
+    build_context_pack,
+    execute_retrieval_plan,
+)
 from src.retrieval.fts_search import search_wiki
 from src.retrieval.hybrid import (
     GraphRetrievalResult,
@@ -28,6 +32,7 @@ __all__ = [
     "RetrievalTarget",
     "SearchResult",
     "build_context_pack",
+    "apply_query_result_policy",
     "build_answer_context",
     "build_retrieval_plan",
     "execute_retrieval_plan",
