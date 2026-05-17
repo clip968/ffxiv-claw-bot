@@ -15,6 +15,7 @@ Examples:
 - "이 텍스트 메모를 personal_notes로 저장하고 검색 가능하게 만들어줘."
 
 Do not use this skill for broad crawling, scheduled polling, search-engine lookup, Discord slash command runtime, or vector/embedding work.
+Do not use this skill for KB questions; use `ffxiv-ask-kb` instead.
 
 ## Source Type Rules
 
@@ -22,7 +23,7 @@ Do not use this skill for broad crawling, scheduled polling, search-engine looku
 - Direct text memo: use `source_type=text_note` and pass `--body`.
 - Local `.md` file: use `source_type=markdown_file` and pass `--local-path`.
 - Local `.txt` file: use `source_type=plain_text_file` and pass `--local-path`.
-- Other local attachments: treat as `binary_attachment` contract-only unless the user confirms a supported path.
+- Other local attachments: use `source_type=binary_attachment` and pass `--local-path` only when the extension is supported by the extractor registry.
 
 ## Category Rules
 
@@ -63,7 +64,7 @@ If the user clearly provides category and source input, run without extra confir
 
 ## Command Construction
 
-Prefer `python tools/process_source.py` over calling individual ingest, rebuild, graph, or status tools.
+Prefer `python tools/process_source.py` over calling individual ingest, rebuild, graph, or status tools. Do not call tools/ingest_local.py directly for normal OpenClaw source-processing requests.
 
 Text note:
 
@@ -94,6 +95,16 @@ python tools/process_source.py \
   --source-type markdown_file \
   --category raid_guides \
   --local-path "/mnt/d/ffixiv-bot-storage/incoming/p12s.md"
+```
+
+Binary/table attachment:
+
+```bash
+python tools/process_source.py \
+  --apply \
+  --source-type binary_attachment \
+  --category bis_sheets \
+  --local-path "/mnt/d/ffixiv-bot-storage/incoming/bis.xlsx"
 ```
 
 Dry run:

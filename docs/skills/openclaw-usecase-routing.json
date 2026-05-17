@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "routes": [
+    {
+      "use_case": "save / ingest / index source",
+      "skill": "ffxiv-source-processing",
+      "triggers": ["save", "ingest", "index", "KB에 반영", "저장"],
+      "entrypoint": "python tools/process_source.py",
+      "forbidden": ["direct tools/ingest_local.py normal workflow", "crawler", "scheduler"]
+    },
+    {
+      "use_case": "ask / search / answer current KB",
+      "skill": "ffxiv-ask-kb",
+      "triggers": ["ask", "search", "answer", "물어봐", "검색", "알려줘", "source 보여줘"],
+      "entrypoint": "python tools/ask.py <question> --format json",
+      "forbidden": ["answer from memory", "LLM API", "process_source.py for read-only questions"]
+    },
+    {
+      "use_case": "refresh / rebuild / regenerate KB",
+      "skill": "ffxiv-kb-refresh",
+      "triggers": ["refresh", "rebuild", "regenerate", "최신화", "재빌드", "재생성", "FTS 재색인"],
+      "entrypoint": "docs/runbooks/domain-graph-refresh.md sequence",
+      "forbidden": ["commit generated graph/wiki outputs", "crawler", "LLM API"]
+    },
+    {
+      "use_case": "Notion status update",
+      "skill": "ffxiv-notion-status",
+      "triggers": ["Notion", "Status", "Graph Status", "상태 갱신", "처리 결과 기록"],
+      "entrypoint": "result[\"notion_update\"] or status payload helper",
+      "forbidden": ["body", "attachments", "raw_html", "binary data", "full graph JSON"]
+    },
+    {
+      "use_case": "latest info without provided source",
+      "skill": "unsupported-latest-info",
+      "triggers": ["latest", "최신", "찾아줘", "crawl", "poll"],
+      "entrypoint": "ask for a source",
+      "forbidden": ["silent crawling", "scheduler", "unscoped web lookup"]
+    }
+  ]
+}

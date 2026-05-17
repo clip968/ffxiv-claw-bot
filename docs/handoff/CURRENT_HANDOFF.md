@@ -9,7 +9,7 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v0.8.5 Managed Wiki Knowledge Base Activation completed
-- Last completed task: v08.5-09 final verification and handoff update
+- Last completed task: OpenClaw use-case skill routing and skill-set tests
 - Next task: wait for maintainer scope; v09 namespace expansion is only future work
 - Current maintenance task: none
 
@@ -19,11 +19,43 @@
 2. `docs/specs/0009-v08_5_managed_wiki_kb_activation_spec.md`
 3. `docs/plans/2026-05-17-v08_5_implementation.md`
 4. `docs/plans/v08_5/README.md`
-5. `docs/plans/v08_5/2026-05-17-v08_5-01-source-summary-audit.md`
-6. `docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md`
-7. `tests/test_v08_e2e.py`
-8. `src/retrieval/hybrid.py`
-9. `tools/ask.py`
+5. `docs/specs/0010-openclaw-usecase-skill-routing.md`
+6. `docs/plans/2026-05-17-openclaw-usecase-skill-set.md`
+7. `docs/skills/ffxiv-openclaw-router.md`
+8. `docs/plans/v08_5/2026-05-17-v08_5-01-source-summary-audit.md`
+9. `docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md`
+10. `tests/test_v08_e2e.py`
+11. `src/retrieval/hybrid.py`
+12. `tools/ask.py`
+
+## OpenClaw use-case skill routing
+
+완료:
+
+- Added `docs/specs/0010-openclaw-usecase-skill-routing.md` as the OpenClaw use-case routing contract.
+- Added `docs/plans/2026-05-17-openclaw-usecase-skill-set.md` as the implementation/verification record.
+- Added router skill `docs/skills/ffxiv-openclaw-router.md`.
+- Added use-case skills:
+  - `docs/skills/ffxiv-ask-kb.md`
+  - `docs/skills/ffxiv-kb-refresh.md`
+  - `docs/skills/ffxiv-notion-status.md`
+- Strengthened existing `docs/skills/ffxiv-source-processing.md` boundaries for KB questions, direct ingest calls, and binary attachments.
+- Added machine-readable routing manifest `docs/skills/openclaw-usecase-routing.json`.
+- Added `tests/test_openclaw_skills.py` to lock the use-case-to-skill contract.
+
+범위:
+
+- This is repo-side skill/routing insurance for common OpenClaw requests.
+- It does not implement an OpenClaw runtime adapter. A future runtime must explicitly load `docs/skills/openclaw-usecase-routing.json` or the skill docs before executing requests.
+- Latest/live web information without a provided source remains unsupported; ask for a source first.
+
+검증:
+
+- `python -m unittest tests.test_openclaw_skills -v`: 6 tests OK
+- `python -m unittest tests.test_v05_process_source tests.test_v04_openclaw_notion_control tests.test_v04_status_notification -v`: 39 tests OK
+- `git diff --check`: OK
+- `python scripts/check_docs_freshness.py --all`: OK
+- `python scripts/finish_task.py`: 361 tests OK, docs freshness OK, Notion handoff dry-run OK
 
 ## v08.5 진행 상황
 
@@ -115,6 +147,24 @@
 
 v08.5 완료 시점 검증:
 
+OpenClaw use-case skill routing maintenance 검증:
+
+```bash
+python -m unittest tests.test_openclaw_skills -v
+python -m unittest tests.test_v05_process_source tests.test_v04_openclaw_notion_control tests.test_v04_status_notification -v
+git diff --check
+python scripts/check_docs_freshness.py --all
+python scripts/finish_task.py
+```
+
+결과:
+
+- OpenClaw skill routing tests: 6 tests OK
+- source-processing / Notion boundary regression tests: 39 tests OK
+- `git diff --check`: OK
+- docs freshness: OK
+- `finish_task.py`: 361 tests OK, docs freshness OK, Notion handoff dry-run OK
+
 ```bash
 python tools/rebuild_domain_graph.py --dry-run --verbose
 python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph
@@ -172,6 +222,7 @@ python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json
 ## 현재 작업트리 주의사항
 
 - v08.5 is complete.
+- OpenClaw use-case skill routing is complete.
 - Generated local outputs under `db/`, `graph/`, `wiki/jobs/`, `wiki/patches/`, and `wiki/skills/` should stay uncommitted unless a future maintainer scope explicitly changes that policy.
 - Push after each completed task per maintainer instruction.
 
@@ -185,4 +236,4 @@ python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json
 
 ## 다음 agent에게
 
-v08.5 is complete. Start new work only from explicit maintainer scope.
+v08.5 is complete. OpenClaw use-case skill routing is the latest maintenance task. Start new work only from explicit maintainer scope.

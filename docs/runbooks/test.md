@@ -32,6 +32,27 @@ Drive sync dry-run 테스트:
 python -m unittest tests.test_sync_drive
 ```
 
+OpenClaw skill routing 테스트:
+
+```bash
+python -m unittest tests.test_openclaw_skills -v
+```
+
+## OpenClaw Skill Routing Tests
+
+New in `tests/test_openclaw_skills.py`:
+
+- **OpenClawUseCaseSkillSetTests** (6 tests): verifies the OpenClaw use-case router, source-processing skill, ask skill, KB refresh skill, Notion status skill, and machine-readable routing manifest. These tests keep common OpenClaw requests mapped to explicit repo entrypoints instead of ad hoc tool calls.
+
+Current skill docs:
+
+- `docs/skills/ffxiv-openclaw-router.md`
+- `docs/skills/ffxiv-source-processing.md`
+- `docs/skills/ffxiv-ask-kb.md`
+- `docs/skills/ffxiv-kb-refresh.md`
+- `docs/skills/ffxiv-notion-status.md`
+- `docs/skills/openclaw-usecase-routing.json`
+
 ## v0.8 Domain Graphify Tests
 
 Focused v0.8 graph/retrieval tests:
