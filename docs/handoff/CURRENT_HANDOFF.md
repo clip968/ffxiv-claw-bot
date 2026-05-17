@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v09 guide.ff14.co.kr official DB crawler in progress
-- Last completed task: v09 Task 05 item pilot crawler and CLI
-- Next task: v09 Task 06 item wiki generator and FTS integration
+- Last completed task: v09 Task 06 item wiki generator and FTS integration
+- Next task: v09 Task 07 domain graph item extension
 - Current maintenance task: v09 item pilot crawler implementation
 
 ## 먼저 읽을 문서
@@ -76,6 +76,12 @@
 - Added `docs/plans/v09/` in the same style as `docs/plans/v08/`:
   - `README.md` includes feature map, red-test map, scope/non-goals, entrypoints, verification, and completion criteria.
   - Task files `v09-00` through `v09-10` mirror the v08 task structure with Spec, Status, Goal, Scope, Red Test, Checklist, Verification, Implementation Notes, and Agent Prompt sections.
+- Task 06 item wiki generator and FTS integration completed:
+  - Added `src/derived_wiki/item_wiki_generator.py`.
+  - Added `tools/generate_item_wiki.py`.
+  - Added `tests/test_guide_ff14_item_wiki.py`.
+  - Updated `src/wiki_indexing/wiki_document_scanner.py` and `tools/compile_wiki.py` so generated `wiki/items/*.md` pages scan as `item` wiki documents.
+  - Generator writes `wiki/items/index.md`, category pages, item pages, updates `wiki/index.md`, and indexes item pages into `wiki_pages`/`wiki_fts`.
 
 검증:
 
@@ -99,10 +105,17 @@
 - Red check before Task 05 implementation: `python -m unittest tests.test_guide_ff14_crawler -v` failed with missing `src.guide_ff14.crawler` and `tools.crawl_guide_ff14`.
 - Task 05 focused green: `python -m unittest tests.test_guide_ff14_crawler -v` -> 8 tests OK.
 - v09 plan folder freshness update: `python scripts/check_docs_freshness.py --all` -> OK.
+- Red check before Task 06 implementation: `python -m unittest tests.test_guide_ff14_item_wiki -v` failed with missing `src.derived_wiki.item_wiki_generator` and `tools.generate_item_wiki`.
+- Task 06 focused green: `python -m unittest tests.test_guide_ff14_item_wiki -v` -> 9 tests OK.
+- Task 06 compile wiki regression: `python -m unittest tests.test_guide_ff14_item_wiki tests.test_compile_wiki -v` -> 12 tests OK.
+- Task 06 cumulative v09 focused tests: `python -m unittest tests.test_guide_ff14_storage tests.test_guide_ff14_category_map tests.test_guide_ff14_fetcher tests.test_guide_ff14_item_extractor tests.test_guide_ff14_crawler tests.test_guide_ff14_item_wiki -v` -> 42 tests OK.
+- Task 06 py_compile for item wiki/scanner/CLI files: OK.
+- Task 06 `git diff --check`: OK.
+- Task 06 docs freshness: OK.
 
 다음 작업:
 
-- Task 06: add `wiki/items` generator and FTS indexing with temp DB/wiki tests.
+- Task 07: add item nodes/edges/report support in existing domain graph path.
 
 아직 하지 말 것:
 

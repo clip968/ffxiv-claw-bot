@@ -8,7 +8,7 @@
 
 ## Status
 
-In Progress
+Completed 2026-05-17
 
 ## Goal
 
@@ -45,13 +45,13 @@ Contracts to fix:
 
 ## Checklist
 
-- [ ] temp DB/wiki red tests 작성
-- [ ] red 상태 확인
-- [ ] item wiki generator 구현
-- [ ] CLI 구현
-- [ ] scanner/indexing integration 구현
-- [ ] docs/handoff 갱신
-- [ ] focused and regression tests 실행
+- [x] temp DB/wiki red tests 작성
+- [x] red 상태 확인
+- [x] item wiki generator 구현
+- [x] CLI 구현
+- [x] scanner/indexing integration 구현
+- [x] docs/handoff 갱신
+- [x] focused and regression tests 실행
 
 ## Verification
 
@@ -66,6 +66,7 @@ python scripts/check_docs_freshness.py --all
 
 - Use generated output paths under `wiki/items/`.
 - Do not commit generated item wiki pages.
+- `index_wiki_documents()` now includes item wiki pages in its scanner summary.
 
 ## Agent Prompt
 

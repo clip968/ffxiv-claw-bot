@@ -27,6 +27,7 @@ def scan_wiki_documents(root_path: Path | str) -> list[WikiDocument]:
     documents.extend(_scan_job_wikis(root))
     documents.extend(_scan_patch_wikis(root))
     documents.extend(_scan_skill_wikis(root))
+    documents.extend(_scan_item_wikis(root))
     return sorted(documents, key=lambda doc: doc.path.as_posix())
 
 
@@ -52,6 +53,19 @@ def _scan_patch_wikis(root: Path) -> list[WikiDocument]:
 
 def _scan_skill_wikis(root: Path) -> list[WikiDocument]:
     return _scan_topic_wikis(root, directory="skills", wiki_type="skill", page_prefix="skill")
+
+
+def _scan_item_wikis(root: Path) -> list[WikiDocument]:
+    return [
+        _build_document(
+            path,
+            wiki_type="item",
+            topic=path.stem,
+            page_id=f"item_{path.stem}",
+        )
+        for path in sorted((root / "wiki" / "items").glob("*.md"))
+        if path.name != "index.md"
+    ]
 
 
 def _scan_topic_wikis(

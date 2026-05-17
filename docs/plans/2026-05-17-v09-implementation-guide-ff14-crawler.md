@@ -11,7 +11,8 @@ Current status:
 - Task 03: completed on 2026-05-17; added safe fetcher and fake-client tests.
 - Task 04: completed on 2026-05-17; added item detail fixture, extractor, and tests.
 - Task 05: completed on 2026-05-17; added item pilot crawler, JSON CLI, and fake-fetcher tests.
-- Task 06: next.
+- Task 06: completed on 2026-05-17; added item wiki generator, CLI, scanner support, and tests.
+- Task 07: next.
 
 This document splits v09 into task-sized implementation units. Each task is intended to be handed to an agent as a bounded unit of work. Do not collapse the tasks into one broad implementation pass. The intended workflow is:
 

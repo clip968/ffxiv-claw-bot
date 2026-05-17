@@ -457,6 +457,8 @@ Acceptance criteria:
 - generated item pages are indexed in `wiki_pages` with type `item`.
 - generated item pages are indexed in `wiki_fts`.
 - `wiki/index.md` links to `wiki/items/index.md`.
+- existing `index_wiki_documents()` can scan generated item pages as `item`
+  wiki documents without requiring a live crawl.
 
 ## Retrieval And Ask Integration
 

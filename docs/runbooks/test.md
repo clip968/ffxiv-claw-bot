@@ -197,6 +197,14 @@ python -m unittest tests.test_guide_ff14_crawler -v
 
 This verifies dry-run non-mutation, apply with `--limit 1`, idempotent re-run, category failure handling, detail failure partial success, detail URL normalization/limit, required JSON keys, and CLI JSON output using fake fetchers only.
 
+Task 06 item wiki and FTS coverage:
+
+```bash
+python -m unittest tests.test_guide_ff14_item_wiki -v
+```
+
+This verifies dry-run non-mutation, generated item index/category/item pages, official URL and level facts, explicit missing acquisition wording, `wiki_pages.type = item`, `wiki_fts` indexing, idempotent re-run, `wiki/index.md` item link, `index_wiki_documents()` item scanner support, and CLI JSON output.
+
 ### content_hash Regression Tests
 
 New in `tests/test_v04_ingest_local_cli.py`:
