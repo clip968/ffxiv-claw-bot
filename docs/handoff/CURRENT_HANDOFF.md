@@ -8,21 +8,36 @@
 - Local path: `/mnt/d/programming/ffxiv-claw-bot`
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
-- Current phase: v0.8 Domain Graphify Layer completed
-- Last completed task: v08-10 end-to-end smoke test
-- Next task: none; wait for maintainer scope
+- Current phase: v0.8.5 Managed Wiki Knowledge Base Activation in progress
+- Last completed task: v08.5-00 baseline verification
+- Next task: v08.5-01 source summary audit
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
 
 1. `docs/WORKFLOW.md`
-2. `docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md`
-3. `docs/plans/2026-05-17-v08-implementation.md`
-4. `docs/plans/v08/README.md`
-5. `docs/plans/v08/2026-05-17-v08-10-e2e-smoke-test.md`
-6. `tests/test_v08_e2e.py`
-7. `src/retrieval/hybrid.py`
-8. `tools/ask.py`
+2. `docs/specs/0009-v08_5_managed_wiki_kb_activation_spec.md`
+3. `docs/plans/2026-05-17-v08_5_implementation.md`
+4. `docs/plans/v08_5/README.md`
+5. `docs/plans/v08_5/2026-05-17-v08_5-01-source-summary-audit.md`
+6. `docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md`
+7. `tests/test_v08_e2e.py`
+8. `src/retrieval/hybrid.py`
+9. `tools/ask.py`
+
+## v08.5 진행 상황
+
+완료:
+
+- v08.5-00: baseline verification
+
+다음 작업:
+
+- v08.5-01: source summary audit
+
+아직 하지 말 것:
+
+- v09 이후 기능을 maintainer 요청 없이 앞당기지 않는다.
 
 필요할 때만 과거 상세 로그를 읽는다.
 
