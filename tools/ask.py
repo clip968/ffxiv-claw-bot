@@ -75,6 +75,9 @@ def main(argv: list[str] | None = None) -> None:
     parser = build_parser()
     args = parser.parse_args(argv)
     payload = run_ask(args)
+    if args.format == "text" and payload.get("status") == "ok":
+        print(payload["answer"]["body"])
+        return
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 

@@ -9,12 +9,16 @@ from pathlib import Path
 
 
 def _run_ask(args: list[str]) -> dict:
+    return json.loads(_run_ask_stdout(args))
+
+
+def _run_ask_stdout(args: list[str]) -> str:
     from tools.ask import main
 
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):
         main(args)
-    return json.loads(stdout.getvalue())
+    return stdout.getvalue()
 
 
 class V07AskCliTests(unittest.TestCase):
@@ -65,6 +69,41 @@ class V07AskCliTests(unittest.TestCase):
         self.assertEqual(result["parsed_query"]["patch_range"], "7.0..7.99")
         self.assertEqual(result["retrieval_plan"]["primary"][0]["wiki_type"], "job")
         self.assertEqual(result["retrieval_plan"]["primary"][0]["topic"], "gunbreaker")
+
+    def test_ask_cli_text_output_contains_answer_body(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            output = _run_ask_stdout(
+                [
+                    "7.x 건브레이커 변경 이력 알려줘",
+                    "--format",
+                    "text",
+                    "--db-path",
+                    str(root / "ffxiv.sqlite"),
+                    "--root-path",
+                    str(root),
+                ]
+            )
+
+        self.assertIn("관련 KB 문서를 찾지 못했습니다", output)
+
+    def test_ask_cli_text_output_no_json_braces(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            output = _run_ask_stdout(
+                [
+                    "7.x 건브레이커 변경 이력 알려줘",
+                    "--format",
+                    "text",
+                    "--db-path",
+                    str(root / "ffxiv.sqlite"),
+                    "--root-path",
+                    str(root),
+                ]
+            )
+
+        self.assertNotIn("{", output)
+        self.assertNotIn("}", output)
 
 
 if __name__ == "__main__":

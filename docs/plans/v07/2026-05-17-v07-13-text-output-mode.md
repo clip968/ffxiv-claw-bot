@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -40,14 +40,14 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tools/ask.py` 갱신
-  - [ ] `--format text` 분기 추가
-  - [ ] answer body만 stdout 출력
-- [ ] `tests/test_v07_ask_cli.py` 갱신
-  - [ ] `test_ask_cli_text_output_contains_answer_body`
-  - [ ] `test_ask_cli_text_output_no_json_braces`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
+- [x] `tools/ask.py` 갱신
+  - [x] `--format text` 분기 추가
+  - [x] answer body만 stdout 출력
+- [x] `tests/test_v07_ask_cli.py` 갱신
+  - [x] `test_ask_cli_text_output_contains_answer_body`
+  - [x] `test_ask_cli_text_output_no_json_braces`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
 
 ## Verification
 

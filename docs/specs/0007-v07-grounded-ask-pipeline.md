@@ -557,7 +557,7 @@ N/A
 
 ## 14. `tools/ask.py` CLI
 
-Status: CLI skeleton and JSON contract completed 2026-05-17
+Status: CLI skeleton, JSON contract, and text output mode completed 2026-05-17
 
 Official v0.7 entrypoint:
 
