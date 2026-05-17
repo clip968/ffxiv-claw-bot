@@ -638,6 +638,7 @@ v0.7 is complete when:
 
 Job wiki first E2E status: Completed 2026-05-17
 Source summary fallback E2E status: Completed 2026-05-17
+Full regression verification status: Completed 2026-05-17
 
 1. `tools/ask.py "7.x 건브레이커 변경 이력"` detects `job=gunbreaker`.
 2. `tools/ask.py "7.x 건브레이커 변경 이력"` detects `patch_range=7.0..7.99`.

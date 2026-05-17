@@ -44,7 +44,7 @@ user question
 | 14 | 2026-05-17-v07-14-job-wiki-first-e2e.md | job wiki 우선 사용 E2E 테스트 | Completed 2026-05-17 |
 | 15 | 2026-05-17-v07-15-source-summary-fallback-e2e.md | source summary fallback E2E 테스트 | Completed 2026-05-17 |
 | 16 | 2026-05-17-v07-16-runbook-documentation.md | runbook 및 문서 작성 | Completed 2026-05-17 |
-| 17 | 2026-05-17-v07-17-full-regression-verification.md | 전체 회귀 검증 | Pending |
+| 17 | 2026-05-17-v07-17-full-regression-verification.md | 전체 회귀 검증 | Completed 2026-05-17 |
 
 ## Red Test Map
 

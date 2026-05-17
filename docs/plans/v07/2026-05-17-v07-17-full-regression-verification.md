@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -53,12 +53,30 @@ python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json
 
 ## Checklist
 
-- [ ] v07 tests 전체 통과
-- [ ] v06 tests 전체 통과
-- [ ] full test suite 통과
-- [ ] docs freshness check 통과
-- [ ] smoke test valid JSON 반환
-- [ ] 버그 발견 시 최소 패치 적용 후 재실행
+- [x] v07 tests 전체 통과
+- [x] v06 tests 전체 통과
+- [x] full test suite 통과
+- [x] docs freshness check 통과
+- [x] smoke test valid JSON 반환
+- [x] 버그 발견 시 최소 패치 적용 후 재실행
+
+## Verification Results
+
+2026-05-17 verification:
+
+- `python -m unittest tests.test_v07_query_parser -v`: 19 tests OK
+- `python -m unittest tests.test_v07_retrieval -v`: 10 tests OK
+- `python -m unittest tests.test_v07_context_builder -v`: 5 tests OK
+- `python -m unittest tests.test_v07_answer_composer -v`: 10 tests OK
+- `python -m unittest tests.test_v07_ask_cli -v`: 7 tests OK
+- `python -m unittest tests.test_v06_extractors -v`: 32 tests OK
+- `python -m unittest tests.test_v06_pending_sources -v`: 11 tests OK
+- `python -m unittest tests.test_v06_job_wiki_generator -v`: 28 tests OK
+- `python -m unittest tests.test_v06_fts_indexing -v`: 7 tests OK
+- `python -m unittest discover -s tests -p "test_*.py"`: 272 tests OK
+- `python scripts/check_docs_freshness.py --all`: OK
+- `python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json`: returned JSON
+- JSON parse smoke: OK
 
 ## Acceptance Criteria
 

@@ -8,9 +8,9 @@
 - Local path: `/mnt/d/programming/ffxiv-claw-bot`
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
-- Current phase: v0.7 Grounded Ask Pipeline 진행 중
-- Last completed task: v07-16 runbook documentation
-- Next task: v07-17 full regression verification
+- Current phase: v0.7 Grounded Ask Pipeline completed
+- Last completed task: v07-17 full regression verification
+- Next task: v08 planning, if maintainer chooses to start Discord adapter work
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
@@ -20,8 +20,9 @@
 3. `docs/plans/v07/README.md`
 4. `docs/runbooks/ask.md`
 5. `docs/plans/v07/2026-05-17-v07-17-full-regression-verification.md`
-6. `docs/runbooks/process-source.md`
-7. `docs/runbooks/generate-derived-wiki.md`
+6. `tools/ask.py`
+7. `docs/runbooks/process-source.md`
+8. `docs/runbooks/generate-derived-wiki.md`
 
 필요할 때만 과거 상세 로그를 읽는다.
 
@@ -47,10 +48,11 @@
 - v07-14: job wiki first E2E
 - v07-15: source summary fallback E2E
 - v07-16: `docs/runbooks/ask.md` and v07 docs refresh
+- v07-17: full regression verification
 
 다음 작업:
 
-- v07-17: full regression verification을 실행한다.
+- v07 is complete. Start v08 only if the maintainer explicitly opens that scope.
 
 아직 하지 말 것:
 
@@ -80,32 +82,41 @@ CI dependency fix 확인:
 - clean venv에서 `python -m pip install -r requirements.txt` 성공
 - clean venv에서 `python -m unittest discover -s tests -p "test_*.py"` 238 tests OK
 
-v07-16 완료 시점 검증:
+v07-17 완료 시점 검증:
 
 ```bash
+python -m unittest tests.test_v07_query_parser -v
+python -m unittest tests.test_v07_retrieval -v
+python -m unittest tests.test_v07_context_builder -v
+python -m unittest tests.test_v07_answer_composer -v
+python -m unittest tests.test_v07_ask_cli -v
+python -m unittest tests.test_v06_extractors -v
+python -m unittest tests.test_v06_pending_sources -v
+python -m unittest tests.test_v06_job_wiki_generator -v
+python -m unittest tests.test_v06_fts_indexing -v
+python -m unittest discover -s tests -p "test_*.py"
 python scripts/check_docs_freshness.py --all
+python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json
 ```
 
 결과:
 
+- v07 tests: 19 + 10 + 5 + 10 + 7 tests OK
+- v06 regression: 32 + 11 + 28 + 7 tests OK
+- full unittest discovery: 272 tests OK
 - docs freshness: OK
+- smoke JSON returned and parsed as valid JSON
 - `finish_task.py`: 272 tests OK, docs freshness OK, Notion handoff dry-run OK
 
 ## 현재 작업트리 주의사항
 
-다음 변경은 v07-01~04 구현 범위 밖의 기존 변경으로 남아 있다. 임의로 되돌리지 말 것.
-
-```text
-M .gitignore
-M AGENTS.md
-```
-
-이번 handoff 정리 작업으로 예상되는 변경:
+v07-17 완료 시점에는 커밋 전 문서 변경만 남아 있다. 커밋/푸시 후 작업 트리는 clean이어야 한다.
 
 ```text
 docs/handoff/CURRENT_HANDOFF.md
-docs/handoff/README.md
-docs/handoff/history/2026-05-17-current-handoff.md
+docs/plans/v07/2026-05-17-v07-17-full-regression-verification.md
+docs/plans/v07/README.md
+docs/specs/0007-v07-grounded-ask-pipeline.md
 ```
 
 ## 운영 원칙
@@ -118,4 +129,4 @@ docs/handoff/history/2026-05-17-current-handoff.md
 
 ## 다음 agent에게
 
-v07을 계속한다면 v07-17부터 시작한다. 먼저 v07-17 plan을 읽고 전체 regression 검증을 실행한다. 작업 범위가 handoff 구조 자체라면 `docs/handoff/README.md`의 규칙을 우선 따른다.
+v07은 완료됐다. 다음 작업은 maintainer가 v08 범위를 열 때까지 시작하지 않는다.
