@@ -53,4 +53,4 @@ def _job_query(job_slug: str) -> str:
     if job is None:
         return job_slug
     aliases = (job.slug, job.display_name, *job.aliases)
-    return " ".join(dict.fromkeys(alias for alias in aliases if alias))
+    return " OR ".join(dict.fromkeys(alias for alias in aliases if alias))

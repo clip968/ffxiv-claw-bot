@@ -41,7 +41,7 @@ user question
 | 11 | 2026-05-17-v07-11-grounded-answer-composer.md | 결정론적 grounded answer 작성기 | Completed 2026-05-17 |
 | 12 | 2026-05-17-v07-12-ask-cli-skeleton.md | tools/ask.py CLI skeleton과 JSON contract | Completed 2026-05-17 |
 | 13 | 2026-05-17-v07-13-text-output-mode.md | tools/ask.py text 출력 모드 | Completed 2026-05-17 |
-| 14 | 2026-05-17-v07-14-job-wiki-first-e2e.md | job wiki 우선 사용 E2E 테스트 | Pending |
+| 14 | 2026-05-17-v07-14-job-wiki-first-e2e.md | job wiki 우선 사용 E2E 테스트 | Completed 2026-05-17 |
 | 15 | 2026-05-17-v07-15-source-summary-fallback-e2e.md | source summary fallback E2E 테스트 | Pending |
 | 16 | 2026-05-17-v07-16-runbook-documentation.md | runbook 및 문서 작성 | Pending |
 | 17 | 2026-05-17-v07-17-full-regression-verification.md | 전체 회귀 검증 | Pending |

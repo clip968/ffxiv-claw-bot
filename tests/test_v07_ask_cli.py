@@ -7,6 +7,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from tests.test_compile_wiki import ensure_wiki_tables
+from tools.compile_wiki import index_wiki_documents
+
 
 def _run_ask(args: list[str]) -> dict:
     return json.loads(_run_ask_stdout(args))
@@ -104,6 +107,45 @@ class V07AskCliTests(unittest.TestCase):
 
         self.assertNotIn("{", output)
         self.assertNotIn("}", output)
+
+    def test_ask_cli_job_change_history_uses_job_wiki_first(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            db_path = root / "ffxiv.sqlite"
+            ensure_wiki_tables(db_path)
+            job_dir = root / "wiki" / "jobs"
+            source_dir = root / "wiki" / "source_summaries"
+            job_dir.mkdir(parents=True)
+            source_dir.mkdir(parents=True)
+            (job_dir / "gunbreaker.md").write_text(
+                "# Gunbreaker 변경 이력\n\n"
+                "source_id: job_wiki_manual\n\n"
+                "## 7.0\n\n"
+                "- Continuation potency adjusted.\n",
+                encoding="utf-8",
+            )
+            (source_dir / "patch_7_0.md").write_text(
+                "# Patch 7.0 Notes\n\n"
+                "source_id: patch_7_0\n\n"
+                "Gunbreaker source summary fallback content.\n",
+                encoding="utf-8",
+            )
+            index_wiki_documents(root_path=root, db_path=db_path)
+
+            result = _run_ask(
+                [
+                    "7.x 건브레이커 변경 이력 알려줘",
+                    "--db-path",
+                    str(db_path),
+                    "--root-path",
+                    str(root),
+                ]
+            )
+
+        self.assertEqual(result["contexts"][0]["page_id"], "job_gunbreaker")
+        self.assertEqual(result["contexts"][0]["path"], "wiki/jobs/gunbreaker.md")
+        self.assertIn("wiki/jobs/gunbreaker.md", result["answer"]["body"])
+        self.assertIn("Continuation potency adjusted", result["answer"]["body"])
 
 
 if __name__ == "__main__":

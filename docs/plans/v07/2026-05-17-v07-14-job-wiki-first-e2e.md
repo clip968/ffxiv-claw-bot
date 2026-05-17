@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -39,14 +39,14 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tests/test_v07_ask_cli.py` 갱신
-  - [ ] temporary root + SQLite DB setup
-  - [ ] `wiki/jobs/gunbreaker.md` fixture 생성
-  - [ ] `wiki/source_summaries/patch_7_0.md` fixture 생성
-  - [ ] `index_wiki_documents()` 호출로 FTS 인덱싱
-  - [ ] `test_ask_cli_job_change_history_uses_job_wiki_first` 테스트
-- [ ] 필요 시 구현 보정 (v07-07 또는 v07-08의 필터링 로직)
-- [ ] green 확인
+- [x] `tests/test_v07_ask_cli.py` 갱신
+  - [x] temporary root + SQLite DB setup
+  - [x] `wiki/jobs/gunbreaker.md` fixture 생성
+  - [x] `wiki/source_summaries/patch_7_0.md` fixture 생성
+  - [x] `index_wiki_documents()` 호출로 FTS 인덱싱
+  - [x] `test_ask_cli_job_change_history_uses_job_wiki_first` 테스트
+- [x] 필요 시 구현 보정 (v07-07 또는 v07-08의 필터링 로직)
+- [x] green 확인
 
 ## Verification
 
