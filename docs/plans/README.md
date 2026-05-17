@@ -32,3 +32,4 @@ plan은 source of truth가 아니다. 실행 중 contract가 바뀌면 spec/runb
 
 - `docs/plans/v03/`: Google Drive sync feature plans (Legacy / Deferred optional integration)
 - `docs/plans/v04/`: OpenClaw Local Ingest and Notion Control feature plans
+- `docs/plans/v09/`: guide.ff14.co.kr official DB crawler and item pilot feature plans

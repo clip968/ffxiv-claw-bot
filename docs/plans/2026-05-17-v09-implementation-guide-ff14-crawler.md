@@ -4,6 +4,7 @@ Source spec: `docs/specs/0011-v09-guide-ff14-official-db-crawler.md`
 
 Current status:
 
+- Per-task plans are mirrored in `docs/plans/v09/` following the v08 folder format.
 - Task 00: completed on 2026-05-17; see `docs/reports/2026-05-17-v09-task-00-baseline.md`.
 - Task 01: completed on 2026-05-17; added `src/guide_ff14` schema/storage and `tests/test_guide_ff14_storage.py`.
 - Task 02: completed on 2026-05-17; added category-map fixture, parser, and tests.

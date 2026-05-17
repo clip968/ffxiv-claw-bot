@@ -30,6 +30,8 @@
 13. `docs/specs/0011-v09-guide-ff14-official-db-crawler.md`
 14. `docs/plans/2026-05-17-v09-implementation-guide-ff14-crawler.md`
 15. `docs/reports/2026-05-17-v09-task-00-baseline.md`
+16. `docs/plans/v09/README.md`
+17. `docs/plans/v09/2026-05-17-v09-06-item-wiki-generator.md`
 
 ## v09 guide.ff14.co.kr official DB crawler
 
@@ -71,6 +73,9 @@
   - Added `tests/test_guide_ff14_crawler.py`.
   - `item-pilot --dry-run` fetches the category page through an injected fetcher, discovers bounded detail URLs, and does not create DB/raw outputs.
   - `item-pilot --apply` stores crawl state and item rows idempotently, saves raw snapshots, records detail failures as partial errors, and emits required JSON keys.
+- Added `docs/plans/v09/` in the same style as `docs/plans/v08/`:
+  - `README.md` includes feature map, red-test map, scope/non-goals, entrypoints, verification, and completion criteria.
+  - Task files `v09-00` through `v09-10` mirror the v08 task structure with Spec, Status, Goal, Scope, Red Test, Checklist, Verification, Implementation Notes, and Agent Prompt sections.
 
 검증:
 
@@ -93,6 +98,7 @@
 - Task 04 focused green: `python -m unittest tests.test_guide_ff14_item_extractor -v` -> 8 tests OK.
 - Red check before Task 05 implementation: `python -m unittest tests.test_guide_ff14_crawler -v` failed with missing `src.guide_ff14.crawler` and `tools.crawl_guide_ff14`.
 - Task 05 focused green: `python -m unittest tests.test_guide_ff14_crawler -v` -> 8 tests OK.
+- v09 plan folder freshness update: `python scripts/check_docs_freshness.py --all` -> OK.
 
 다음 작업:
 
