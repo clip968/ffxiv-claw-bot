@@ -17,6 +17,12 @@ spec은 과거 계획이 아니라 현재 유효한 기준이다. 큰 구현 변
 - `0001-local-kb-pipeline.md`: v0.1 local KB pipeline
 - `0002-graph-layer.md`: v0.2 graph layer
 - `0003-google-drive-sync.md`: v0.3 Google Drive sync
+- `0004-v05-source-processing-pipeline.md`: v0.5 source processing pipeline
+- `0004a-v05.1-source-processing-hardening.md`: v05.1 source processing hardening
+- `0005- v06-Multi-format-Source-Processing.md`: v0.6 multi-format source processing
+- `0007-v07-grounded-ask-pipeline.md`: v0.7 grounded ask pipeline
+- `0008-v08-ffxiv-domain-graphify-layer-spec.md`: v0.8 FFXIV domain graphify layer
+- `0009-v08_5_managed_wiki_kb_activation_spec.md`: v0.8.5 managed wiki KB activation
 
 ## 기존 참고 문서
 

@@ -183,6 +183,25 @@ Merge behavior:
   original graph source summary context.
 - Final context candidates are capped at the graph-aware retrieval limit.
 
+If `graph/entity_index.json` is absent, ask still works as an FTS-only grounded
+answer path. In that mode, entity-page fallback and graph neighborhood facts are
+not available.
+
+v08.5 smoke queries:
+
+```bash
+python tools/ask.py "건브 7.5 변경점 알려줘" --format json
+python tools/ask.py "No Mercy 관련 변경 있어?" --format json
+python tools/ask.py "7.5에서 어떤 직업이 언급됐어?" --format json
+python tools/ask.py "건브 관련 source 보여줘" --format json
+```
+
+JSON smoke checks:
+
+- `status` is `ok`
+- `contexts` is non-empty for known entity queries
+- `answer.body` contains `요약`, `관련 항목`, `근거 문서`, and `주의`
+
 ## Job Wiki First
 
 When `wiki/jobs/<job>.md` exists and is indexed, job change history questions

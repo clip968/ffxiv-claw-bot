@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v0.8.5 Managed Wiki Knowledge Base Activation in progress
-- Last completed task: v08.5-07 v08.5 regression tests consolidation
-- Next task: v08.5-08 documentation and runbook update
+- Last completed task: v08.5-08 documentation and runbook update
+- Next task: v08.5-09 final verification
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
@@ -37,10 +37,11 @@
 - v08.5-05: FTS reindexing, `tests/test_v08_5_fts_visibility.py`; `index_wiki_documents()` indexed 38 pages (`source_summary=26`, `job=5`, `patch=3`, `skill=4`) and ask smoke returned generated wiki contexts for `job_gunbreaker`, `patch_7_5`, and `skill_no_mercy`
 - v08.5-06: answer quality, `tests/test_v08_5_answer_quality.py`; `compose_answer()` now returns structured `요약`, `관련 항목`, `확인된 내용`, `근거 문서`, `확실도`, `주의` sections instead of raw source dumps
 - v08.5-07: v08.5 regression tests consolidation; focused v08.5 tests are `real_graph_population` 5 OK, `real_derived_wiki` 6 OK, `fts_visibility` 6 OK, and `answer_quality` 6 OK
+- v08.5-08: documentation/runbook update; added `docs/runbooks/domain-graph-refresh.md` and refreshed README/specs/runbooks/handoff for the v08.5 graph/wiki/FTS/ask workflow
 
 다음 작업:
 
-- v08.5-08: documentation and runbook update
+- v08.5-09: final verification and final handoff update
 
 아직 하지 말 것:
 
@@ -110,37 +111,19 @@
 
 ## 현재 검증 스냅샷
 
-v08-10 완료 시점 검증:
+v08.5-08 완료 시점 검증:
 
 ```bash
-python -m unittest tests.test_entity_extractor -v
-python -m unittest tests.test_relation_extractor -v
-python -m unittest tests.test_domain_graph_rebuild -v
-python -m unittest tests.test_graph_report -v
-python -m unittest tests.test_derived_wiki -v
-python -m unittest tests.test_hybrid_retrieval -v
-python -m unittest tests.test_v08_e2e -v
-python -m unittest tests.test_v07_ask_cli tests.test_v07_retrieval -v
-python -m unittest tests.test_v06_job_wiki_generator -v
-python tools/generate_graph_report.py --db-path db/ffxiv.sqlite --graph-dir graph
-python tools/generate_derived_wiki.py --dry-run --verbose
-python tools/rebuild_domain_graph.py --dry-run --verbose
+python -m unittest tests.test_v08_5_real_graph_population tests.test_v08_5_real_derived_wiki tests.test_v08_5_fts_visibility tests.test_v08_5_answer_quality -v
+python scripts/check_docs_freshness.py --all
+python scripts/finish_task.py
 ```
 
 결과:
 
-- 9 tests OK
-- 7 tests OK
-- 11 tests OK
-- graph export/report 11 tests OK
-- derived wiki 8 tests OK
-- hybrid retrieval 7 tests OK
-- v08 E2E smoke 6 tests OK
-- v07 ask/retrieval regression 17 tests OK
-- v06 derived wiki regression 28 tests OK
-- graph report CLI returned JSON `status=ok`
-- graph-derived wiki dry-run returned JSON `status=ok`
-- dry-run JSON returned `status=ok`
+- focused v08.5 tests: 23 tests OK
+- docs freshness: OK
+- `finish_task.py`: 355 tests OK, docs freshness OK, Notion handoff dry-run OK
 
 이전 v07-17 완료 시점 검증:
 
@@ -172,19 +155,9 @@ python tools/ask.py "7.x 건브레이커 변경 이력 알려줘" --format json
 
 ## 현재 작업트리 주의사항
 
-v08-10 완료 커밋 전에는 다음 변경이 포함되어야 한다.
-
-```text
-src/retrieval/hybrid.py
-tests/test_hybrid_retrieval.py
-tests/test_v08_e2e.py
-docs/runbooks/ask.md
-docs/handoff/CURRENT_HANDOFF.md
-docs/plans/2026-05-17-v08-implementation.md
-docs/plans/v08/2026-05-17-v08-10-e2e-smoke-test.md
-docs/plans/v08/README.md
-docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md
-```
+- v08.5-09 final verification remains.
+- Generated local outputs under `db/`, `graph/`, `wiki/jobs/`, `wiki/patches/`, and `wiki/skills/` should stay uncommitted unless a future maintainer scope explicitly changes that policy.
+- Push after each completed task per maintainer instruction.
 
 ## 운영 원칙
 
@@ -196,4 +169,4 @@ docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md
 
 ## 다음 agent에게
 
-v08 is complete through task 10. Start new work only from explicit maintainer scope.
+Continue with v08.5-09 final verification, then update this handoff to the final completed state.

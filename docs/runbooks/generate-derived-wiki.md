@@ -4,11 +4,12 @@
 
 v0.8 adds graph-based derived wiki generation for Jobs, Patches, and Skills.
 The SQLite graph remains the source of truth; generated Markdown is derived output.
+For the full refresh sequence, use `docs/runbooks/domain-graph-refresh.md`.
 
 Generate graph-derived pages:
 
 ```bash
-python tools/generate_derived_wiki.py --db-path db/ffxiv.sqlite --wiki-root wiki --graph-dir graph --types jobs,patches,skills
+python tools/generate_derived_wiki.py --db-path db/ffxiv.sqlite --wiki-root wiki --graph-dir graph --types jobs,patches,skills --verbose
 ```
 
 Dry-run:
@@ -30,6 +31,8 @@ Each generated page includes related sources. Job pages also include graph links
 The generator is idempotent for the same graph input.
 
 The legacy v0.6 `--kind jobs` flow below is still supported for source-summary-based job pages.
+Do not combine legacy `--kind jobs` with v08 graph-derived generation in the
+same command. Use one mode per run.
 
 v0.6 derived wiki generation turns source summaries into topic-level Markdown pages. In v0.6, only FFXIV job pages are implemented.
 
@@ -107,18 +110,23 @@ Those kinds currently fail with an unsupported-kind error.
 
 ## FTS Indexing
 
-`tools.compile_wiki.index_wiki_documents()` indexes both source summaries and generated job pages into `wiki_pages` and `wiki_fts`.
+`tools.compile_wiki.index_wiki_documents()` indexes source summaries and generated wiki pages into `wiki_pages` and `wiki_fts`.
 
 Indexed document types:
 
 - `wiki/source_summaries/*.md` -> `wiki_type=source_summary`
 - `wiki/jobs/*.md` -> `wiki_type=job`, `topic=<job-slug>`
+- `wiki/patches/*.md` -> `wiki_type=patch`, `topic=<patch-slug>`
+- `wiki/skills/*.md` -> `wiki_type=skill`, `topic=<skill-slug>`
 
 Run the indexing helper from Python:
 
 ```bash
 python -c "from tools.compile_wiki import index_wiki_documents; import json; print(json.dumps(index_wiki_documents(), ensure_ascii=False, indent=2))"
 ```
+
+Run FTS indexing after every manual graph-derived wiki generation. The ask
+pipeline only sees generated pages after they are indexed.
 
 ## Source Processing Hook
 
@@ -174,6 +182,8 @@ Stale search results:
 
 - For manual generator runs, generate the wiki page again and re-run `index_wiki_documents()`.
 - For source-processing hook runs, inspect `derived_wiki.fts_index`. If it is `status=ok`, generated job pages were indexed in the same run.
+- For v08 graph-derived pages, confirm `wiki_pages` has `job`, `patch`, and
+  `skill` rows after re-indexing.
 
 ## Verification
 

@@ -10,7 +10,29 @@
 - 구현/문서 계약: `docs/`
 - 로컬 DB: `db/ffxiv.sqlite`
 - source summary: `wiki/source_summaries/`
-- derived job wiki: `wiki/jobs/`
+- domain graph export/report: `graph/`
+- graph-derived wiki: `wiki/jobs/`, `wiki/patches/`, `wiki/skills/`
+- ask entrypoint: `tools/ask.py`
+
+v08.5 managed wiki KB pipeline:
+
+```text
+local source / URL / queued source
+-> source summary generation
+-> wiki/source_summaries/ audit
+-> tools/rebuild_domain_graph.py --reset-domain-graph
+-> graph nodes/edges and graph export/report
+-> tools/generate_derived_wiki.py
+-> wiki/jobs, wiki/patches, wiki/skills, wiki/index.md
+-> tools.compile_wiki.index_wiki_documents()
+-> tools/ask.py graph-aware grounded answer
+```
+
+`db/ffxiv.sqlite`, generated graph JSON/report files, and generated per-entity
+wiki pages are local derived state. Do not commit them unless a future spec
+explicitly changes that policy.
+
+## Legacy Source Processing Pipeline
 
 v0.6 pipeline:
 
@@ -24,7 +46,7 @@ local source / URL / queued source
 -> optional derived wiki FTS indexing
 ```
 
-## v0.6 Source Formats
+## Source Formats
 
 Local file sources are normalized through `src/source_processing/`.
 
@@ -61,15 +83,31 @@ python tools/process_pending_sources.py --build-derived-wiki --limit 10
 Generate derived wiki:
 
 ```bash
-python tools/generate_job_wiki.py --job gunbreaker
-python tools/generate_job_wiki.py --all
-python tools/generate_derived_wiki.py --kind jobs
+python tools/generate_derived_wiki.py --dry-run --verbose
+python tools/generate_derived_wiki.py --verbose
 ```
 
-Index source summaries and derived job wiki files into FTS from Python:
+Index source summaries and generated wiki files into FTS from Python:
 
 ```bash
 python -c "from tools.compile_wiki import index_wiki_documents; import json; print(json.dumps(index_wiki_documents(), ensure_ascii=False, indent=2))"
+```
+
+Ask the local KB:
+
+```bash
+python tools/ask.py "건브 7.5 변경점 알려줘" --format json
+python tools/ask.py "No Mercy 관련 변경 있어?" --format json
+python tools/ask.py "7.5에서 어떤 직업이 언급됐어?" --format json
+python tools/ask.py "건브 관련 source 보여줘" --format json
+```
+
+Legacy v0.6 job wiki commands remain available:
+
+```bash
+python tools/generate_job_wiki.py --job gunbreaker
+python tools/generate_job_wiki.py --all
+python tools/generate_derived_wiki.py --kind jobs
 ```
 
 ## Documentation
@@ -78,10 +116,13 @@ Start with:
 
 - `docs/WORKFLOW.md`
 - `docs/handoff/CURRENT_HANDOFF.md`
-- `docs/specs/0005- v06-Multi-format-Source-Processing.md`
+- `docs/specs/0009-v08_5_managed_wiki_kb_activation_spec.md`
+- `docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md`
+- `docs/runbooks/domain-graph-refresh.md`
+- `docs/runbooks/ask.md`
+- `docs/runbooks/generate-derived-wiki.md`
 - `docs/runbooks/process-source.md`
 - `docs/runbooks/process-pending-sources.md`
-- `docs/runbooks/generate-derived-wiki.md`
 
 Before finishing a task:
 

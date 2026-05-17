@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -35,44 +35,54 @@ Out of scope:
 
 ## Checklist
 
-- [ ] `docs/runbooks/domain-graph-refresh.md` 추가
-  - [ ] Purpose
-  - [ ] Preconditions
-  - [ ] Step 1. Source summary audit
-  - [ ] Step 2. Dry-run rebuild
-  - [ ] Step 3. Reset rebuild
-  - [ ] Step 4. Graph report
-  - [ ] Step 5. Derived wiki generation
-  - [ ] Step 6. FTS re-index
-  - [ ] Step 7. Ask smoke tests
-  - [ ] Step 8. Regression
-  - [ ] Troubleshooting
-  - [ ] Completion checklist
-- [ ] `README.md` 갱신
-  - [ ] Current Pipeline을 v08.5 기준으로 갱신
-  - [ ] v0.6 중심 설명을 history/legacy로 이동
-  - [ ] Common Commands에 v08.5 명령 추가
-- [ ] `docs/specs/README.md` 갱신
-  - [ ] v08 spec 반영
-  - [ ] v08.5 spec 반영
-- [ ] `docs/runbooks/ask.md` 갱신
-  - [ ] graph-aware retrieval 설명
-  - [ ] `graph/entity_index.json` 없으면 FTS fallback
-  - [ ] 대표 smoke query 추가
-  - [ ] JSON output 확인 방법 설명
-- [ ] `docs/runbooks/generate-derived-wiki.md` 갱신
-  - [ ] legacy `--kind jobs`와 v08 graph-derived wiki mode 분리
-  - [ ] `--dry-run --verbose` 선행 권장
-  - [ ] generation 후 FTS re-index 필요성 명시
-- [ ] `docs/handoff/CURRENT_HANDOFF.md` 갱신
-  - [ ] Current phase: v08.5 completed
-  - [ ] Last completed task
-  - [ ] Next task
-  - [ ] 검증 명령과 결과
-  - [ ] 아직 하지 말 것
-- [ ] docs freshness 확인
-  - [ ] `python scripts/check_docs_freshness.py --all`
-- [ ] handoff/README feature map status 갱신
+- [x] `docs/runbooks/domain-graph-refresh.md` 추가
+  - [x] Purpose
+  - [x] Preconditions
+  - [x] Step 1. Source summary audit
+  - [x] Step 2. Dry-run rebuild
+  - [x] Step 3. Reset rebuild
+  - [x] Step 4. Graph report
+  - [x] Step 5. Derived wiki generation
+  - [x] Step 6. FTS re-index
+  - [x] Step 7. Ask smoke tests
+  - [x] Step 8. Regression
+  - [x] Troubleshooting
+  - [x] Completion checklist
+- [x] `README.md` 갱신
+  - [x] Current Pipeline을 v08.5 기준으로 갱신
+  - [x] v0.6 중심 설명을 history/legacy로 이동
+  - [x] Common Commands에 v08.5 명령 추가
+- [x] `docs/specs/README.md` 갱신
+  - [x] v08 spec 반영
+  - [x] v08.5 spec 반영
+- [x] `docs/runbooks/ask.md` 갱신
+  - [x] graph-aware retrieval 설명
+  - [x] `graph/entity_index.json` 없으면 FTS fallback
+  - [x] 대표 smoke query 추가
+  - [x] JSON output 확인 방법 설명
+- [x] `docs/runbooks/generate-derived-wiki.md` 갱신
+  - [x] legacy `--kind jobs`와 v08 graph-derived wiki mode 분리
+  - [x] `--dry-run --verbose` 선행 권장
+  - [x] generation 후 FTS re-index 필요성 명시
+- [x] `docs/handoff/CURRENT_HANDOFF.md` 갱신
+  - [x] Current phase는 final verification 전까지 in progress로 유지
+  - [x] Last completed task
+  - [x] Next task
+  - [x] 검증 명령과 결과
+  - [x] 아직 하지 말 것
+- [x] docs freshness 확인
+  - [x] `python scripts/check_docs_freshness.py --all`
+- [x] handoff/README feature map status 갱신
+
+## Results
+
+- `docs/runbooks/domain-graph-refresh.md`를 추가해 v08.5 refresh 절차를 source audit부터 regression까지 한 문서로 정리했다.
+- `README.md` Current Pipeline을 v08.5 기준으로 갱신하고 v0.6 source processing은 legacy pipeline로 분리했다.
+- `docs/specs/README.md`에 v05/v05.1/v06/v07/v08/v08.5 spec을 현재 spec 목록으로 반영했다.
+- `docs/runbooks/ask.md`에 graph-aware fallback, v08.5 smoke query, JSON 확인 기준을 추가했다.
+- `docs/runbooks/generate-derived-wiki.md`에 v08 graph-derived mode와 legacy `--kind jobs` mode를 분리하고 FTS re-index 필요성을 명시했다.
+- `docs/runbooks/README.md`에 새 runbook과 ask runbook을 등록했다.
+- `CURRENT_HANDOFF.md`는 v08.5-08 완료 및 v08.5-09 final verification 대기 상태로 갱신했다.
 
 ## Verification
 
