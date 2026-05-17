@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -49,27 +49,27 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tools/generate_derived_wiki.py` 생성
-  - [ ] argparse CLI (--db-path, --wiki-root, --graph-dir, --types, --dry-run, --verbose)
-- [ ] derived wiki generator 모듈 생성
-  - [ ] Job wiki 생성 (Summary, Related Patches, Skills, Recent Facts, Related Sources, Graph Links)
-  - [ ] Patch wiki 생성 (Summary, Affected Jobs, Affected Skills, Facts, Related Sources)
-  - [ ] Skill wiki 생성 (Summary, Job, Related Patches, Facts, Related Sources)
-  - [ ] wiki/index.md 갱신 (Derived Wiki 섹션 추가/갱신)
-  - [ ] deterministic 정렬 (canonical name 기준)
-  - [ ] source linking 포함 (source_id, title, path 중 최소 하나)
-- [ ] `tests/test_derived_wiki.py` 생성
-  - [ ] `test_job_wiki_created`
-  - [ ] `test_job_wiki_has_skills`
-  - [ ] `test_job_wiki_has_patches`
-  - [ ] `test_job_wiki_has_sources`
-  - [ ] `test_patch_wiki_created`
-  - [ ] `test_skill_wiki_created`
-  - [ ] `test_index_md_updated`
-  - [ ] `test_idempotent_generation`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] `tools/generate_derived_wiki.py` 생성
+  - [x] argparse CLI (--db-path, --wiki-root, --graph-dir, --types, --dry-run, --verbose)
+- [x] derived wiki generator 모듈 생성
+  - [x] Job wiki 생성 (Summary, Related Patches, Skills, Recent Facts, Related Sources, Graph Links)
+  - [x] Patch wiki 생성 (Summary, Affected Jobs, Affected Skills, Facts, Related Sources)
+  - [x] Skill wiki 생성 (Summary, Job, Related Patches, Facts, Related Sources)
+  - [x] wiki/index.md 갱신 (Derived Wiki 섹션 추가/갱신)
+  - [x] deterministic 정렬 (canonical name 기준)
+  - [x] source linking 포함 (source_id, title, path 중 최소 하나)
+- [x] `tests/test_derived_wiki.py` 생성
+  - [x] `test_job_wiki_created`
+  - [x] `test_job_wiki_has_skills`
+  - [x] `test_job_wiki_has_patches`
+  - [x] `test_job_wiki_has_sources`
+  - [x] `test_patch_wiki_created`
+  - [x] `test_skill_wiki_created`
+  - [x] `test_index_md_updated`
+  - [x] `test_idempotent_generation`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
+- [x] handoff/README feature map status 갱신
 
 ## Verification
 

@@ -1,5 +1,36 @@
 # Generate Derived Wiki Runbook
 
+## v0.8 Graph-Derived Wiki
+
+v0.8 adds graph-based derived wiki generation for Jobs, Patches, and Skills.
+The SQLite graph remains the source of truth; generated Markdown is derived output.
+
+Generate graph-derived pages:
+
+```bash
+python tools/generate_derived_wiki.py --db-path db/ffxiv.sqlite --wiki-root wiki --graph-dir graph --types jobs,patches,skills
+```
+
+Dry-run:
+
+```bash
+python tools/generate_derived_wiki.py --dry-run --verbose
+```
+
+Outputs:
+
+```text
+wiki/jobs/*.md
+wiki/patches/*.md
+wiki/skills/*.md
+wiki/index.md
+```
+
+Each generated page includes related sources. Job pages also include graph links.
+The generator is idempotent for the same graph input.
+
+The legacy v0.6 `--kind jobs` flow below is still supported for source-summary-based job pages.
+
 v0.6 derived wiki generation turns source summaries into topic-level Markdown pages. In v0.6, only FFXIV job pages are implemented.
 
 Inputs:
@@ -148,6 +179,7 @@ Stale search results:
 
 ```bash
 python -m unittest tests.test_v06_job_wiki_generator -v
+python -m unittest tests.test_derived_wiki -v
 python -m unittest tests.test_v06_fts_indexing -v
 python scripts/check_docs_freshness.py --all
 ```

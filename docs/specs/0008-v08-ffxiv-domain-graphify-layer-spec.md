@@ -4,7 +4,7 @@
 
 - 문서명: v08 Spec — FFXIV Domain Graphify Layer + Derived Wiki + Hybrid Retrieval
 - 대상 프로젝트: ffxiv-claw-bot / FFXIV OpenClaw Bot
-- 상태: In Progress (v08-07 completed)
+- 상태: In Progress (v08-08 completed)
 - 목적: 현재 FTS 기반 RAG + provenance graph 구조를 FFXIV 도메인 entity graph 기반 RAG로 확장한다.
 - 전제: Lost Ark 등 비-FFXIV 오염 데이터 정리는 이미 완료되었다고 가정한다.
 
@@ -1066,6 +1066,7 @@ v08은 다음 조건을 만족하면 완료로 본다.
 - v08-05 completed on 2026-05-17: `tools/rebuild_domain_graph.py` scans source summaries, loads the entity registry, extracts entities/relations/facts, upserts domain graph data, supports dry-run/source filtering/reset, and leaves export/report as explicit skipped steps until v08-06/v08-07.
 - v08-06 completed on 2026-05-17: `src/domain_graph/export.py` writes `nodes.json`, `edges.json`, `domain_graph.json`, and `entity_index.json` from the SQLite graph, and rebuild now invokes graph export when the module is available.
 - v08-07 completed on 2026-05-17: `src/domain_graph/report.py` and `tools/generate_graph_report.py` generate `graph/GRAPH_REPORT.md` with summary counts, node counts, edge counts, top mentioned entities, and quality warnings.
+- v08-08 completed on 2026-05-17: `src/domain_graph/derived_wiki.py` generates graph-derived `wiki/jobs`, `wiki/patches`, `wiki/skills` pages, updates `wiki/index.md`, and preserves source links and DERIVED_FROM graph edges while keeping legacy v0.6 `--kind jobs` CLI behavior.
 
 ---
 
