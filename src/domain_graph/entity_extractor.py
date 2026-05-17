@@ -86,7 +86,8 @@ def _find_alias_matches(text: str, entry: AliasEntry) -> list[tuple[int, int, st
 
 def _ascii_alias_pattern(alias: str) -> str:
     escaped = re.escape(alias)
-    return rf"(?<![A-Za-z0-9_.]){escaped}(?![A-Za-z0-9_.])"
+    boundary_chars = r"A-Za-z0-9_." if any(char.isdigit() or char == "." for char in alias) else r"A-Za-z0-9_"
+    return rf"(?<![{boundary_chars}]){escaped}(?![{boundary_chars}])"
 
 
 def _is_ascii_alias(alias: str) -> bool:

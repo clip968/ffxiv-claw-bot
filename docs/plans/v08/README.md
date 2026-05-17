@@ -27,7 +27,7 @@ user question
 |---|---|---|---|
 | 01 | 2026-05-17-v08-01-entity-registry.md | FFXIV entity registry 추가 (jobs, skills, patches) | Completed 2026-05-17 |
 | 02 | 2026-05-17-v08-02-entity-extractor.md | source summary에서 entity 추출 | Completed 2026-05-17 |
-| 03 | 2026-05-17-v08-03-relation-fact-extractor.md | entity 기반 relation/fact 생성 | Pending |
+| 03 | 2026-05-17-v08-03-relation-fact-extractor.md | entity 기반 relation/fact 생성 | Completed 2026-05-17 |
 | 04 | 2026-05-17-v08-04-graph-storage-upsert.md | graph node/edge/fact DB upsert helper | Pending |
 | 05 | 2026-05-17-v08-05-domain-graph-rebuild-cli.md | domain graph rebuild CLI | Pending |
 | 06 | 2026-05-17-v08-06-graph-export.md | graph export (JSON 산출물) | Pending |

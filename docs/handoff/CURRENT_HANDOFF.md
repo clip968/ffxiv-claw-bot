@@ -9,8 +9,8 @@
 - Branch: `main`
 - Last pushed commit: see current `git log --oneline -1` after push
 - Current phase: v0.8 Domain Graphify Layer in progress
-- Last completed task: v08-02 entity extractor
-- Next task: v08-03 relation/fact extractor
+- Last completed task: v08-03 relation/fact extractor
+- Next task: v08-04 graph storage/upsert
 - Current maintenance task: none
 
 ## 먼저 읽을 문서
@@ -19,10 +19,11 @@
 2. `docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md`
 3. `docs/plans/2026-05-17-v08-implementation.md`
 4. `docs/plans/v08/README.md`
-5. `docs/plans/v08/2026-05-17-v08-02-entity-extractor.md`
+5. `docs/plans/v08/2026-05-17-v08-03-relation-fact-extractor.md`
 6. `src/domain_graph/entity_registry.py`
 7. `src/domain_graph/entity_extractor.py`
-8. `tests/test_entity_extractor.py`
+8. `src/domain_graph/relation_extractor.py`
+9. `tests/test_relation_extractor.py`
 
 필요할 때만 과거 상세 로그를 읽는다.
 
@@ -34,14 +35,15 @@
 
 - v08-01: `data/ffxiv_entities/` registry JSON and `src/domain_graph/entity_registry.py`
 - v08-02: `src/domain_graph/entity_extractor.py` rule-based extractor
+- v08-03: `src/domain_graph/relation_extractor.py` relation/fact extractor
 
 다음 작업:
 
-- v08-03: relation/fact extractor
+- v08-04: graph storage/upsert
 
 아직 하지 말 것:
 
-- v08-04 이후 storage/rebuild/retrieval 구현을 v08-03 완료 전 앞당기지 않는다.
+- v08-05 이후 rebuild/retrieval 구현을 v08-04 완료 전 앞당기지 않는다.
 
 ## v07 진행 상황
 
@@ -84,11 +86,13 @@ v08-01 완료 시점 검증:
 
 ```bash
 python -m unittest tests.test_entity_extractor -v
+python -m unittest tests.test_relation_extractor -v
 ```
 
 결과:
 
 - 9 tests OK
+- 7 tests OK
 
 이전 v07-17 완료 시점 검증:
 
@@ -125,9 +129,10 @@ v08-01 완료 커밋 전에는 다음 변경이 포함되어야 한다.
 ```text
 src/domain_graph/__init__.py
 src/domain_graph/entity_extractor.py
-tests/test_entity_extractor.py
+src/domain_graph/relation_extractor.py
+tests/test_relation_extractor.py
 docs/handoff/CURRENT_HANDOFF.md
-docs/plans/v08/2026-05-17-v08-02-entity-extractor.md
+docs/plans/v08/2026-05-17-v08-03-relation-fact-extractor.md
 docs/plans/v08/README.md
 docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md
 ```
@@ -142,4 +147,4 @@ docs/specs/0008-v08-ffxiv-domain-graphify-layer-spec.md
 
 ## 다음 agent에게
 
-v08 scope is open by maintainer request. Continue with v08-03 after v08-02 is committed and pushed.
+v08 scope is open by maintainer request. Continue with v08-04 after v08-03 is committed and pushed.

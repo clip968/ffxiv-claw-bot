@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -54,28 +54,28 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] relation extractor 모듈 생성
-  - [ ] `MENTIONS` relation 생성
-  - [ ] `HAS_SKILL` relation 생성 (registry 기반)
-  - [ ] change trigger 감지 (영어 + 한국어)
-  - [ ] Fact node 생성 (patch + job/skill + trigger 조건)
-  - [ ] `SUPPORTS` edge 생성
-  - [ ] `VALID_IN_PATCH` edge 생성
-  - [ ] `AFFECTS_JOB` edge 생성
-  - [ ] `AFFECTS_SKILL` edge 생성
-  - [ ] Fact id deterministic hash 생성
-  - [ ] confidence 설정
-- [ ] `tests/test_relation_extractor.py` 생성
-  - [ ] `test_mentions_edge_for_job`
-  - [ ] `test_mentions_edge_for_skill`
-  - [ ] `test_mentions_edge_for_patch`
-  - [ ] `test_has_skill_from_registry`
-  - [ ] `test_fact_created_with_trigger`
-  - [ ] `test_no_fact_without_trigger`
-  - [ ] `test_fact_edges_complete`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] relation extractor 모듈 생성
+  - [x] `MENTIONS` relation 생성
+  - [x] `HAS_SKILL` relation 생성 (registry 기반)
+  - [x] change trigger 감지 (영어 + 한국어)
+  - [x] Fact node 생성 (patch + job/skill + trigger 조건)
+  - [x] `SUPPORTS` edge 생성
+  - [x] `VALID_IN_PATCH` edge 생성
+  - [x] `AFFECTS_JOB` edge 생성
+  - [x] `AFFECTS_SKILL` edge 생성
+  - [x] Fact id deterministic hash 생성
+  - [x] confidence 설정
+- [x] `tests/test_relation_extractor.py` 생성
+  - [x] `test_mentions_edge_for_job`
+  - [x] `test_mentions_edge_for_skill`
+  - [x] `test_mentions_edge_for_patch`
+  - [x] `test_has_skill_from_registry`
+  - [x] `test_fact_created_with_trigger`
+  - [x] `test_no_fact_without_trigger`
+  - [x] `test_fact_edges_complete`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
+- [x] handoff/README feature map status 갱신
 
 ## Verification
 
