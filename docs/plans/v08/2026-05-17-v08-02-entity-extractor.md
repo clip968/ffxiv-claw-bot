@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -46,25 +46,25 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] entity extractor 모듈 생성
-  - [ ] registry alias를 긴 순서대로 검사
-  - [ ] 영어 alias: case-insensitive + word boundary
-  - [ ] 한국어 alias: substring match + overlap 제거
-  - [ ] 같은 canonical entity 중복 제거
-  - [ ] matched_alias, span, confidence 보존
-  - [ ] deterministic 정렬 (type priority: Patch, Job, Skill, Item, Encounter → canonical name)
+- [x] entity extractor 모듈 생성
+  - [x] registry alias를 긴 순서대로 검사
+  - [x] 영어 alias: case-insensitive + word boundary
+  - [x] 한국어 alias: substring match + overlap 제거
+  - [x] 같은 canonical entity 중복 제거
+  - [x] matched_alias, span, confidence 보존
+  - [x] deterministic 정렬 (type priority: Patch, Job, Skill, Item, Encounter → canonical name)
 - [ ] CLI wrapper 추가 (optional)
   - [ ] `--text` 옵션
   - [ ] `--source-id` 옵션
-- [ ] `tests/test_entity_extractor.py` 갱신
-  - [ ] `test_extract_korean_alias_and_patch`
-  - [ ] `test_extract_english_alias`
-  - [ ] `test_dedup_same_entity`
-  - [ ] `test_extract_skill_and_patch`
-  - [ ] `test_short_alias_no_false_positive`
-- [ ] red 상태 확인
-- [ ] 최소 구현으로 green 전환
-- [ ] handoff/README feature map status 갱신
+- [x] `tests/test_entity_extractor.py` 갱신
+  - [x] `test_extract_korean_alias_and_patch`
+  - [x] `test_extract_english_alias`
+  - [x] `test_dedup_same_entity`
+  - [x] `test_extract_skill_and_patch`
+  - [x] `test_short_alias_no_false_positive`
+- [x] red 상태 확인
+- [x] 최소 구현으로 green 전환
+- [x] handoff/README feature map status 갱신
 
 ## Verification
 
