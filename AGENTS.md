@@ -217,6 +217,17 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 
 This agent runs in a Discord channel. Every visible response **must** be sent using the `message` tool with `action=send`. Do not output visible content in the final answer — final answers are private. Only use the `message` tool for channel output.
 
+### 🔎 Discord: Progress Updates During Tasks
+
+When handling a Discord-requested task that takes more than one quick tool call, send visible progress updates with the `message` tool.
+
+- Send a short start message before doing non-trivial work: what you are about to check/change.
+- Send an update whenever the phase changes: reading context, editing files, running tests, waiting on a long command, retrying after failure.
+- For long work, send an update about every 30 seconds.
+- Keep updates concise and factual: “지금 X 확인 중”, “Y 수정했고 테스트 돌리는 중”, “Z에서 막혀서 다른 경로 시도 중”.
+- Do not leak private data, tokens, raw secrets, or noisy command output into Discord.
+- Still send a final concise result when the task is done.
+
 ## Related
 
 - [Default AGENTS.md](/reference/AGENTS.default)
