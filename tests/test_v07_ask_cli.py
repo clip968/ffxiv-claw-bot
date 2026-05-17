@@ -147,6 +147,36 @@ class V07AskCliTests(unittest.TestCase):
         self.assertIn("wiki/jobs/gunbreaker.md", result["answer"]["body"])
         self.assertIn("Continuation potency adjusted", result["answer"]["body"])
 
+    def test_ask_cli_source_summary_fallback_when_no_job_wiki(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            db_path = root / "ffxiv.sqlite"
+            ensure_wiki_tables(db_path)
+            source_dir = root / "wiki" / "source_summaries"
+            source_dir.mkdir(parents=True)
+            (source_dir / "patch_7_0.md").write_text(
+                "# Patch 7.0 Notes\n\n"
+                "source_id: patch_7_0\n\n"
+                "Gunbreaker source summary fallback content.\n",
+                encoding="utf-8",
+            )
+            index_wiki_documents(root_path=root, db_path=db_path)
+
+            result = _run_ask(
+                [
+                    "7.x 건브레이커 변경 이력 알려줘",
+                    "--db-path",
+                    str(db_path),
+                    "--root-path",
+                    str(root),
+                ]
+            )
+
+        self.assertEqual(result["contexts"][0]["wiki_type"], "source_summary")
+        self.assertEqual(result["contexts"][0]["path"], "wiki/source_summaries/patch_7_0.md")
+        self.assertIn("wiki/source_summaries/patch_7_0.md", result["answer"]["body"])
+        self.assertIn("patch_7_0", result["answer"]["body"])
+
 
 if __name__ == "__main__":
     unittest.main()

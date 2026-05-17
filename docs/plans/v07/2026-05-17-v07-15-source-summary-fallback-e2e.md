@@ -8,7 +8,7 @@
 
 ## Status
 
-Pending
+Completed 2026-05-17
 
 ## Goal
 
@@ -38,12 +38,12 @@ Contracts fixed by the tests:
 
 ## Checklist
 
-- [ ] `tests/test_v07_ask_cli.py` 갱신
-  - [ ] temporary root + SQLite DB setup (job wiki 없음)
-  - [ ] `wiki/source_summaries/patch_7_0.md` fixture 생성
-  - [ ] `test_ask_cli_source_summary_fallback_when_no_job_wiki` 테스트
-- [ ] 필요 시 구현 보정
-- [ ] green 확인
+- [x] `tests/test_v07_ask_cli.py` 갱신
+  - [x] temporary root + SQLite DB setup (job wiki 없음)
+  - [x] `wiki/source_summaries/patch_7_0.md` fixture 생성
+  - [x] `test_ask_cli_source_summary_fallback_when_no_job_wiki` 테스트
+- [x] 필요 시 구현 보정
+- [x] green 확인
 
 ## Verification
 
